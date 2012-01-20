@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping 
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+ 	<class name="HibernateTesting.listmapping.Student" table="test.studenttable">
+ 		<id column="id" name="id">
+ 			 <generator class="native"/>
+ 		</id>
+ 		<property name="schoolBench" column="schoolbench"/>
+ 		<list name="nameList" table="test.namelisttable" >
+	 		<key column="id"/>
+	 		<index column="listId" type="java.lang.Integer"/>	 	
+	 		<!-- <one-to-many class="HibernateTesting.listmapping.NameList"/>-->	
+	 		<element type="java.lang.String" column="name"/>
+ 		</list> 		
+ 		<!-- <many-to-one name="nameList" class= "NamedList" column="NamedList"> --> 		
+	</class>
+</hibernate-mapping>

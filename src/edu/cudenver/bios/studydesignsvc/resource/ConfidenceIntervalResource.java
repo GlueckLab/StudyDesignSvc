@@ -20,42 +20,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package edu.cudenver.bios.studydesignsvc.representation;
+package edu.cudenver.bios.studydesignsvc.resource;
 
-import java.io.IOException;
-
-import org.restlet.data.MediaType;
-import org.restlet.ext.xml.DomRepresentation;
-import org.restlet.representation.OutputRepresentation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
-
+import org.restlet.resource.Delete;
+import org.restlet.resource.Get;
+import org.restlet.resource.Post;
+import org.restlet.resource.Put;
+import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
 /**
- * XML representation of an error message.  
- * Avoids using server default and allows easier parsing/presentation
- * of error message on the client side
+ * Resource class for handling requests for the complete 
+ * study design object. 
+ * See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
- * 
  */
-public class ErrorXMLRepresentation extends DomRepresentation
+public interface ConfidenceIntervalResource 
 {
-	/**
-     * Create an XML representation of the specified error message
-     * 
-     * @param msg
-     * @throws IOException
-     */
-    public ErrorXMLRepresentation(String msg) throws IOException
-    {
-        super(MediaType.APPLICATION_XML);
-        
-        Document doc = getDocument();
-        Element errorElem = doc.createElement(StudyDesignConstants.TAG_ERROR);
-        errorElem.appendChild(doc.createTextNode(msg));
-        doc.appendChild(errorElem);
-        doc.normalizeDocument();
-    }
+	 @Get
+    public ConfidenceInterval retrieve();
+
+    @Post
+    public ConfidenceInterval create(ConfidenceInterval confidenceInterval);
+    
+    @Put
+    public ConfidenceInterval update(ConfidenceInterval confidenceInterval);
+
+    @Delete
+    public ConfidenceInterval remove();
 }

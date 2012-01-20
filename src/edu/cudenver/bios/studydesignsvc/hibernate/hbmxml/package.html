@@ -1,4 +1,4 @@
-/*
+<!--  
  * Study Design Service for the GLIMMPSE Software System.  
  * This service stores study design definitions for users of the GLIMMSE interface.
  * Service contain all information related to a power or sample size calculation.  
@@ -19,40 +19,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-package edu.cudenver.bios.studydesignsvc.application;
+ -->
 
-import org.apache.log4j.Logger;
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+</head>
+<body bgcolor="white">
+Application level classes including Restlet entry point, constants,
+and logging setup.
 
-/**
- * Singleton Log4J wrapper class
- * 
- * @author Uttara Sakhadeo
- */
-public class StudyDesignLogger 
-{
+<h2>Package Specification</h2>
 
-	private static Logger instance = null;
+Dependencies:
+<ul>
+<li>JRE 1.6.0 or higher</li>
+<li>Restlet 1.1.6</li>
+<li>Log4J 1.2.15</li>
+<li>JUnit 4.7</li>
+<li>Apache Commons Math 2.1 or higher</li>
+</ul>
 
-    /**
-     * Create a new logging object
-     */
-    private StudyDesignLogger() 
-    {
-    }
+<h2>Related Documentation</h2>
 
-    /**
-     * Create a single instance of a logging class
-     * @return Logger object
-     */
-    public static Logger getInstance() 
-    {
-        if (instance == null) 
-        {
-            instance = Logger.getLogger("edu.cudenver.bios.studydesignsvc.Study");
-        }
-
-        return instance;
-    }
-	
-}
+This package is part of the Power web service component for the Glimmpse software system, please see
+the following for more information:
+<ul>
+  <li><a href="http://www.glimmpse.com/">http://www.glimmpse.com/</a>
+</ul>
+</body>
+</html>

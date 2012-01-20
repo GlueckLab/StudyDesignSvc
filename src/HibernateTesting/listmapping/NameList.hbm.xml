@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping 
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+ 	<class name="HibernateTesting.listmapping.NameList" table="test.namelisttable">
+ 		<id column="id" name="id">
+ 			 <generator class="native"/>
+ 		</id>
+ 		<property column="listId" name="listId"/>
+ 		<property column="name" name="name"/>	
+	</class>
+</hibernate-mapping>

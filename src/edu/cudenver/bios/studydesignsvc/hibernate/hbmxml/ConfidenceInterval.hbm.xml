@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>	
+	<class name="edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval" table="mydb.tableconfidenceinterval">
+		<id name="id" column="idTableConfidenceInterval" type="java.lang.Integer">
+			<generator class="native"/>
+		</id>		
+		<many-to-one name="studyUUID" column="StudyUUID" class="edu.cudenver.bios.studydesignsvc.domain.StudyDesign" cascade="save-update" not-null="true"/>
+		<property name="isBetaFixed" column="isBetaFixed" type="java.lang.Boolean"/>		
+		<property name="isSigmaFixed" column="isSigmaFixed" type="java.lang.Boolean"/>
+		<property name="lowerTailProbability" column="lowerTailProbability" type="java.lang.Float"/>
+		<property name="upperTailProbability" column="upperTailProbability" type="java.lang.Float"/>
+		<property name="sampleSize" column="sampleSize" type="java.lang.Integer"/>
+		<property name="rankOfDesignMatrix" column="rankOfDesignMatrix" type="java.lang.Integer"/>
+	</class>
+</hibernate-mapping>

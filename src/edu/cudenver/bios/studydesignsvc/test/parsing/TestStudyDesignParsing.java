@@ -20,42 +20,34 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package edu.cudenver.bios.studydesignsvc.representation;
+package edu.cudenver.bios.studydesignsvc.test.parsing;
 
-import java.io.IOException;
-
-import org.restlet.data.MediaType;
-import org.restlet.ext.xml.DomRepresentation;
-import org.restlet.representation.OutputRepresentation;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
+import junit.framework.TestCase;
 
 /**
- * XML representation of an error message.  
- * Avoids using server default and allows easier parsing/presentation
- * of error message on the client side
+ * Unit test for parsing of incoming entity body
  * 
  * @author Uttara Sakhadeo
- * 
  */
-public class ErrorXMLRepresentation extends DomRepresentation
+public class TestStudyDesignParsing extends TestCase  
 {
-	/**
-     * Create an XML representation of the specified error message
-     * 
-     * @param msg
-     * @throws IOException
-     */
-    public ErrorXMLRepresentation(String msg) throws IOException
-    {
-        super(MediaType.APPLICATION_XML);
-        
-        Document doc = getDocument();
-        Element errorElem = doc.createElement(StudyDesignConstants.TAG_ERROR);
-        errorElem.appendChild(doc.createTextNode(msg));
-        doc.appendChild(errorElem);
-        doc.normalizeDocument();
-    }
+	// what should be the display sequence of ? lists ... matrices ....
+	
+	private static Logger logger = StudyDesignLogger.getInstance();
+	
+	// Valid XML for an entity body with a List element
+	private Document validDoc = null;    	
+	private String validList = "<"+StudyDesignConstants.TAG_ALPHA_LIST+">"+
+								    "<"+StudyDesignConstants.TAG_LIST_ELEMENT+">"+"0.5"+
+								    "</"+StudyDesignConstants.TAG_LIST_ELEMENT+">"+
+								    "<"+StudyDesignConstants.TAG_LIST_ELEMENT+">"+"0.1"+
+								    "</"+StudyDesignConstants.TAG_LIST_ELEMENT+">"+	    
+							   "</"+StudyDesignConstants.TAG_ALPHA_LIST+">";
+	
+	
 }

@@ -20,42 +20,50 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package edu.cudenver.bios.studydesignsvc.representation;
-
-import java.io.IOException;
-
-import org.restlet.data.MediaType;
-import org.restlet.ext.xml.DomRepresentation;
-import org.restlet.representation.OutputRepresentation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
-
+package edu.cudenver.bios.studydesignsvc.domain;
 /**
- * XML representation of an error message.  
- * Avoids using server default and allows easier parsing/presentation
- * of error message on the client side
- * 
+ * This is a wrapper for the clustering information.
  * @author Uttara Sakhadeo
- * 
+ *
  */
-public class ErrorXMLRepresentation extends DomRepresentation
-{
+public class ClusterNode 
+{		
+	/*--------------------
+	 * Member Variables
+	 *--------------------*/
+	private String clusterName = null;	
+	private Integer sampleSize = null;	
+	/*--------------------
+	 * Constructors
+	 *--------------------*/	
+	public ClusterNode() {}	
 	/**
-     * Create an XML representation of the specified error message
-     * 
-     * @param msg
-     * @throws IOException
-     */
-    public ErrorXMLRepresentation(String msg) throws IOException
-    {
-        super(MediaType.APPLICATION_XML);
-        
-        Document doc = getDocument();
-        Element errorElem = doc.createElement(StudyDesignConstants.TAG_ERROR);
-        errorElem.appendChild(doc.createTextNode(msg));
-        doc.appendChild(errorElem);
-        doc.normalizeDocument();
-    }
+	 * @param clusterName
+	 */
+	public ClusterNode(String clusterName) {
+		this.clusterName = clusterName;
+	}
+	/**
+	 * @param clusterName
+	 * @param sampleSize
+	 */
+	public ClusterNode(String clusterName, Integer sampleSize) {
+		this.clusterName = clusterName;
+		this.sampleSize = sampleSize;
+	}	
+	/*--------------------
+	 * Getter/Setter Methods
+	 *--------------------*/	
+	public String getClusterName() {
+		return clusterName;
+	}
+	public void setClusterName(String clusterName) {
+		this.clusterName = clusterName;
+	}	
+	public Integer getSampleSize() {
+		return sampleSize;
+	}
+	public void setSampleSize(int sampleSize) {
+		this.sampleSize = new Integer(sampleSize);
+	}		
 }

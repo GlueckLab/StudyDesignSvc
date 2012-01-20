@@ -26,13 +26,15 @@ package edu.cudenver.bios.studydesignsvc.application;
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.Restlet;
-import org.restlet.Router;
+import org.restlet.routing.Router;
 
-
-
-import edu.cudenver.bios.studydesignsvc.resource.AlphaListResource;
+import edu.cudenver.bios.studydesignsvc.resource.BetweenSubjectEffectResource;
+import edu.cudenver.bios.studydesignsvc.resource.ConfidenceIntervalServerResource;
 import edu.cudenver.bios.studydesignsvc.resource.DefaultResource;
-import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
+import edu.cudenver.bios.studydesignsvc.resource.ListResource;
+import edu.cudenver.bios.studydesignsvc.resource.MatrixResource;
+import edu.cudenver.bios.studydesignsvc.resource.ResponseListResource;
+import edu.cudenver.bios.studydesignsvc.resource.StudyDesignServerResource;
 
 /**
  * Main Restlet application class for the Study Design Service.
@@ -49,7 +51,7 @@ public class StudyDesignApplication extends Application
      */
 	public StudyDesignApplication(Context parentContext) throws Exception
 	{
-		super(parentContext);
+		super(parentContext);		
 		
 		StudyDesignLogger.getInstance().info("Study Design service starting.");
 	}
@@ -59,23 +61,64 @@ public class StudyDesignApplication extends Application
 	  * @description Define URI mappings
      */
     @Override
-    public Restlet createRoot() 
+    public Restlet createInboundRoot() 
     {
     	// Create a router Restlet that routes each call to a new instance of Resource.
-        Router router = new Router(getContext());
+        Router router = new Router(getContext());       
         // Defines only one default route, self-identifies server
-        router.attachDefault(DefaultResource.class);
-
-        /* attributes of alpha list resources */
-        // alpha list resource 
-        router.attach("/alphaList", AlphaListResource.class);
-        
-        //router.attach("/relativeGroupSizeList", RelativeGroupSizeListResource.class);
-        //router.attach("/sampleSizeList", SampleSizeListResource.class);
-        //router.attach("/responseList", ResponseListResource.class);
-        //router.attach("/betaScaleList", betaScaleListResource.class);
-        //router.attach("/sigmaScaleList", SigmaScaleListResource.class);
-       
+        router.attachDefault(DefaultResource.class);              
+        /*-----------------------
+         * Study Design Resource
+         * ----------------------*/
+        // for updating/deleting an existing study design AND
+        router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/", StudyDesignServerResource.class); 
+        // for creating a new study design AND
+        router.attach("/study/", StudyDesignServerResource.class); 
+        // for reading an existing verbose study design
+        router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/"+StudyDesignConstants.TAG_VERBOSE_STUDY_DESIGN, 
+        		StudyDesignServerResource.class); 
+        // for reading a study design in matrix form
+        //router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/", StudyDesignObjectResource.class);
+        // to delete current study design
+        //router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/", StudyDesignObjectResource.class);      
+        /*-----------------
+         * ConfidenceInterval Resource
+         * -----------------*/        
+        router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/"+StudyDesignConstants.TAG_CONFIDENCE_INTERVAL, 
+        		ConfidenceIntervalServerResource.class);
+        /*-----------------
+         * List Resource
+         * -----------------*/
+        // for updating/deleting a list
+        /*router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/"+StudyDesignConstants.TAG_LIST, ListResource.class);     
+        // for creating a list
+        router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/"+StudyDesignConstants.TAG_LIST+
+        		"/{"+StudyDesignConstants.TAG_LIST_NAME+"}", ListResource.class); */
+        /*-----------------
+         * Matrix Resource
+         *-----------------*/
+        // for creating/updating a matrix
+       /* router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/"+StudyDesignConstants.TAG_MATRIX, MatrixResource.class);
+        // for reading/deleting a matrix
+        router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/"+StudyDesignConstants.TAG_MATRIX+
+        		"/{"+StudyDesignConstants.TAG_MATRIX_NAME+"}", MatrixResource.class); */
+        /*----------------------------------------
+         * Between Subject Effect object Resource
+         *----------------------------------------*/
+       /* router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/"+StudyDesignConstants.TAG_PREDICTOR_LIST,BetweenSubjectEffectResource.class);*/
+        /*----------------------------------------
+         * Within Subject Effect object Resource
+         *----------------------------------------*/
+    	/* Response List */
+        /*router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/"+StudyDesignConstants.TAG_RESPONSE_LIST,ResponseListResource.class);*/
+        /* Clustering */
+        //router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/"+StudyDesignConstants.TAG_CLUSTERING,.class);
+        /* Repeated Measures */ 
+        //router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/"+StudyDesignConstants.TAG_,.class);
+        /*----------------------------------------
+         * Hypothesis object Resource
+         *----------------------------------------*/
+        //router.attach("/study/{"+StudyDesignConstants.TAG_STUDY_UUID+"}/"+StudyDesignConstants.TAG_,.class);        
         
         return router;
     }

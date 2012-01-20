@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+		<!-- Database connection settings -->
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password">root</property>
+		<property name="hibernate.connection.isolation">2</property>
+
+		<!-- JDBC connection pool (DO NOT use the built-in Hibernate pool!) -->
+		<property name="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+		<!--  <property name="hibernate.c3p0.min_size">5</property> -->
+		<property name="hibernate.c3p0.max_size">20</property>
+		<!--  <property name="hibernate.c3p0.timeout">1800</property> -->
+		<!--  <property name="hibernate.c3p0.max_statements">50</property> -->
+		<!--  <property name="connection.pool_size">1</property> -->
+
+		<!-- SQL dialect -->
+		<property name="dialect">
+			org.hibernate.dialect.MySQLDialect
+		</property>
+
+		<!-- Enable Hibernate's automatic session context management -->
+		<property name="current_session_context_class">thread</property>
+
+		<!-- Disable the second-level cache  -->
+		<property name="cache.provider_class">
+			org.hibernate.cache.NoCacheProvider
+		</property>
+
+		<mapping resource="edu/cudenver/bios/studydesignsvc/hibernate/hbmxml/StudyDesign.hbm.xml"/>
+		<!-- <mapping resource="edu/cudenver/bios/studydesignsvc/hibernate/hbmxml/ConfidenceInterval.hbm.xml"/>-->
+			
+		<!-- <mapping resource="edu/cudenver/bios/studydesignsvc/hibernate/hbmxml/SampleTest.hbm.xml"/>-->
+		 <!-- <mapping resource="HibernateTesting/listmapping/Student.hbm.xml"/>
+		<mapping resource="HibernateTesting/listmapping/Group.hbm.xml"/>
+		<mapping resource="HibernateTesting/listmapping/NameList.hbm.xml"/>-->
+		
+		
+		
+		<!-- <mapping resource="edu/cudenver/bios/studydesignsvc/hibernate/hbmxml/ConfidenceInterval.hbm.xml"/>-->
+		<!-- <mapping resource="com/jdpa/mlg/datafeed/BetweenSubjectEffect.hbm.xml"/> -->
+		
+	</session-factory>
+</hibernate-configuration>

@@ -23,14 +23,8 @@
 
 package edu.cudenver.bios.studydesignsvc.resource;
 
-import org.restlet.Context;
-import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.resource.Representation;
-import org.restlet.resource.Resource;
-import org.restlet.resource.StringRepresentation;
-import org.restlet.resource.Variant;
+import org.restlet.resource.Get;
+import org.restlet.resource.ServerResource;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
 
@@ -40,7 +34,7 @@ import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
  * 
  * @author Uttara Sakhadeo
  */
-public class DefaultResource extends Resource
+public class DefaultResource extends ServerResource
 {
 	/**
 	 * Constructor.
@@ -48,23 +42,26 @@ public class DefaultResource extends Resource
 	 * @param request HTTP request information
 	 * @param response HTTP response information
 	 */
-    public DefaultResource(Context context, Request request, Response response) 
+   /* public DefaultResource(Context context, Request request, Response response) 
     {
-        super(context, request, response);
-
+        //super(context, request, response);
+    	super();
         // This representation has only one type of representation.
         getVariants().add(new Variant(MediaType.TEXT_PLAIN));
-    }
+    }*/
 
     /**
      * Returns a full representation for a given variant.
-     */
-    @Override
-    public Representation represent(Variant variant) {
+     */    
+    @Get public String represent() 
+	{
+	        return "Study Design REST Service, version " + StudyDesignConstants.VERSION;
+	}
+   /* public Representation represent(Variant variant) {
         Representation representation = 
             new StringRepresentation("Study Design REST Service, version " + StudyDesignConstants.VERSION,
             		MediaType.TEXT_PLAIN);
 
         return representation;
-    }
+    }*/
 }

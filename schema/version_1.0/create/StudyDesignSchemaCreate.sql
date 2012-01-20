@@ -12,12 +12,33 @@ use mydb;
 -- -----------------------------------------------------
 drop table if exists TableStudyDesign;
 CREATE  TABLE IF NOT EXISTS `mydb`.`TableStudyDesign` (
-  `StudyUUID` INT NOT NULL ,
-  `SubjectLable` VARCHAR(45),
+  `StudyUUID` INTEGER NOT NULL ,  
   `flagSolveFor` ENUM( ' power ' , ' samplesize ' ) ,
-  `flagGuassianSelection` BINARY ,
+  `isGuassianSelection` BOOLEAN ,
   `Name` VARCHAR(256) ,
   PRIMARY KEY (`StudyUUID`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`TableConfidenceInterval`
+-- -----------------------------------------------------
+drop table if exists TableConfidenceInterval;
+CREATE  TABLE IF NOT EXISTS `mydb`.`TableConfidenceInterval` (
+  `idTableConfidenceInterval` INT NOT NULL AUTO_INCREMENT ,
+  `isBetaFixed` BOOLEAN ,
+  `isSigmaFixed` BOOLEAN ,
+  `lowerTrailProbability` FLOAT ,
+  `upperTrailProbability` FLOAT ,
+  `sampleSize` INT ,
+  `rankOfDesignMatrix` INT ,
+  `StudyUUID` INTEGER ,
+  PRIMARY KEY (`idTableConfidenceInterval`) ,
+  INDEX `fk_TableConfidenceInterval_doctype`(`StudyUUID` ASC) ,
+  CONSTRAINT `fk_TableConfidenceInterval`
+    FOREIGN KEY (`StudyUUID` )
+    REFERENCES `mydb`.`TableStudyDesign` (`StudyUUID` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -89,29 +110,6 @@ CREATE  TABLE IF NOT EXISTS `mydb`.`TableRepeatedMeasures` (
   PRIMARY KEY (`idTableRepeatedMeasures`) ,
   INDEX `fk_TableRepeatedMeasures_doctype` (`StudyUUID` ASC) ,
   CONSTRAINT `fk_TableRepeatedMeasures`
-    FOREIGN KEY (`StudyUUID` )
-    REFERENCES `mydb`.`TableStudyDesign` (`StudyUUID` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`TableConfidenceInterval`
--- -----------------------------------------------------
-drop table if exists TableConfidenceInterval;
-CREATE  TABLE IF NOT EXISTS `mydb`.`TableConfidenceInterval` (
-  `idTableConfidenceInterval` INT NOT NULL AUTO_INCREMENT ,
-  `isBetaMatrixFixed` BINARY ,
-  `isSigmaMatrixFixed` BINARY ,
-  `lowerTrailProbability` FLOAT ,
-  `upperTrailProbability` FLOAT ,
-  `sampleSize` INT ,
-  `rankOfDesignMatrix` INT ,
-  `StudyUUID` INT ,
-  PRIMARY KEY (`idTableConfidenceInterval`) ,
-  INDEX `fk_TableConfidenceInterval_doctype`(`StudyUUID` ASC) ,
-  CONSTRAINT `fk_TableConfidenceInterval`
     FOREIGN KEY (`StudyUUID` )
     REFERENCES `mydb`.`TableStudyDesign` (`StudyUUID` )
     ON DELETE CASCADE
@@ -268,3 +266,36 @@ ENGINE = InnoDB;
 
 # Turn foreign key checks back on
 set foreign_key_checks = 1;
+
+-- ------------------------------------------------------
+-- Table `mydb`.`TableBetweenSubjectsEffects`
+-- ------------------------------------------------------
+drop table if exists TableBetweenSubjectEffects;
+CREATE TABLE IF NOT EXISTS `mydb`.`TableBetweenSubjectEffects` (
+  `idTableBetweenSubjectEffects` INT NOT NULL AUTO_INCREMENT , 
+  `StudyUUID` INT ,
+  `PredictorName` VARCHAR(45) ,
+  PRIMARY KEY(`idTableBetweenSubjectEffects`) ,
+  INDEX `fk_TableBetweenSubjectEffects_doctype` (`StudyUUID` ASC) ,
+  CONSTRAINT `fk_TableBetweenSubjectEffects`
+  FOREIGN KEY(`StudyUUID`)
+  REFERENCES `mydb`.`TableStudyDesign` (`StudyUUID`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+-- ------------------------------------------------------
+-- Table `mydb`.`TableCategoryList`
+-- ------------------------------------------------------
+drop table if exists TableCategoryList;
+CREATE TABLE IF NOT EXISTS `mydb`.`TableCategoryList` (
+  `idTableCategoryList` INT,
+  `Name` VARCHAR(45) ,
+  PRIMARY KEY(`idTableCategoryList`) ,
+  INDEX `fk_TableCategoryList_doctype` (`idTableCategoryList` ASC) ,
+  CONSTRAINT `fk_TableCategoryList`
+  FOREIGN KEY(`idTableCategoryList`)
+  REFERENCES `mydb`.`TableBetweenSubjectEffects` (`idTableBetweenSubjectEffects`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE)
+ENGINE = InnoDB;
