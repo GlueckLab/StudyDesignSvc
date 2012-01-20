@@ -28,10 +28,6 @@ import java.util.UUID;
 import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
-
-import HibernateTesting.sampletest.SampleTest;
-
-import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
 import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
 
 /**
@@ -142,8 +138,11 @@ public class StudyDesignManager extends BaseManager
 		StudyDesign studyDesign = null;
 		try
 		{
-			StudyDesign st = (StudyDesign) session.load(StudyDesign.class, new Integer(1));
-			System.out.println(st.getName());
+			Query q = session.createQuery("select name from edu.cudenver.bios.studydesignsvc.domain.StudyDesign");
+			List ls = q.list();
+			System.out.println("got "+ls.size() +"results");
+			/*StudyDesign st = (StudyDesign) session.load(StudyDesign.class, new Integer(1));
+			System.out.println(st.getName());*/
 			
 		}
 		catch(Exception e)
