@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
@@ -9,30 +9,26 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="/thirdparty/junit/4.7/lib/junit-4.7.jar"/>
-	<classpathentry kind="lib" path="/JavaStatistics/lib/JavaStatistics.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/log4j/1.2.15/lib/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/ApacheCommonsMath/2.1/lib/commons-math-2.1.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/jandex-1.0.3.Final.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/jboss-logging-3.1.0.CR2.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/mysql-connector-java/5.1.18/lib/mysql-connector-java-5.1.18-bin.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/hibernate-c3p0-4.0.0.Final.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/restlet/2.0.10/lib/org.restlet.ext.servlet.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/restlet/2.0.10/lib/org.restlet.ext.json.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/restlet/2.0.10/lib/org.restlet.ext.xml.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/restlet/2.0.10/lib/org.restlet.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/hibernate-core-4.0.0.Final.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/antlr-2.7.7.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/c3p0-0.9.1.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/classmate-0.5.4.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/hibernate-commons-annotations-4.0.1.Final.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/javassist-3.12.1.GA.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/hibernate-entitymanager-4.0.0.Final.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/ApacheCommonsLang/3.1/lib/commons-lang3-3.1.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/restlet/2.0.10/lib/org.restlet.ext.jackson.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/jackson/1.9.3/lib/jackson-all-1.9.3.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/ApacheCommonsCollections/3.2.1/lib/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/restlet/2.0.10/lib/org.restlet.ext.xml.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/required/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/required/classmate-0.5.4.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/required/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/required/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/required/hibernate-commons-annotations-4.0.1.Final.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/required/hibernate-core-4.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/required/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/required/jandex-1.0.3.Final.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/required/javassist-3.12.1.GA.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/required/jboss-logging-3.1.0.CR2.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/required/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/optional/c3p0/c3p0-0.9.1.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/optional/c3p0/hibernate-c3p0-4.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/ApacheCommonsMath/2.1/lib/commons-math-2.1.jar"/>
+	<classpathentry kind="lib" path="/WebServiceCommon/build/bin/WebServiceCommon-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/restlet/2.0.10/lib/org.restlet.ext.json.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
