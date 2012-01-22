@@ -18,6 +18,7 @@ import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
 import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
 import edu.cudenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 public class TestDataConnectionForGeneralClass extends TestCase 
 {
@@ -70,8 +71,15 @@ public class TestDataConnectionForGeneralClass extends TestCase
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			studyDesignManager.rollback();
-			confidenceIntervalManager.rollback();
+			try
+			{
+				studyDesignManager.rollback();
+				confidenceIntervalManager.rollback();
+			}
+			catch (BaseManagerException bme) 
+			{
+				System.out.println("rollback failed: " + bme.getMessage());
+			}
 			//transaction.rollback();
 		}
 		finally

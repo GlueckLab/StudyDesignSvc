@@ -26,9 +26,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.Query;
-import org.restlet.data.Status;
-import org.restlet.resource.ResourceException;
 import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
+import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
+import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
  * 
@@ -37,60 +39,45 @@ import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
  */
 public class StudyDesignManager extends BaseManager
 {
-	public StudyDesignManager() throws ResourceException
+	/**
+	 * Create a database manager class for study design objects
+	 * 
+	 * @throws StudyDesignException
+	 */
+	public StudyDesignManager() throws BaseManagerException
 	{
 		super();
 	}
 	
-	/*
-	 * Search a UUID 
-	 */
-	public boolean searchStudyUUID(UUID studyUUID) throws ResourceException
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		try
-		{
-			Query q = session.createQuery("FROM StudyDesign WHERE studyUUID =:uuid");
-			q.setString("uuid", studyUUID.toString());
-			@SuppressWarnings("unchecked")
-			StudyDesign studyDesign = (StudyDesign) q.uniqueResult();
-			if (studyDesign!=null)
-				return true;
-			else
-				return false;
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,"Failed to retrieve uuids: "+e.getMessage());
-		}
-	}
-	
-	public boolean searchStudyUUID(String studyUUID) throws ResourceException
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		try
-		{
-			Query q = session.createQuery("FROM StudyDesign WHERE studyUUID =:uuid");
-			q.setString("uuid", studyUUID);
-			@SuppressWarnings("unchecked")
-			StudyDesign studyDesign = (StudyDesign) q.uniqueResult();
-			if (studyDesign!=null)
-				return true;
-			else
-				return false;
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,"Failed to retrieve uuids: "+e.getMessage());
-		}
-	}
+    /**
+     * Retrieve a study design object by the specified UUID
+     * 
+     * @param dataFeedUuid
+     * @return data feed object
+     */
+    public StudyDesign getStudyDesign(UUID uuid) throws StudyDesignException
+    {
+        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
+        try
+        {
+        	byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
+        	StudyDesign studyDesign = (StudyDesign) session.get(StudyDesign.class, uuidBytes);
+            return studyDesign;
+        }
+        catch (Exception e)
+        {
+            throw new StudyDesignException("Failed to retrieve StudyDesign for UUID '" + 
+            		uuid.toString() + "': " + e.getMessage());
+        }
+    }
+
 	
 	/*
 	 * Retrieve 
 	 */
-	public List<UUID> getStudyUUIDs() throws ResourceException
+	public List<UUID> getStudyUUIDs() throws StudyDesignException
 	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
+		if(!transactionStarted) throw new StudyDesignException("Transaction has not been started.");
 		try
 		{
 			Query query = session.createQuery("select studyUUID from StudyDesign");
@@ -101,30 +88,31 @@ public class StudyDesignManager extends BaseManager
 		}
 		catch(Exception e)
 		{
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,"Failed to retrieve uuids: "+e.getMessage());
+			throw new StudyDesignException("Failed to retrieve uuids: "+e.getMessage());
 		}
 	}
 	
-	 /**
-     * Retrieve a study design representation by the specified UUID
-     * 
-     * @param studyUUID:UUID
-     * @return study design object
-     */
-	public StudyDesign getStudyDesign(UUID studyUUID)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		StudyDesign studyDesign = null;
-		try
-		{			
-			studyDesign = (StudyDesign)session.get(StudyDesign.class,studyUUID.toString());
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve study design for UUID '" + studyUUID + "': " + e.getMessage());
-		}
-		return studyDesign;
-	}
+//	 /**
+//     * Retrieve a study design representation by the specified UUID
+//     * 
+//     * @param studyUUID:UUID
+//     * @return study design object
+//     */
+//	public StudyDesign getStudyDesign(UUID studyUUID)
+//	{
+//		if (!transactionStarted) 
+//			throw new StudyDesignException("Transaction has not been started.");
+//		StudyDesign studyDesign = null;
+//		try
+//		{			
+//			studyDesign = (StudyDesign)session.get(StudyDesign.class,studyUUID.toString());
+//		}
+//		catch(Exception e)
+//		{
+//			throw new StudyDesignException("Failed to retrieve study design for UUID '" + studyUUID + "': " + e.getMessage());
+//		}
+//		return studyDesign;
+//	}
 	
 	/**
      * Retrieve a study design representation by the specified UUID
@@ -133,22 +121,19 @@ public class StudyDesignManager extends BaseManager
      * @return study design object
      */
 	public StudyDesign getStudyDesign(String studyUUID)
+	throws StudyDesignException
 	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
+		if(!transactionStarted) throw new StudyDesignException("Transaction has not been started.");
 		StudyDesign studyDesign = null;
 		try
 		{
 			Query q = session.createQuery("select name from edu.cudenver.bios.studydesignsvc.domain.StudyDesign");
-			List ls = q.list();
-			System.out.println("got "+ls.size() +"results");
-			/*StudyDesign st = (StudyDesign) session.load(StudyDesign.class, new Integer(1));
-			System.out.println(st.getName());*/
-			
+			List ls = q.list();			
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,"Failed to retrieve study design for UUID '" + studyUUID + "': " + e.getMessage());
+			throw new StudyDesignException("Failed to retrieve study design for UUID '" + studyUUID + "': " + e.getMessage());
 		}
 		return studyDesign;
 	}
@@ -160,32 +145,10 @@ public class StudyDesignManager extends BaseManager
      * @return study design object
      */
 	public StudyDesign deleteStudyDesign(UUID studyUUID)
+	throws StudyDesignException
 	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		StudyDesign studyDesign = null;
-		try
-		{
-			studyDesign = getStudyDesign(studyUUID.toString());
-			session.delete(studyDesign);
-		}
-		catch(Exception e)
-		{
-			//throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete study design for UUID '" + studyUUID + "': " + e.getMessage());
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete study design for UUID '" + studyUUID + "': " + e.getMessage());
-		}
-		return studyDesign;
-	}
-	
-	/**
-     * Delete a study design representation by the specified UUID
-     * 
-     * @param studyUUID:String
-     * @return study design object
-     */
-	public StudyDesign deleteStudyDesign(String studyUUID)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
+		if (!transactionStarted) 
+			throw new StudyDesignException("Transaction has not been started.");
 		StudyDesign studyDesign = null;
 		try
 		{
@@ -194,32 +157,37 @@ public class StudyDesignManager extends BaseManager
 		}
 		catch(Exception e)
 		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete study design for UUID '" + studyUUID + "': " + e.getMessage());
+			//throw new StudyDesignException("Failed to delete study design for UUID '" + studyUUID + "': " + e.getMessage());
+			System.out.println(e.getMessage());
+			throw new StudyDesignException("Failed to delete study design for UUID '" + studyUUID + "': " + e.getMessage());
 		}
 		return studyDesign;
 	}
-	
+		
 	/**
-     * Retrieve a study design representation by the specified UUID
+     * Create or update a study design object in the database
      * 
      * @param studyUUID:UUID
      * @return study design object
      */
-	public String saveOrUpdateStudyDesign(StudyDesign studyDesign,boolean isCreation)
+	public StudyDesign saveOrUpdateStudyDesign(StudyDesign studyDesign, boolean isCreation)
+	throws StudyDesignException
 	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
+		if (!transactionStarted) 
+			throw new StudyDesignException("Transaction has not been started.");		
+		
 		try
 		{			
-			if(isCreation==true)
+			if (isCreation==true)
 				session.save(studyDesign);
 			else
 				session.update(studyDesign);
-			UUID studyUUID = (UUID)session.getIdentifier(studyDesign);
+			byte[] studyUUID = (byte[]) session.getIdentifier(studyDesign);
 		}
 		catch(Exception e)
 		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save study design : " + e.getMessage());
+			throw new StudyDesignException("Failed to save study design : " + e.getMessage());
 		}
-		return studyDesign.getStudyUUID();
+		return studyDesign;
 	}
 }

@@ -31,6 +31,8 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
+import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
+import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 
 /**
@@ -40,7 +42,7 @@ import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
  */
 public class ConfidenceIntervalManager extends BaseManager
 {
-	public ConfidenceIntervalManager() throws ResourceException
+	public ConfidenceIntervalManager() throws BaseManagerException
 	{
 		super();
 	}

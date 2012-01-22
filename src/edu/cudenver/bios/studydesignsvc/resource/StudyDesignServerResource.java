@@ -22,16 +22,19 @@
  */
 package edu.cudenver.bios.studydesignsvc.resource;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
-import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
  * Resource class for handling requests for the complete 
@@ -43,82 +46,170 @@ import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
 public class StudyDesignServerResource extends ServerResource implements StudyDesignResource
 {
 	private static Logger logger = StudyDesignLogger.getInstance();
-	private String studyUUID = null;
+
+	/**
+	 * Retrieve the study design matching the specified UUID.
+	 * Returns "not found" if no matching designs are available
+	 * @return study designs with specified UUID
+	 */
 	@Override
-	public StudyDesign retrieve() 
+	public StudyDesign retrieve(UUID uuid)
 	{
 		StudyDesignManager manager = null;
 		StudyDesign studyDesign = null; 
+		
 		try
 		{
-			this.studyUUID = this.getRequest().getAttributes().get(StudyDesignConstants.TAG_STUDY_UUID).toString();
-			//System.out.println(this.studyUUID);
-			//studyDesign=new StudyDesign(this.studyUUID);			
+			if (uuid == null) throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");
+	
 			manager = new StudyDesignManager();
 			manager.beginTransaction();		
-				studyDesign=manager.getStudyDesign(this.studyUUID);
-				/*List<UUID> list = manager.getStudyUUIDs();			
-				if(list!=null)
-				{
-					System.out.println(list.toString());
-				}
-				else
-				{
-					System.out.println("empty list");
-				}*/	
+			studyDesign = manager.getStudyDesign(uuid);
+
 			manager.commit();
 		}
-		catch(ResourceException e)
+		catch(BaseManagerException bme)
 		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource : "+e.getMessage());
+			StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
 			if(manager!=null)
 			{
-				try
-				{manager.rollback();}				
-				catch(ResourceException re)
-				{studyDesign = null;}				
+				try {manager.rollback();}
+				catch(BaseManagerException re) {studyDesign = null;}					
+			}
+		}	
+		catch(StudyDesignException sde)
+		{
+			StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
+			if(manager!=null)
+			{
+				try {manager.rollback();}
+				catch(BaseManagerException re) {studyDesign = null;}					
 			}
 		}						
 		return studyDesign;			
 	}
+
 	@Override
-	public StudyDesign create(StudyDesign studyDesign) 
-	{
-		StudyDesignManager manager = null;    	
-    	try
-		{
-			manager = new StudyDesignManager();
-			manager.beginTransaction();
-				studyUUID=UUID.randomUUID().toString();
-				manager.saveOrUpdateStudyDesign(studyDesign, true);
-			manager.commit();
-		}
-		catch(ResourceException e)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: "+e.getMessage());
-			if(manager!=null)
-			{
-				try
-				{manager.rollback();}				
-				catch(ResourceException re)
-				{studyDesign = null;}				
-			}
-		}		
-    	
-		return studyDesign;	  
-	}
-	@Override
-	public StudyDesign update(StudyDesign contact) 
+	public List<StudyDesign> retrieve()
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
-	public StudyDesign remove() 
+	public StudyDesign create(StudyDesign studyDesign)
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	@Override
+	public StudyDesign update(StudyDesign studyDesign)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public StudyDesign remove(UUID uuid)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+//	@Override
+//	public StudyDesign retrieve() 
+//	{
+//		StudyDesignManager manager = null;
+//		StudyDesign studyDesign = null; 
+//		try
+//		{
+//			studyUUID = studyUUIDStr = this.getRequest().getAttributes().get(StudyDesignConstants.TAG_STUDY_UUID);
+//			if (studyUUIDStr == null)
+//			//System.out.println(this.studyUUID);
+//			//studyDesign=new StudyDesign(this.studyUUID);			
+//			manager = new StudyDesignManager();
+//			manager.beginTransaction();		
+//				studyDesign=manager.getStudyDesign(this.studyUUID);
+//				/*List<UUID> list = manager.getStudyUUIDs();			
+//				if(list!=null)
+//				{
+//					System.out.println(list.toString());
+//				}
+//				else
+//				{
+//					System.out.println("empty list");
+//				}*/	
+//			manager.commit();
+//		}
+//		catch(ResourceException e)
+//		{
+//			StudyDesignLogger.getInstance().error("StudyDesignResource : "+e.getMessage());
+//			if(manager!=null)
+//			{
+//				try
+//				{manager.rollback();}				
+//				catch(ResourceException re)
+//				{studyDesign = null;}				
+//			}
+//		}						
+//		return studyDesign;			
+//	}
+//	
+//	
+//	@Override
+//	public StudyDesign create(StudyDesign studyDesign) 
+//	{
+//		StudyDesignManager manager = null;    	
+//		try
+//		{
+//			/* create a new UUID for the study design */
+//			studyDesign.setStudyUUID(UUID.randomUUID());
+//			/* save it to the database */
+//			manager = new StudyDesignManager();
+//			manager.beginTransaction();
+//			manager.saveOrUpdateStudyDesign(studyDesign, true);
+//			manager.commit();
+//		}
+//		catch(ResourceException e)
+//		{
+//			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: "+e.getMessage());
+//			if(manager!=null)
+//			{
+//				try
+//				{manager.rollback();}				
+//				catch(ResourceException re)
+//				{studyDesign = null;}				
+//			}
+//		}		
+//    	/* return the study design with updated UUID */
+//		return studyDesign;	  
+//	}
+//	@Override
+//	public StudyDesign update(StudyDesign contact) 
+//	{
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//	@Override
+//	public StudyDesign remove() 
+//	{
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//	@Override
+//	public StudyDesign retrieve(UUID uuid)
+//	{
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//	@Override
+//	public StudyDesign remove(UUID uuid)
+//	{
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//	
 	
 }

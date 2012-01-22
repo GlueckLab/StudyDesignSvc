@@ -41,7 +41,9 @@ import org.restlet.resource.UniformResource;
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
  * Resource class for handling requests for the complete 
@@ -218,16 +220,24 @@ public class StudyDesignObjectResource extends ServerResource
 				manager.saveOrUpdateStudyDesign(studyDesign, false);
 			manager.commit();
 		}
-		catch(ResourceException e)
+		catch(BaseManagerException bme)
 		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: "+e.getMessage());
+			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: " + bme.getMessage());
 			if(manager!=null)
 			{
-				try
-				{manager.rollback();}				
-				catch(ResourceException re)
+				try {manager.rollback();}				
+				catch(BaseManagerException re)
 				{studyDesign = null;}
-				
+			}
+		}	
+		catch(StudyDesignException sde)
+		{
+			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: " + sde.getMessage());
+			if(manager!=null)
+			{
+				try {manager.rollback();}				
+				catch(BaseManagerException re)
+				{studyDesign = null;}
 			}
 		}		
 		return studyDesign;

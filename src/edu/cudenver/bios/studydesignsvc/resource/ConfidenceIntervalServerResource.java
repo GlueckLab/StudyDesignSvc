@@ -22,10 +22,7 @@
  */
 package edu.cudenver.bios.studydesignsvc.resource;
 
-import java.util.UUID;
-
 import org.apache.log4j.Logger;
-import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
@@ -33,7 +30,7 @@ import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
 import edu.cudenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
-import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
  * Resource class for handling requests for the complete 
@@ -44,7 +41,7 @@ import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
  */
 public class ConfidenceIntervalServerResource extends ServerResource implements ConfidenceIntervalResource
 {
-	private static Logger logger = StudyDesignLogger.getInstance();
+	private Logger logger = StudyDesignLogger.getInstance();
 	private String studyUUID = null;
 	@Override
 	public ConfidenceInterval retrieve() 
@@ -76,14 +73,25 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 				}*/	
 			manager.commit();
 		}
-		catch(ResourceException e)
+		catch (BaseManagerException bme)
 		{
-			StudyDesignLogger.getInstance().error("ConfidenceIntervalResource : "+e.getMessage());
+			StudyDesignLogger.getInstance().error("ConfidenceIntervalResource : " + bme.getMessage());
 			if(manager!=null)
 			{
 				try
 				{manager.rollback();}				
-				catch(ResourceException re)
+				catch(BaseManagerException re)
+				{confidenceInterval = null;}				
+			}
+		}	
+		catch (ResourceException e)
+		{
+			StudyDesignLogger.getInstance().error("ConfidenceIntervalResource : " + e.getMessage());
+			if(manager!=null)
+			{
+				try
+				{manager.rollback();}				
+				catch(BaseManagerException re)
 				{confidenceInterval = null;}				
 			}
 		}						
