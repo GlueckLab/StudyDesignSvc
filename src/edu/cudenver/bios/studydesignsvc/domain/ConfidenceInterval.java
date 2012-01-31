@@ -24,23 +24,43 @@ package edu.cudenver.bios.studydesignsvc.domain;
 
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.ForeignKey;
+
+import edu.cudenver.bios.studydesignsvc.application.UUIDConversion;
+
 /**
  * This is a wrapper for the Confidence Interval information.
  * @author Uttara Sakhadeo
  *
  */
+@Entity
 public class ConfidenceInterval 
 {
 	/*--------------------
 	 * Member Variables
 	 *--------------------*/
 	private int id;
+	//private byte[] uuid;
+	// UUID for the study design.  referencing a unique identifier for the design	
+	private StudyDesign studyDesign;
 	private UUID studyUUID;
-	private boolean isBetaFixed;
-	private boolean isSigmaFixed;
-	private float lowerTailProbability;
-	private float upperTailProbability;
+	@Column(name="isBetaFixed")
+	private boolean betaFixed;
+	@Column(name="isSigmaFixed")
+	private boolean sigmaFixed;
+	private float lowerTrailProbability;
+	private float upperTrailProbability;
+	@Column(name="sampleSize")
 	private int sampleSize;
+	@Column(name="rankOfDesignMatrix")
 	private  int rankOfDesignMatrix;	
 	/*--------------------
 	 * Constructors
@@ -60,10 +80,10 @@ public class ConfidenceInterval
 			boolean isSigmaFixed, float lowerTailProbability,
 			float upperTailProbability, int sampleSize, int rankOfDesignMatrix) {
 		this.studyUUID = studyUUID;
-		this.isBetaFixed = isBetaFixed;
-		this.isSigmaFixed = isSigmaFixed;
-		this.lowerTailProbability = lowerTailProbability;
-		this.upperTailProbability = upperTailProbability;
+		this.betaFixed = isBetaFixed;
+		this.sigmaFixed = isSigmaFixed;
+		this.lowerTrailProbability = lowerTailProbability;
+		this.upperTrailProbability = upperTailProbability;
 		this.sampleSize = sampleSize;
 		this.rankOfDesignMatrix = rankOfDesignMatrix;
 	}
@@ -82,16 +102,19 @@ public class ConfidenceInterval
 			float upperTailProbability, int sampleSize, int rankOfDesignMatrix) {
 		this.id = id;
 		this.studyUUID = studyUUID;
-		this.isBetaFixed = isBetaFixed;
-		this.isSigmaFixed = isSigmaFixed;
-		this.lowerTailProbability = lowerTailProbability;
-		this.upperTailProbability = upperTailProbability;
+		this.betaFixed = isBetaFixed;
+		this.sigmaFixed = isSigmaFixed;
+		this.lowerTrailProbability = lowerTailProbability;
+		this.upperTrailProbability = upperTailProbability;
 		this.sampleSize = sampleSize;
 		this.rankOfDesignMatrix = rankOfDesignMatrix;
-	}		
+	}			
 	/*--------------------
 	 * Getter/Setter Methods
 	 *--------------------*/	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="id")
 	public int getId() {
 		return id;
 	}
@@ -102,43 +125,56 @@ public class ConfidenceInterval
 		return studyUUID;
 	}
 	public void setStudyUUID(UUID studyUUID) {
-		this.studyUUID = studyUUID;
+		this.studyUUID = studyUUID;		
 	}
+	
 	public boolean isBetaFixed() {
-		return isBetaFixed;
+		return betaFixed;
 	}
 	public void setBetaFixed(boolean isBetaFixed) {
-		this.isBetaFixed = isBetaFixed;
-	}
+		this.betaFixed = isBetaFixed;
+	}	
 	public boolean isSigmaFixed() {
-		return isSigmaFixed;
+		return sigmaFixed;
 	}
 	public void setSigmaFixed(boolean isSigmaFixed) {
-		this.isSigmaFixed = isSigmaFixed;
-	}
-	public float getLowerTailProbability() {
-		return lowerTailProbability;
-	}
-	public void setLowerTailProbability(float lowerTailProbability) {
-		this.lowerTailProbability = lowerTailProbability;
-	}
-	public float getUpperTailProbability() {
-		return upperTailProbability;
-	}
-	public void setUpperTailProbability(float upperTailProbability) {
-		this.upperTailProbability = upperTailProbability;
-	}
+		this.sigmaFixed = isSigmaFixed;
+	}	
 	public int getSampleSize() {
 		return sampleSize;
 	}
 	public void setSampleSize(int sampleSize) {
 		this.sampleSize = sampleSize;
-	}
+	}	
 	public int getRankOfDesignMatrix() {
 		return rankOfDesignMatrix;
 	}
 	public void setRankOfDesignMatrix(int rankOfDesignMatrix) {
 		this.rankOfDesignMatrix = rankOfDesignMatrix;
 	}
-
+	public StudyDesign getStudyDesign() {
+		return studyDesign;
+	}
+	public void setStudyDesign(StudyDesign studyDesign) {
+		this.studyDesign = studyDesign;
+	}
+	public float getLowerTrailProbability() {
+		return lowerTrailProbability;
+	}
+	public void setLowerTrailProbability(float lowerTrailProbability) {
+		this.lowerTrailProbability = lowerTrailProbability;
+	}
+	public float getUpperTrailProbability() {
+		return upperTrailProbability;
+	}
+	public void setUpperTrailProbability(float upperTrailProbability) {
+		this.upperTrailProbability = upperTrailProbability;
+	}
+	/*public byte[] getUuid() {
+		return uuid;
+	}
+	public void setUuid(byte[] uuid) {
+		this.uuid = uuid;
+	}*/
+	
 }
