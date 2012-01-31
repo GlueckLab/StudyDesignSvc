@@ -22,7 +22,6 @@
  */
 package edu.cudenver.bios.studydesignsvc.tests;
 
-import java.net.URL;
 import java.util.UUID;
 
 import junit.framework.TestCase;
@@ -30,54 +29,65 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.cudenver.bios.studydesignsvc.domain.SolvingFor;
+import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
 import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
 import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
+import edu.cudenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
-/**
- * Test basic create, read, update, delete for TableStudyDesign
- * @author Sarah Kreidler
- *
- */
-public class TestStudyDesignTable extends TestCase
-{	
-	
+public class TestStudyDesignConfidenceInterval extends TestCase
+{
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	private static boolean HAS_GAUSSIAN_COVARIATE = true;
 	private static String STUDY_NAME = "Junit Test Study Design";
-		
-	/**
-	 * Test retrieving a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
-	 */
+	
+	
+	private static int SAMPLE_SIZE = 100;
+	
 	@Test
 	public void testCreate()
-	{	
+	{
+		/*StudyDesignManager studyDesignManager = null;
+		ConfidenceIntervalManager confidenceIntervalManager = null;
+		boolean flag;		
 		StudyDesign studyDesign = new StudyDesign();
-		studyDesign.setStudyUUID(STUDY_UUID);
-		studyDesign.setName(STUDY_NAME);
-		studyDesign.setHasGaussianCovariate(true);
-		studyDesign.setFlagSolvingFor(SolvingFor.power);
-		//studyDesign.setHasGaussianCovariate(true);
+		ConfidenceInterval confidenceIntervalDescription = new ConfidenceInterval();
 		
-		StudyDesignManager manager = null;
-
+		studyDesign.setStudyUUID(STUDY_UUID);
+		studyDesign.setHasGaussianCovariate(HAS_GAUSSIAN_COVARIATE);
+		studyDesign.setName(STUDY_NAME);
+		
+		confidenceIntervalDescription.setSigmaFixed(true);
+		//confidenceIntervalDescription.setStudyUUID(STUDY_UUID);
+		confidenceIntervalDescription.setSampleSize(SAMPLE_SIZE);
+		confidenceIntervalDescription.setRankOfDesignMatrix(2);
+		confidenceIntervalDescription.setBetaFixed(true);
+		confidenceIntervalDescription.setSigmaFixed(true);
+		confidenceIntervalDescription.setLowerTrailProbability(0.5f);
+		confidenceIntervalDescription.setUpperTrailProbability(0.5f);
+		
+		//studyDesign.setConfidenceIntervalDescription(confidenceIntervalDescription);
+		confidenceIntervalDescription.setStudyDesign(studyDesign);
+						
         try
         {
-            manager = new StudyDesignManager();
-            manager.beginTransaction();
+        	studyDesignManager = new StudyDesignManager();
+        	studyDesignManager.beginTransaction();            
+            	studyDesign = studyDesignManager.saveOrUpdateStudyDesign(studyDesign, true);            
+            studyDesignManager.commit();
             
-            studyDesign = manager.saveOrUpdateStudyDesign(studyDesign, true);
+            confidenceIntervalManager = new ConfidenceIntervalManager();
+            confidenceIntervalManager.beginTransaction();            
+            	confidenceIntervalDescription = confidenceIntervalManager.saveOrUpdateConfidenceInterval(confidenceIntervalDescription, true);            
+            studyDesignManager.commit();
             
-            manager.commit();
         }
         catch (BaseManagerException bme)
         {
         	System.out.println(bme.getMessage());
             StudyDesignLogger.getInstance().error("Failed to create study design object: " + bme.getMessage());
-            if (manager != null) try { manager.rollback(); } catch (BaseManagerException e) {}
+            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
             studyDesign = null;
             fail();
         }
@@ -85,70 +95,25 @@ public class TestStudyDesignTable extends TestCase
         {
         	System.out.println(sde.getMessage());
             StudyDesignLogger.getInstance().error("Failed to create study design object: " + sde.getMessage());
-            if (manager != null) try { manager.rollback(); } catch (BaseManagerException e) {}
+            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
             studyDesign = null;
             fail();
         }
         
-        assertTrue(studyDesign != null);
+        assertTrue(studyDesign != null && confidenceIntervalDescription !=null);*/
+		
 	}
 	
-	
-	/**
-	 * Test retrieving a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
-	 */
 	@Test
-	public void testRetrieve()
+	private void testRetrieve()
 	{
-		StudyDesignManager manager = null;
-		StudyDesign studyDesign = null;
-        try
-        {
-            manager = new StudyDesignManager();
-            manager.beginTransaction();
-            studyDesign = manager.getStudyDesign(STUDY_UUID);
-            manager.commit();
-        }
-        catch (BaseManagerException bme)
-        {
-        	System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
-            if (manager != null) try { manager.rollback(); } catch (BaseManagerException e) {}
-            studyDesign = null;
-            fail();
-        }
-        catch (StudyDesignException sde)
-        {
-        	System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + sde.getMessage());
-            if (manager != null) try { manager.rollback(); } catch (BaseManagerException e) {}
-            studyDesign = null;
-            fail();
-        }
-        
-        
-        if (studyDesign == null)
-        {
-        	System.err.println("No matching studydesign found");
-        	fail();
-        }
-        else
-        {
-            String name = studyDesign.getName();
-            assertTrue(STUDY_NAME.equals(name));
-        }
-
+		
 	}
-
-	/**
-	 * Test deletion of record from the table
-	 */
+	
 	@Test
 	private void testDelete()
 	{
-		StudyDesignManager manager = null;
+		/*StudyDesignManager manager = null;
 		StudyDesign studyDesign = null;
         try
         {
@@ -184,6 +149,6 @@ public class TestStudyDesignTable extends TestCase
         {
             String name = studyDesign.getName();
             assertTrue(STUDY_NAME.equals(name));
-        }
+        }*/
 	}
 }

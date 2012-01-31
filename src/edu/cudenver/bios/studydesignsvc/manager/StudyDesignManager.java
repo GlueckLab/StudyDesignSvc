@@ -49,6 +49,31 @@ public class StudyDesignManager extends BaseManager
 		super();
 	}
 	
+	/**
+     * Check existance of a study design object by the specified UUID
+     * 
+     * @param studyUuid
+     * @return boolean
+     */
+    public boolean hasUUID(UUID uuid) throws StudyDesignException
+    {
+        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
+        try
+        {
+        	byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
+        	StudyDesign studyDesign = (StudyDesign) session.get(StudyDesign.class, uuidBytes);
+        	if(studyDesign!=null)
+        		return true;
+        	else
+        		return false;
+        }
+        catch (Exception e)
+        {
+            throw new StudyDesignException("Failed to retrieve StudyDesign for UUID '" + 
+            		uuid.toString() + "': " + e.getMessage());
+        }
+    }
+	
     /**
      * Retrieve a study design object by the specified UUID
      * 
@@ -181,8 +206,7 @@ public class StudyDesignManager extends BaseManager
 			if (isCreation==true)
 				session.save(studyDesign);
 			else
-				session.update(studyDesign);
-			byte[] studyUUID = (byte[]) session.getIdentifier(studyDesign);
+				session.update(studyDesign);			
 		}
 		catch(Exception e)
 		{

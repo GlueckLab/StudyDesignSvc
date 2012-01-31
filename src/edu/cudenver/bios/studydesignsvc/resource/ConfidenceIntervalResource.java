@@ -22,29 +22,57 @@
  */
 package edu.cudenver.bios.studydesignsvc.resource;
 
+import java.util.UUID;
+
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
 /**
- * Resource class for handling requests for the complete 
- * study design object. 
+ * Resource class for handling requests for the 
+ * confidence interval object. 
  * See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
 public interface ConfidenceIntervalResource 
 {
+	/**
+	 * Retrieve the confidence interval for the specified UUID.
+	 * Returns "not found" if no matching confidence interval is available.
+	 * @return confidence interval with specified UUID
+	 */
 	 @Get
-    public ConfidenceInterval retrieve();
+    public ConfidenceInterval retrieve(UUID uuid);
 
+	/**
+	 * Store the confidence interval to the database.
+	 * 
+	 * @param studyDesign confidence interval object
+	 * @return confidence interval object with updated UUID.
+	 */	 
     @Post
     public ConfidenceInterval create(ConfidenceInterval confidenceInterval);
     
+    /**
+     * Update the specified confidence interval object. If there is no
+     * confidence interval set for specified UUID, then this object  
+     * will be treated as new and a UUID assigned.
+     * 
+     * @param studyDesign confidence interval object
+     * @return the confidence interval object
+     */    
     @Put
     public ConfidenceInterval update(ConfidenceInterval confidenceInterval);
 
+    /**
+     * Delete the specified confidence interval object. If there is no
+     * Returns "not found" if no matching confidence interval is available.
+     * 
+     * @param studyDesign confidence interval object
+     * @return the confidence interval object
+     */  
     @Delete
     public ConfidenceInterval remove();
 }

@@ -4,9 +4,18 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>	
 	<class name="edu.cudenver.bios.studydesignsvc.domain.StudyDesign" table="tablestudydesign">
-        <id name="uuid" type="binary"/>						
-		<!--  <property name="flagSolveFor" column="flagSolveFor" type="java.lang.String"/> 
-		<property name="hasGuassianCovariate" column="hasGuassianCovariate" type="java.lang.Boolean"/>-->
-		<property name="name" column="name" type="java.lang.String"/>		
+        <!--<id name="uuid" type="binary"/>-->
+        <id name="uuid">
+        	<generator class="assigned"/>
+        </id>						
+		<!-- <property name="flagSolveFor" column="flagSolveFor">			
+		</property>-->
+		<property name="hasGaussianCovariate" column="hasGaussianCovariate"/> 
+		<property name="name" column="name" type="java.lang.String"/>	
+		<!-- <one-to-one name="confidenceIntervalDescription" class="edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval" cascade="all"/>-->		
+		<set name="confidenceIntervalDescriptions" table="tableConfidenceInterval" cascade="all" sort="unsorted" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+		  <key column="uuid" on-delete="noaction" unique="true"/> 
+		  <one-to-many class="edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval" not-found="exception" embed-xml="true" /> 
+		</set>			
 	</class>
 </hibernate-mapping>

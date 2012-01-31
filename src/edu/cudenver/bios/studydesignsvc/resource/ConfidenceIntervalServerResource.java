@@ -22,14 +22,19 @@
  */
 package edu.cudenver.bios.studydesignsvc.resource;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
+import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
+import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.cudenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
+import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
@@ -44,61 +49,59 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 	private Logger logger = StudyDesignLogger.getInstance();
 	private String studyUUID = null;
 	@Override
-	public ConfidenceInterval retrieve() 
+	public ConfidenceInterval retrieve(UUID uuid) 
 	{
-		ConfidenceIntervalManager manager = null;
-		ConfidenceInterval confidenceInterval = null; 
+		StudyDesignManager studyDesignManager = null;
+		ConfidenceIntervalManager confidenceIntervalManager = null;
+		ConfidenceInterval confidenceInterval = null;
+		boolean uuidFlag;
 		try
 		{
-			this.studyUUID = this.getRequest().getAttributes().get(StudyDesignConstants.TAG_STUDY_UUID).toString();
-			//System.out.println(this.studyUUID);
-			//studyDesign=new StudyDesign(this.studyUUID);			
-			manager = new ConfidenceIntervalManager();
-			manager.beginTransaction();		
-				//check wheather this UUID is existing
-				/*StudyDesignManager studyDesignManager = new StudyDesignManager();
-				if(studyDesignManager.searchStudyUUID(this.studyUUID))
-					confidenceInterval=manager.getConfidenceInterval(this.studyUUID);
-				else
-					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,"No such UUID exists!!!");*/
-				confidenceInterval=manager.getConfidenceInterval(this.studyUUID);
-				/*List<UUID> list = manager.getStudyUUIDs();			
-				if(list!=null)
-				{
-					System.out.println(list.toString());
-				}
-				else
-				{
-					System.out.println("empty list");
-				}*/	
-			manager.commit();
+			if (uuid == null) throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");
+	
+			studyDesignManager = new StudyDesignManager();
+			studyDesignManager.beginTransaction();
+				uuidFlag = studyDesignManager.hasUUID(uuid);
+				if(uuidFlag==true)
+            	{
+            		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(uuid));
+            	}
+			studyDesignManager.commit();
+			
+			if(uuidFlag==true)
+			{
+				confidenceIntervalManager = new ConfidenceIntervalManager();
+            	confidenceIntervalManager.beginTransaction();
+            		confidenceIntervalManager.saveOrUpdateConfidenceInterval(confidenceInterval, true);
+            	confidenceIntervalManager.commit();
+			}
 		}
 		catch (BaseManagerException bme)
 		{
 			StudyDesignLogger.getInstance().error("ConfidenceIntervalResource : " + bme.getMessage());
-			if(manager!=null)
+			if(confidenceIntervalManager!=null)
 			{
 				try
-				{manager.rollback();}				
+				{confidenceIntervalManager.rollback();}				
 				catch(BaseManagerException re)
 				{confidenceInterval = null;}				
 			}
 		}	
-		catch (ResourceException e)
+		catch(StudyDesignException sde)
 		{
-			StudyDesignLogger.getInstance().error("ConfidenceIntervalResource : " + e.getMessage());
-			if(manager!=null)
+			StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
+			if(studyDesignManager!=null)
 			{
-				try
-				{manager.rollback();}				
-				catch(BaseManagerException re)
-				{confidenceInterval = null;}				
+				try {studyDesignManager.rollback();}
+				catch(BaseManagerException re) {confidenceInterval = null;}					
 			}
-		}						
+		}							
 		return confidenceInterval;			
 	}
 	@Override
-	public ConfidenceInterval create(ConfidenceInterval confidenceInterval) {
+	public ConfidenceInterval create(ConfidenceInterval confidenceInterval) 
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
