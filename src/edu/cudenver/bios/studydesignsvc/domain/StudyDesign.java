@@ -22,10 +22,22 @@
  */
 package edu.cudenver.bios.studydesignsvc.domain;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
+
+import edu.cudenver.bios.studydesignsvc.application.UUIDConversion;
 
 /**
  * Main Study Design object which holds
@@ -33,49 +45,34 @@ import javax.persistence.Id;
  * 
  * @author Uttara Sakhadeo
  */
-@Entity
-public class StudyDesign
-{
 
-	public enum SolvingFor
-	{
-		POWER,
-		SAMPLE_SIZE
-	};
+@Entity
+@Table(name="tablestudydesign")
+public class StudyDesign
+{	
 	
 	// UUID for the study design.  Main unique identifier for the design
+	@Id
+	@Column(name="uuid")
 	private byte[] uuid = null;
 	private UUID studyUUID = null;
 	// name of the study design
+	@Column(name="name")
 	private String name = null;	
-	// flag indicating whether we are solving for power or sample size
-	private SolvingFor flagSolveFor = null;
+	// flag indicating whether we are solving for power or sample size	
+//	private SolvingFor flagSolveFor = null;
+	@Column(name="flagSolveFor")
+	private String flagSolveFor =null;
 	// flag indicating if the design includes a baseline covariate
+	@Column(name="hasGaussianCovariate")
 	private boolean hasGaussianCovariate = false;
-	
+	//private ConfidenceInterval confidenceIntervalDescription = null;
+	private Set<ConfidenceInterval> confidenceIntervalDescriptions = new HashSet<ConfidenceInterval>();
 	/**
 	 * Create an empty study design without a UUID assigned
 	 */
 	public StudyDesign() 
-	{}
-	
-	public static byte[] asByteArray(UUID uuid) 
-	 {
-	    long msb = uuid.getMostSignificantBits();
-	    long lsb = uuid.getLeastSignificantBits();
-	    byte[] buffer = new byte[16];
-
-	    for (int i = 0; i < 8; i++) {
-	            buffer[i] = (byte) (msb >>> 8 * (7 - i));
-	    }
-	    for (int i = 8; i < 16; i++) {
-	            buffer[i] = (byte) (lsb >>> 8 * (7 - i));
-	    }
-
-	    return buffer;
-
-	}
-
+	{}	
 	
 	/**
 	 * Create a study design object with the specified UUID
@@ -84,7 +81,7 @@ public class StudyDesign
 	public StudyDesign(UUID studyUUID) 
 	{
 		this.studyUUID = studyUUID;
-		this.uuid = asByteArray(studyUUID);
+		this.uuid = UUIDConversion.asByteArray(studyUUID);
 	}
 	/*--------------------
 	 * Getter/Setter Methods
@@ -93,8 +90,7 @@ public class StudyDesign
 	{
 		return studyUUID;
 	}
-	
-	@Id
+		
 	public byte[] getUuid() 
 	{
 		return uuid;
@@ -108,9 +104,9 @@ public class StudyDesign
 	public void setStudyUUID(UUID studyUuid) 
 	{
 		this.studyUUID = studyUuid;
-		this.uuid = asByteArray(studyUUID);
+		this.uuid = UUIDConversion.asByteArray(studyUUID);
 	}
-	
+		
 	public String getName() 
 	{
 		return name;
@@ -120,24 +116,39 @@ public class StudyDesign
 	{
 		this.name = name;
 	}
-	
-	public SolvingFor getSolvingFor() 
-	{
-		return flagSolveFor;
-	}
-	
-	public void setSolvingFor(SolvingFor flagSolveFor) 
-	{
-		this.flagSolveFor = flagSolveFor;
-	}
-	
-	public boolean hasGaussianCovariate() 
-	{
+		
+	public boolean isHasGaussianCovariate() {
 		return hasGaussianCovariate;
 	}
-	
-	public void setIsGuassianSelection(boolean hasGaussianCovariate) 
-	{
+
+	public void setHasGaussianCovariate(boolean hasGaussianCovariate) {
 		this.hasGaussianCovariate = hasGaussianCovariate;
-	}	
+	}
+
+	public SolvingFor getFlagSolvingFor() {
+		return SolvingFor.fromValue(this.flagSolveFor);
+	}
+
+	public void setFlagSolvingFor(SolvingFor flagSolvingFor) {
+		this.flagSolveFor = flagSolvingFor.toValue();
+	}
+
+	public Set<ConfidenceInterval> getConfidenceIntervalDescriptions() {
+		return confidenceIntervalDescriptions;
+	}
+
+	public void setConfidenceIntervalDescriptions(
+			Set<ConfidenceInterval> confidenceIntervalDescriptions) {
+		this.confidenceIntervalDescriptions = confidenceIntervalDescriptions;
+	}
+
+	/*public ConfidenceInterval getConfidenceIntervalDescription() {
+		return confidenceIntervalDescription;
+	}
+
+	public void setConfidenceIntervalDescription(
+			ConfidenceInterval confidenceIntervalDescription) {
+		this.confidenceIntervalDescription = confidenceIntervalDescription;
+	}*/
+		
 }
