@@ -29,8 +29,8 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
-import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.cudenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;

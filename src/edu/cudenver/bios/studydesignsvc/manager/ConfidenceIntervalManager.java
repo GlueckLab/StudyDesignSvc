@@ -32,8 +32,8 @@ import org.hibernate.criterion.Restrictions;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
-import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+
+import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -57,20 +57,20 @@ public class ConfidenceIntervalManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public ConfidenceInterval getConfidenceInterval(UUID studyUUID)
+	public ConfidenceIntervalDescription getConfidenceInterval(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ConfidenceInterval confidenceInterval = null;
+		ConfidenceIntervalDescription confidenceInterval = null;
 		try
 		{									
-			byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval where studyDesign = :uuid");
+			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
+			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            confidenceInterval = (ConfidenceInterval)query.list().get(0);            
+            confidenceInterval = (ConfidenceIntervalDescription)query.list().get(0);            
 		}
 		catch(Exception e)
 		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve study design for UUID '" + studyUUID + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve study design for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return confidenceInterval;
 	}
@@ -103,20 +103,20 @@ public class ConfidenceIntervalManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public ConfidenceInterval deleteConfidenceInterval(UUID studyUUID)
+	public ConfidenceIntervalDescription deleteConfidenceInterval(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ConfidenceInterval confidenceInterval = null;
+		ConfidenceIntervalDescription confidenceInterval = null;
 		try
 		{
-			confidenceInterval = getConfidenceInterval(studyUUID);
+			confidenceInterval = getConfidenceInterval(uuidBytes);
 			session.delete(confidenceInterval);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete study design for UUID '" + studyUUID + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete study design for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return confidenceInterval;
 	}
@@ -144,7 +144,7 @@ public class ConfidenceIntervalManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public ConfidenceInterval saveOrUpdateConfidenceInterval(ConfidenceInterval confidenceInterval,boolean isCreation)
+	public ConfidenceIntervalDescription saveOrUpdateConfidenceInterval(ConfidenceIntervalDescription confidenceInterval,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try

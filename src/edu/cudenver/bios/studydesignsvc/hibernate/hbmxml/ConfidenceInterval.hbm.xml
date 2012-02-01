@@ -3,7 +3,7 @@
     "-//Hibernate/Hibernate Mapping DTD//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>	
-	<class name="edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval" table="tableconfidenceinterval">
+	<class name="edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription" table="tableconfidenceinterval">
 		<!-- <id name="uuid" column="uuid">
 			<generator class="foreign">
 				<param name="property">studyDesign</param>

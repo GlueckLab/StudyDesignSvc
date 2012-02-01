@@ -29,7 +29,7 @@ import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
-import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 /**
  * Resource class for handling requests for the complete 
  * study design object. 
@@ -45,7 +45,7 @@ public interface StudyDesignResource
 	 * @return study designs with specified UUID
 	 */
 	 @Get
-    public StudyDesign retrieve(UUID uuid);
+    public StudyDesign retrieve(byte[] uuid);
 	
 	/**
 	 * Gets a list of all study designs in the database
@@ -82,5 +82,5 @@ public interface StudyDesignResource
      * @return the deleted study design object
      */
     @Delete
-    public StudyDesign remove(UUID uuid);
+    public StudyDesign remove(byte[] uuid);
 }

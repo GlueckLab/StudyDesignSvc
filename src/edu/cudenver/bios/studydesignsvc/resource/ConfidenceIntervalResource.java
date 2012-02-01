@@ -28,7 +28,9 @@ import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
-import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
+
+import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 /**
  * Resource class for handling requests for the 
  * confidence interval object. 
@@ -44,7 +46,7 @@ public interface ConfidenceIntervalResource
 	 * @return confidence interval with specified UUID
 	 */
 	 @Get
-    public ConfidenceInterval retrieve(UUID uuid);
+    public ConfidenceIntervalDescription retrieve(byte[] uuid);
 
 	/**
 	 * Store the confidence interval to the database.
@@ -53,7 +55,7 @@ public interface ConfidenceIntervalResource
 	 * @return confidence interval object with updated UUID.
 	 */	 
     @Post
-    public ConfidenceInterval create(ConfidenceInterval confidenceInterval);
+    public ConfidenceIntervalDescription create(ConfidenceIntervalDescription confidenceInterval);
     
     /**
      * Update the specified confidence interval object. If there is no
@@ -64,7 +66,7 @@ public interface ConfidenceIntervalResource
      * @return the confidence interval object
      */    
     @Put
-    public ConfidenceInterval update(ConfidenceInterval confidenceInterval);
+    public ConfidenceIntervalDescription update(ConfidenceIntervalDescription confidenceInterval);
 
     /**
      * Delete the specified confidence interval object. If there is no
@@ -74,5 +76,5 @@ public interface ConfidenceIntervalResource
      * @return the confidence interval object
      */  
     @Delete
-    public ConfidenceInterval remove();
+    public ConfidenceIntervalDescription remove();
 }

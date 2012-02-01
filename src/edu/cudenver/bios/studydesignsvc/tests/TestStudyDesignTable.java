@@ -31,10 +31,11 @@ import org.junit.Test;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.cudenver.bios.studydesignsvc.domain.SolvingFor;
-import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
  * Test basic create, read, update, delete for TableStudyDesign
@@ -56,10 +57,12 @@ public class TestStudyDesignTable extends TestCase
 	public void testCreate()
 	{	
 		StudyDesign studyDesign = new StudyDesign();
-		studyDesign.setStudyUUID(STUDY_UUID);
+		//studyDesign.setStudyUUID(STUDY_UUID);
+		studyDesign.setUuid(UUIDUtils.asByteArray(STUDY_UUID));
 		studyDesign.setName(STUDY_NAME);
-		studyDesign.setHasGaussianCovariate(true);
-		studyDesign.setFlagSolvingFor(SolvingFor.power);
+		studyDesign.setGaussianSelection(true);
+		
+		//studyDesign.setFlagSolvingFor(SolvingFor.power);
 		//studyDesign.setHasGaussianCovariate(true);
 		
 		StudyDesignManager manager = null;
@@ -108,7 +111,7 @@ public class TestStudyDesignTable extends TestCase
         {
             manager = new StudyDesignManager();
             manager.beginTransaction();
-            studyDesign = manager.getStudyDesign(STUDY_UUID);
+            studyDesign = manager.getStudyDesign(UUIDUtils.asByteArray(STUDY_UUID));
             manager.commit();
         }
         catch (BaseManagerException bme)
@@ -154,7 +157,7 @@ public class TestStudyDesignTable extends TestCase
         {
             manager = new StudyDesignManager();
             manager.beginTransaction();
-            studyDesign = manager.deleteStudyDesign(STUDY_UUID);
+            studyDesign = manager.deleteStudyDesign(UUIDUtils.asByteArray(STUDY_UUID));
             manager.commit();
         }
         catch (BaseManagerException bme)

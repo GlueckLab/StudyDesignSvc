@@ -27,12 +27,13 @@ import java.util.UUID;
 import org.junit.Test;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
-import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.cudenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 import junit.framework.TestCase;
 
@@ -53,9 +54,9 @@ public class TestConfidenceIntervalTable extends TestCase
 		ConfidenceIntervalManager confidenceIntervalManager = null;
 		boolean flag;				
 		
-		ConfidenceInterval confidenceInterval = new ConfidenceInterval();
+		ConfidenceIntervalDescription confidenceInterval = new ConfidenceIntervalDescription();
 		confidenceInterval.setSigmaFixed(true);
-		confidenceInterval.setStudyUUID(STUDY_UUID);
+		//confidenceInterval.setStudyUUID(STUDY_UUID);
 		confidenceInterval.setSampleSize(SAMPLE_SIZE);
 		confidenceInterval.setRankOfDesignMatrix(2);
 		confidenceInterval.setBetaFixed(true);
@@ -66,10 +67,10 @@ public class TestConfidenceIntervalTable extends TestCase
 		{
 			studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
-            	flag = studyDesignManager.hasUUID(STUDY_UUID);    
+            	flag = studyDesignManager.hasUUID(UUIDUtils.asByteArray(STUDY_UUID));    
             	if(flag==true)
             	{
-            		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(STUDY_UUID));
+            		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(UUIDUtils.asByteArray(STUDY_UUID)));
             	}
             studyDesignManager.commit();
             if(flag==true)
@@ -118,12 +119,12 @@ public class TestConfidenceIntervalTable extends TestCase
 		StudyDesignManager studyDesignManager = null;
 		ConfidenceIntervalManager confidenceIntervalManager = null;
 		boolean flag;	
-		ConfidenceInterval confidenceInterval = null;
+		ConfidenceIntervalDescription confidenceInterval = null;
         try
         {
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
-            	flag = studyDesignManager.hasUUID(STUDY_UUID);
+            	flag = studyDesignManager.hasUUID(UUIDUtils.asByteArray(STUDY_UUID));
             	/*if(flag==true)
             	{
             		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(STUDY_UUID));
@@ -133,7 +134,7 @@ public class TestConfidenceIntervalTable extends TestCase
             {
             	confidenceIntervalManager = new ConfidenceIntervalManager();
             	confidenceIntervalManager.beginTransaction();
-            		confidenceInterval=confidenceIntervalManager.getConfidenceInterval(STUDY_UUID);
+            		confidenceInterval=confidenceIntervalManager.getConfidenceInterval(UUIDUtils.asByteArray(STUDY_UUID));
             	confidenceIntervalManager.commit();
             }
             else
@@ -174,12 +175,12 @@ public class TestConfidenceIntervalTable extends TestCase
 		StudyDesignManager studyDesignManager = null;
 		ConfidenceIntervalManager confidenceIntervalManager = null;
 		boolean flag;	
-		ConfidenceInterval confidenceInterval = null;
+		ConfidenceIntervalDescription confidenceInterval = null;
         try
         {
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
-            	flag = studyDesignManager.hasUUID(STUDY_UUID);
+            	flag = studyDesignManager.hasUUID(UUIDUtils.asByteArray(STUDY_UUID));
             	/*if(flag==true)
             	{
             		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(STUDY_UUID));
@@ -189,7 +190,7 @@ public class TestConfidenceIntervalTable extends TestCase
             {
             	confidenceIntervalManager = new ConfidenceIntervalManager();
             	confidenceIntervalManager.beginTransaction();
-            		confidenceInterval=confidenceIntervalManager.deleteConfidenceInterval(STUDY_UUID);
+            		confidenceInterval=confidenceIntervalManager.deleteConfidenceInterval(UUIDUtils.asByteArray(STUDY_UUID));
             	confidenceIntervalManager.commit();
             }
             else

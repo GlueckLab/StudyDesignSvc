@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.Query;
-import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -55,12 +55,12 @@ public class StudyDesignManager extends BaseManager
      * @param studyUuid
      * @return boolean
      */
-    public boolean hasUUID(UUID uuid) throws StudyDesignException
+    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
         {
-        	byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
+        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
         	StudyDesign studyDesign = (StudyDesign) session.get(StudyDesign.class, uuidBytes);
         	if(studyDesign!=null)
         		return true;
@@ -70,7 +70,7 @@ public class StudyDesignManager extends BaseManager
         catch (Exception e)
         {
             throw new StudyDesignException("Failed to retrieve StudyDesign for UUID '" + 
-            		uuid.toString() + "': " + e.getMessage());
+            		uuidBytes.toString() + "': " + e.getMessage());
         }
     }
 	
@@ -80,19 +80,19 @@ public class StudyDesignManager extends BaseManager
      * @param dataFeedUuid
      * @return data feed object
      */
-    public StudyDesign getStudyDesign(UUID uuid) throws StudyDesignException
+    public StudyDesign getStudyDesign(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
         {
-        	byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
+        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
         	StudyDesign studyDesign = (StudyDesign) session.get(StudyDesign.class, uuidBytes);
             return studyDesign;
         }
         catch (Exception e)
         {
             throw new StudyDesignException("Failed to retrieve StudyDesign for UUID '" + 
-            		uuid.toString() + "': " + e.getMessage());
+            		uuidBytes.toString() + "': " + e.getMessage());
         }
     }
 
@@ -169,7 +169,7 @@ public class StudyDesignManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public StudyDesign deleteStudyDesign(UUID studyUUID)
+	public StudyDesign deleteStudyDesign(byte[] uuidBytes)
 	throws StudyDesignException
 	{
 		if (!transactionStarted) 
@@ -177,14 +177,14 @@ public class StudyDesignManager extends BaseManager
 		StudyDesign studyDesign = null;
 		try
 		{
-			studyDesign = getStudyDesign(studyUUID);
+			studyDesign = getStudyDesign(uuidBytes);
 			session.delete(studyDesign);
 		}
 		catch(Exception e)
 		{
 			//throw new StudyDesignException("Failed to delete study design for UUID '" + studyUUID + "': " + e.getMessage());
 			System.out.println(e.getMessage());
-			throw new StudyDesignException("Failed to delete study design for UUID '" + studyUUID + "': " + e.getMessage());
+			throw new StudyDesignException("Failed to delete study design for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return studyDesign;
 	}

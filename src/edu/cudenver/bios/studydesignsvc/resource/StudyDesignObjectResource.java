@@ -40,7 +40,7 @@ import org.restlet.resource.UniformResource;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;

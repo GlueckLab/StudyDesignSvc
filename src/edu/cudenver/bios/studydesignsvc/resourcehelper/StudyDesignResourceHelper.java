@@ -37,7 +37,7 @@ import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.cudenver.bios.studydesignsvc.domain.NamedList;
 import edu.cudenver.bios.studydesignsvc.domain.NamedRealMatrix;
-import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
  * 

@@ -31,10 +31,11 @@ import org.restlet.resource.ServerResource;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
+import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.cudenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
@@ -49,11 +50,11 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 	private Logger logger = StudyDesignLogger.getInstance();
 	private String studyUUID = null;
 	@Override
-	public ConfidenceInterval retrieve(UUID uuid) 
+	public ConfidenceIntervalDescription retrieve(byte[] uuid) 
 	{
 		StudyDesignManager studyDesignManager = null;
 		ConfidenceIntervalManager confidenceIntervalManager = null;
-		ConfidenceInterval confidenceInterval = null;
+		ConfidenceIntervalDescription confidenceInterval = null;
 		boolean uuidFlag;
 		try
 		{
@@ -99,19 +100,22 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 		}							
 		return confidenceInterval;			
 	}
+	
 	@Override
-	public ConfidenceInterval create(ConfidenceInterval confidenceInterval) 
-	{
+	public ConfidenceIntervalDescription create(
+			ConfidenceIntervalDescription confidenceInterval) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public ConfidenceInterval update(ConfidenceInterval instance) {
+	public ConfidenceIntervalDescription update(
+			ConfidenceIntervalDescription confidenceInterval) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
-	public ConfidenceInterval remove() {
+	public ConfidenceIntervalDescription remove() {
 		// TODO Auto-generated method stub
 		return null;
 	}

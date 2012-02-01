@@ -31,7 +31,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -53,7 +53,7 @@ public class StudyDesignServerResource extends ServerResource implements StudyDe
 	 * @return study designs with specified UUID
 	 */
 	@Override
-	public StudyDesign retrieve(UUID uuid)
+	public StudyDesign retrieve(byte[] uuid)
 	{
 		StudyDesignManager manager = null;
 		StudyDesign studyDesign = null; 
@@ -112,7 +112,7 @@ public class StudyDesignServerResource extends ServerResource implements StudyDe
 	}
 
 	@Override
-	public StudyDesign remove(UUID uuid)
+	public StudyDesign remove(byte[] uuid)
 	{
 		// TODO Auto-generated method stub
 		return null;

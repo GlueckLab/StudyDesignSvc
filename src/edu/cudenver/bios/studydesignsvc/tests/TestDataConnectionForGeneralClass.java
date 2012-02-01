@@ -14,8 +14,8 @@ import org.hibernate.cfg.Environment;
 import org.junit.After;
 import org.junit.Test;
 
-import edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval;
-import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.cudenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -45,7 +45,7 @@ public class TestDataConnectionForGeneralClass extends TestCase
 	public void test()
 	{		
 		StudyDesign studyDesign = null; 
-		ConfidenceInterval confidenceInterval = null;
+		ConfidenceIntervalDescription confidenceInterval = null;
 		try
 		{
 			

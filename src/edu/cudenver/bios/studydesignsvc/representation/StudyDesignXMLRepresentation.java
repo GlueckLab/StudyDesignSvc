@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
-import edu.cudenver.bios.studydesignsvc.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
  * Class which converts a study design record to an XML DOM
@@ -58,7 +58,7 @@ public class StudyDesignXMLRepresentation extends DomRepresentation
 	public static Element createStudyDesignNodeElement(Document doc, StudyDesign studyDesign)  throws IOException 
 	{
 		Element studyDesignRootElement = doc.createElement(StudyDesignConstants.TAG_STUDY_DESIGN);		
-		studyDesignRootElement.setAttribute(StudyDesignConstants.TAG_STUDY_UUID, studyDesign.getStudyUUID().toString());
+		//studyDesignRootElement.setAttribute(StudyDesignConstants.TAG_STUDY_UUID, studyDesign.getStudyUUID().toString());
 		
 		/*
 		 * How to add all the lists in the XML?
