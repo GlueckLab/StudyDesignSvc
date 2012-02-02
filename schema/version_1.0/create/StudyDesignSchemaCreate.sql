@@ -31,7 +31,7 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableConfidenceInterval` (
   `upperTrailProbability` FLOAT ,
   `sampleSize` INT ,
   `rankOfDesignMatrix` INT ,
-  `uuid` BINARY(16) ,
+  `uuid` BINARY(16) UNIQUE,
   PRIMARY KEY (`id`) ,
   INDEX `fk_study_confidenceInterval`(`uuid` ASC) ,
   CONSTRAINT `fk_study_confidenceInterval`
@@ -279,3 +279,27 @@ ENGINE = InnoDB;
 
 # Turn foreign key checks back on
 set foreign_key_checks = 1;
+
+-- ------------------------------------------------------
+-- Table `studydesigndb`.`TablePowerCurveDescription`
+-- ------------------------------------------------------
+drop table if exists TablePowerCurveDescription;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TablePowerCurveDescription` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `sampleSize` INT ,
+  `horizontalAxisLabel` ENUM('Variability Scale Factor','Total Sample Size','Regression Coeeficient Scale Factor'),
+  `stratificationVariable` ENUM('Type I error','Statistical Test'),
+  `tablePowerCurveDescription` VARCHAR(45),
+  `regressionCoeeficientScaleFactor` FLOAT,
+  `variabilityScaleFactor` FLOAT,
+  `statisticalTest` VARCHAR(45),
+  `typeIError` FLOAT,
+  `uuid` BINARY(16) UNIQUE,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_study_powerCurveDescription`(`uuid` ASC) ,
+  CONSTRAINT `fk_study_powerCurveDescription`
+    FOREIGN KEY (`uuid` )
+    REFERENCES `studydesigndb`.`TableStudyDesign` (`uuid` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
