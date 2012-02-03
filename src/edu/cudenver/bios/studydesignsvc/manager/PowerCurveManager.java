@@ -27,131 +27,92 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
-
 /**
  * Manager class which provides CRUD functionality 
- * for MySQL table ConfidenceIntervalDescription.
+ * for MySQL table PowerCurveDescription.
  * 
  * @author Uttara Sakhadeo
  */
-public class ConfidenceIntervalManager extends BaseManager
+public class PowerCurveManager extends BaseManager 
 {
-	public ConfidenceIntervalManager() throws BaseManagerException
+	public PowerCurveManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Retrieve a Confidence Interval Description representation by the specified UUID.
+     * Retrieve a power curve description by the specified UUID.
      * 
      * @param studyUUID:UUID
      * @return study design object
      */
-	public ConfidenceIntervalDescription getConfidenceInterval(byte[] uuidBytes)
+	public PowerCurveDescription getPowerCurveDescription(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ConfidenceIntervalDescription confidenceInterval = null;
+		PowerCurveDescription powerCurveDescription = null;
 		try
 		{									
 			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription where studyDesign = :uuid");
+			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            confidenceInterval = (ConfidenceIntervalDescription)query.list().get(0);            
+            powerCurveDescription = (PowerCurveDescription)query.uniqueResult();            
 		}
 		catch(Exception e)
 		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Confidence Interval for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve study design for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return confidenceInterval;
+		return powerCurveDescription;
 	}
 	
-	
-	/*public ConfidenceInterval getConfidenceInterval(String studyUUID)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ConfidenceInterval confidenceInterval = null;
-		try
-		{			
-			
-			byte[] uuidBytes = UUIDUtils.asByteArray(UUID.fromString(studyUUID));
-			
-			Criteria criteria= session.createCriteria(ConfidenceInterval.class, "studyDesign").add(Restrictions.eq("studyDesign", uuidBytes));
-			confidenceInterval = (ConfidenceInterval)criteria.uniqueResult();			
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve study design for UUID '" + studyUUID + "': " + e.getMessage());
-		}
-		return confidenceInterval;
-	}*/
-	
 	/**
-     * Delete a Confidence Interval Description by the specified UUID.
+     * Delete a power curve description by the specified UUID.
      * 
      * @param studyUUID:UUID
      * @return study design object
      */
-	public ConfidenceIntervalDescription deleteConfidenceInterval(byte[] uuidBytes)
+	public PowerCurveDescription deletePowerCurveDescription(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ConfidenceIntervalDescription confidenceInterval = null;
+		PowerCurveDescription powerCurveDescription = null;
 		try
 		{
-			confidenceInterval = getConfidenceInterval(uuidBytes);
-			session.delete(confidenceInterval);
+			powerCurveDescription = getPowerCurveDescription(uuidBytes);
+			session.delete(powerCurveDescription);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete study design for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return confidenceInterval;
+		return powerCurveDescription;
 	}
 	
-	
-	/*public ConfidenceInterval deleteConfidenceInterval(String studyUUID)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ConfidenceInterval confidenceInterval = null;
-		try
-		{
-			confidenceInterval = getConfidenceInterval(studyUUID);
-			session.delete(confidenceInterval);
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete study design for UUID '" + studyUUID + "': " + e.getMessage());
-		}
-		return confidenceInterval;
-	}*/
-	
 	/**
-     * Retrieve a Confidence Interval Description by the specified UUID.
+     * Retrieve a power curve description by the specified UUID.
      * 
      * @param studyUUID:UUID
      * @return study design object
      */
-	public ConfidenceIntervalDescription saveOrUpdateConfidenceInterval(ConfidenceIntervalDescription confidenceInterval,boolean isCreation)
+	public PowerCurveDescription saveOrUpdatePowerCurveDescription(PowerCurveDescription powerCurveDescription,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
-				session.save(confidenceInterval);
+				session.save(powerCurveDescription);
 			else
-				session.update(confidenceInterval);			
+				session.update(powerCurveDescription);			
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save confidence interval : " + e.getMessage());
 		}
-		return confidenceInterval;
+		return powerCurveDescription;
 	}
 }

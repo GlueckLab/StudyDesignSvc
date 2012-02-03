@@ -65,6 +65,17 @@ public interface StudyDesignResource
     public StudyDesign create(StudyDesign studyDesign);
     
     /**
+	  * Store the study design to the database.  This routine
+	  * will create a new UUID for the study design. And will
+	  * return back an empty StudyDesign
+	  * 
+	  * @param studyDesign study design object
+	  * @return study design object with updated UUID.
+	  */
+   @Post
+   public StudyDesign create();
+    
+    /**
      * Update the specified study design object.  If the UUID
      * of the study design is not set, the design will be treated
      * as new and a UUID assigned.

@@ -16,6 +16,10 @@
 		<set name="confidenceIntervalDescriptions" table="tableConfidenceInterval" cascade="all" sort="unsorted" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 		  <key column="uuid" on-delete="noaction" unique="true"/> 
 		  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription" not-found="exception" embed-xml="true" /> 
+		</set>
+		<set name="powerCurveDescriptions" table="tablepowerCurve" cascade="all" sort="unsorted" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+		  <key column="uuid" on-delete="noaction" unique="true"/> 
+		  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription" not-found="exception" embed-xml="true" /> 
 		</set>			
 	</class>
 </hibernate-mapping>

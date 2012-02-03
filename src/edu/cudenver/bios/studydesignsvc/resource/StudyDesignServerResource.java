@@ -31,10 +31,11 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
  * Resource class for handling requests for the complete 
@@ -100,22 +101,140 @@ public class StudyDesignServerResource extends ServerResource implements StudyDe
 	@Override
 	public StudyDesign create(StudyDesign studyDesign)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		StudyDesignManager manager = null;		
+		
+		try
+		{			
+			manager = new StudyDesignManager();
+			manager.beginTransaction();		
+				studyDesign = manager.saveOrUpdateStudyDesign(studyDesign,true);
+			manager.commit();
+		}
+		catch(BaseManagerException bme)
+		{
+			StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
+			if(manager!=null)
+			{
+				try {manager.rollback();}
+				catch(BaseManagerException re) {studyDesign = null;}					
+			}
+		}	
+		catch(StudyDesignException sde)
+		{
+			StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
+			if(manager!=null)
+			{
+				try {manager.rollback();}
+				catch(BaseManagerException re) {studyDesign = null;}					
+			}
+		}						
+		return studyDesign;
 	}
 
 	@Override
 	public StudyDesign update(StudyDesign studyDesign)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		StudyDesignManager manager = null;		
+		
+		try
+		{			
+			manager = new StudyDesignManager();
+			manager.beginTransaction();		
+				studyDesign = manager.saveOrUpdateStudyDesign(studyDesign,false);
+			manager.commit();
+		}
+		catch(BaseManagerException bme)
+		{
+			StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
+			if(manager!=null)
+			{
+				try {manager.rollback();}
+				catch(BaseManagerException re) {studyDesign = null;}					
+			}
+		}	
+		catch(StudyDesignException sde)
+		{
+			StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
+			if(manager!=null)
+			{
+				try {manager.rollback();}
+				catch(BaseManagerException re) {studyDesign = null;}					
+			}
+		}						
+		return studyDesign;
 	}
 
 	@Override
 	public StudyDesign remove(byte[] uuid)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		StudyDesignManager manager = null;
+		StudyDesign studyDesign = null; 
+		
+		try
+		{
+			if (uuid == null) throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");
+	
+			manager = new StudyDesignManager();
+			manager.beginTransaction();		
+				studyDesign = manager.deleteStudyDesign(uuid);
+			manager.commit();
+		}
+		catch(BaseManagerException bme)
+		{
+			StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
+			if(manager!=null)
+			{
+				try {manager.rollback();}
+				catch(BaseManagerException re) {studyDesign = null;}					
+			}
+		}	
+		catch(StudyDesignException sde)
+		{
+			StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
+			if(manager!=null)
+			{
+				try {manager.rollback();}
+				catch(BaseManagerException re) {studyDesign = null;}					
+			}
+		}						
+		return studyDesign;
+	}
+
+	@Override
+	public StudyDesign create() 
+	{
+		StudyDesignManager manager = null;		
+		StudyDesign studyDesign = null;
+		
+		try
+		{			
+			manager = new StudyDesignManager();
+			manager.beginTransaction();						
+				byte[] uuidBytes = UUIDUtils.asByteArray(UUID.randomUUID());
+				studyDesign.setUuid(uuidBytes);
+				studyDesign = manager.saveOrUpdateStudyDesign(studyDesign,true);
+			manager.commit();
+		}
+		catch(BaseManagerException bme)
+		{
+			StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
+			if(manager!=null)
+			{
+				try {manager.rollback();}
+				catch(BaseManagerException re) {studyDesign = null;}					
+			}
+		}	
+		catch(StudyDesignException sde)
+		{
+			StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
+			if(manager!=null)
+			{
+				try {manager.rollback();}
+				catch(BaseManagerException re) {studyDesign = null;}					
+			}
+		}						
+		return studyDesign;
 	}
 
 //	@Override

@@ -22,41 +22,38 @@
  */
 package edu.cudenver.bios.studydesignsvc.resource;
 
-import java.util.UUID;
+import java.util.Iterator;
 
-import org.apache.log4j.Logger;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
-import edu.cudenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.cudenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.cudenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
+import edu.cudenver.bios.studydesignsvc.manager.PowerCurveManager;
 import edu.cudenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
-import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
- * Resource class for handling requests for the complete 
- * study design object. 
+ * Concrete class which implements methods of 
+ * Power Curve Resource interface. 
  * See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-public class ConfidenceIntervalServerResource extends ServerResource implements ConfidenceIntervalResource
+public class PowerCurveServerResource extends ServerResource implements PowerCurveResource 
 {
+	PowerCurveDescription powerCurveDescription = null;
 	StudyDesignManager studyDesignManager = null;
-	ConfidenceIntervalManager confidenceIntervalManager = null;
-	ConfidenceIntervalDescription confidenceInterval = null;
+	PowerCurveManager powerCurveManager = null;
 	
-	private Logger logger = StudyDesignLogger.getInstance();
-	private String studyUUID = null;
 	@Override
-	public ConfidenceIntervalDescription retrieve(byte[] uuid) 
-	{			
+	public PowerCurveDescription retrieve(byte[] uuid) 
+	{	
 		boolean uuidFlag;
 		try
 		{
@@ -66,79 +63,82 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 			studyDesignManager = new StudyDesignManager();
 			studyDesignManager.beginTransaction();
 				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag==true)
+				/*if(uuidFlag==true)
             	{
-            		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(uuid));
-            	}
+					powerCurveDescription = new PowerCurveDescription();
+					StudyDesign studyDesign = studyDesignManager.getStudyDesign(uuid);
+					powerCurveDescription.setStudyDesign(studyDesign);
+            	}*/
 			studyDesignManager.commit();
 			
 			if(uuidFlag==true)
 			{			
-				confidenceIntervalManager = new ConfidenceIntervalManager();
-            	confidenceIntervalManager.beginTransaction();
-            		confidenceInterval = confidenceIntervalManager.getConfidenceInterval(uuid);
-            	confidenceIntervalManager.commit();
+				powerCurveManager = new PowerCurveManager();
+				powerCurveManager.beginTransaction();
+            	powerCurveDescription = powerCurveManager.getPowerCurveDescription(uuid);
+            	powerCurveManager.commit();
 			}
 		}
 		catch (BaseManagerException bme)
 		{
 			StudyDesignLogger.getInstance().error("ConfidenceIntervalResource : " + bme.getMessage());
-			if(confidenceIntervalManager!=null)
+			if(powerCurveManager!=null)
 			{
 				try
-				{confidenceIntervalManager.rollback();}				
+				{powerCurveManager.rollback();}				
 				catch(BaseManagerException re)
-				{confidenceInterval = null;}				
+				{powerCurveDescription = null;}				
 			}
 		}	
 		catch(StudyDesignException sde)
 		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
+			StudyDesignLogger.getInstance().error("PowerCurveResource : " + sde.getMessage());
 			if(studyDesignManager!=null)
 			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {confidenceInterval = null;}					
+				try {powerCurveManager.rollback();}
+				catch(BaseManagerException re) {powerCurveDescription = null;}					
 			}
 		}							
-		return confidenceInterval;			
+		return powerCurveDescription;
 	}
-	
+
 	@Override
-	public ConfidenceIntervalDescription create(
-			ConfidenceIntervalDescription confidenceInterval) 
-	{		boolean uuidFlag;
+	public PowerCurveDescription create(
+			PowerCurveDescription powerCurveDescription) 
+	{		
+		boolean uuidFlag;
 		try
 		{
 			studyDesignManager = new StudyDesignManager();
 			studyDesignManager.beginTransaction();
-				byte[] uuid = confidenceInterval.getStudyDesign().getUuid();
+				byte[] uuid = powerCurveDescription.getStudyDesign().getUuid();
 				if(uuid==null)
 					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 							"no study design UUID specified");
 				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag==true)
-            	{					
-            		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(uuid));
+            	{
+            		powerCurveDescription.setStudyDesign(studyDesignManager.getStudyDesign(uuid));
             	}
 			studyDesignManager.commit();
 			
 			if(uuidFlag==true)
 			{		
-				confidenceIntervalManager = new ConfidenceIntervalManager();
-            	confidenceIntervalManager.beginTransaction();
-            		confidenceIntervalManager.saveOrUpdateConfidenceInterval(confidenceInterval, true);
-            	confidenceIntervalManager.commit();
+				powerCurveManager = new PowerCurveManager();
+				powerCurveManager.beginTransaction();
+					powerCurveManager.saveOrUpdatePowerCurveDescription(powerCurveDescription, true);
+				powerCurveManager.commit();
 			}
 		}
 		catch (BaseManagerException bme)
 		{
 			StudyDesignLogger.getInstance().error("ConfidenceIntervalResource : " + bme.getMessage());
-			if(confidenceIntervalManager!=null)
+			if(powerCurveManager!=null)
 			{
 				try
-				{confidenceIntervalManager.rollback();}				
+				{powerCurveManager.rollback();}				
 				catch(BaseManagerException re)
-				{confidenceInterval = null;}				
+				{powerCurveDescription = null;}				
 			}
 		}	
 		catch(StudyDesignException sde)
@@ -147,48 +147,54 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 			if(studyDesignManager!=null)
 			{
 				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {confidenceInterval = null;}					
+				catch(BaseManagerException re) {powerCurveDescription = null;}					
 			}
 		}							
-		return confidenceInterval;
+		return powerCurveDescription;
 	}
+
 	@Override
-	public ConfidenceIntervalDescription update(
-			ConfidenceIntervalDescription confidenceInterval) 
+	public PowerCurveDescription update(
+			PowerCurveDescription powerCurveDescription) 
 	{
 		boolean uuidFlag;
 		try
 		{
 			studyDesignManager = new StudyDesignManager();
 			studyDesignManager.beginTransaction();
-				byte[] uuid = confidenceInterval.getStudyDesign().getUuid();
+				byte[] uuid = powerCurveDescription.getStudyDesign().getUuid();
 				if(uuid==null)
 					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 							"no study design UUID specified");
 				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag==true)
-            	{
-            		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(uuid));
+            	{					
+					StudyDesign studyDesign = studyDesignManager.getStudyDesign(uuid);
+					Iterator<PowerCurveDescription> itr = studyDesign.getPowerCurveDescriptions().iterator();
+					while(itr.hasNext())
+					{
+						//itr.;
+					}
+            		powerCurveDescription.setStudyDesign(studyDesignManager.getStudyDesign(uuid));
             	}
 			studyDesignManager.commit();
 			
 			if(uuidFlag==true)
-			{
-				confidenceIntervalManager = new ConfidenceIntervalManager();
-            	confidenceIntervalManager.beginTransaction();
-            		confidenceIntervalManager.saveOrUpdateConfidenceInterval(confidenceInterval, false);
-            	confidenceIntervalManager.commit();
+			{						
+				powerCurveManager.beginTransaction();
+					powerCurveManager.saveOrUpdatePowerCurveDescription(powerCurveDescription, false);
+            	powerCurveManager.commit();
 			}
 		}
 		catch (BaseManagerException bme)
 		{
 			StudyDesignLogger.getInstance().error("ConfidenceIntervalResource : " + bme.getMessage());
-			if(confidenceIntervalManager!=null)
+			if(powerCurveManager!=null)
 			{
 				try
-				{confidenceIntervalManager.rollback();}				
+				{powerCurveManager.rollback();}				
 				catch(BaseManagerException re)
-				{confidenceInterval = null;}				
+				{powerCurveDescription = null;}				
 			}
 		}	
 		catch(StudyDesignException sde)
@@ -197,17 +203,17 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 			if(studyDesignManager!=null)
 			{
 				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {confidenceInterval = null;}					
+				catch(BaseManagerException re) {powerCurveDescription = null;}					
 			}
 		}							
-		return confidenceInterval;
+		return powerCurveDescription;
 	}
 
 	@Override
-	public ConfidenceIntervalDescription remove(byte[] uuid) 
+	public PowerCurveDescription remove(byte[] uuid) 
 	{
 		boolean flag;	
-		ConfidenceIntervalDescription confidenceInterval = null;
+		PowerCurveDescription powerCurveDescription = null;
         try
         {
             studyDesignManager = new StudyDesignManager();
@@ -220,10 +226,10 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
             studyDesignManager.commit();
             if(flag==true)
             {
-            	confidenceIntervalManager = new ConfidenceIntervalManager();
-            	confidenceIntervalManager.beginTransaction();
-            		confidenceInterval=confidenceIntervalManager.deleteConfidenceInterval(uuid);
-            	confidenceIntervalManager.commit();
+            	powerCurveManager = new PowerCurveManager();
+            	powerCurveManager.beginTransaction();
+            	powerCurveDescription=powerCurveManager.deletePowerCurveDescription(uuid);
+            	powerCurveManager.commit();
             }
             else
             	throw new StudyDesignException("No such studyUUID present in tableStudyDesign!!!");
@@ -233,17 +239,17 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
         	System.out.println(bme.getMessage());
             StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
             if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
-            if (confidenceIntervalManager != null) try { confidenceIntervalManager.rollback(); } catch (BaseManagerException e) {}
-            confidenceInterval = null;           
+            if (powerCurveManager != null) try { powerCurveManager.rollback(); } catch (BaseManagerException e) {}
+            powerCurveDescription = null;           
         }
         catch (StudyDesignException sde)
         {
             StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + sde.getMessage());
             if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
-            if (confidenceIntervalManager != null) try { confidenceIntervalManager.rollback(); } catch (BaseManagerException e) {}
-            confidenceInterval = null;            
+            if (powerCurveManager != null) try { powerCurveManager.rollback(); } catch (BaseManagerException e) {}
+            powerCurveDescription = null;            
         }
-        return confidenceInterval;
+        return powerCurveDescription;
 	}
-		
+
 }

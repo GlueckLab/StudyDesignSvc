@@ -26,16 +26,17 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.Query;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+
 import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
-import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
+ * Manager class which provides CRUD functionality 
+ * for MySQL table StudyDesign.
  * 
  * @author Uttara Sakhadeo
- *
  */
 public class StudyDesignManager extends BaseManager
 {

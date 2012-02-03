@@ -22,23 +22,22 @@
  */
 package edu.cudenver.bios.studydesignsvc.resource;
 
-import java.util.UUID;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
+
 /**
  * Resource class for handling requests for the 
- * confidence interval object. 
+ * power curve object. 
  * See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-public interface ConfidenceIntervalResource 
+public interface PowerCurveResource 
 {
 	/**
 	 * Retrieve the confidence interval for the specified UUID.
@@ -46,7 +45,7 @@ public interface ConfidenceIntervalResource
 	 * @return confidence interval with specified UUID
 	 */
 	 @Get
-    public ConfidenceIntervalDescription retrieve(byte[] uuid);
+    public PowerCurveDescription retrieve(byte[] uuid);
 
 	/**
 	 * Store the confidence interval to the database.
@@ -55,7 +54,7 @@ public interface ConfidenceIntervalResource
 	 * @return confidence interval object with updated UUID.
 	 */	 
     @Post
-    public ConfidenceIntervalDescription create(ConfidenceIntervalDescription confidenceInterval);
+    public PowerCurveDescription create(PowerCurveDescription powerCurveDescription);
     
     
     /**
@@ -67,7 +66,7 @@ public interface ConfidenceIntervalResource
      * @return the confidence interval object
      */    
     @Put
-    public ConfidenceIntervalDescription update(ConfidenceIntervalDescription confidenceInterval);
+    public PowerCurveDescription update(PowerCurveDescription powerCurveDescription);
     
     /** 
      * Delete the study with the specified UUID
@@ -76,5 +75,5 @@ public interface ConfidenceIntervalResource
      * @return the deleted study design object
      */
     @Delete
-    public ConfidenceIntervalDescription remove(byte[] uuid);
+    public PowerCurveDescription remove(byte[] uuid);
 }
