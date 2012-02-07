@@ -66,7 +66,7 @@ public class StudyDesignServerResource extends ServerResource implements StudyDe
 	
 			manager = new StudyDesignManager();
 			manager.beginTransaction();		
-			studyDesign = manager.getStudyDesign(uuid);
+			studyDesign = manager.get(uuid);
 
 			manager.commit();
 		}
@@ -107,7 +107,7 @@ public class StudyDesignServerResource extends ServerResource implements StudyDe
 		{			
 			manager = new StudyDesignManager();
 			manager.beginTransaction();		
-				studyDesign = manager.saveOrUpdateStudyDesign(studyDesign,true);
+				studyDesign = manager.saveOrUpdate(studyDesign,true);
 			manager.commit();
 		}
 		catch(BaseManagerException bme)
@@ -140,7 +140,7 @@ public class StudyDesignServerResource extends ServerResource implements StudyDe
 		{			
 			manager = new StudyDesignManager();
 			manager.beginTransaction();		
-				studyDesign = manager.saveOrUpdateStudyDesign(studyDesign,false);
+				studyDesign = manager.saveOrUpdate(studyDesign,false);
 			manager.commit();
 		}
 		catch(BaseManagerException bme)
@@ -177,7 +177,7 @@ public class StudyDesignServerResource extends ServerResource implements StudyDe
 	
 			manager = new StudyDesignManager();
 			manager.beginTransaction();		
-				studyDesign = manager.deleteStudyDesign(uuid);
+				studyDesign = manager.delete(uuid);
 			manager.commit();
 		}
 		catch(BaseManagerException bme)
@@ -213,7 +213,7 @@ public class StudyDesignServerResource extends ServerResource implements StudyDe
 			manager.beginTransaction();						
 				byte[] uuidBytes = UUIDUtils.asByteArray(UUID.randomUUID());
 				studyDesign.setUuid(uuidBytes);
-				studyDesign = manager.saveOrUpdateStudyDesign(studyDesign,true);
+				studyDesign = manager.saveOrUpdate(studyDesign,true);
 			manager.commit();
 		}
 		catch(BaseManagerException bme)

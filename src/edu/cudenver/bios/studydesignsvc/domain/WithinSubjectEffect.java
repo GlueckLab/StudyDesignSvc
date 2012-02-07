@@ -34,4 +34,17 @@ public class WithinSubjectEffect
 	private RepeatedMeasures repeatedMeasures;
 	// clustering
 	//private Cluster clustering;
+	public ResponseList getResponseList() {
+		return responseList;
+	}
+	public void setResponseList(ResponseList responseList) {
+		this.responseList = responseList;
+	}
+	public RepeatedMeasures getRepeatedMeasures() {
+		return repeatedMeasures;
+	}
+	public void setRepeatedMeasures(RepeatedMeasures repeatedMeasures) {
+		this.repeatedMeasures = repeatedMeasures;
+	}
+	
 }

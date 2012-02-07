@@ -72,7 +72,7 @@ public class TestStudyDesignTable extends TestCase
             manager = new StudyDesignManager();
             manager.beginTransaction();
             
-            studyDesign = manager.saveOrUpdateStudyDesign(studyDesign, true);
+            studyDesign = manager.saveOrUpdate(studyDesign, true);
             
             manager.commit();
         }
@@ -111,7 +111,7 @@ public class TestStudyDesignTable extends TestCase
         {
             manager = new StudyDesignManager();
             manager.beginTransaction();
-            studyDesign = manager.getStudyDesign(UUIDUtils.asByteArray(STUDY_UUID));
+            studyDesign = manager.get(UUIDUtils.asByteArray(STUDY_UUID));
             manager.commit();
         }
         catch (BaseManagerException bme)
@@ -157,7 +157,7 @@ public class TestStudyDesignTable extends TestCase
         {
             manager = new StudyDesignManager();
             manager.beginTransaction();
-            studyDesign = manager.deleteStudyDesign(UUIDUtils.asByteArray(STUDY_UUID));
+            studyDesign = manager.delete(UUIDUtils.asByteArray(STUDY_UUID));
             manager.commit();
         }
         catch (BaseManagerException bme)

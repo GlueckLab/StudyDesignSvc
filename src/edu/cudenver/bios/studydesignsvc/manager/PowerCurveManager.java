@@ -22,12 +22,16 @@
  */
 package edu.cudenver.bios.studydesignsvc.manager;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
+import edu.cudenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -45,12 +49,43 @@ public class PowerCurveManager extends BaseManager
 	}
 	
 	/**
+     * Check existance of a power curve description object by the specified UUID
+     * 
+     * @param studyUuid
+     * @return boolean
+     */
+    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
+    {
+        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
+        try
+        {
+        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
+        	PowerCurveDescription powerCurveDescription = null;
+        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription where studyDesign = :uuid");
+            query.setBinary("uuid", uuidBytes);	      
+            /*List<PowerCurveDescription> list = query.list();
+            powerCurveDescription = list.get(0);*/
+            powerCurveDescription = (PowerCurveDescription)query.uniqueResult(); 
+        	if(powerCurveDescription!=null)
+        		return true;
+        	else
+        		return false;
+        }
+        catch (Exception e)
+        {
+        	System.out.println(e.getMessage());
+            throw new StudyDesignException("Failed to retrieve StudyDesign for UUID '" + 
+            		uuidBytes.toString() + "': " + e.getMessage());
+        }
+    }
+	
+	/**
      * Retrieve a power curve description by the specified UUID.
      * 
      * @param studyUUID:UUID
      * @return study design object
      */
-	public PowerCurveDescription getPowerCurveDescription(byte[] uuidBytes)
+	public PowerCurveDescription get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		PowerCurveDescription powerCurveDescription = null;
@@ -63,6 +98,7 @@ public class PowerCurveManager extends BaseManager
 		}
 		catch(Exception e)
 		{
+			//System.out.println(e.getMessage());
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve study design for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return powerCurveDescription;
@@ -74,14 +110,14 @@ public class PowerCurveManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public PowerCurveDescription deletePowerCurveDescription(byte[] uuidBytes)
+	public PowerCurveDescription delete(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		PowerCurveDescription powerCurveDescription = null;
 		try
 		{
-			powerCurveDescription = getPowerCurveDescription(uuidBytes);
+			powerCurveDescription = get(uuidBytes);
 			session.delete(powerCurveDescription);
 		}
 		catch(Exception e)
@@ -98,7 +134,7 @@ public class PowerCurveManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public PowerCurveDescription saveOrUpdatePowerCurveDescription(PowerCurveDescription powerCurveDescription,boolean isCreation)
+	public PowerCurveDescription saveOrUpdate(PowerCurveDescription powerCurveDescription,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try

@@ -75,7 +75,7 @@ public class PowerCurveServerResource extends ServerResource implements PowerCur
 			{			
 				powerCurveManager = new PowerCurveManager();
 				powerCurveManager.beginTransaction();
-            	powerCurveDescription = powerCurveManager.getPowerCurveDescription(uuid);
+            	powerCurveDescription = powerCurveManager.get(uuid);
             	powerCurveManager.commit();
 			}
 		}
@@ -118,7 +118,7 @@ public class PowerCurveServerResource extends ServerResource implements PowerCur
 				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag==true)
             	{
-            		powerCurveDescription.setStudyDesign(studyDesignManager.getStudyDesign(uuid));
+            		powerCurveDescription.setStudyDesign(studyDesignManager.get(uuid));
             	}
 			studyDesignManager.commit();
 			
@@ -126,7 +126,7 @@ public class PowerCurveServerResource extends ServerResource implements PowerCur
 			{		
 				powerCurveManager = new PowerCurveManager();
 				powerCurveManager.beginTransaction();
-					powerCurveManager.saveOrUpdatePowerCurveDescription(powerCurveDescription, true);
+					powerCurveManager.saveOrUpdate(powerCurveDescription, true);
 				powerCurveManager.commit();
 			}
 		}
@@ -167,22 +167,29 @@ public class PowerCurveServerResource extends ServerResource implements PowerCur
 					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 							"no study design UUID specified");
 				uuidFlag = studyDesignManager.hasUUID(uuid);
+				
 				if(uuidFlag==true)
             	{					
-					StudyDesign studyDesign = studyDesignManager.getStudyDesign(uuid);
+					StudyDesign studyDesign = studyDesignManager.get(uuid);
 					Iterator<PowerCurveDescription> itr = studyDesign.getPowerCurveDescriptions().iterator();
 					while(itr.hasNext())
 					{
-						//itr.;
+						PowerCurveDescription presentObject = itr.next();
+						if(presentObject.getStudyDesign().getUuid()==powerCurveDescription.getStudyDesign().getUuid())
+						{
+							powerCurveDescription.setId(presentObject.getId());
+							powerCurveDescription.setStudyDesign(studyDesign);
+						}
 					}
-            		powerCurveDescription.setStudyDesign(studyDesignManager.getStudyDesign(uuid));
+            		
             	}
 			studyDesignManager.commit();
 			
 			if(uuidFlag==true)
-			{						
+			{					
+				powerCurveManager = new PowerCurveManager();
 				powerCurveManager.beginTransaction();
-					powerCurveManager.saveOrUpdatePowerCurveDescription(powerCurveDescription, false);
+					powerCurveManager.saveOrUpdate(powerCurveDescription, false);
             	powerCurveManager.commit();
 			}
 		}
@@ -217,18 +224,16 @@ public class PowerCurveServerResource extends ServerResource implements PowerCur
         try
         {
             studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            	flag = studyDesignManager.hasUUID(uuid);
-            	/*if(flag==true)
-            	{
-            		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(STUDY_UUID));
-            	}*/
+            studyDesignManager.beginTransaction();	           
+				Boolean uuidFlag = studyDesignManager.hasUUID(uuid);							
             studyDesignManager.commit();
-            if(flag==true)
+            if(uuidFlag)
             {
             	powerCurveManager = new PowerCurveManager();
             	powerCurveManager.beginTransaction();
-            	powerCurveDescription=powerCurveManager.deletePowerCurveDescription(uuid);
+            		uuidFlag = powerCurveManager.hasUUID(uuid);
+            		if(uuidFlag)
+            			powerCurveDescription=powerCurveManager.delete(uuid);
             	powerCurveManager.commit();
             }
             else

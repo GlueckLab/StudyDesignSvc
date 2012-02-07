@@ -81,7 +81,7 @@ public class StudyDesignManager extends BaseManager
      * @param dataFeedUuid
      * @return data feed object
      */
-    public StudyDesign getStudyDesign(byte[] uuidBytes) throws StudyDesignException
+    public StudyDesign get(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
@@ -146,14 +146,14 @@ public class StudyDesignManager extends BaseManager
      * @param studyUUID:String
      * @return study design object
      */
-	public StudyDesign getStudyDesign(String studyUUID)
+	/*public StudyDesign get(String studyUUID)
 	throws StudyDesignException
 	{
 		if(!transactionStarted) throw new StudyDesignException("Transaction has not been started.");
 		StudyDesign studyDesign = null;
 		try
 		{
-			Query q = session.createQuery("select name from edu.cudenver.bios.studydesignsvc.domain.StudyDesign");
+			Query q = session.createQuery("select name StudyDesign");
 			List ls = q.list();			
 		}
 		catch(Exception e)
@@ -162,7 +162,7 @@ public class StudyDesignManager extends BaseManager
 			throw new StudyDesignException("Failed to retrieve study design for UUID '" + studyUUID + "': " + e.getMessage());
 		}
 		return studyDesign;
-	}
+	}*/
 	
 	/**
      * Delete a study design representation by the specified UUID
@@ -170,7 +170,7 @@ public class StudyDesignManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public StudyDesign deleteStudyDesign(byte[] uuidBytes)
+	public StudyDesign delete(byte[] uuidBytes)
 	throws StudyDesignException
 	{
 		if (!transactionStarted) 
@@ -178,7 +178,7 @@ public class StudyDesignManager extends BaseManager
 		StudyDesign studyDesign = null;
 		try
 		{
-			studyDesign = getStudyDesign(uuidBytes);
+			studyDesign = get(uuidBytes);
 			session.delete(studyDesign);
 		}
 		catch(Exception e)
@@ -196,7 +196,7 @@ public class StudyDesignManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public StudyDesign saveOrUpdateStudyDesign(StudyDesign studyDesign, boolean isCreation)
+	public StudyDesign saveOrUpdate(StudyDesign studyDesign, boolean isCreation)
 	throws StudyDesignException
 	{
 		if (!transactionStarted) 

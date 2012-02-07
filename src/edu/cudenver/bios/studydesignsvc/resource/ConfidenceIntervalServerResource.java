@@ -68,7 +68,7 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag==true)
             	{
-            		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(uuid));
+            		confidenceInterval.setStudyDesign(studyDesignManager.get(uuid));
             	}
 			studyDesignManager.commit();
 			
@@ -76,7 +76,7 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 			{			
 				confidenceIntervalManager = new ConfidenceIntervalManager();
             	confidenceIntervalManager.beginTransaction();
-            		confidenceInterval = confidenceIntervalManager.getConfidenceInterval(uuid);
+            		confidenceInterval = confidenceIntervalManager.get(uuid);
             	confidenceIntervalManager.commit();
 			}
 		}
@@ -118,7 +118,7 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag==true)
             	{					
-            		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(uuid));
+            		confidenceInterval.setStudyDesign(studyDesignManager.get(uuid));
             	}
 			studyDesignManager.commit();
 			
@@ -126,7 +126,7 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 			{		
 				confidenceIntervalManager = new ConfidenceIntervalManager();
             	confidenceIntervalManager.beginTransaction();
-            		confidenceIntervalManager.saveOrUpdateConfidenceInterval(confidenceInterval, true);
+            		confidenceIntervalManager.saveOrUpdate(confidenceInterval, true);
             	confidenceIntervalManager.commit();
 			}
 		}
@@ -168,7 +168,7 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag==true)
             	{
-            		confidenceInterval.setStudyDesign(studyDesignManager.getStudyDesign(uuid));
+            		confidenceInterval.setStudyDesign(studyDesignManager.get(uuid));
             	}
 			studyDesignManager.commit();
 			
@@ -176,7 +176,7 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
 			{
 				confidenceIntervalManager = new ConfidenceIntervalManager();
             	confidenceIntervalManager.beginTransaction();
-            		confidenceIntervalManager.saveOrUpdateConfidenceInterval(confidenceInterval, false);
+            		confidenceIntervalManager.saveOrUpdate(confidenceInterval, false);
             	confidenceIntervalManager.commit();
 			}
 		}
@@ -222,7 +222,7 @@ public class ConfidenceIntervalServerResource extends ServerResource implements 
             {
             	confidenceIntervalManager = new ConfidenceIntervalManager();
             	confidenceIntervalManager.beginTransaction();
-            		confidenceInterval=confidenceIntervalManager.deleteConfidenceInterval(uuid);
+            		confidenceInterval=confidenceIntervalManager.delete(uuid);
             	confidenceIntervalManager.commit();
             }
             else

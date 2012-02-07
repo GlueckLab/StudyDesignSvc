@@ -52,7 +52,7 @@ public class TestDataConnectionForGeneralClass extends TestCase
 			studyDesignManager = new StudyDesignManager();
 			studyDesignManager.beginTransaction();
 								
-				studyDesign=studyDesignManager.getStudyDesign("00000000-0000-002a-0000-00000000002a");				
+				//studyDesign=studyDesignManager.get("00000000-0000-002a-0000-00000000002a");				
 			
 			System.out.println(studyDesign.getName());
 						

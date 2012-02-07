@@ -217,7 +217,7 @@ public class StudyDesignObjectResource extends ServerResource
 		{
 			manager = new StudyDesignManager();
 			manager.beginTransaction();				
-				manager.saveOrUpdateStudyDesign(studyDesign, false);
+				manager.saveOrUpdate(studyDesign, false);
 			manager.commit();
 		}
 		catch(BaseManagerException bme)
