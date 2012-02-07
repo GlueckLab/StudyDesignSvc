@@ -8,10 +8,10 @@ character set utf8;
 use studydesigndb;
 
 -- -----------------------------------------------------
--- Table `studydesigndb`.`TableStudyDesign`
+-- Table `studydesigndb`.`STUDY_DESIGN`
 -- -----------------------------------------------------
-drop table if exists TableStudyDesign;
-CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableStudyDesign` (
+drop table if exists STUDY_DESIGN;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_DESIGN` (
   `uuid` BINARY(16) NOT NULL ,  
   `flagSolveFor` ENUM( 'power' , 'samplesize' ) ,
   `hasGaussianCovariate` BOOLEAN ,
@@ -20,10 +20,10 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableStudyDesign` (
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `studydesigndb`.`TableConfidenceInterval`
+-- Table `studydesigndb`.`CONFIDENCE_INTERVAL`
 -- -----------------------------------------------------
-drop table if exists TableConfidenceInterval;
-CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableConfidenceInterval` (
+drop table if exists CONFIDENCE_INTERVAL;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`CONFIDENCE_INTERVAL` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `isBetaFixed` BOOLEAN ,
   `isSigmaFixed` BOOLEAN ,
@@ -36,33 +36,33 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableConfidenceInterval` (
   INDEX `fk_study_confidenceInterval`(`uuid` ASC) ,
   CONSTRAINT `fk_study_confidenceInterval`
     FOREIGN KEY (`uuid` )
-    REFERENCES `studydesigndb`.`TableStudyDesign` (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `studydesigndb`.`TableResponses`
+-- Table `studydesigndb`.`RESPONSES_LIST`
 -- -----------------------------------------------------
-drop table if exists TableResponses;
-CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableResponses` (
+drop table if exists RESPONSES_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`RESPONSES_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `uuid` BINARY(16) ,
-  `ResponseName` VARCHAR(45) ,
+  `name` VARCHAR(45) ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_study_responses` (`uuid` ASC) ,
   CONSTRAINT `fk_study_responses`
     FOREIGN KEY (`uuid` )
-    REFERENCES `studydesigndb`.`TableStudyDesign` (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `studydesigndb`.`TableSampleSize`
+-- Table `studydesigndb`.`PER_GROUP_SAMPLE_SIZE`
 -- -----------------------------------------------------
-drop table if exists TableSampleSize;
-CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableSampleSize` (
+drop table if exists PER_GROUP_SAMPLE_SIZE;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`PER_GROUP_SAMPLE_SIZE` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `SampleSize` INT ,
@@ -71,16 +71,16 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableSampleSize` (
   INDEX `fk_study_sampleSize` (`uuid` ASC) ,
   CONSTRAINT `fk_study_sampleSize`
     FOREIGN KEY (`uuid` )
-    REFERENCES `studydesigndb`.`TableStudyDesign` (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `studydesigndb`.`TableClustering`
+-- Table `studydesigndb`.`CLUSTERING`
 -- -----------------------------------------------------
-drop table if exists TableClustering;
-CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableClustering` (
+drop table if exists CLUSTERING;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`CLUSTERING` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `Group` VARCHAR(45) ,
@@ -91,16 +91,16 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableClustering` (
   INDEX `fk_study_cluster` (`uuid` ASC) ,
   CONSTRAINT `fk_study_cluster`
     FOREIGN KEY (`uuid` )
-    REFERENCES `studydesigndb`.`TableStudyDesign` (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `studydesigndb`.`TableRepeatedMeasures`
+-- Table `studydesigndb`.`REPEATED_MEASURES`
 -- -----------------------------------------------------
-drop table if exists TableRepeatedMeasures;
-CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableRepeatedMeasures` (
+drop table if exists REPEATED_MEASURES;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`REPEATED_MEASURES` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `name` VARCHAR(45) ,
@@ -111,16 +111,16 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableRepeatedMeasures` (
   INDEX `fk_study_repeatedMeasures` (`uuid` ASC) ,
   CONSTRAINT `fk_study_repeatedMeasures`
     FOREIGN KEY (`uuid` )
-    REFERENCES `studydesigndb`.`TableStudyDesign` (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `studydesigndb`.`TableStudyHypothesis`
+-- Table `studydesigndb`.`STUDY_HYPOTHESIS`
 -- -----------------------------------------------------
-drop table if exists TableStudyHypothesis;
-CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableStudyHypothesis` (
+drop table if exists STUDY_HYPOTHESIS;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_HYPOTHESIS` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `Type` ENUM('Main Effects' , 'Interacgtion' , 'Linear Trend' , 'Quad Trend' , 'Cubic Trend') ,
@@ -128,16 +128,16 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableStudyHypothesis` (
   INDEX `fk_study_hypothesis` (`uuid` ASC) ,
   CONSTRAINT `fk_study_hypothesis`
     FOREIGN KEY (`uuid` )
-    REFERENCES `studydesigndb`.`TableStudyDesign` (`uuid`)
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `studydesigndb`.`TableClusterSize`
+-- Table `studydesigndb`.`CLUSTER_SIZE`
 -- -----------------------------------------------------
-drop table if exists TableClusterSize;
-CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableClusterSize` (
+drop table if exists CLUSTER_SIZE;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`CLUSTER_SIZE` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `size` INT ,
   `idCluster` INT ,
@@ -145,16 +145,16 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TableClusterSize` (
   INDEX `fk_cluster_clusterSize` (`idCluster` ASC) ,
   CONSTRAINT `fk_cluster_clusterSize`
     FOREIGN KEY (`idCluster` )
-    REFERENCES `studydesigndb`.`TableClustering` (`id` )
+    REFERENCES `studydesigndb`.`CLUSTERING` (`id` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- ------------------------------------------------------
--- Table `studydesigndb`.`TableBetweenSubjectsEffects`
+-- Table `studydesigndb`.`BETWEEN_SUBJECT_EFFECTS`
 -- ------------------------------------------------------
-drop table if exists TableRepeatedMeasuresSpacing;
-CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableBetweenSubjectsEffects` (
+drop table if exists BETWEEN_SUBJECT_EFFECTS;
+CREATE TABLE IF NOT EXISTS `studydesigndb`.`BETWEEN_SUBJECT_EFFECTS` (
   `id` INT NOT NULL AUTO_INCREMENT , 
   `uuid` BINARY(16),
   `predictorName` VARCHAR(45) ,
@@ -163,16 +163,16 @@ CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableBetweenSubjectsEffects` (
   INDEX `fk_study_betweenSubjectsEffects` (`uuid` ASC) ,
   CONSTRAINT `fk_study_betweenSubjectsEffects`
   FOREIGN KEY(`uuid`)
-  REFERENCES `studydesigndb`.`TableStudyDesign` (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid`)
   ON DELETE CASCADE
   ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- ------------------------------------------------------
--- Table `studydesigndb`.`TableMatrix`
+-- Table `studydesigndb`.`MATRIX`
 -- ------------------------------------------------------
-drop table if exists TableMatrix;
-CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableMatrix` (
+drop table if exists MATRIX;
+CREATE TABLE IF NOT EXISTS `studydesigndb`.`MATRIX` (
   `id` INT NOT NULL AUTO_INCREMENT , 
   `name` VARCHAR(45) ,
   `uuid` BINARY(16),
@@ -180,16 +180,16 @@ CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableMatrix` (
   INDEX `fk_study_matrix` (`uuid` ASC) ,
   CONSTRAINT `fk_study_matrix`
   FOREIGN KEY(`uuid`)
-  REFERENCES `studydesigndb`.`TableStudyDesign` (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid`)
   ON DELETE CASCADE
   ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- ------------------------------------------------------
--- Table `studydesigndb`.`TableMapMatrixColumnToBetweenSubjectEffect`
+-- Table `studydesigndb`.`MAP_MATRIX_COLUMN_TO_BETWEEN_SUBJECT_EFFECTS`
 -- ------------------------------------------------------
-drop table if exists TableMapMatrixColumnToBetweenSubjectEffect;
-CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableMapMatrixColumnToBetweenSubjectEffect` (
+drop table if exists MAP_MATRIX_COLUMN_TO_BETWEEN_SUBJECT_EFFECTS;
+CREATE TABLE IF NOT EXISTS `studydesigndb`.`MAP_MATRIX_COLUMN_TO_BETWEEN_SUBJECT_EFFECTS` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `idBetweenSubjectEffect` INT , 
   `idMatrix` INT ,
@@ -199,19 +199,19 @@ CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableMapMatrixColumnToBetweenSubject
   INDEX `fk_map_matrix` (`idMatrix` ASC) ,
 CONSTRAINT `fk_matrix_betweenSubjectEffect`
 FOREIGN KEY (`idBetweenSubjectEffect`) 
-REFERENCES `studydesigndb`.`TableBetweenSubjectEffects` (`id`) ,
+REFERENCES `studydesigndb`.`BETWEEN_SUBJECT_EFFECTS` (`id`) ,
 CONSTRAINT `fk_map_matrix`
 FOREIGN KEY (`idMatrix`) 
-REFERENCES `studydesigndb`.`TableMatrix` (`id`)
+REFERENCES `studydesigndb`.`MATRIX` (`id`)
 ON DELETE CASCADE
 ON UPDATE CASCADE)
 ENGINE =InnoDB;
 
 -- ------------------------------------------------------
--- Table `studydesigndb`.`TableMatrixCell`
+-- Table `studydesigndb`.`MATRIX_CELL`
 -- ------------------------------------------------------
-drop table if exists TableMatrixCell;
-CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableMatrixCell` (
+drop table if exists MATRIX_CELL;
+CREATE TABLE IF NOT EXISTS `studydesigndb`.`MATRIX_CELL` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `idMatrix` INT ,
   `row` INT ,
@@ -221,16 +221,16 @@ CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableMatrixCell` (
   INDEX `fk_matrix_matrixCell` (`idMatrix` ASC) ,
   CONSTRAINT `fk_matrix_matrixCell`
   FOREIGN KEY(`idMatrix`)
-  REFERENCES `studydesigndb`.`TableMatrix` (`id`)
+  REFERENCES `studydesigndb`.`MATRIX` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- ------------------------------------------------------
--- Table `studydesigndb`.`TableRepeatedMeasuresSpacing`
+-- Table `studydesigndb`.`REPEATED_MEASURES_SPACING`
 -- ------------------------------------------------------
-drop table if exists TableRepeatedMeasuresSpacing;
-CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableRepeatedMeasuresSpacing` (
+drop table if exists REPEATED_MEASURES_SPACING;
+CREATE TABLE IF NOT EXISTS `studydesigndb`.`REPEATED_MEASURES_SPACING` (
   `id` INT NOT NULL AUTO_INCREMENT , 
   `idRepeatedMeasures` INT ,
   `value` INT ,
@@ -238,16 +238,16 @@ CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableRepeatedMeasuresSpacing` (
   INDEX `fk_spacing_repeatedMeasures` (`idRepeatedMeasures` ASC) ,
   CONSTRAINT `fk_spacing_repeatedMeasures`
   FOREIGN KEY(`idRepeatedMeasures`)
-  REFERENCES `studydesigndb`.`TableRepeatedMeasures` (`id`)
+  REFERENCES `studydesigndb`.`REPEATED_MEASURES` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE)
 ENGINE = InnoDB; 
 
 -- ------------------------------------------------------
--- Table `studydesigndb`.`TableBetweenSubjectsEffects`
+-- Table `studydesigndb`.`BETWEEN_SUBJECT_EFFECTS`
 -- ------------------------------------------------------
-drop table if exists TableBetweenSubjectEffects;
-CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableBetweenSubjectEffects` (
+drop table if exists BETWEEN_SUBJECT_EFFECTS;
+CREATE TABLE IF NOT EXISTS `studydesigndb`.`BETWEEN_SUBJECT_EFFECTS` (
   `id` INT NOT NULL AUTO_INCREMENT , 
   `uuid` BINARY(16),
   `predictor` VARCHAR(45) ,
@@ -255,16 +255,16 @@ CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableBetweenSubjectEffects` (
   INDEX `fk_study_betweenSubjectEffects` (`uuid` ASC) ,
   CONSTRAINT `fk_study_betweenSubjectEffects`
   FOREIGN KEY(`uuid`)
-  REFERENCES `studydesigndb`.`TableStudyDesign` (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid`)
   ON DELETE CASCADE
   ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- ------------------------------------------------------
--- Table `studydesigndb`.`TableCategoryList`
+-- Table `studydesigndb`.`CATEGORY_LIST`
 -- ------------------------------------------------------
-drop table if exists TableCategoryList;
-CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableCategoryList` (
+drop table if exists CATEGORY_LIST;
+CREATE TABLE IF NOT EXISTS `studydesigndb`.`CATEGORY_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT , 
   `idBetweenSubjectEffect` INT,
   `category` VARCHAR(45) ,
@@ -272,19 +272,17 @@ CREATE TABLE IF NOT EXISTS `studydesigndb`.`TableCategoryList` (
   INDEX `fk_predictor_categories` (`idBetweenSubjectEffect` ASC) ,
   CONSTRAINT `fk_predictor_categories`
   FOREIGN KEY(`idBetweenSubjectEffect`)
-  REFERENCES `studydesigndb`.`TableBetweenSubjectEffects` (`id`)
+  REFERENCES `studydesigndb`.`BETWEEN_SUBJECT_EFFECTS` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
-# Turn foreign key checks back on
-set foreign_key_checks = 1;
 
 -- ------------------------------------------------------
--- Table `studydesigndb`.`TablePowerCurveDescription`
+-- Table `studydesigndb`.`POWER_CURVE_DESCRIPTION`
 -- ------------------------------------------------------
-drop table if exists TablePowerCurveDescription;
-CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TablePowerCurveDescription` (
+drop table if exists POWER_CURVE_DESCRIPTION;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`POWER_CURVE_DESCRIPTION` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `sampleSize` INT ,
   `horizontalAxisLabel` ENUM('Variability Scale Factor','Total Sample Size','Regression Coeeficient Scale Factor'),
@@ -299,7 +297,150 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TablePowerCurveDescription` (
   INDEX `fk_study_powerCurveDescription`(`uuid` ASC) ,
   CONSTRAINT `fk_study_powerCurveDescription`
     FOREIGN KEY (`uuid` )
-    REFERENCES `studydesigndb`.`TableStudyDesign` (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`ALPHA_LIST`
+-- --------------------------------------------------------
+drop table if exists ALPHA_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`ALPHA_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `uuid` BINARY(16),
+  `alpha_value` DOUBLE ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_study_ALPHA_LIST` (`uuid` ASC) ,
+  CONSTRAINT `fk_study_ALPHA_LIST`
+    FOREIGN KEY (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`BETA_SCALE_LIST`
+-- --------------------------------------------------------
+drop table if exists BETA_SCALE_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`BETA_SCALE_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `uuid` BINARY(16),
+  `beta_value` DOUBLE ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_study_BETA_SCALE_LIST` (`uuid` ASC) ,
+  CONSTRAINT `fk_study_BETA_SCALE_LIST`
+    FOREIGN KEY (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`SIGMA_SCALE_LIST`
+-- --------------------------------------------------------
+drop table if exists SIGMA_SCALE_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`SIGMA_SCALE_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `uuid` BINARY(16),
+  `sigma_scale_value` DOUBLE ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_study_SIGMA_SCALE_LIST` (`uuid` ASC) ,
+  CONSTRAINT `fk_study_SIGMA_SCALE_LIST`
+    FOREIGN KEY (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`QUANTILE_LIST`
+-- --------------------------------------------------------
+drop table if exists QUANTILE_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`QUANTILE_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `uuid` BINARY(16),
+  `quantile_value` DOUBLE ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_study_QUANTILE_LIST` (`uuid` ASC) ,
+  CONSTRAINT `fk_study_QUANTILE_LIST`
+    FOREIGN KEY (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`RELATIVE_GROUP_SIZE_LIST`
+-- --------------------------------------------------------
+drop table if exists RELATIVE_GROUP_SIZE_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`RELATIVE_GROUP_SIZE_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `uuid` BINARY(16),
+  `relative_group_size_value` INT ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_study_RELATIVE_GROUP_SIZE_LIST` (`uuid` ASC) ,
+  CONSTRAINT `fk_study_RELATIVE_GROUP_SIZE_LIST`
+    FOREIGN KEY (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`NOMINAL_POWER_LIST`
+-- --------------------------------------------------------
+drop table if exists NOMINAL_POWER_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`NOMINAL_POWER_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `uuid` BINARY(16),
+  `nominal_power_value` DOUBLE ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_study_NOMINAL_POWER_LIST` (`uuid` ASC) ,
+  CONSTRAINT `fk_study_NOMINAL_POWER_LIST`
+    FOREIGN KEY (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`TEST_LIST`
+-- --------------------------------------------------------
+drop table if exists TEST_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TEST_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `uuid` BINARY(16),
+  `name` VARCHAR(45) ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_study_TEST_LIST` (`uuid` ASC) ,
+  CONSTRAINT `fk_study_TEST_LIST`
+    FOREIGN KEY (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`POWER_METHOD_LIST`
+-- --------------------------------------------------------
+drop table if exists POWER_METHOD_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`POWER_METHOD_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `uuid` BINARY(16),
+  `method` ENUM('Conditional' , 'Un Conditional' , 'Quantile'),
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_study_POWER_METHOD_LIST` (`uuid` ASC) ,
+  CONSTRAINT `fk_study_POWER_METHOD_LIST`
+    FOREIGN KEY (`uuid` )
+    REFERENCES `studydesigndb`.`STUDY_DESIGN` (`uuid` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+# Turn foreign key checks back on
+set foreign_key_checks = 1;
