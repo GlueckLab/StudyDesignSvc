@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>	
+	<typedef name="horizonTalAxisLabel" class="edu.cudenver.bios.studydesignsvc.application.GenericEnumUserType">
+		<param name="enumClass">edu.ucdenver.bios.webservice.common.enumclasses.HorizontalAxisLabel</param>
+	</typedef>
+	<typedef name="stratificationVariable" class="edu.cudenver.bios.studydesignsvc.application.GenericEnumUserType">
+		<param name="enumClass">edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription.StratificationVariable</param>
+	</typedef>
+	<class name="edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription" table="tablepowercurvedescription">		
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="sampleSize" column="sampleSize" type="java.lang.Integer"/>		
+		<property name="powerCurveDescription" column="tablePowerCurveDescription" type="java.lang.String"/>
+		<property name="statisticalTest" column="statisticalTest" type="java.lang.String"/>
+		<property name="regressionCoeeficientScaleFactor" column="regressionCoeeficientScaleFactor" type="java.lang.Float"/>
+		<property name="variabilityScaleFactor" column="variabilityScaleFactor" type="java.lang.Float"/>
+		<property name="typeIError" column="typeIError" type="java.lang.Float"/>		
+		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>
+		<property name="horizontalAxisLabel" 
+			column="horizontalAxisLabel" 
+			type="horizonTalAxisLabel"
+			not-null="false"
+			update="false"/>	
+		<property name="stratificationVar" 
+		column="stratificationVariable" 
+		type="stratificationVariable"
+		not-null="false"
+		update="false"/>	 					
+	</class>
+</hibernate-mapping>

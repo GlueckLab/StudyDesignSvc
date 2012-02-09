@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="edu.ucdenver.bios.webservice.common.enumclasses.PowerMethod" table="POWER_METHOD">
+		<id name="id"><generator class="native"/></id>
+		<property name="powerMethod" column="power_method"/>
+		<set name="studyDesign" table="STUDY_DESIGN" cascade="all" sort="unsorted" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+		  <key column="uuid" on-delete="noaction" unique="true"/> 
+		  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.StudyDesign" not-found="exception" embed-xml="true" /> 
+		</set>	
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>	
+	<class name="edu.cudenver.bios.studydesignsvc.domain.BetweenSubjectEffect" table="mydb.tablebetweensubjectseffects">
+		<id name="idTableBetweenSubjectEffects" column="idTableBetweenSubjectEffects" type="java.lang.Integer">
+			<generator class="native"/>
+		</id>
+		<property name="predictorName" column="predictorName" type="java.lang.String"/>		
+		<many-to-one name="StudyUUID" column="StudyUUID" class="edu.cudenver.bios.studydesignsvc.domain.StudyDesign" cascade="save-update" not-null="true"/>		
+		<list name="categoryList" table="tablecategorylist">
+			<key column="idTableCategoryList" />
+			<list-index column="idTableCategoryList" />
+			<element type="text"/>
+		</list>	
+	</class>
+</hibernate-mapping>
