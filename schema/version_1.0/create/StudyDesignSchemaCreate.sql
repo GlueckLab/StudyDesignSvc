@@ -13,7 +13,8 @@ use studydesigndb;
 drop table if exists STUDY_DESIGN;
 CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_DESIGN` (
   `uuid` BINARY(16) NOT NULL ,  
-  `flagSolveFor` ENUM( 'power' , 'samplesize' ) ,
+  `solutionType` ENUM( 'Power' , 'Samplesize' , 'Detectable Difference' ) ,
+  `powerMethod` ENUM( 'Conditional' , 'Unconditional' , 'Quntile' ) ,
   `hasGaussianCovariate` BOOLEAN ,
   `name` VARCHAR(256) ,
   PRIMARY KEY (`uuid`) )
