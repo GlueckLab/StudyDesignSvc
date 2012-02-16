@@ -50,6 +50,7 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`RESPONSES_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `uuid` BINARY(16) ,
   `name` VARCHAR(45) ,
+  `listorder` INT,
   PRIMARY KEY (`id`) ,
   INDEX `fk_study_responses` (`uuid` ASC) ,
   CONSTRAINT `fk_study_responses`
@@ -271,6 +272,7 @@ CREATE TABLE IF NOT EXISTS `studydesigndb`.`CATEGORY_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT , 
   `idBetweenSubjectEffect` INT,
   `category` VARCHAR(45) ,
+  `listorder` INT,
   PRIMARY KEY(`id`) ,
   INDEX `fk_predictor_categories` (`idBetweenSubjectEffect` ASC) ,
   CONSTRAINT `fk_predictor_categories`
@@ -314,6 +316,7 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`ALPHA_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `alpha_value` DOUBLE ,
+  `listorder` INT,
   PRIMARY KEY (`id`) ,
   INDEX `fk_study_ALPHA_LIST` (`uuid` ASC) ,
   CONSTRAINT `fk_study_ALPHA_LIST`
@@ -331,6 +334,7 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`BETA_SCALE_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `beta_value` DOUBLE ,
+  `listorder` INT,
   PRIMARY KEY (`id`) ,
   INDEX `fk_study_BETA_SCALE_LIST` (`uuid` ASC) ,
   CONSTRAINT `fk_study_BETA_SCALE_LIST`
@@ -348,6 +352,7 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`SIGMA_SCALE_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `sigma_scale_value` DOUBLE ,
+  `listorder` INT,
   PRIMARY KEY (`id`) ,
   INDEX `fk_study_SIGMA_SCALE_LIST` (`uuid` ASC) ,
   CONSTRAINT `fk_study_SIGMA_SCALE_LIST`
@@ -365,6 +370,7 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`QUANTILE_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `quantile_value` DOUBLE ,
+  `listorder` INT,
   PRIMARY KEY (`id`) ,
   INDEX `fk_study_QUANTILE_LIST` (`uuid` ASC) ,
   CONSTRAINT `fk_study_QUANTILE_LIST`
@@ -382,6 +388,7 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`RELATIVE_GROUP_SIZE_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `relative_group_size_value` INT ,
+  `listorder` INT,
   PRIMARY KEY (`id`) ,
   INDEX `fk_study_RELATIVE_GROUP_SIZE_LIST` (`uuid` ASC) ,
   CONSTRAINT `fk_study_RELATIVE_GROUP_SIZE_LIST`
@@ -400,6 +407,7 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`NOMINAL_POWER_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `nominal_power_value` DOUBLE ,
+  `listorder` INT,
   PRIMARY KEY (`id`) ,
   INDEX `fk_study_NOMINAL_POWER_LIST` (`uuid` ASC) ,
   CONSTRAINT `fk_study_NOMINAL_POWER_LIST`
@@ -417,6 +425,7 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`TEST_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `name` VARCHAR(45) ,
+  `listorder` INT,
   PRIMARY KEY (`id`) ,
   INDEX `fk_study_TEST_LIST` (`uuid` ASC) ,
   CONSTRAINT `fk_study_TEST_LIST`
@@ -435,6 +444,7 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`POWER_METHOD_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `uuid` BINARY(16),
   `method` ENUM('Conditional' , 'Un Conditional' , 'Quantile'),
+  `listorder` INT,
   PRIMARY KEY (`id`) ,
   INDEX `fk_study_POWER_METHOD_LIST` (`uuid` ASC) ,
   CONSTRAINT `fk_study_POWER_METHOD_LIST`
