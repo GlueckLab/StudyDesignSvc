@@ -34,18 +34,24 @@
 			org.hibernate.cache.NoCacheProvider
 		</property>
 
-		<mapping resource="edu/cudenver/bios/studydesignsvc/hibernate/hbmxml/StudyDesign.hbm.xml"/>
-		<!-- <mapping resource="edu/cudenver/bios/studydesignsvc/hibernate/hbmxml/ConfidenceInterval.hbm.xml"/>-->
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/StudyDesign.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/ConfidenceInterval.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/PowerCurveDescription.hbm.xml"/>
+		
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Lists.hbm.xml"/>		
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/ClusterNode.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/MatrixCell.hbm.xml"/>		
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Matrix.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/BetweenParticipantFactor.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Category.hbm.xml"/>		
+				
+		<!-- <mapping resource="com/jdpa/mlg/datafeed/BetweenSubjectEffect.hbm.xml"/> -->
 			
-		<!-- <mapping resource="edu/cudenver/bios/studydesignsvc/hibernate/hbmxml/SampleTest.hbm.xml"/>-->
+		<!-- <mapping resource="edu/cudenver/bios/studydesignsvc/hibernate/SampleTest.hbm.xml"/>-->
 		 <!-- <mapping resource="HibernateTesting/listmapping/Student.hbm.xml"/>
 		<mapping resource="HibernateTesting/listmapping/Group.hbm.xml"/>
 		<mapping resource="HibernateTesting/listmapping/NameList.hbm.xml"/>-->
-		
-		
-		
-		<!-- <mapping resource="edu/cudenver/bios/studydesignsvc/hibernate/hbmxml/ConfidenceInterval.hbm.xml"/>-->
-		<!-- <mapping resource="com/jdpa/mlg/datafeed/BetweenSubjectEffect.hbm.xml"/> -->
+		<!--<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/PowerMethod.hbm.xml"/>	 -->								
 		
 	</session-factory>
 </hibernate-configuration>
