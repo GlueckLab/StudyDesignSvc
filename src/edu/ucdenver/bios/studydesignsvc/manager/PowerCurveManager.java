@@ -51,7 +51,7 @@ public class PowerCurveManager extends BaseManager
 	/**
      * Check existance of a power curve description object by the specified UUID
      * 
-     * @param studyUuid
+     * @param studyUuid : byte[]
      * @return boolean
      */
     public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
@@ -98,7 +98,7 @@ public class PowerCurveManager extends BaseManager
 		}
 		catch(Exception e)
 		{
-			//System.out.println(e.getMessage());
+			System.out.println(e.getMessage());
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve study design for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return powerCurveDescription;

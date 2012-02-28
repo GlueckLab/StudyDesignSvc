@@ -29,25 +29,27 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
-import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.Quantile;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+
 /**
  * Manager class which provides CRUD functionality 
- * for MySQL table ClusterNode object.
+ * for MySQL table Quantile object.
  * 
  * @author Uttara Sakhadeo
  */
-public class ClusterNodeManager extends BaseManager 
+public class QuantileManager extends BaseManager
 {
-
-	public ClusterNodeManager() throws BaseManagerException {super();}
+	public QuantileManager() throws BaseManagerException
+	{
+		super();
+	}
 	
 	/**
-     * Check existance of a Cluster Node object by the specified UUID
+     * Check existence of a Quantile object by the specified UUID
      * 
-     * @param studyUuid
+     * @param studyUuid : byte[]
      * @return boolean
      */
     public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
@@ -55,100 +57,99 @@ public class ClusterNodeManager extends BaseManager
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
         {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);        	
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
+        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.Quantile where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<ClusterNode> clusterNodeList= query.list(); 
-        	if(clusterNodeList!=null)
+            List<Quantile> quantileList= query.list(); 
+        	if(quantileList!=null)
         		return true;
         	else
         		return false;
         }
         catch (Exception e)
         {
-            throw new StudyDesignException("Failed to retrieve Cluster Node for UUID '" + 
+            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
     }
     
     /**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Retrieve a Quantile object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<Quantile>
      */
-	public List<ClusterNode> get(byte[] uuidBytes)
+	public List<Quantile> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
+		List<Quantile> quantileList = null;
 		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+		{																				
+			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.Quantile where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            clusterNodeList = query.list();            
+            quantileList = query.list();            
 		}
 		catch(Exception e)
 		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Quantile object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return clusterNodeList;
+		return quantileList;
 	}
-	
+    
 	/**
-     * Delete a Confidence Interval Description by the specified UUID.
+     * Delete a Quantile object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<Quantile>
      */
-	public List<ClusterNode> delete(byte[] uuidBytes)
+	public List<Quantile> delete(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
+		List<Quantile> quantileList = null;
 		try
 		{
-			clusterNodeList = get(uuidBytes);
-			for(ClusterNode clusterNode : clusterNodeList)
-				session.delete(clusterNode);
+			quantileList = get(uuidBytes);
+			for(Quantile quantile : quantileList)
+				session.delete(quantile);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete quantile object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return clusterNodeList;
+		return quantileList;
 	}
 	
 	/**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Retrieve a Quantile object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param quantileList : List<Quantile>
+     * @param isCreation : boolean
+     * @return quantileList : List<Quantile>
      */
-	public List<ClusterNode> saveOrUpdate(List<ClusterNode> clusterNodeList,boolean isCreation)
+	public List<Quantile> saveOrUpdate(List<Quantile> quantileList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(ClusterNode clusterNode : clusterNodeList)				
-					session.save(clusterNode);				
+				for(Quantile quantile : quantileList)				
+					session.save(quantile);				
 			}
 			else
 			{
-				for(ClusterNode clusterNode : clusterNodeList)
-					session.update(clusterNode);
+				for(Quantile quantile : quantileList)
+					session.update(quantile);
 			}
 		}
 		catch(Exception e)
 		{
-			clusterNodeList=null;
+			quantileList=null;
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save Cluster Node : " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save Quantile object : " + e.getMessage());
 		}
-		return clusterNodeList;
+		return quantileList;
 	}
-
 }

@@ -29,25 +29,27 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
-import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.BetaScale;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+
 /**
  * Manager class which provides CRUD functionality 
- * for MySQL table ClusterNode object.
+ * for MySQL table Beta Scale object.
  * 
  * @author Uttara Sakhadeo
  */
-public class ClusterNodeManager extends BaseManager 
+public class BetaScaleManager extends BaseManager
 {
-
-	public ClusterNodeManager() throws BaseManagerException {super();}
+	public BetaScaleManager() throws BaseManagerException
+	{
+		super();
+	}
 	
 	/**
-     * Check existance of a Cluster Node object by the specified UUID
+     * Check existence of a Beta Scale object by the specified UUID
      * 
-     * @param studyUuid
+     * @param studyUuid : byte[]
      * @return boolean
      */
     public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
@@ -55,100 +57,100 @@ public class ClusterNodeManager extends BaseManager
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
         {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);        	
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
+        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.BetaScale where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<ClusterNode> clusterNodeList= query.list(); 
-        	if(clusterNodeList!=null)
+            List<BetaScale> betaScaleList= query.list(); 
+        	if(betaScaleList!=null)
         		return true;
         	else
         		return false;
         }
         catch (Exception e)
         {
-            throw new StudyDesignException("Failed to retrieve Cluster Node for UUID '" + 
+            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
     }
     
     /**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Retrieve a Beta Scale object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<BetaScale>
      */
-	public List<ClusterNode> get(byte[] uuidBytes)
+	public List<BetaScale> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
+		List<BetaScale> betaScaleList = null;
 		try
 		{									
 			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.BetaScale where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            clusterNodeList = query.list();            
+            betaScaleList = query.list();            
 		}
 		catch(Exception e)
 		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve BetaScale object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return clusterNodeList;
+		return betaScaleList;
 	}
 	
 	/**
-     * Delete a Confidence Interval Description by the specified UUID.
+     * Delete a Beta Scale object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<BetaScale>
      */
-	public List<ClusterNode> delete(byte[] uuidBytes)
+	public List<BetaScale> delete(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
+		List<BetaScale> betaScaleList = null;
 		try
 		{
-			clusterNodeList = get(uuidBytes);
-			for(ClusterNode clusterNode : clusterNodeList)
-				session.delete(clusterNode);
+			betaScaleList = get(uuidBytes);
+			for(BetaScale betaScale : betaScaleList)
+				session.delete(betaScale);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete BetaScale object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return clusterNodeList;
+		return betaScaleList;
 	}
 	
 	/**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Retrieve a BetaScale object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param betaScaleList : List<BetaScale>
+     * @param isCreation : boolean
+     * @return betaScaleList : List<BetaScale>
      */
-	public List<ClusterNode> saveOrUpdate(List<ClusterNode> clusterNodeList,boolean isCreation)
+	public List<BetaScale> saveOrUpdate(List<BetaScale> betaScaleList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(ClusterNode clusterNode : clusterNodeList)				
-					session.save(clusterNode);				
+				for(BetaScale betaScale : betaScaleList)				
+					session.save(betaScale);				
 			}
 			else
 			{
-				for(ClusterNode clusterNode : clusterNodeList)
-					session.update(clusterNode);
+				for(BetaScale betaScale : betaScaleList)
+					session.update(betaScale);
 			}
 		}
 		catch(Exception e)
 		{
-			clusterNodeList=null;
+			betaScaleList=null;
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save Cluster Node : " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save BetaScale object : " + e.getMessage());
 		}
-		return clusterNodeList;
+		return betaScaleList;
 	}
-
 }

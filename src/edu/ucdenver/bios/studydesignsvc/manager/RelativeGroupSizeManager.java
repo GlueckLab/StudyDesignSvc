@@ -29,25 +29,27 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
-import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+
 /**
  * Manager class which provides CRUD functionality 
- * for MySQL table ClusterNode object.
+ * for MySQL table RelativeGroupSize object.
  * 
  * @author Uttara Sakhadeo
  */
-public class ClusterNodeManager extends BaseManager 
+public class RelativeGroupSizeManager extends BaseManager
 {
-
-	public ClusterNodeManager() throws BaseManagerException {super();}
+	public RelativeGroupSizeManager() throws BaseManagerException
+	{
+		super();
+	}
 	
 	/**
-     * Check existance of a Cluster Node object by the specified UUID
+     * Check existence of a RelativeGroupSize object by the specified UUID
      * 
-     * @param studyUuid
+     * @param studyUuid : byte[]
      * @return boolean
      */
     public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
@@ -55,100 +57,100 @@ public class ClusterNodeManager extends BaseManager
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
         {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);        	
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
+        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<ClusterNode> clusterNodeList= query.list(); 
-        	if(clusterNodeList!=null)
+            List<RelativeGroupSize> relativeGroupSizeList= query.list(); 
+        	if(relativeGroupSizeList!=null)
         		return true;
         	else
         		return false;
         }
         catch (Exception e)
         {
-            throw new StudyDesignException("Failed to retrieve Cluster Node for UUID '" + 
+            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
     }
     
     /**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Retrieve a RelativeGroupSize object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<RelativeGroupSize>
      */
-	public List<ClusterNode> get(byte[] uuidBytes)
+	public List<RelativeGroupSize> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
+		List<RelativeGroupSize> relativeGroupSizeList = null;
 		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+		{																				
+			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            clusterNodeList = query.list();            
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return clusterNodeList;
-	}
-	
-	/**
-     * Delete a Confidence Interval Description by the specified UUID.
-     * 
-     * @param studyUUID:UUID
-     * @return study design object
-     */
-	public List<ClusterNode> delete(byte[] uuidBytes)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
-		try
-		{
-			clusterNodeList = get(uuidBytes);
-			for(ClusterNode clusterNode : clusterNodeList)
-				session.delete(clusterNode);
+            relativeGroupSizeList = query.list();            
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve RelativeGroupSize object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return clusterNodeList;
+		return relativeGroupSizeList;
 	}
 	
 	/**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Delete a RelativeGroupSize object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<RelativeGroupSize>
      */
-	public List<ClusterNode> saveOrUpdate(List<ClusterNode> clusterNodeList,boolean isCreation)
+	public List<RelativeGroupSize> delete(byte[] uuidBytes)
+	{
+		if(!transactionStarted) 
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
+		List<RelativeGroupSize> relativeGroupSizeList = null;
+		try
+		{
+			relativeGroupSizeList = get(uuidBytes);
+			for(RelativeGroupSize relativeGroupSize : relativeGroupSizeList)
+				session.delete(relativeGroupSize);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete RelativeGroupSize object for UUID '" + uuidBytes + "': " + e.getMessage());
+		}
+		return relativeGroupSizeList;
+	}
+	
+	/**
+     * Retrieve a RelativeGroupSize object by the specified UUID.
+     * 
+     * @param relativeGroupSizeList : List<RelativeGroupSize>
+     * @param isCreation : boolean
+     * @return relativeGroupSizeList : List<RelativeGroupSize>
+     */
+	public List<RelativeGroupSize> saveOrUpdate(List<RelativeGroupSize> relativeGroupSizeList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(ClusterNode clusterNode : clusterNodeList)				
-					session.save(clusterNode);				
+				for(RelativeGroupSize relativeGroupSize : relativeGroupSizeList)				
+					session.save(relativeGroupSize);				
 			}
 			else
 			{
-				for(ClusterNode clusterNode : clusterNodeList)
-					session.update(clusterNode);
+				for(RelativeGroupSize relativeGroupSize : relativeGroupSizeList)
+					session.update(relativeGroupSize);
 			}
 		}
 		catch(Exception e)
 		{
-			clusterNodeList=null;
+			relativeGroupSizeList=null;
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save Cluster Node : " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save RelativeGroupSize object : " + e.getMessage());
 		}
-		return clusterNodeList;
+		return relativeGroupSizeList;
 	}
-
 }

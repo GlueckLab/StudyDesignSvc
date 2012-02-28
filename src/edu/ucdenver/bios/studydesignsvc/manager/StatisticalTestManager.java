@@ -29,25 +29,29 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
-import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.BetaScale;
+import edu.ucdenver.bios.webservice.common.domain.NominalPower;
+import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+
 /**
  * Manager class which provides CRUD functionality 
- * for MySQL table ClusterNode object.
+ * for MySQL table StatisticalTest object.
  * 
  * @author Uttara Sakhadeo
  */
-public class ClusterNodeManager extends BaseManager 
+public class StatisticalTestManager extends BaseManager
 {
-
-	public ClusterNodeManager() throws BaseManagerException {super();}
+	public StatisticalTestManager() throws BaseManagerException
+	{
+		super();
+	}
 	
 	/**
-     * Check existance of a Cluster Node object by the specified UUID
+     * Check existence of a StatisticalTest object by the specified UUID
      * 
-     * @param studyUuid
+     * @param studyUuid : byte[]
      * @return boolean
      */
     public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
@@ -55,100 +59,100 @@ public class ClusterNodeManager extends BaseManager
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
         {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);        	
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
+        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.StatisticalTest where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<ClusterNode> clusterNodeList= query.list(); 
-        	if(clusterNodeList!=null)
+            List<StatisticalTest> testList= query.list(); 
+        	if(testList!=null)
         		return true;
         	else
         		return false;
         }
         catch (Exception e)
         {
-            throw new StudyDesignException("Failed to retrieve Cluster Node for UUID '" + 
+            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
     }
     
     /**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Retrieve a StatisticalTest object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<StatisticalTest>
      */
-	public List<ClusterNode> get(byte[] uuidBytes)
+	public List<StatisticalTest> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
+		List<StatisticalTest> testList = null;
 		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+		{																				
+			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.StatisticalTest where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            clusterNodeList = query.list();            
+            testList = query.list();            
 		}
 		catch(Exception e)
 		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve StatisticalTest object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return clusterNodeList;
+		return testList;
 	}
 	
 	/**
-     * Delete a Confidence Interval Description by the specified UUID.
+     * Delete a StatisticalTest object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<StatisticalTest>
      */
-	public List<ClusterNode> delete(byte[] uuidBytes)
+	public List<StatisticalTest> delete(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
+		List<StatisticalTest> testList = null;
 		try
 		{
-			clusterNodeList = get(uuidBytes);
-			for(ClusterNode clusterNode : clusterNodeList)
-				session.delete(clusterNode);
+			testList = get(uuidBytes);
+			for(StatisticalTest test : testList)
+				session.delete(test);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete StatisticalTest object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return clusterNodeList;
+		return testList;
 	}
 	
 	/**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Retrieve a StatisticalTest object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param testList : List<StatisticalTest>
+     * @param isCreation : boolean
+     * @return testList : List<StatisticalTest>
      */
-	public List<ClusterNode> saveOrUpdate(List<ClusterNode> clusterNodeList,boolean isCreation)
+	public List<StatisticalTest> saveOrUpdate(List<StatisticalTest> testList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(ClusterNode clusterNode : clusterNodeList)				
-					session.save(clusterNode);				
+				for(StatisticalTest test : testList)				
+					session.save(test);				
 			}
 			else
 			{
-				for(ClusterNode clusterNode : clusterNodeList)
-					session.update(clusterNode);
+				for(StatisticalTest test : testList)
+					session.update(test);
 			}
 		}
 		catch(Exception e)
 		{
-			clusterNodeList=null;
+			testList=null;
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save Cluster Node : " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save StatisticalTest object : " + e.getMessage());
 		}
-		return clusterNodeList;
+		return testList;
 	}
-
 }
+

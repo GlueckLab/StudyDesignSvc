@@ -53,7 +53,7 @@ public class StudyDesignManager extends BaseManager
 	/**
      * Check existance of a study design object by the specified UUID
      * 
-     * @param studyUuid
+     * @param studyUuid : byte[]
      * @return boolean
      */
     public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
@@ -92,6 +92,7 @@ public class StudyDesignManager extends BaseManager
         }
         catch (Exception e)
         {
+        	System.out.println(e.getMessage());
             throw new StudyDesignException("Failed to retrieve StudyDesign for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
@@ -101,15 +102,15 @@ public class StudyDesignManager extends BaseManager
 	/*
 	 * Retrieve 
 	 */
-	public List<UUID> getStudyUUIDs() throws StudyDesignException
+	public List<StudyDesign> getStudyUUIDs() throws StudyDesignException
 	{
 		if(!transactionStarted) throw new StudyDesignException("Transaction has not been started.");
 		try
 		{
-			Query query = session.createQuery("select studyUUID from StudyDesign");
+			Query query = session.createQuery("select uuid from edu.ucdenver.bios.webservice.common.domain.StudyDesign");
 			//Query query = session.createQuery("select StudyUUID from tablestudydesign");
 			@SuppressWarnings("unchecked")
-			List<UUID> results = query.list();
+			List<StudyDesign> results = query.list();
 			return results;
 		}
 		catch(Exception e)
@@ -211,7 +212,8 @@ public class StudyDesignManager extends BaseManager
 		}
 		catch(Exception e)
 		{
-			throw new StudyDesignException("Failed to save study design : " + e.getMessage());
+			System.out.println(e.getMessage());
+			throw new StudyDesignException("Failed to save study design : " + e.getMessage()+"\n"+e.getStackTrace());
 		}
 		return studyDesign;
 	}

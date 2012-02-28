@@ -29,25 +29,27 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
-import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.NominalPower;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+
 /**
  * Manager class which provides CRUD functionality 
- * for MySQL table ClusterNode object.
+ * for MySQL table NominalPower object.
  * 
  * @author Uttara Sakhadeo
  */
-public class ClusterNodeManager extends BaseManager 
+public class NominalPowerManager extends BaseManager
 {
-
-	public ClusterNodeManager() throws BaseManagerException {super();}
+	public NominalPowerManager() throws BaseManagerException
+	{
+		super();
+	}
 	
 	/**
-     * Check existance of a Cluster Node object by the specified UUID
+     * Check existence of a Nominal Power object by the specified UUID
      * 
-     * @param studyUuid
+     * @param studyUuid : byte[]
      * @return boolean
      */
     public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
@@ -55,100 +57,99 @@ public class ClusterNodeManager extends BaseManager
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
         {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);        	
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
+        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.NominalPower where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<ClusterNode> clusterNodeList= query.list(); 
-        	if(clusterNodeList!=null)
+            List<NominalPower> nominalPowerList= query.list(); 
+        	if(nominalPowerList!=null)
         		return true;
         	else
         		return false;
         }
         catch (Exception e)
         {
-            throw new StudyDesignException("Failed to retrieve Cluster Node for UUID '" + 
+            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
     }
     
     /**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Retrieve a Nominal Power object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<NominalPower>
      */
-	public List<ClusterNode> get(byte[] uuidBytes)
+	public List<NominalPower> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
+		List<NominalPower> nominalPowerList = null;
 		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+		{																				
+			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.NominalPower where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            clusterNodeList = query.list();            
+            nominalPowerList = query.list();            
 		}
 		catch(Exception e)
 		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Nominal Power object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return clusterNodeList;
+		return nominalPowerList;
 	}
 	
 	/**
-     * Delete a Confidence Interval Description by the specified UUID.
+     * Delete a NominalPower object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<NominalPower>
      */
-	public List<ClusterNode> delete(byte[] uuidBytes)
+	public List<NominalPower> delete(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
+		List<NominalPower> nominalPowerList = null;
 		try
 		{
-			clusterNodeList = get(uuidBytes);
-			for(ClusterNode clusterNode : clusterNodeList)
-				session.delete(clusterNode);
+			nominalPowerList = get(uuidBytes);
+			for(NominalPower nominalPower : nominalPowerList)
+				session.delete(nominalPower);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete NominalPower object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return clusterNodeList;
+		return nominalPowerList;
 	}
 	
 	/**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Retrieve a NominalPower object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param nominalPowerList : List<NominalPower>
+     * @param isCreation : boolean
+     * @return nominalPowerList : List<NominalPower>
      */
-	public List<ClusterNode> saveOrUpdate(List<ClusterNode> clusterNodeList,boolean isCreation)
+	public List<NominalPower> saveOrUpdate(List<NominalPower> nominalPowerList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(ClusterNode clusterNode : clusterNodeList)				
-					session.save(clusterNode);				
+				for(NominalPower nominalPower : nominalPowerList)				
+					session.save(nominalPower);				
 			}
 			else
 			{
-				for(ClusterNode clusterNode : clusterNodeList)
-					session.update(clusterNode);
+				for(NominalPower nominalPower : nominalPowerList)
+					session.update(nominalPower);
 			}
 		}
 		catch(Exception e)
 		{
-			clusterNodeList=null;
+			nominalPowerList=null;
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save Cluster Node : " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save NominalPower object : " + e.getMessage());
 		}
-		return clusterNodeList;
+		return nominalPowerList;
 	}
-
 }

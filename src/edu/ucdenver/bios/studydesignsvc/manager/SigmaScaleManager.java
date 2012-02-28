@@ -29,25 +29,27 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
-import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+
 /**
  * Manager class which provides CRUD functionality 
- * for MySQL table ClusterNode object.
+ * for MySQL table Sigma Scale object.
  * 
  * @author Uttara Sakhadeo
  */
-public class ClusterNodeManager extends BaseManager 
+public class SigmaScaleManager extends BaseManager
 {
-
-	public ClusterNodeManager() throws BaseManagerException {super();}
+	public SigmaScaleManager() throws BaseManagerException
+	{
+		super();
+	}
 	
 	/**
-     * Check existance of a Cluster Node object by the specified UUID
+     * Check existence of a SigmaScale object by the specified UUID
      * 
-     * @param studyUuid
+     * @param studyUuid : byte[]
      * @return boolean
      */
     public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
@@ -55,100 +57,100 @@ public class ClusterNodeManager extends BaseManager
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
         {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);        	
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
+        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.SigmaScale where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<ClusterNode> clusterNodeList= query.list(); 
-        	if(clusterNodeList!=null)
+            List<SigmaScale> sigmaScaleList= query.list(); 
+        	if(sigmaScaleList!=null)
         		return true;
         	else
         		return false;
         }
         catch (Exception e)
         {
-            throw new StudyDesignException("Failed to retrieve Cluster Node for UUID '" + 
+            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
     }
     
     /**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Retrieve a SigmaScale object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<SigmaScale>
      */
-	public List<ClusterNode> get(byte[] uuidBytes)
+	public List<SigmaScale> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
+		List<SigmaScale> sigmaScaleList = null;
 		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
+		{																				
+			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.SigmaScale where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            clusterNodeList = query.list();            
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return clusterNodeList;
-	}
-	
-	/**
-     * Delete a Confidence Interval Description by the specified UUID.
-     * 
-     * @param studyUUID:UUID
-     * @return study design object
-     */
-	public List<ClusterNode> delete(byte[] uuidBytes)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
-		try
-		{
-			clusterNodeList = get(uuidBytes);
-			for(ClusterNode clusterNode : clusterNodeList)
-				session.delete(clusterNode);
+            sigmaScaleList = query.list();            
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve SigmaScale object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return clusterNodeList;
+		return sigmaScaleList;
 	}
 	
 	/**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Delete a Sigma Scale object by the specified UUID.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param studyUuid : byte[]
+     * @return List<SigmaScale>
      */
-	public List<ClusterNode> saveOrUpdate(List<ClusterNode> clusterNodeList,boolean isCreation)
+	public List<SigmaScale> delete(byte[] uuidBytes)
+	{
+		if(!transactionStarted) 
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
+		List<SigmaScale> sigmaScaleList = null;
+		try
+		{
+			sigmaScaleList = get(uuidBytes);
+			for(SigmaScale sigmaScale : sigmaScaleList)
+				session.delete(sigmaScale);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete SigmaScale object for UUID '" + uuidBytes + "': " + e.getMessage());
+		}
+		return sigmaScaleList;
+	}
+	
+	/**
+     * Retrieve a SigmaScale object by the specified UUID.
+     * 
+     * @param sigmaScaleList : List<SigmaScale>
+     * @param isCreation : boolean
+     * @return sigmaScaleList : List<SigmaScale>
+     */
+	public List<SigmaScale> saveOrUpdate(List<SigmaScale> sigmaScaleList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(ClusterNode clusterNode : clusterNodeList)				
-					session.save(clusterNode);				
+				for(SigmaScale sigmaScale : sigmaScaleList)				
+					session.save(sigmaScale);				
 			}
 			else
 			{
-				for(ClusterNode clusterNode : clusterNodeList)
-					session.update(clusterNode);
+				for(SigmaScale sigmaScale : sigmaScaleList)
+					session.update(sigmaScale);
 			}
 		}
 		catch(Exception e)
 		{
-			clusterNodeList=null;
+			sigmaScaleList=null;
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save Cluster Node : " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save SigmaScale object : " + e.getMessage());
 		}
-		return clusterNodeList;
+		return sigmaScaleList;
 	}
-
 }
