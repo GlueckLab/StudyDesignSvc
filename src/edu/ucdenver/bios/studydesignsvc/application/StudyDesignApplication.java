@@ -28,9 +28,10 @@ import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
 
-import edu.cudenver.bios.studydesignsvc.resource.ConfidenceIntervalServerResource;
-import edu.cudenver.bios.studydesignsvc.resource.DefaultResource;
-import edu.cudenver.bios.studydesignsvc.resource.StudyDesignServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.BetaScaleServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.ConfidenceIntervalServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.DefaultResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignServerResource;
 
 /**
  * Main Restlet application class for the Study Design Service. Defines URI
@@ -66,10 +67,14 @@ public class StudyDesignApplication extends Application {
 		/* Study Design Resource */
 		router.attach("/study/", StudyDesignServerResource.class);
 		/* ConfidenceInterval Resource */
-		router.attach("/study/" + StudyDesignConstants.TAG_CONFIDENCE_INTERVAL,
+		router.attach("/"+StudyDesignConstants.TAG_CONFIDENCE_INTERVAL_DESCRIPTION,
 				ConfidenceIntervalServerResource.class);
-		/* List Resource */
-
+		/* Power Curve Description */
+		router.attach("/"+StudyDesignConstants.TAG_POWER_CURVE_DESCRIPTION,
+				ConfidenceIntervalServerResource.class);
+		/* Beta Scale List Resource */
+		router.attach("/"+StudyDesignConstants.TAG_BETA_SCALE_LIST,
+				BetaScaleServerResource.class);
 		/* Matrix Resource */
 
 		/* Between Subject Effect object Resource */
