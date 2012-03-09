@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  
+ * Study Design Service for the GLIMMPSE Software System.  
+ * This service stores study design definitions for users of the GLIMMSE interface.
+ * Service contain all information related to a power or sample size calculation.  
+ * The Study Design Service simplifies communication between different screens in the user interface.
+ * 
+ * Copyright (C) 2010 Regents of the University of Colorado.  
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ -->
+ 
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>	
+	<typedef name="powerMethodEnum" class="edu.ucdenver.bios.studydesignsvc.application.GenericEnumUserType">
+		<param name="enumClass">edu.ucdenver.bios.webservice.common.enums.PowerMethodEnum</param>
+	</typedef>
+	
+	<typedef name="statisticalTestTypeEnum" class="edu.ucdenver.bios.studydesignsvc.application.GenericEnumUserType">
+		<param name="enumClass">edu.ucdenver.bios.webservice.common.enums.StatisticalTestTypeEnum</param>
+	</typedef>
+		
+	<class name="edu.ucdenver.bios.webservice.common.domain.TypeIError" table="ALPHA_LIST">					
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="alphaValue" column="alpha_value"/>					
+		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
+	</class>
+	
+	<class name="edu.ucdenver.bios.webservice.common.domain.BetaScale" table="BETA_SCALE_LIST" lazy="false">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="value" column="beta_value"/>									 				
+	</class>
+	
+	<class name="edu.ucdenver.bios.webservice.common.domain.StatisticalTest" table="STATISTICAL_TEST_LIST" lazy="false">				
+		<id name="id" column="id"><generator class="native"/></id>						
+		<property name="type" 
+			column="type" 
+			type="statisticalTestTypeEnum"
+			not-null="false"
+			update="false"/>									 				
+	</class>
+	
+	<class name="edu.ucdenver.bios.webservice.common.domain.SigmaScale" table="SIGMA_SCALE_LIST">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="value" column="sigma_scale_value"/>					
+		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
+	</class>
+	
+	<class name="edu.ucdenver.bios.webservice.common.domain.Quantile" table="QUANTILE_LIST">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="value" column="quantile_value"/>					
+		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
+	</class>
+	
+	<class name="edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize" table="RELATIVE_GROUP_SIZE_LIST">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="value" column="relative_group_size_value"/>					
+		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
+	</class>
+	
+	<class name="edu.ucdenver.bios.webservice.common.domain.NominalPower" table="NOMINAL_POWER_LIST">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="value" column="nominal_power_value"/>					
+		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
+	</class>	
+	
+	<class name="edu.ucdenver.bios.webservice.common.domain.PowerMethod" table="POWER_METHOD_LIST">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="powerMethodEnum" 
+			column="method" 
+			type="powerMethodEnum"
+			not-null="false"
+			update="false"/>					
+		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
+	</class>
+	
+	<class name="edu.ucdenver.bios.webservice.common.domain.ResponseNode" table="RESPONSES_LIST">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="name" column="name"/>					
+		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
+	</class>
+	<!--
+		
+	<class name="edu.ucdenver.bios.webservice.common.domain.NominalPower" table="NOMINAL_POWER_LIST">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="value" column="nominal_power_value"/>					
+		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
+	</class>
+	
+	<class name="edu.ucdenver.bios.webservice.common.domain.Test" table="TEST_LIST">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="value" column="name"/>					
+		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
+	</class>
+	 -->
+		
+</hibernate-mapping>

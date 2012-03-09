@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  
+ * Study Design Service for the GLIMMPSE Software System.  
+ * This service stores study design definitions for users of the GLIMMSE interface.
+ * Service contain all information related to a power or sample size calculation.  
+ * The Study Design Service simplifies communication between different screens in the user interface.
+ * 
+ * Copyright (C) 2010 Regents of the University of Colorado.  
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ -->
+ 
+ <!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>	
+	<typedef name="horizonTalAxisLabel" class="edu.ucdenver.bios.studydesignsvc.application.GenericEnumUserType">
+		<param name="enumClass">edu.ucdenver.bios.webservice.common.enums.HorizontalAxisLabelEnum</param>
+	</typedef>
+	<typedef name="stratificationVariable" class="edu.ucdenver.bios.studydesignsvc.application.GenericEnumUserType">
+		<param name="enumClass">edu.ucdenver.bios.webservice.common.enums.StratificationVariableEnum</param>
+	</typedef>
+	<class name="edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription" table="POWER_CURVE_DESCRIPTION">		
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="sampleSize" column="sampleSize" type="java.lang.Integer"/>		
+		<property name="powerCurveDescription" column="tablePowerCurveDescription" type="java.lang.String"/>
+		<property name="statisticalTest" column="statisticalTest" type="java.lang.String"/>
+		<property name="regressionCoeeficientScaleFactor" column="regressionCoeeficientScaleFactor" type="java.lang.Float"/>
+		<property name="variabilityScaleFactor" column="variabilityScaleFactor" type="java.lang.Float"/>
+		<property name="typeIError" column="typeIError" type="java.lang.Float"/>		
+		<!-- <many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>-->
+		<property name="horizontalAxisLabelEnum" 
+			column="horizontalAxisLabel" 
+			type="horizonTalAxisLabel"
+			not-null="false"
+			update="false"/>	
+		<property name="stratificationVarEnum" 
+		column="stratificationVariable" 
+		type="stratificationVariable"
+		not-null="false"
+		update="false"/>	 					
+	</class>
+</hibernate-mapping>
