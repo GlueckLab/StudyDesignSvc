@@ -60,7 +60,7 @@ public class SigmaScaleManager extends BaseManager
         	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
         	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.SigmaScale where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<SigmaScale> sigmaScaleList= query.list(); 
+            List<SigmaScale> sigmaScaleList= (List<SigmaScale>)query.list(); 
         	if(sigmaScaleList!=null)
         		return true;
         	else
@@ -87,7 +87,7 @@ public class SigmaScaleManager extends BaseManager
 		{																				
 			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.SigmaScale where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            sigmaScaleList = query.list();            
+            sigmaScaleList = (List<SigmaScale>)query.list();            
 		}
 		catch(Exception e)
 		{

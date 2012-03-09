@@ -22,6 +22,7 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -52,7 +53,7 @@ public class BetaScaleManager extends BaseManager
      * @param studyUuid : byte[]
      * @return boolean
      */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
+    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
@@ -71,7 +72,7 @@ public class BetaScaleManager extends BaseManager
             throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
-    }
+    }*/
     
     /**
      * Retrieve a Beta Scale object by the specified UUID.
@@ -79,14 +80,14 @@ public class BetaScaleManager extends BaseManager
      * @param studyUuid : byte[]
      * @return List<BetaScale>
      */
-	public List<BetaScale> get(byte[] uuidBytes)
+	/*public List<BetaScale> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		List<BetaScale> betaScaleList = null;
 		try
 		{									
 			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.BetaScale where studyDesign = :uuid");
+			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.BetaScale where uuid = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
             betaScaleList = query.list();            
 		}
@@ -95,7 +96,7 @@ public class BetaScaleManager extends BaseManager
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve BetaScale object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return betaScaleList;
-	}
+	}*/
 	
 	/**
      * Delete a Beta Scale object by the specified UUID.
@@ -103,14 +104,13 @@ public class BetaScaleManager extends BaseManager
      * @param studyUuid : byte[]
      * @return List<BetaScale>
      */
-	public List<BetaScale> delete(byte[] uuidBytes)
+	public List<BetaScale> delete(byte[] uuidBytes,List<BetaScale> betaScaleList)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<BetaScale> betaScaleList = null;
 		try
 		{
-			betaScaleList = get(uuidBytes);
+			//betaScaleList = get(uuidBytes);
 			for(BetaScale betaScale : betaScaleList)
 				session.delete(betaScale);
 		}
@@ -137,7 +137,10 @@ public class BetaScaleManager extends BaseManager
 			if(isCreation==true)
 			{
 				for(BetaScale betaScale : betaScaleList)				
-					session.save(betaScale);				
+				{
+					session.save(betaScale);
+					System.out.println("in save id: "+betaScale.getId());
+				}				
 			}
 			else
 			{

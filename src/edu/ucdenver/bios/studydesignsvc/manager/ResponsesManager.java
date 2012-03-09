@@ -22,7 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -30,25 +29,24 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.webservice.common.domain.NominalPower;
+import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
-
 /**
  * Manager class which provides CRUD functionality 
- * for MySQL table NominalPower object.
+ * for MySQL table Responses object.
  * 
  * @author Uttara Sakhadeo
  */
-public class NominalPowerManager extends BaseManager
+public class ResponsesManager extends BaseManager 
 {
-	public NominalPowerManager() throws BaseManagerException
+	public ResponsesManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Check existence of a Nominal Power object by the specified UUID
+     * Check existence of a ResponseNode object by the specified UUID
      * 
      * @param studyUuid : byte[]
      * @return boolean
@@ -59,98 +57,99 @@ public class NominalPowerManager extends BaseManager
         try
         {
         	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.NominalPower where studyDesign = :uuid");
+        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ResponseNode where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            ArrayList<NominalPower> nominalPowerList= (ArrayList<NominalPower>)query.list(); 
-        	if(nominalPowerList!=null)
+            List<ResponseNode> responseNodeList= (List<ResponseNode>)query.list(); 
+        	if(responseNodeList!=null)
         		return true;
         	else
         		return false;
         }
         catch (Exception e)
         {
-            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
+            throw new StudyDesignException("Failed to retrieve ResponseNode object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
     }
     
     /**
-     * Retrieve a Nominal Power object by the specified UUID.
+     * Retrieve a ResponseNode object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return ArrayList<NominalPower>
+     * @return List<ResponseNode>
      */
-	public List<NominalPower> get(byte[] uuidBytes)
+	public List<ResponseNode> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<NominalPower> nominalPowerList = null;
+		List<ResponseNode> responseNodeList = null;
 		try
-		{																				
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.NominalPower where studyDesign = :uuid");
+		{									
+			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
+			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ResponseNode where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            nominalPowerList = query.list();            
+            responseNodeList = (List<ResponseNode>)query.list();            
 		}
 		catch(Exception e)
 		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Nominal Power object for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve ResponseNode object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return nominalPowerList;
+		return responseNodeList;
 	}
 	
 	/**
-     * Delete a NominalPower object by the specified UUID.
+     * Delete a ResponseNode object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return ArrayList<NominalPower>
+     * @return List<ResponseNode>
      */
-	public List<NominalPower> delete(byte[] uuidBytes)
+	public List<ResponseNode> delete(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<NominalPower> nominalPowerList = null;
+		List<ResponseNode> responseNodeList = null;
 		try
 		{
-			nominalPowerList = get(uuidBytes);
-			for(NominalPower nominalPower : nominalPowerList)
-				session.delete(nominalPower);
+			responseNodeList = get(uuidBytes);
+			for(ResponseNode ResponseNode : responseNodeList)
+				session.delete(ResponseNode);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete NominalPower object for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete ResponseNode object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return nominalPowerList;
+		return responseNodeList;
 	}
 	
 	/**
-     * Retrieve a NominalPower object by the specified UUID.
+     * Retrieve a ResponseNode object by the specified UUID.
      * 
-     * @param nominalPowerList : ArrayList<NominalPower>
+     * @param responseNodeList : List<ResponseNode>
      * @param isCreation : boolean
-     * @return nominalPowerList : ArrayList<NominalPower>
+     * @return responseNodeList : List<ResponseNode>
      */
-	public ArrayList<NominalPower> saveOrUpdate(ArrayList<NominalPower> nominalPowerList,boolean isCreation)
+	public List<ResponseNode> saveOrUpdate(List<ResponseNode> responseNodeList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(NominalPower nominalPower : nominalPowerList)				
-					session.save(nominalPower);				
+				for(ResponseNode responseNode : responseNodeList)				
+					session.save(responseNode);				
 			}
 			else
 			{
-				for(NominalPower nominalPower : nominalPowerList)
-					session.update(nominalPower);
+				for(ResponseNode responseNode : responseNodeList)
+					session.update(responseNode);
 			}
 		}
 		catch(Exception e)
 		{
-			nominalPowerList=null;
+			responseNodeList=null;
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save NominalPower object : " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save ResponseNode object : " + e.getMessage());
 		}
-		return nominalPowerList;
+		return responseNodeList;
 	}
 }

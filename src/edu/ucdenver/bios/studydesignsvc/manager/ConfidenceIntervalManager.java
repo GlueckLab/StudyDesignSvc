@@ -51,7 +51,7 @@ public class ConfidenceIntervalManager extends BaseManager
      * @param studyUuid
      * @return boolean
      */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
+    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
@@ -71,7 +71,7 @@ public class ConfidenceIntervalManager extends BaseManager
             throw new StudyDesignException("Failed to retrieve StudyDesign for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
-    }
+    }*/
 	
 	/**
      * Retrieve a Confidence Interval Description representation by the specified UUID.
@@ -79,7 +79,7 @@ public class ConfidenceIntervalManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public ConfidenceIntervalDescription get(byte[] uuidBytes)
+	/*public ConfidenceIntervalDescription get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		ConfidenceIntervalDescription confidenceInterval = null;
@@ -95,7 +95,7 @@ public class ConfidenceIntervalManager extends BaseManager
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Confidence Interval for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return confidenceInterval;
-	}
+	}*/
 	
 	
 	/*public ConfidenceInterval getConfidenceInterval(String studyUUID)
@@ -125,7 +125,7 @@ public class ConfidenceIntervalManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public ConfidenceIntervalDescription delete(byte[] uuidBytes)
+	/*public ConfidenceIntervalDescription delete(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
@@ -139,6 +139,28 @@ public class ConfidenceIntervalManager extends BaseManager
 		{
 			System.out.println(e.getMessage());
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete study design for UUID '" + uuidBytes + "': " + e.getMessage());
+		}
+		return confidenceInterval;
+	}*/
+	
+	/**
+     * Delete given Confidence Interval Description
+     * 
+     * @param studyUUID:UUID
+     * @return study design object
+     */
+	public ConfidenceIntervalDescription delete(byte[] uuid,ConfidenceIntervalDescription confidenceInterval)
+	{
+		if(!transactionStarted) 
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
+		try
+		{			
+			session.delete(confidenceInterval);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete ConfidenceInterval for uuid '" + uuid + "': " + e.getMessage());
 		}
 		return confidenceInterval;
 	}

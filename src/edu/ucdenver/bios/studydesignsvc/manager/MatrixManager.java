@@ -22,18 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.hibernate.Query;
-import org.restlet.data.Status;
-import org.restlet.resource.ResourceException;
-
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
-import edu.ucdenver.bios.webservice.common.domain.NamedMatrixCell;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -56,7 +44,7 @@ public class MatrixManager extends BaseManager
      * @param studyUuid : byte[]
      * @return boolean
      */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
+    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
@@ -75,7 +63,7 @@ public class MatrixManager extends BaseManager
             throw new StudyDesignException("Failed to retrieve Matrix object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
-    }
+    }*/
     
     /**
      * Retrieve a Matrix object by the specified UUID.
@@ -83,7 +71,7 @@ public class MatrixManager extends BaseManager
      * @param studyUuid : byte[]
      * @return List<NamedMatrix>
      */
-	public NamedMatrix get(byte[] uuidBytes,String name)
+	/*public NamedMatrix get(byte[] uuidBytes,String name)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		//Map<String,NamedMatrix> namedMatrixMap = new HashMap<String,NamedMatrix>();
@@ -106,7 +94,7 @@ public class MatrixManager extends BaseManager
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve NamedMatrix object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return namedMatrixResult;
-	}
+	}*/
 	
 	/**
      * Retrieve a Matrix object by the specified UUID.
@@ -114,7 +102,7 @@ public class MatrixManager extends BaseManager
      * @param studyUuid : byte[]
      * @return List<NamedMatrix>
      */
-	public List<NamedMatrix> get(byte[] uuidBytes)
+	/*public List<NamedMatrix> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		//Map<String,NamedMatrix> namedMatrixMap = new HashMap<String,NamedMatrix>();
@@ -131,7 +119,7 @@ public class MatrixManager extends BaseManager
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve NamedMatrix object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return namedMatrixList;
-	}
+	}*/
 	
 	
 	
@@ -141,14 +129,14 @@ public class MatrixManager extends BaseManager
      * @param studyUuid : byte[]
      * @return List<NamedMatrix>
      */
-	public NamedMatrix delete(byte[] uuidBytes,String name)
+	/*public NamedMatrix delete(byte[] uuidBytes,String name)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		NamedMatrix namedMatrix = null;
 		try
 		{
-			/*Map<String,NamedMatrix> namedMatrixMap = get(uuidBytes,name);
+			Map<String,NamedMatrix> namedMatrixMap = get(uuidBytes,name);
 			Iterator itr = namedMatrixMap.entrySet().iterator();
 			while(itr.hasNext())
 			{
@@ -159,7 +147,7 @@ public class MatrixManager extends BaseManager
 					namedMatrix = entry.getValue();
 					session.delete(entry.getValue());
 				}
-			}*/
+			}
 			namedMatrix = get(uuidBytes,name);
 			session.delete(namedMatrix);
 		}
@@ -169,7 +157,7 @@ public class MatrixManager extends BaseManager
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete NamedMatrix object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return namedMatrix;
-	}
+	}*/
 	
 	/**
      * Delete a Matrix object by the specified UUID.
@@ -177,14 +165,14 @@ public class MatrixManager extends BaseManager
      * @param studyUuid : byte[]
      * @return List<NamedMatrix>
      */
-	public List<NamedMatrix> delete(byte[] uuidBytes)
+	/*public List<NamedMatrix> delete(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		List<NamedMatrix> namedMatrixList = null;
 		try
 		{
-			/*Map<String,NamedMatrix> namedMatrixMap = get(uuidBytes,name);
+			Map<String,NamedMatrix> namedMatrixMap = get(uuidBytes,name);
 			Iterator itr = namedMatrixMap.entrySet().iterator();
 			while(itr.hasNext())
 			{
@@ -195,7 +183,7 @@ public class MatrixManager extends BaseManager
 					namedMatrix = entry.getValue();
 					session.delete(entry.getValue());
 				}
-			}*/
+			}
 			namedMatrixList = get(uuidBytes);
 			for(NamedMatrix namedMatrix : namedMatrixList)
 			{	session.delete(namedMatrix);}
@@ -206,7 +194,7 @@ public class MatrixManager extends BaseManager
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete NamedMatrix object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return namedMatrixList;
-	}
+	}*/
 	
 	/**
      * Retrieve a NamedMatrix object by the specified UUID.
@@ -215,7 +203,7 @@ public class MatrixManager extends BaseManager
      * @param isCreation : boolean
      * @return namedMatrixList : List<NamedMatrix>
      */
-	public List<NamedMatrix> saveOrUpdate(List<NamedMatrix> namedMatrixList,boolean isCreation)
+	/*public List<NamedMatrix> saveOrUpdate(List<NamedMatrix> namedMatrixList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
@@ -238,5 +226,5 @@ public class MatrixManager extends BaseManager
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save NamedMatrix object : " + e.getMessage());
 		}
 		return namedMatrixList;
-	}
+	}*/
 }

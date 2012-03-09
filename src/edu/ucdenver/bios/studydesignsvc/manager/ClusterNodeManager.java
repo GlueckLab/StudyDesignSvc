@@ -30,7 +30,6 @@ import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
-import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 /**
@@ -50,7 +49,7 @@ public class ClusterNodeManager extends BaseManager
      * @param studyUuid
      * @return boolean
      */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
+    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
@@ -58,7 +57,7 @@ public class ClusterNodeManager extends BaseManager
         	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);        	
         	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<ClusterNode> clusterNodeList= query.list(); 
+            List<ClusterNode> clusterNodeList= (List<ClusterNode>)query.list(); 
         	if(clusterNodeList!=null)
         		return true;
         	else
@@ -69,7 +68,7 @@ public class ClusterNodeManager extends BaseManager
             throw new StudyDesignException("Failed to retrieve Cluster Node for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
-    }
+    }*/
     
     /**
      * Retrieve a Cluster Node by the specified UUID.
@@ -77,7 +76,7 @@ public class ClusterNodeManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public List<ClusterNode> get(byte[] uuidBytes)
+	/*public List<ClusterNode> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		List<ClusterNode> clusterNodeList = null;
@@ -86,14 +85,14 @@ public class ClusterNodeManager extends BaseManager
 			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
 			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            clusterNodeList = query.list();            
+            clusterNodeList = (List<ClusterNode>)query.list();            
 		}
 		catch(Exception e)
 		{
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return clusterNodeList;
-	}
+	}*/
 	
 	/**
      * Delete a Confidence Interval Description by the specified UUID.
@@ -101,15 +100,13 @@ public class ClusterNodeManager extends BaseManager
      * @param studyUUID:UUID
      * @return study design object
      */
-	public List<ClusterNode> delete(byte[] uuidBytes)
+	public List<ClusterNode> delete(byte[] uuidBytes,List<ClusterNode> clusteringTree)
 	{
 		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{
-			clusterNodeList = get(uuidBytes);
-			for(ClusterNode clusterNode : clusterNodeList)
+			for(ClusterNode clusterNode : clusteringTree)
 				session.delete(clusterNode);
 		}
 		catch(Exception e)
@@ -117,7 +114,7 @@ public class ClusterNodeManager extends BaseManager
 			System.out.println(e.getMessage());
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return clusterNodeList;
+		return clusteringTree;
 	}
 	
 	/**

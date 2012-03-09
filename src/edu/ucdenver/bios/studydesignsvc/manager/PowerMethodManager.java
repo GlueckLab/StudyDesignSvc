@@ -22,6 +22,7 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -60,7 +61,7 @@ public class PowerMethodManager extends BaseManager
         	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
         	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.PowerMethod where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<PowerMethod> powerMethodList= query.list(); 
+            ArrayList<PowerMethod> powerMethodList= (ArrayList<PowerMethod>)query.list(); 
         	if(powerMethodList!=null)
         		return true;
         	else
@@ -77,7 +78,7 @@ public class PowerMethodManager extends BaseManager
      * Retrieve a PowerMethod object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return List<PowerMethod>
+     * @return ArrayList<PowerMethod>
      */
 	public List<PowerMethod> get(byte[] uuidBytes)
 	{
@@ -100,7 +101,7 @@ public class PowerMethodManager extends BaseManager
      * Delete a PowerMethod object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return List<PowerMethod>
+     * @return ArrayList<PowerMethod>
      */
 	public List<PowerMethod> delete(byte[] uuidBytes)
 	{
@@ -124,11 +125,11 @@ public class PowerMethodManager extends BaseManager
 	/**
      * Retrieve a PowerMethod object by the specified UUID.
      * 
-     * @param powerMethodList : List<PowerMethod>
+     * @param powerMethodList : ArrayList<PowerMethod>
      * @param isCreation : boolean
-     * @return powerMethodList : List<PowerMethod>
+     * @return powerMethodList : ArrayList<PowerMethod>
      */
-	public List<PowerMethod> saveOrUpdate(List<PowerMethod> powerMethodList,boolean isCreation)
+	public ArrayList<PowerMethod> saveOrUpdate(ArrayList<PowerMethod> powerMethodList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try

@@ -1,8 +1,8 @@
 /*
- * Study Design Service for the GLIMMPSE Software System.  
- * This service stores study design definitions for users of the GLIMMSE interface.
+ * Power Curve Description Service for the GLIMMPSE Software System.  
+ * This service stores Power Curve Description definitions for users of the GLIMMSE interface.
  * Service contain all information related to a power or sample size calculation.  
- * The Study Design Service simplifies communication between different screens in the user interface.
+ * The Power Curve Description Service simplifies communication between different screens in the user interface.
  * 
  * Copyright (C) 2010 Regents of the University of Colorado.  
  *
@@ -54,7 +54,7 @@ public class PowerCurveManager extends BaseManager
      * @param studyUuid : byte[]
      * @return boolean
      */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
+    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
@@ -63,8 +63,8 @@ public class PowerCurveManager extends BaseManager
         	PowerCurveDescription powerCurveDescription = null;
         	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	      
-            /*List<PowerCurveDescription> list = query.list();
-            powerCurveDescription = list.get(0);*/
+            List<PowerCurveDescription> list = query.list();
+            powerCurveDescription = list.get(0);
             powerCurveDescription = (PowerCurveDescription)query.uniqueResult(); 
         	if(powerCurveDescription!=null)
         		return true;
@@ -77,15 +77,15 @@ public class PowerCurveManager extends BaseManager
             throw new StudyDesignException("Failed to retrieve StudyDesign for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
-    }
+    }*/
 	
 	/**
      * Retrieve a power curve description by the specified UUID.
      * 
      * @param studyUUID:UUID
-     * @return study design object
+     * @return Power Curve Description object
      */
-	public PowerCurveDescription get(byte[] uuidBytes)
+	/*public PowerCurveDescription get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		PowerCurveDescription powerCurveDescription = null;
@@ -99,18 +99,18 @@ public class PowerCurveManager extends BaseManager
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve study design for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Power Curve Description for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return powerCurveDescription;
-	}
+	}*/
 	
 	/**
      * Delete a power curve description by the specified UUID.
      * 
      * @param studyUUID:UUID
-     * @return study design object
+     * @return Power Curve Description object
      */
-	public PowerCurveDescription delete(byte[] uuidBytes)
+	/*public PowerCurveDescription delete(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
@@ -123,16 +123,38 @@ public class PowerCurveManager extends BaseManager
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete study design for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Power Curve Description for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return powerCurveDescription;
+	}*/
+	
+	/**
+     * Delete a power curve description by the specified UUID.
+     * 
+     * @param studyUUID:UUID
+     * @return Power Curve Description object
+     */
+	public PowerCurveDescription delete(byte[] uuidBytes,PowerCurveDescription powerCurve)
+	{
+		if(!transactionStarted) 
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
+		try
+		{
+			session.delete(powerCurve);	
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Power Curve Description for UUID '" + uuidBytes + "': " + e.getMessage());
+		}
+		return powerCurve;
 	}
 	
 	/**
      * Retrieve a power curve description by the specified UUID.
      * 
      * @param studyUUID:UUID
-     * @return study design object
+     * @return Power Curve Description object
      */
 	public PowerCurveDescription saveOrUpdate(PowerCurveDescription powerCurveDescription,boolean isCreation)
 	{

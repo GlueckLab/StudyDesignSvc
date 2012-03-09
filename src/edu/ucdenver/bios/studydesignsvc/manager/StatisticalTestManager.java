@@ -23,6 +23,7 @@
 package edu.ucdenver.bios.studydesignsvc.manager;
 
 import java.util.List;
+import java.util.List;
 
 import org.hibernate.Query;
 import org.restlet.data.Status;
@@ -54,7 +55,7 @@ public class StatisticalTestManager extends BaseManager
      * @param studyUuid : byte[]
      * @return boolean
      */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
+    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
@@ -73,7 +74,7 @@ public class StatisticalTestManager extends BaseManager
             throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
-    }
+    }*/
     
     /**
      * Retrieve a StatisticalTest object by the specified UUID.
@@ -81,7 +82,7 @@ public class StatisticalTestManager extends BaseManager
      * @param studyUuid : byte[]
      * @return List<StatisticalTest>
      */
-	public List<StatisticalTest> get(byte[] uuidBytes)
+	/*public List<StatisticalTest> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		List<StatisticalTest> testList = null;
@@ -89,14 +90,14 @@ public class StatisticalTestManager extends BaseManager
 		{																				
 			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.StatisticalTest where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            testList = query.list();            
+            testList = (List<StatisticalTest>)query.list();            
 		}
 		catch(Exception e)
 		{
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve StatisticalTest object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return testList;
-	}
+	}*/
 	
 	/**
      * Delete a StatisticalTest object by the specified UUID.
@@ -104,14 +105,12 @@ public class StatisticalTestManager extends BaseManager
      * @param studyUuid : byte[]
      * @return List<StatisticalTest>
      */
-	public List<StatisticalTest> delete(byte[] uuidBytes)
+	public List<StatisticalTest> delete(byte[] uuidBytes,List<StatisticalTest> testList)
 	{
 		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<StatisticalTest> testList = null;
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{
-			testList = get(uuidBytes);
 			for(StatisticalTest test : testList)
 				session.delete(test);
 		}

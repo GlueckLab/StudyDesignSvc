@@ -22,6 +22,7 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -60,7 +61,7 @@ public class QuantileManager extends BaseManager
         	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
         	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.Quantile where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<Quantile> quantileList= query.list(); 
+            ArrayList<Quantile> quantileList= (ArrayList<Quantile>)query.list(); 
         	if(quantileList!=null)
         		return true;
         	else
@@ -77,17 +78,17 @@ public class QuantileManager extends BaseManager
      * Retrieve a Quantile object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return List<Quantile>
+     * @return ArrayList<Quantile>
      */
 	public List<Quantile> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<Quantile> quantileList = null;
+		ArrayList<Quantile> quantileList = null;
 		try
 		{																				
 			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.Quantile where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            quantileList = query.list();            
+            quantileList = (ArrayList<Quantile>)query.list();            
 		}
 		catch(Exception e)
 		{
@@ -100,7 +101,7 @@ public class QuantileManager extends BaseManager
      * Delete a Quantile object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return List<Quantile>
+     * @return ArrayList<Quantile>
      */
 	public List<Quantile> delete(byte[] uuidBytes)
 	{
@@ -124,9 +125,9 @@ public class QuantileManager extends BaseManager
 	/**
      * Retrieve a Quantile object by the specified UUID.
      * 
-     * @param quantileList : List<Quantile>
+     * @param quantileList : ArrayList<Quantile>
      * @param isCreation : boolean
-     * @return quantileList : List<Quantile>
+     * @return quantileList : ArrayList<Quantile>
      */
 	public List<Quantile> saveOrUpdate(List<Quantile> quantileList,boolean isCreation)
 	{

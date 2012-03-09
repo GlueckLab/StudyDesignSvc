@@ -22,6 +22,7 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -52,7 +53,7 @@ public class BetweenParticipantFactorManager extends BaseManager
      * @param studyUuid : byte[]
      * @return boolean
      */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
+    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
@@ -60,7 +61,7 @@ public class BetweenParticipantFactorManager extends BaseManager
         	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
         	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<BetweenParticipantFactor> betweenParticipantFactorList= query.list(); 
+            ArrayList<BetweenParticipantFactor> betweenParticipantFactorList= (ArrayList<BetweenParticipantFactor>)query.list(); 
         	if(betweenParticipantFactorList!=null)
         		return true;
         	else
@@ -71,15 +72,15 @@ public class BetweenParticipantFactorManager extends BaseManager
             throw new StudyDesignException("Failed to retrieve BetweenParticipantFactor object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
-    }
+    }*/
     
     /**
      * Retrieve a BetweenParticipantFactor object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return List<BetweenParticipantFactor>
+     * @return ArrayList<BetweenParticipantFactor>
      */
-	public List<BetweenParticipantFactor> get(byte[] uuidBytes)
+	/*public List<BetweenParticipantFactor> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		List<BetweenParticipantFactor> betweenParticipantFactorList = null;
@@ -95,22 +96,21 @@ public class BetweenParticipantFactorManager extends BaseManager
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve BetweenParticipantFactor object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return betweenParticipantFactorList;
-	}
+	}*/
 	
 	/**
      * Delete a BetweenParticipantFactor object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return List<BetweenParticipantFactor>
+     * @return ArrayList<BetweenParticipantFactor>
      */
-	public List<BetweenParticipantFactor> delete(byte[] uuidBytes)
+	public List<BetweenParticipantFactor> delete(byte[] uuidBytes,List<BetweenParticipantFactor> betweenParticipantFactorList)
 	{
 		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<BetweenParticipantFactor> betweenParticipantFactorList = null;
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{
-			betweenParticipantFactorList = get(uuidBytes);
+			//betweenParticipantFactorList = get(uuidBytes);
 			for(BetweenParticipantFactor BetweenParticipantFactor : betweenParticipantFactorList)
 				session.delete(BetweenParticipantFactor);
 		}
@@ -125,9 +125,9 @@ public class BetweenParticipantFactorManager extends BaseManager
 	/**
      * Retrieve a BetweenParticipantFactor object by the specified UUID.
      * 
-     * @param betweenParticipantFactorList : List<BetweenParticipantFactor>
+     * @param betweenParticipantFactorList : ArrayList<BetweenParticipantFactor>
      * @param isCreation : boolean
-     * @return betweenParticipantFactorList : List<BetweenParticipantFactor>
+     * @return betweenParticipantFactorList : ArrayList<BetweenParticipantFactor>
      */
 	public List<BetweenParticipantFactor> saveOrUpdate(List<BetweenParticipantFactor> betweenParticipantFactorList,boolean isCreation)
 	{

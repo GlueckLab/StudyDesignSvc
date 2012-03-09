@@ -22,7 +22,7 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.hibernate.Query;
 import org.restlet.data.Status;
@@ -60,7 +60,7 @@ public class TypeIErrorManager extends BaseManager
         	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
         	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.TypeIError where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<TypeIError> typeIErrorList= query.list(); 
+            ArrayList<TypeIError> typeIErrorList= (ArrayList<TypeIError>)query.list(); 
         	if(typeIErrorList!=null)
         		return true;
         	else
@@ -77,18 +77,18 @@ public class TypeIErrorManager extends BaseManager
      * Retrieve a Type I Error object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return List<TypeIError>
+     * @return ArrayList<TypeIError>
      */
-	public List<TypeIError> get(byte[] uuidBytes)
+	public ArrayList<TypeIError> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<TypeIError> typeIErrorList = null;
+		ArrayList<TypeIError> typeIErrorList = null;
 		try
 		{									
 			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
 			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.TypeIError where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            typeIErrorList = query.list();            
+            typeIErrorList = (ArrayList<TypeIError>)query.list();            
 		}
 		catch(Exception e)
 		{
@@ -101,13 +101,13 @@ public class TypeIErrorManager extends BaseManager
      * Delete a Type I Error object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return List<TypeIError>
+     * @return ArrayList<TypeIError>
      */
-	public List<TypeIError> delete(byte[] uuidBytes)
+	public ArrayList<TypeIError> delete(byte[] uuidBytes)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<TypeIError> typeIErrorList = null;
+		ArrayList<TypeIError> typeIErrorList = null;
 		try
 		{
 			typeIErrorList = get(uuidBytes);
@@ -125,11 +125,11 @@ public class TypeIErrorManager extends BaseManager
 	/**
      * Retrieve a Type I Error object by the specified UUID.
      * 
-     * @param typeIErrorList : List<TypeIError>
+     * @param typeIErrorList : ArrayList<TypeIError>
      * @param isCreation : boolean
-     * @return typeIErrorList : List<TypeIError>
+     * @return typeIErrorList : ArrayList<TypeIError>
      */
-	public List<TypeIError> saveOrUpdate(List<TypeIError> typeIErrorList,boolean isCreation)
+	public ArrayList<TypeIError> saveOrUpdate(ArrayList<TypeIError> typeIErrorList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try

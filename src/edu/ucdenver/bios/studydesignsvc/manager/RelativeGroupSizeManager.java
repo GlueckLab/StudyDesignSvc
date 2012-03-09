@@ -60,7 +60,7 @@ public class RelativeGroupSizeManager extends BaseManager
         	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
         	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            List<RelativeGroupSize> relativeGroupSizeList= query.list(); 
+            List<RelativeGroupSize> relativeGroupSizeList= (List<RelativeGroupSize>)query.list(); 
         	if(relativeGroupSizeList!=null)
         		return true;
         	else
@@ -87,7 +87,7 @@ public class RelativeGroupSizeManager extends BaseManager
 		{																				
 			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize where studyDesign = :uuid");
             query.setBinary("uuid", uuidBytes);	                      
-            relativeGroupSizeList = query.list();            
+            relativeGroupSizeList = (List<RelativeGroupSize>)query.list();            
 		}
 		catch(Exception e)
 		{
