@@ -30,6 +30,8 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import com.google.gson.Gson;
+
 import edu.ucdenver.bios.studydesignsvc.resource.NominalPowerServerResource;
 import edu.ucdenver.bios.webservice.common.domain.NominalPower;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
@@ -43,7 +45,6 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 public class TestNominalPowerList extends TestCase
 {
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	private static String STUDY_NAME = "Junit Test Study Design";
 	NominalPowerServerResource resource = new NominalPowerServerResource();
 	byte[] uuid = null;		
 		
@@ -53,30 +54,22 @@ public class TestNominalPowerList extends TestCase
 	}
 	
 	/**
-	 * Test to create a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Test to create a NominalPower List
 	 */
 	@Test
 	public void testCreate()
-	{	
-		
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);				
-				
+	{			
 		List<NominalPower> nominalPowerList = new ArrayList<NominalPower>();		
 		NominalPower nominalPower = new NominalPower();		
-			nominalPower.setStudyDesign(studyDesign);			
 			nominalPower.setValue(0.5);	
 		nominalPowerList.add(nominalPower);	
 		nominalPower = new NominalPower();		
-			nominalPower.setStudyDesign(studyDesign);			
 			nominalPower.setValue(0.1);			
 		nominalPowerList.add(nominalPower);		
 				
 		try
 		{
-			nominalPowerList = resource.create(nominalPowerList);			
+			nominalPowerList = resource.create(uuid,nominalPowerList);			
 		}		
 		catch(Exception e)
 		{
@@ -90,29 +83,28 @@ public class TestNominalPowerList extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : NominalPower list size after persistance: "+nominalPowerList.size());
+			System.out.println("testCreate() : ");
+			System.out.println(nominalPowerList);
 		}
 	}	
 	
+	/**
+	 * Test to update a NominalPower List
+	 */
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);				
-				
 		List<NominalPower> nominalPowerList = new ArrayList<NominalPower>();		
 		NominalPower nominalPower = new NominalPower();		
-			nominalPower.setStudyDesign(studyDesign);			
 			nominalPower.setValue(0.11);	
 		nominalPowerList.add(nominalPower);	
 		nominalPower = new NominalPower();		
-			nominalPower.setStudyDesign(studyDesign);			
 			nominalPower.setValue(0.22);			
 		nominalPowerList.add(nominalPower);		
 				
 		try
 		{
-			nominalPowerList = resource.update(nominalPowerList);			
+			nominalPowerList = resource.update(uuid,nominalPowerList);			
 		}		
 		catch(Exception e)
 		{
@@ -126,12 +118,16 @@ public class TestNominalPowerList extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : NominalPower list size after persistance: "+nominalPowerList.size());
+			System.out.println("testUpdate() : ");
+			System.out.println(nominalPowerList);
 		}
 	}
 	
+	/**
+	 * Test to delete a NominalPower List
+	 */
 	@Test
-	private void testDelete()
+	public void testDelete()
 	{
 		List<NominalPower> nominalPowerList = null;			
 		
@@ -147,22 +143,19 @@ public class TestNominalPowerList extends TestCase
 		}
 		if (nominalPowerList == null)
         {
-        	System.err.println("No matching confidence interval found");
+        	System.err.println("No matching NominalPower List found");
         	fail();
         }
         else
         {     
         	System.out.println("testDelete() : ");
-        	for(NominalPower nominalPower: nominalPowerList)
-        		System.out.println(nominalPower.getValue());
+        	System.out.println(nominalPowerList);
             assertTrue(nominalPowerList!=null);
         }
 	}
 	
 	/**
-	 * Test retrieving a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Test to retrieve a NominalPower List
 	 */
 	@Test
 	public void testRetrieve()
@@ -187,8 +180,9 @@ public class TestNominalPowerList extends TestCase
         else
         {     
         	System.out.println("testRetrieve() : ");
-        	for(NominalPower nominalPower: nominalPowerList)
-        		System.out.println(nominalPower.getValue());
+        	Gson gson = new Gson();
+            String json = gson.toJson(nominalPowerList);  
+            System.out.println(json);
             assertTrue(nominalPowerList!=null);
         }
 	}
