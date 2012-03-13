@@ -51,7 +51,7 @@ public class ResponsesManager extends BaseManager
      * @param studyUuid : byte[]
      * @return boolean
      */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
+    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
@@ -70,7 +70,7 @@ public class ResponsesManager extends BaseManager
             throw new StudyDesignException("Failed to retrieve ResponseNode object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
-    }
+    }*/
     
     /**
      * Retrieve a ResponseNode object by the specified UUID.
@@ -78,7 +78,7 @@ public class ResponsesManager extends BaseManager
      * @param studyUuid : byte[]
      * @return List<ResponseNode>
      */
-	public List<ResponseNode> get(byte[] uuidBytes)
+	/*public List<ResponseNode> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		List<ResponseNode> responseNodeList = null;
@@ -94,7 +94,7 @@ public class ResponsesManager extends BaseManager
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve ResponseNode object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return responseNodeList;
-	}
+	}*/
 	
 	/**
      * Delete a ResponseNode object by the specified UUID.
@@ -102,15 +102,13 @@ public class ResponsesManager extends BaseManager
      * @param studyUuid : byte[]
      * @return List<ResponseNode>
      */
-	public List<ResponseNode> delete(byte[] uuidBytes)
+	public List<ResponseNode> delete(byte[] uuidBytes,List<ResponseNode> responseList)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ResponseNode> responseNodeList = null;
 		try
 		{
-			responseNodeList = get(uuidBytes);
-			for(ResponseNode ResponseNode : responseNodeList)
+			for(ResponseNode ResponseNode : responseList)
 				session.delete(ResponseNode);
 		}
 		catch(Exception e)
@@ -118,7 +116,7 @@ public class ResponsesManager extends BaseManager
 			System.out.println(e.getMessage());
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete ResponseNode object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return responseNodeList;
+		return responseList;
 	}
 	
 	/**

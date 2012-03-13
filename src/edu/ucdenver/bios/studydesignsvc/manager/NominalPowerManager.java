@@ -53,7 +53,7 @@ public class NominalPowerManager extends BaseManager
      * @param studyUuid : byte[]
      * @return boolean
      */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
+    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
@@ -72,7 +72,7 @@ public class NominalPowerManager extends BaseManager
             throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
-    }
+    }*/
     
     /**
      * Retrieve a Nominal Power object by the specified UUID.
@@ -80,7 +80,7 @@ public class NominalPowerManager extends BaseManager
      * @param studyUuid : byte[]
      * @return ArrayList<NominalPower>
      */
-	public List<NominalPower> get(byte[] uuidBytes)
+	/*public List<NominalPower> get(byte[] uuidBytes)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		List<NominalPower> nominalPowerList = null;
@@ -95,7 +95,7 @@ public class NominalPowerManager extends BaseManager
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Nominal Power object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return nominalPowerList;
-	}
+	}*/
 	
 	/**
      * Delete a NominalPower object by the specified UUID.
@@ -103,14 +103,12 @@ public class NominalPowerManager extends BaseManager
      * @param studyUuid : byte[]
      * @return ArrayList<NominalPower>
      */
-	public List<NominalPower> delete(byte[] uuidBytes)
+	public List<NominalPower> delete(byte[] uuidBytes,List<NominalPower> nominalPowerList)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<NominalPower> nominalPowerList = null;
 		try
 		{
-			nominalPowerList = get(uuidBytes);
 			for(NominalPower nominalPower : nominalPowerList)
 				session.delete(nominalPower);
 		}
