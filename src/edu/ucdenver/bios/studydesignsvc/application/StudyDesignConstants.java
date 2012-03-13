@@ -56,7 +56,8 @@ public class StudyDesignConstants {
 
 	// URL mapper tags
 	public static final String TAG_LIST = "list";
-	public static final String TAG_CONFIDENCE_INTERVAL = "confidenceInterval";
+	public static final String TAG_CONFIDENCE_INTERVAL_DESCRIPTION = "confidenceIntervalDescription";
+	public static final String TAG_POWER_CURVE_DESCRIPTION = "powerCurveDescription";
 	public static final String TAG_MATRIX = "matrix";
 	public static final String TAG_PREDICTOR_LIST = "predictorList";
 	public static final String TAG_PREDICTOR = "predictor";
