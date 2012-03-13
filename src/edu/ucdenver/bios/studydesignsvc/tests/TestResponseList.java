@@ -28,6 +28,8 @@ import java.util.UUID;
 
 import org.junit.Test;
 
+import com.google.gson.Gson;
+
 import edu.ucdenver.bios.studydesignsvc.resource.BetaScaleServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.ResponsesServerResource;
 import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
@@ -52,152 +54,133 @@ public class TestResponseList extends TestCase
 	}
 	
 	/**
-	 * Test to create a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
-	 *//*
+	 * Test to create a Response List
+	 */
 	@Test
-	private void testCreate()
-	{	
-		
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);		
-		studyDesign.setName(STUDY_NAME);
-		studyDesign.setGaussianCovariate(true);		
-		studyDesign.setPowerMethodEnum(PowerMethodEnum.CONDITIONAL);
-				
-		List<ResponseNode> betaScaleList = new ArrayList<ResponseNode>();		
+	public void testCreate()
+	{			
+		List<ResponseNode> responseList = new ArrayList<ResponseNode>();		
 		ResponseNode ResponseNode = new ResponseNode();		
-			ResponseNode.setStudyDesign(studyDesign);			
-			ResponseNode.setValue(0.5);	
-		betaScaleList.add(ResponseNode);	
+			ResponseNode.setName("node1");	
+		responseList.add(ResponseNode);	
 		ResponseNode = new ResponseNode();		
-			ResponseNode.setStudyDesign(studyDesign);			
-			ResponseNode.setValue(1);			
-		betaScaleList.add(ResponseNode);		
+			ResponseNode.setName("node2");			
+		responseList.add(ResponseNode);		
 				
 		try
 		{
-			betaScaleList = resource.create(betaScaleList);			
+			responseList = resource.create(uuid,responseList);			
 		}		
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			betaScaleList=null;
+			responseList=null;
 			fail();
 		}
-		if(betaScaleList==null)
+		if(responseList==null)
 		{
 			fail();
 		}
 		else
 		{
-			System.out.println("testCreate() : Beta Scale list size after persistance: "+betaScaleList.size());
+			System.out.println("testCreate() : ");
+			System.out.println(responseList);
 		}
 	}	
 	
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);		
-		studyDesign.setName(STUDY_NAME);
-		studyDesign.setGaussianCovariate(true);		
-		studyDesign.setPowerMethodEnum(PowerMethodEnum.CONDITIONAL);
-				
-		List<ResponseNode> betaScaleList = new ArrayList<ResponseNode>();		
-		ResponseNode ResponseNode = new ResponseNode();		
-			ResponseNode.setStudyDesign(studyDesign);			
-			ResponseNode.setValue(0.11);	
-		betaScaleList.add(ResponseNode);	
-		ResponseNode = new ResponseNode();		
-			ResponseNode.setStudyDesign(studyDesign);			
-			ResponseNode.setValue(0.22);			
-		betaScaleList.add(ResponseNode);		
+		List<ResponseNode> responseList = new ArrayList<ResponseNode>();		
+		ResponseNode responseNode = new ResponseNode();		
+			responseNode.setName("node_11");	
+		responseList.add(responseNode);	
+		responseNode = new ResponseNode();		
+			responseNode.setName("node_22");			
+		responseList.add(responseNode);		
 				
 		try
 		{
-			betaScaleList = resource.update(betaScaleList);			
+			responseList = resource.update(uuid,responseList);			
 		}		
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			betaScaleList=null;
+			responseList=null;
 			fail();
 		}
-		if(betaScaleList==null)
+		if(responseList==null)
 		{
 			fail();
 		}
 		else
 		{
-			System.out.println("testCreate() : Beta Scale list size after persistance: "+betaScaleList.size());
+			System.out.println("testUpdate");
+			System.out.println(responseList);
 		}
 	}
 	
+	/**
+	 * Test to delete a Response List
+	 */
 	@Test
-	private void testDelete()
+	public void testDelete()
 	{
-		List<ResponseNode> betaScaleList = null;			
+		List<ResponseNode> responseList = null;			
 		
 		try
 		{
-			betaScaleList = resource.remove(uuid);			
+			responseList = resource.remove(uuid);			
 		}		
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			betaScaleList=null;
+			responseList=null;
 			fail();
 		}
-		if (betaScaleList == null)
+		if (responseList == null)
         {
-        	System.err.println("No matching confidence interval found");
+        	System.err.println("No matching Response Node List found");
         	fail();
         }
         else
         {     
         	System.out.println("testDelete() : ");
-        	for(ResponseNode ResponseNode: betaScaleList)
-        		System.out.println(ResponseNode.getValue());
-            assertTrue(betaScaleList!=null);
+        	System.out.println(responseList);
+            assertTrue(responseList!=null);
         }
 	}
 	
-	*//**
-	 * Test retrieving a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
-	 *//*
+	/**
+	 * Test to Retrieve a Response List
+	 */
 	@Test
 	public void testRetrieve()
 	{
-		List<ResponseNode> betaScaleList = null;			
+		List<ResponseNode> responseList = null;			
 		
 		try
 		{
-			betaScaleList = resource.retrieve(uuid);			
+			responseList = resource.retrieve(uuid);			
 		}		
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			betaScaleList=null;
+			responseList=null;
 			fail();
 		}
-		if (betaScaleList == null)
+		if (responseList == null)
         {
         	System.err.println("No matching confidence interval found");
         	fail();
         }
         else
         {     
-        	System.out.println("testRetrieve() : ");
-        	for(ResponseNode ResponseNode: betaScaleList)
-        		System.out.println(ResponseNode.getValue());
+        	System.out.println("testRetrieve() : ");        	
         	 Gson gson = new Gson();
-             String json = gson.toJson(betaScaleList);  
+             String json = gson.toJson(responseList);  
              System.out.println(json);
-            assertTrue(betaScaleList!=null);
+            assertTrue(responseList!=null);
         }
-	}*/
+	}
 }

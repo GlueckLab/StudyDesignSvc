@@ -161,7 +161,8 @@ public class TestBetaScaleList extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : Beta Scale list size after persistance: "+betaScaleList.size());
+			System.out.println("testUpdate() : ");
+			System.out.println(betaScale);
 		}
 	}
 	

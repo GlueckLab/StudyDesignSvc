@@ -131,7 +131,7 @@ public class TestStatisticalTestList extends TestCase
 	 * Test to delete a BetaScale List
 	 */
 	@Test
-	public void testDelete()
+	private void testDelete()
 	{
 		List<StatisticalTest> testList = null;			
 		
