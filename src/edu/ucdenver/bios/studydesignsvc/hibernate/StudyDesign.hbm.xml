@@ -50,17 +50,7 @@
 		update="false"/>
 		
 		<!-- <one-to-one name="confidenceIntervalDescription" lazy="false" class="edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval" cascade="all"/>-->		
-		<!-- <many-to-one name="powerMethod" column="power_method" not-null="true" unique="true"/>-->	
-			
-		<!-- <many-to-one name="confidenceIntervalDescription" column="confidenceIntervalID" unique="true" lazy="false"/>-->		
-		<!-- <set name="confidenceIntervalDescriptions" lazy="false" table="CONFIDENCE_INTERVAL" cascade="all" sort="unsorted" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
-		  <key column="uuid" on-delete="noaction" unique="true"/> 
-		  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription" not-found="exception" embed-xml="true" /> 
-		</set>-->
-		<!-- <set name="powerCurveDescriptions" table="POWER_CURVE_DESCRIPTION" cascade="all" sort="unsorted" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
-		  <key column="uuid" on-delete="noaction" unique="true"/> 
-		  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription" not-found="exception" embed-xml="true" /> 
-		</set> -->
+		<!-- <many-to-one name="powerMethod" column="power_method" not-null="true" unique="true"/>-->				
 							
 		<!-- Begin : Mapping List of ClusterNode -->		
 			<!-- <bag name="clusteringTree" cascade="all" lazy="false">
@@ -95,12 +85,20 @@
 			  	column="id" lazy="false"/>			 			  		  
 			</list>
 			
-			 <!--
-			<list name="betaScaleList" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+			<list name="responseList" table="STUDY_RESPONSE_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 
 			  <list-index column="listorder"/>
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.BetaScale" not-found="exception"/>		 			  		  
+			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.ResponseNode" 
+			  	column="id" lazy="false"/>		 			  		  
 			</list>
+			
+			<list name="nominalPower" table="STUDY_NOMINAL_POWER_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+			  <key column="uuid" unique="true"/> 
+			  <list-index column="listorder"/>
+			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.NominalPower" 
+			  	column="id" lazy="false"/>			 			  		  
+			</list>	
+			 <!--
 			
 			<list name="sigmaScaleList" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 
@@ -118,13 +116,7 @@
 			  <key column="uuid" unique="true"/> 
 			  <list-index column="listorder"/>
 			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize" not-found="exception"/>		 			  		  
-			</list>
-			
-			<list name="nominalPower" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
-			  <key column="uuid" unique="true"/> 
-			  <list-index column="listorder"/>
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.NominalPower" not-found="exception"/>		 			  		  
-			</list>					
+			</list>									
 			
 			<list name="powerMethodList" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 
@@ -132,11 +124,7 @@
 			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.PowerMethod" not-found="exception"/>		 			  		  
 			</list>
 			
-			<list name="responseList" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
-			  <key column="uuid" unique="true"/> 
-			  <list-index column="listorder"/>
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.ResponseNode" not-found="exception"/>		 			  		  
-			</list> -->
+			 -->
 		<!-- End : Mapping of List objects -->
 		
 		<!-- Begin : Mapping of Matrix objects -->
@@ -165,13 +153,7 @@
 			  	column="id"/>			 		 			  		 
 			</list>
      	 <!-- End : Mapping of BetweenParticipantFactor object -->
-     	 <!-- Begin : Mapping List of ClusterNode -->		
-			<!-- <list name="clusteringTree" table="STUDY_CLUSTERING_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
-			  <key column="uuid"/> 
-			  <list-index column="listorder"/>			 
-			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.ClusterNode" 
-			  	column="id"/>					 		 			  		
-			</list> -->
+     	 <!-- Begin : Mapping List of ClusterNode -->					
 			<bag name="clusteringTree" table="STUDY_CLUSTERING_MAP" cascade="all" lazy="false">
 			  <key column="uuid"/> 			
 			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.ClusterNode" 
@@ -197,15 +179,26 @@
 		  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.StudyDesign.SolutionType" not-found="exception" embed-xml="true" /> 
 		</set>		-->
 		
-		<join table="STUDY_CONFIDENCE_MAP" optional="true">
-	        <key column="uuid" unique="true"/>
-       	 	<many-to-one lazy="false" name="confidenceIntervalDescriptions" column="id" not-null="true" unique="true"/>
-	    </join>
+		<!-- Begin : Mapping of Covariance object -->
+		    <set name="covariance" table="STUDY_COVARIANCE_MAP" lazy="false">
+		        <key column="uuid"/>
+		        <many-to-many column="id" unique="true" lazy="false" class="edu.ucdenver.bios.webservice.common.domain.Covariance"/>
+		    </set>
+	    <!-- End : Mapping of Covariance object -->
+	    		
+		<!-- Begin : Mapping of Confidence Interval Description -->
+			<join table="STUDY_CONFIDENCE_MAP" optional="true">
+		        <key column="uuid" unique="true"/>
+	       	 	<many-to-one lazy="false" name="confidenceIntervalDescriptions" column="id" not-null="true" unique="true"/>
+		    </join>
+	    <!-- End : Mapping of Confidence Interval Description -->
 	    
-	    <join table="STUDY_POWER_CURVE_MAP" optional="true">
-	        <key column="uuid" unique="true"/>
-       	 	<many-to-one lazy="false" name="powerCurveDescriptions" column="id" not-null="true" unique="true"/>
-	    </join>	    	   
+	    <!-- Begin : Mapping of Power Curve Description -->
+		    <join table="STUDY_POWER_CURVE_MAP" optional="true">
+		        <key column="uuid" unique="true"/>
+	       	 	<many-to-one lazy="false" name="powerCurveDescriptions" column="id" not-null="true" unique="true"/>
+		    </join>	 
+	    <!-- End : Mapping of Power Curve Description -->			     	   
 		
 	</class>	
 </hibernate-mapping>
