@@ -52,6 +52,7 @@
 		
 		
 		<include name="jackson/1.9.4/lib/jackson-all-1.9.4.jar"/>
+		<include name="gson/2.1/lib/gson-2.1.jar"/>
 		<include name="junit/4.7/lib/junit-4.7.jar" />
 		<include name="log4j/1.2.15/lib/log4j-1.2.15.jar" />
 		<include name="mysql-connector-java/5.1.18/lib/mysql-connector-java-5.1.18-bin.jar"/>
