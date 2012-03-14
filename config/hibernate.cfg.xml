@@ -40,10 +40,12 @@
 		
 		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Lists.hbm.xml"/>		
 		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/ClusterNode.hbm.xml"/>
-		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/MatrixCell.hbm.xml"/>		
-		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Matrix.hbm.xml"/>
+		<!-- <mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/MatrixCell.hbm.xml"/>		
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Matrix.hbm.xml"/> -->
 		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/BetweenParticipantFactor.hbm.xml"/>
-		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Category.hbm.xml"/>		
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Category.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/RepeatedMeasures.hbm.xml"/>		
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Covariance.hbm.xml"/>
 				
 		<!-- <mapping resource="com/jdpa/mlg/datafeed/BetweenSubjectEffect.hbm.xml"/> -->
 			
