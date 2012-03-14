@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--  
  * Study Design Service for the GLIMMPSE Software System.  
  * This service stores study design definitions for users of the GLIMMSE interface.
@@ -55,6 +54,16 @@
 			update="false"/>									 				
 	</class>
 	
+	<class name="edu.ucdenver.bios.webservice.common.domain.ResponseNode" table="RESPONSE_LIST" lazy="false">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="name" column="name"/>									 					
+	</class>
+	
+	<class name="edu.ucdenver.bios.webservice.common.domain.NominalPower" table="NOMINAL_POWER_LIST" lazy="false">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="value" column="node_value"/>						 					
+	</class>	
+		
 	<class name="edu.ucdenver.bios.webservice.common.domain.SigmaScale" table="SIGMA_SCALE_LIST">				
 		<id name="id" column="id"><generator class="native"/></id>				
 		<property name="value" column="sigma_scale_value"/>					
@@ -72,13 +81,7 @@
 		<property name="value" column="relative_group_size_value"/>					
 		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
 	</class>
-	
-	<class name="edu.ucdenver.bios.webservice.common.domain.NominalPower" table="NOMINAL_POWER_LIST">				
-		<id name="id" column="id"><generator class="native"/></id>				
-		<property name="value" column="nominal_power_value"/>					
-		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
-	</class>	
-	
+		
 	<class name="edu.ucdenver.bios.webservice.common.domain.PowerMethod" table="POWER_METHOD_LIST">				
 		<id name="id" column="id"><generator class="native"/></id>				
 		<property name="powerMethodEnum" 
@@ -88,25 +91,5 @@
 			update="false"/>					
 		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
 	</class>
-	
-	<class name="edu.ucdenver.bios.webservice.common.domain.ResponseNode" table="RESPONSES_LIST">				
-		<id name="id" column="id"><generator class="native"/></id>				
-		<property name="name" column="name"/>					
-		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
-	</class>
-	<!--
-		
-	<class name="edu.ucdenver.bios.webservice.common.domain.NominalPower" table="NOMINAL_POWER_LIST">				
-		<id name="id" column="id"><generator class="native"/></id>				
-		<property name="value" column="nominal_power_value"/>					
-		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
-	</class>
-	
-	<class name="edu.ucdenver.bios.webservice.common.domain.Test" table="TEST_LIST">				
-		<id name="id" column="id"><generator class="native"/></id>				
-		<property name="value" column="name"/>					
-		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
-	</class>
-	 -->
 		
 </hibernate-mapping>
