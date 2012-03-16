@@ -53,7 +53,7 @@ implements RepeatedMeasuresResource
 	boolean uuidFlag;
 	
 	/**
-     * Retrieve a RepeatedMeasuresNode object for specified UUID.
+     * Retrieve a List<RepeatedMeasuresNode> object for specified UUID.
      * 
      * @param byte[]
      * @return List<RepeatedMeasuresNode>
@@ -78,10 +78,6 @@ implements RepeatedMeasuresResource
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
 						repeatedMeasuresTree = studyDesign.getRepeatedMeasuresTree();										
-					/*{
-						for(RepeatedMeasuresNode repeatedMeasuresNode : repeatedMeasuresTree)					
-							repeatedMeasuresNode.setStudyDesign(studyDesign);									
-					}*/
             	}				
 			studyDesignManager.commit();					
 		}
@@ -114,7 +110,7 @@ implements RepeatedMeasuresResource
 
 
 	/**
-     * Create a RepeatedMeasuresNode object for specified UUID.
+     * Create a List<RepeatedMeasuresNode> object for specified UUID.
      * 
      * @param byte[]
      * @return List<RepeatedMeasuresNode>
@@ -135,8 +131,10 @@ implements RepeatedMeasuresResource
 			studyDesignManager.beginTransaction();				
 				uuidFlag = studyDesignManager.hasUUID(uuid);				
 				if(uuidFlag)
-            	{studyDesign = studyDesignManager.get(uuid);}																									            				
-				if(!uuidFlag)
+            	{
+					studyDesign = studyDesignManager.get(uuid);					
+				}																									            				
+				else
 				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 						"no study design UUID specified");}
 			studyDesignManager.commit();
@@ -144,20 +142,18 @@ implements RepeatedMeasuresResource
 			 * Remove existing RepeatedMeasuresNode for this object 
 			 * ----------------------------------------------------*/
 			if(uuidFlag && studyDesign.getRepeatedMeasuresTree()!=null)
-				removeFrom(studyDesign);	
-			/* ----------------------------------------------------
-			 * Set reference of Study Design Object to each RepeatedMeasuresNode element 
-			 * ----------------------------------------------------*/	
-			/*for(RepeatedMeasuresNode RepeatedMeasuresNode : repeatedMeasuresTree)					
-				RepeatedMeasuresNode.setStudyDesign(studyDesign);*/
-			studyDesign.setRepeatedMeasuresTree(repeatedMeasuresTree);
+				removeFrom(studyDesign);				
 			/* ----------------------------------------------------
 			 * Save new RepeatedMeasuresNode List object 
 			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();
-				studyDesignManager.saveOrUpdate(studyDesign, false);
-			studyDesignManager.commit();			
+			if(uuidFlag)
+			{
+				studyDesign.setRepeatedMeasuresTree(repeatedMeasuresTree);
+				studyDesignManager = new StudyDesignManager();
+				studyDesignManager.beginTransaction();
+					studyDesignManager.saveOrUpdate(studyDesign, false);
+				studyDesignManager.commit();			
+			}
 		}
 		catch (BaseManagerException bme)
 		{
@@ -187,7 +183,7 @@ implements RepeatedMeasuresResource
 	}
 
 	/**
-     * Update a RepeatedMeasuresNode object for specified UUID.
+     * Update a List<RepeatedMeasuresNode> object for specified UUID.
      * 
      * @param byte[]
      * @return List<RepeatedMeasuresNode>
@@ -199,7 +195,7 @@ implements RepeatedMeasuresResource
 	}	
 
 	/**
-     * Delete a RepeatedMeasuresNode object for specified UUID.
+     * Delete a List<RepeatedMeasuresNode> object for specified UUID.
      * 
      * @param byte[]
      * @return List<RepeatedMeasuresNode>
@@ -223,10 +219,8 @@ implements RepeatedMeasuresResource
 				if(uuidFlag)
             	{		
 					studyDesign = studyDesignManager.get(uuid);
-					repeatedMeasuresTree = studyDesign.getRepeatedMeasuresTree();
-					/*if(repeatedMeasuresTree.isEmpty())
-						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no RepeatedMeasuresNode is specified");*/					
+					if(studyDesign!=null)
+						repeatedMeasuresTree = studyDesign.getRepeatedMeasuresTree();									
             	}				
 			studyDesignManager.commit();
 			/* ----------------------------------------------------
@@ -268,7 +262,7 @@ implements RepeatedMeasuresResource
 	}
 
 	/**
-     * Delete a RepeatedMeasuresNode object for specified Study Design.
+     * Delete a List<RepeatedMeasuresNode> object for specified Study Design.
      * 
      * @param StudyDesign
      * @return List<RepeatedMeasuresNode>
