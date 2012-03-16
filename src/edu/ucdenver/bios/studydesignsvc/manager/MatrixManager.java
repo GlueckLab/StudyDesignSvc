@@ -22,6 +22,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
+import java.util.Set;
+
+import org.restlet.data.Status;
+import org.restlet.resource.ResourceException;
+
+import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -39,192 +45,111 @@ public class MatrixManager extends BaseManager
 	}
 	
 	/**
-     * Check existence of a Matrix object by the specified UUID
+     * Delete a Set<NamedMatrix> object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return boolean
+     * @return Set<NamedMatrix>
      */
-    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
-    {
-        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
-        try
-        {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.NamedMatrix where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            List<NamedMatrix> namedMatrixList= query.list(); 
-        	if(namedMatrixList!=null)
-        		return true;
-        	else
-        		return false;
-        }
-        catch (Exception e)
-        {
-            throw new StudyDesignException("Failed to retrieve Matrix object for UUID '" + 
-            		uuidBytes.toString() + "': " + e.getMessage());
-        }
-    }*/
-    
-    /**
-     * Retrieve a Matrix object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return List<NamedMatrix>
-     */
-	/*public NamedMatrix get(byte[] uuidBytes,String name)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		//Map<String,NamedMatrix> namedMatrixMap = new HashMap<String,NamedMatrix>();
-		NamedMatrix namedMatrixResult = null;
-		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.NamedMatrix where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                            
-            List<NamedMatrix> list = query.list();
-            for(NamedMatrix matrix : list)
-            {
-            	if(matrix.getName().equals(name))
-            	{	namedMatrixResult = matrix;}
-            }		
-            //Map<String,NamedMatrix> namedMatrixMap = list.
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve NamedMatrix object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return namedMatrixResult;
-	}*/
-	
-	/**
-     * Retrieve a Matrix object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return List<NamedMatrix>
-     */
-	/*public List<NamedMatrix> get(byte[] uuidBytes)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		//Map<String,NamedMatrix> namedMatrixMap = new HashMap<String,NamedMatrix>();
-		List<NamedMatrix> namedMatrixList = null;
-		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.NamedMatrix where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                            
-            namedMatrixList = query.list();            
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve NamedMatrix object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return namedMatrixList;
-	}*/
-	
-	
-	
-	/**
-     * Delete a Matrix object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return List<NamedMatrix>
-     */
-	/*public NamedMatrix delete(byte[] uuidBytes,String name)
+	public Set<NamedMatrix> delete(byte[] uuidBytes,Set<NamedMatrix> matrixSet)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		NamedMatrix namedMatrix = null;
 		try
 		{
-			Map<String,NamedMatrix> namedMatrixMap = get(uuidBytes,name);
-			Iterator itr = namedMatrixMap.entrySet().iterator();
-			while(itr.hasNext())
-			{
-				Map.Entry<String, NamedMatrix> entry = (Map.Entry<String,NamedMatrix>)itr.next();
-				//List<NamedMatrixCell> namedMatrixCell= entry.getValue().getMatrixCellList();
-				if(entry.getKey().equals(name))
-				{
-					namedMatrix = entry.getValue();
-					session.delete(entry.getValue());
-				}
-			}
-			namedMatrix = get(uuidBytes,name);
-			session.delete(namedMatrix);
+			for(NamedMatrix matrix : matrixSet)
+				session.delete(matrix);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Set<NamedMatrix> object for UUID '" + uuidBytes + "': " + e.getMessage());
+		}
+		return matrixSet;
+	}
+	
+	/**
+     * Delete a NamedMatrix object by the specified UUID.
+     * 
+     * @param studyUuid : byte[]
+     * @return NamedMatrix
+     */
+	public NamedMatrix delete(byte[] uuidBytes,NamedMatrix matrix)
+	{
+		if(!transactionStarted) 
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
+		try
+		{
+			session.delete(matrix);			
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete NamedMatrix object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return namedMatrix;
-	}*/
+		return matrix;
+	}
 	
 	/**
-     * Delete a Matrix object by the specified UUID.
+     * Save/Update a Set<NamedMatrix> object by the specified UUID.
      * 
-     * @param studyUuid : byte[]
-     * @return List<NamedMatrix>
-     */
-	/*public List<NamedMatrix> delete(byte[] uuidBytes)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<NamedMatrix> namedMatrixList = null;
-		try
-		{
-			Map<String,NamedMatrix> namedMatrixMap = get(uuidBytes,name);
-			Iterator itr = namedMatrixMap.entrySet().iterator();
-			while(itr.hasNext())
-			{
-				Map.Entry<String, NamedMatrix> entry = (Map.Entry<String,NamedMatrix>)itr.next();
-				//List<NamedMatrixCell> namedMatrixCell= entry.getValue().getMatrixCellList();
-				if(entry.getKey().equals(name))
-				{
-					namedMatrix = entry.getValue();
-					session.delete(entry.getValue());
-				}
-			}
-			namedMatrixList = get(uuidBytes);
-			for(NamedMatrix namedMatrix : namedMatrixList)
-			{	session.delete(namedMatrix);}
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete NamedMatrix object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return namedMatrixList;
-	}*/
-	
-	/**
-     * Retrieve a NamedMatrix object by the specified UUID.
-     * 
-     * @param namedMatrixList : List<NamedMatrix>
+     * @param matrixSet : Set<NamedMatrix>
      * @param isCreation : boolean
-     * @return namedMatrixList : List<NamedMatrix>
+     * @return matrixSet : Set<NamedMatrix>
      */
-	/*public List<NamedMatrix> saveOrUpdate(List<NamedMatrix> namedMatrixList,boolean isCreation)
+	public Set<NamedMatrix> saveOrUpdate(Set<NamedMatrix> matrixSet,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(NamedMatrix NamedMatrix : namedMatrixList)				
-					session.save(NamedMatrix);				
+				for(NamedMatrix matrix : matrixSet)				
+				{
+					session.save(matrix);
+				}				
 			}
 			else
 			{
-				for(NamedMatrix NamedMatrix : namedMatrixList)
-					session.update(NamedMatrix);
+				for(NamedMatrix matrix : matrixSet)
+					session.update(matrix);
 			}
 		}
 		catch(Exception e)
 		{
-			namedMatrixList=null;
+			matrixSet=null;
 			System.out.println(e.getMessage());
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save NamedMatrix object : " + e.getMessage());
 		}
-		return namedMatrixList;
-	}*/
+		return matrixSet;
+	}
+	
+	/**
+     * Save/Update a NamedMatrix object by the specified UUID.
+     * 
+     * @param matrix : NamedMatrix
+     * @param isCreation : boolean
+     * @return matrix : NamedMatrix
+     */
+	public NamedMatrix saveOrUpdate(NamedMatrix matrix,boolean isCreation)
+	{
+		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
+		try
+		{			
+			if(isCreation==true)
+			{
+				session.save(matrix);							
+			}
+			else
+			{
+				session.update(matrix);
+			}
+		}
+		catch(Exception e)
+		{
+			matrix=null;
+			System.out.println(e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save NamedMatrix object : " + e.getMessage());
+		}
+		return matrix;
+	}
 }

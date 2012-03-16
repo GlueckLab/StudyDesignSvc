@@ -25,11 +25,9 @@ package edu.ucdenver.bios.studydesignsvc.manager;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -48,71 +46,19 @@ public class PowerMethodManager extends BaseManager
 	}
 	
 	/**
-     * Check existence of a Power Method object by the specified UUID
-     * 
-     * @param studyUuid : byte[]
-     * @return boolean
-     */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
-    {
-        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
-        try
-        {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.PowerMethod where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            ArrayList<PowerMethod> powerMethodList= (ArrayList<PowerMethod>)query.list(); 
-        	if(powerMethodList!=null)
-        		return true;
-        	else
-        		return false;
-        }
-        catch (Exception e)
-        {
-            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
-            		uuidBytes.toString() + "': " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Retrieve a PowerMethod object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return ArrayList<PowerMethod>
-     */
-	public List<PowerMethod> get(byte[] uuidBytes)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<PowerMethod> powerMethodList = null;
-		try
-		{																				
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.PowerMethod where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            powerMethodList = query.list();            
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve PowerMethod object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return powerMethodList;
-	}
-	
-	/**
      * Delete a PowerMethod object by the specified UUID.
      * 
      * @param studyUuid : byte[]
      * @return ArrayList<PowerMethod>
      */
-	public List<PowerMethod> delete(byte[] uuidBytes)
+	public List<PowerMethod> delete(byte[] uuidBytes,List<PowerMethod> powerMethodList)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<PowerMethod> powerMethodList = null;
 		try
 		{
-			powerMethodList = get(uuidBytes);
-			for(PowerMethod powerMethod : powerMethodList)
-				session.delete(powerMethod);
+			for(PowerMethod nominalPower : powerMethodList)
+				session.delete(nominalPower);
 		}
 		catch(Exception e)
 		{
@@ -136,13 +82,13 @@ public class PowerMethodManager extends BaseManager
 		{			
 			if(isCreation==true)
 			{
-				for(PowerMethod powerMethod : powerMethodList)				
-					session.save(powerMethod);				
+				for(PowerMethod nominalPower : powerMethodList)				
+					session.save(nominalPower);				
 			}
 			else
 			{
-				for(PowerMethod powerMethod : powerMethodList)
-					session.update(powerMethod);
+				for(PowerMethod nominalPower : powerMethodList)
+					session.update(nominalPower);
 			}
 		}
 		catch(Exception e)

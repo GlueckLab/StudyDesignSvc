@@ -22,13 +22,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -47,72 +46,19 @@ public class RelativeGroupSizeManager extends BaseManager
 	}
 	
 	/**
-     * Check existence of a RelativeGroupSize object by the specified UUID
-     * 
-     * @param studyUuid : byte[]
-     * @return boolean
-     */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
-    {
-        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
-        try
-        {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            List<RelativeGroupSize> relativeGroupSizeList= (List<RelativeGroupSize>)query.list(); 
-        	if(relativeGroupSizeList!=null)
-        		return true;
-        	else
-        		return false;
-        }
-        catch (Exception e)
-        {
-            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
-            		uuidBytes.toString() + "': " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Retrieve a RelativeGroupSize object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return List<RelativeGroupSize>
-     */
-	public List<RelativeGroupSize> get(byte[] uuidBytes)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<RelativeGroupSize> relativeGroupSizeList = null;
-		try
-		{																				
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            relativeGroupSizeList = (List<RelativeGroupSize>)query.list();            
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve RelativeGroupSize object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return relativeGroupSizeList;
-	}
-	
-	/**
      * Delete a RelativeGroupSize object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return List<RelativeGroupSize>
+     * @return ArrayList<RelativeGroupSize>
      */
-	public List<RelativeGroupSize> delete(byte[] uuidBytes)
+	public List<RelativeGroupSize> delete(byte[] uuidBytes,List<RelativeGroupSize> relativeGroupSizeList)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<RelativeGroupSize> relativeGroupSizeList = null;
 		try
 		{
-			relativeGroupSizeList = get(uuidBytes);
-			for(RelativeGroupSize relativeGroupSize : relativeGroupSizeList)
-				session.delete(relativeGroupSize);
+			for(RelativeGroupSize nominalPower : relativeGroupSizeList)
+				session.delete(nominalPower);
 		}
 		catch(Exception e)
 		{
@@ -125,24 +71,24 @@ public class RelativeGroupSizeManager extends BaseManager
 	/**
      * Retrieve a RelativeGroupSize object by the specified UUID.
      * 
-     * @param relativeGroupSizeList : List<RelativeGroupSize>
+     * @param relativeGroupSizeList : ArrayList<RelativeGroupSize>
      * @param isCreation : boolean
-     * @return relativeGroupSizeList : List<RelativeGroupSize>
+     * @return relativeGroupSizeList : ArrayList<RelativeGroupSize>
      */
-	public List<RelativeGroupSize> saveOrUpdate(List<RelativeGroupSize> relativeGroupSizeList,boolean isCreation)
+	public ArrayList<RelativeGroupSize> saveOrUpdate(ArrayList<RelativeGroupSize> relativeGroupSizeList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(RelativeGroupSize relativeGroupSize : relativeGroupSizeList)				
-					session.save(relativeGroupSize);				
+				for(RelativeGroupSize nominalPower : relativeGroupSizeList)				
+					session.save(nominalPower);				
 			}
 			else
 			{
-				for(RelativeGroupSize relativeGroupSize : relativeGroupSizeList)
-					session.update(relativeGroupSize);
+				for(RelativeGroupSize nominalPower : relativeGroupSizeList)
+					session.update(nominalPower);
 			}
 		}
 		catch(Exception e)

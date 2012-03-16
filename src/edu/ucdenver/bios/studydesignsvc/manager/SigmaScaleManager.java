@@ -22,13 +22,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -47,72 +46,19 @@ public class SigmaScaleManager extends BaseManager
 	}
 	
 	/**
-     * Check existence of a SigmaScale object by the specified UUID
+     * Delete a SigmaScale object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return boolean
+     * @return ArrayList<SigmaScale>
      */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
-    {
-        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
-        try
-        {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.SigmaScale where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            List<SigmaScale> sigmaScaleList= (List<SigmaScale>)query.list(); 
-        	if(sigmaScaleList!=null)
-        		return true;
-        	else
-        		return false;
-        }
-        catch (Exception e)
-        {
-            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
-            		uuidBytes.toString() + "': " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Retrieve a SigmaScale object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return List<SigmaScale>
-     */
-	public List<SigmaScale> get(byte[] uuidBytes)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<SigmaScale> sigmaScaleList = null;
-		try
-		{																				
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.SigmaScale where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            sigmaScaleList = (List<SigmaScale>)query.list();            
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve SigmaScale object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return sigmaScaleList;
-	}
-	
-	/**
-     * Delete a Sigma Scale object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return List<SigmaScale>
-     */
-	public List<SigmaScale> delete(byte[] uuidBytes)
+	public List<SigmaScale> delete(byte[] uuidBytes,List<SigmaScale> sigmaScaleList)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<SigmaScale> sigmaScaleList = null;
 		try
 		{
-			sigmaScaleList = get(uuidBytes);
-			for(SigmaScale sigmaScale : sigmaScaleList)
-				session.delete(sigmaScale);
+			for(SigmaScale nominalPower : sigmaScaleList)
+				session.delete(nominalPower);
 		}
 		catch(Exception e)
 		{
@@ -125,24 +71,24 @@ public class SigmaScaleManager extends BaseManager
 	/**
      * Retrieve a SigmaScale object by the specified UUID.
      * 
-     * @param sigmaScaleList : List<SigmaScale>
+     * @param sigmaScaleList : ArrayList<SigmaScale>
      * @param isCreation : boolean
-     * @return sigmaScaleList : List<SigmaScale>
+     * @return sigmaScaleList : ArrayList<SigmaScale>
      */
-	public List<SigmaScale> saveOrUpdate(List<SigmaScale> sigmaScaleList,boolean isCreation)
+	public ArrayList<SigmaScale> saveOrUpdate(ArrayList<SigmaScale> sigmaScaleList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(SigmaScale sigmaScale : sigmaScaleList)				
-					session.save(sigmaScale);				
+				for(SigmaScale nominalPower : sigmaScaleList)				
+					session.save(nominalPower);				
 			}
 			else
 			{
-				for(SigmaScale sigmaScale : sigmaScaleList)
-					session.update(sigmaScale);
+				for(SigmaScale nominalPower : sigmaScaleList)
+					session.update(nominalPower);
 			}
 		}
 		catch(Exception e)

@@ -22,13 +22,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -47,110 +46,57 @@ public class RepeatedMeasuresManager extends BaseManager
 	}
 	
 	/**
-     * Check existence of a RepeatedMeasuresNode object by the specified UUID
-     * 
-     * @param studyUuid : byte[]
-     * @return boolean
-     */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
-    {
-        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
-        try
-        {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            List<RepeatedMeasuresNode> repeatedMeasuresTree= (List<RepeatedMeasuresNode>)query.list(); 
-        	if(repeatedMeasuresTree!=null)
-        		return true;
-        	else
-        		return false;
-        }
-        catch (Exception e)
-        {
-            throw new StudyDesignException("Failed to retrieve RepeatedMeasuresNode object for UUID '" + 
-            		uuidBytes.toString() + "': " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Retrieve a RepeatedMeasuresNode object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return List<RepeatedMeasuresNode>
-     */
-	public List<RepeatedMeasuresNode> get(byte[] uuidBytes)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<RepeatedMeasuresNode> repeatedMeasuresTree = null;
-		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            repeatedMeasuresTree = (List<RepeatedMeasuresNode>)query.list();            
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve RepeatedMeasuresNode object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return repeatedMeasuresTree;
-	}
-	
-	/**
      * Delete a RepeatedMeasuresNode object by the specified UUID.
      * 
      * @param studyUuid : byte[]
-     * @return List<RepeatedMeasuresNode>
+     * @return ArrayList<RepeatedMeasuresNode>
      */
-	public List<RepeatedMeasuresNode> delete(byte[] uuidBytes)
+	public List<RepeatedMeasuresNode> delete(byte[] uuidBytes,List<RepeatedMeasuresNode> repeatedMeasuresList)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<RepeatedMeasuresNode> repeatedMeasuresTree = null;
 		try
 		{
-			repeatedMeasuresTree = get(uuidBytes);
-			for(RepeatedMeasuresNode RepeatedMeasuresNode : repeatedMeasuresTree)
-				session.delete(RepeatedMeasuresNode);
+			for(RepeatedMeasuresNode nominalPower : repeatedMeasuresList)
+				session.delete(nominalPower);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete RepeatedMeasuresNode object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
-		return repeatedMeasuresTree;
+		return repeatedMeasuresList;
 	}
 	
 	/**
      * Retrieve a RepeatedMeasuresNode object by the specified UUID.
      * 
-     * @param repeatedMeasuresTree : List<RepeatedMeasuresNode>
+     * @param repeatedMeasuresList : ArrayList<RepeatedMeasuresNode>
      * @param isCreation : boolean
-     * @return repeatedMeasuresTree : List<RepeatedMeasuresNode>
+     * @return repeatedMeasuresList : ArrayList<RepeatedMeasuresNode>
      */
-	public List<RepeatedMeasuresNode> saveOrUpdate(List<RepeatedMeasuresNode> repeatedMeasuresTree,boolean isCreation)
+	public ArrayList<RepeatedMeasuresNode> saveOrUpdate(ArrayList<RepeatedMeasuresNode> repeatedMeasuresList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(RepeatedMeasuresNode RepeatedMeasuresNode : repeatedMeasuresTree)				
-					session.save(RepeatedMeasuresNode);				
+				for(RepeatedMeasuresNode nominalPower : repeatedMeasuresList)				
+					session.save(nominalPower);				
 			}
 			else
 			{
-				for(RepeatedMeasuresNode RepeatedMeasuresNode : repeatedMeasuresTree)
-					session.update(RepeatedMeasuresNode);
+				for(RepeatedMeasuresNode nominalPower : repeatedMeasuresList)
+					session.update(nominalPower);
 			}
 		}
 		catch(Exception e)
 		{
-			repeatedMeasuresTree=null;
+			repeatedMeasuresList=null;
 			System.out.println(e.getMessage());
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save RepeatedMeasuresNode object : " + e.getMessage());
 		}
-		return repeatedMeasuresTree;
+		return repeatedMeasuresList;
 	}
 }

@@ -25,11 +25,9 @@ package edu.ucdenver.bios.studydesignsvc.manager;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.Quantile;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -48,76 +46,24 @@ public class QuantileManager extends BaseManager
 	}
 	
 	/**
-     * Check existence of a Quantile object by the specified UUID
-     * 
-     * @param studyUuid : byte[]
-     * @return boolean
-     */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
-    {
-        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
-        try
-        {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.Quantile where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            ArrayList<Quantile> quantileList= (ArrayList<Quantile>)query.list(); 
-        	if(quantileList!=null)
-        		return true;
-        	else
-        		return false;
-        }
-        catch (Exception e)
-        {
-            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
-            		uuidBytes.toString() + "': " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Retrieve a Quantile object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return ArrayList<Quantile>
-     */
-	public List<Quantile> get(byte[] uuidBytes)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ArrayList<Quantile> quantileList = null;
-		try
-		{																				
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.Quantile where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            quantileList = (ArrayList<Quantile>)query.list();            
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Quantile object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return quantileList;
-	}
-    
-	/**
      * Delete a Quantile object by the specified UUID.
      * 
      * @param studyUuid : byte[]
      * @return ArrayList<Quantile>
      */
-	public List<Quantile> delete(byte[] uuidBytes)
+	public List<Quantile> delete(byte[] uuidBytes,List<Quantile> quantileList)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<Quantile> quantileList = null;
 		try
 		{
-			quantileList = get(uuidBytes);
-			for(Quantile quantile : quantileList)
-				session.delete(quantile);
+			for(Quantile nominalPower : quantileList)
+				session.delete(nominalPower);
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete quantile object for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Quantile object for UUID '" + uuidBytes + "': " + e.getMessage());
 		}
 		return quantileList;
 	}
@@ -129,20 +75,20 @@ public class QuantileManager extends BaseManager
      * @param isCreation : boolean
      * @return quantileList : ArrayList<Quantile>
      */
-	public List<Quantile> saveOrUpdate(List<Quantile> quantileList,boolean isCreation)
+	public ArrayList<Quantile> saveOrUpdate(ArrayList<Quantile> quantileList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try
 		{			
 			if(isCreation==true)
 			{
-				for(Quantile quantile : quantileList)				
-					session.save(quantile);				
+				for(Quantile nominalPower : quantileList)				
+					session.save(nominalPower);				
 			}
 			else
 			{
-				for(Quantile quantile : quantileList)
-					session.update(quantile);
+				for(Quantile nominalPower : quantileList)
+					session.update(nominalPower);
 			}
 		}
 		catch(Exception e)

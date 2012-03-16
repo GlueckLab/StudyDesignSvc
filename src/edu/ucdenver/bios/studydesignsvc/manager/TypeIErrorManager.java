@@ -23,12 +23,11 @@
 package edu.ucdenver.bios.studydesignsvc.manager;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.TypeIError;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -47,72 +46,19 @@ public class TypeIErrorManager extends BaseManager
 	}
 	
 	/**
-     * Check existence of a Type I Error object by the specified UUID
-     * 
-     * @param studyUuid : byte[]
-     * @return boolean
-     */
-    public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
-    {
-        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
-        try
-        {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.TypeIError where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            ArrayList<TypeIError> typeIErrorList= (ArrayList<TypeIError>)query.list(); 
-        	if(typeIErrorList!=null)
-        		return true;
-        	else
-        		return false;
-        }
-        catch (Exception e)
-        {
-            throw new StudyDesignException("Failed to retrieve TypeIError object for UUID '" + 
-            		uuidBytes.toString() + "': " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Retrieve a Type I Error object by the specified UUID.
+     * Delete a TypeIError object by the specified UUID.
      * 
      * @param studyUuid : byte[]
      * @return ArrayList<TypeIError>
      */
-	public ArrayList<TypeIError> get(byte[] uuidBytes)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ArrayList<TypeIError> typeIErrorList = null;
-		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.TypeIError where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            typeIErrorList = (ArrayList<TypeIError>)query.list();            
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve TypeIError object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return typeIErrorList;
-	}
-	
-	/**
-     * Delete a Type I Error object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return ArrayList<TypeIError>
-     */
-	public ArrayList<TypeIError> delete(byte[] uuidBytes)
+	public List<TypeIError> delete(byte[] uuidBytes,List<TypeIError> typeIErrorList)
 	{
 		if(!transactionStarted) 
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ArrayList<TypeIError> typeIErrorList = null;
 		try
 		{
-			typeIErrorList = get(uuidBytes);
-			for(TypeIError typeIError : typeIErrorList)
-				session.delete(typeIError);
+			for(TypeIError nominalPower : typeIErrorList)
+				session.delete(nominalPower);
 		}
 		catch(Exception e)
 		{
@@ -123,7 +69,7 @@ public class TypeIErrorManager extends BaseManager
 	}
 	
 	/**
-     * Retrieve a Type I Error object by the specified UUID.
+     * Retrieve a TypeIError object by the specified UUID.
      * 
      * @param typeIErrorList : ArrayList<TypeIError>
      * @param isCreation : boolean
@@ -136,13 +82,13 @@ public class TypeIErrorManager extends BaseManager
 		{			
 			if(isCreation==true)
 			{
-				for(TypeIError typeIError : typeIErrorList)				
-					session.save(typeIError);				
+				for(TypeIError nominalPower : typeIErrorList)				
+					session.save(nominalPower);				
 			}
 			else
 			{
-				for(TypeIError typeIError : typeIErrorList)
-					session.update(typeIError);
+				for(TypeIError nominalPower : typeIErrorList)
+					session.update(nominalPower);
 			}
 		}
 		catch(Exception e)
@@ -152,5 +98,5 @@ public class TypeIErrorManager extends BaseManager
 			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save TypeIError object : " + e.getMessage());
 		}
 		return typeIErrorList;
-	}	
+	}
 }
