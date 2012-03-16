@@ -59,7 +59,7 @@ public class TestRepeatedMeasures extends TestCase
 	 * Test to create a RepeatedMeasuresNode List
 	 */
 	@Test
-	private void testCreate()
+	public void testCreate()
 	{			
 		List<RepeatedMeasuresNode> repeatedMeasuresTree = new ArrayList<RepeatedMeasuresNode>();		
 		RepeatedMeasuresNode repeatedMeasuresNode = new RepeatedMeasuresNode();		
@@ -116,8 +116,10 @@ public class TestRepeatedMeasures extends TestCase
 		else
 		{
 			System.out.println("testCreate() : ");
-			for(RepeatedMeasuresNode rmNode: repeatedMeasuresTree)
-				System.out.println(rmNode);
+			Gson gson = new Gson();
+            String json = gson.toJson(repeatedMeasuresTree);  
+            System.out.println(json);
+            assertTrue(repeatedMeasuresTree!=null);
 		}
 	}		
 	
@@ -125,7 +127,7 @@ public class TestRepeatedMeasures extends TestCase
 	 * Test to update a RepeatedMeasuresNode List
 	 */
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{
 		List<RepeatedMeasuresNode> repeatedMeasuresTree = new ArrayList<RepeatedMeasuresNode>();		
 		RepeatedMeasuresNode repeatedMeasuresNode = new RepeatedMeasuresNode();		
@@ -149,8 +151,8 @@ public class TestRepeatedMeasures extends TestCase
 			
 			repeatedMeasuresNode = new RepeatedMeasuresNode();	
 			repeatedMeasuresNode.setDimension("Day");
-			repeatedMeasuresNode.setNode(2);
-			repeatedMeasuresNode.setParent(1);	
+			repeatedMeasuresNode.setNode(1);
+			repeatedMeasuresNode.setParent(0);	
 			repeatedMeasuresNode.setNumberOfMeasurements(2);
 			repeatedMeasuresNode.setRepeatedMeasuresDimensionType(RepeatedMeasuresDimensionType.ORDINAL);
 				spacingList = new ArrayList<Spacing>();
@@ -168,8 +170,8 @@ public class TestRepeatedMeasures extends TestCase
 			
 			repeatedMeasuresNode = new RepeatedMeasuresNode();	
 			repeatedMeasuresNode.setDimension("Time");
-			repeatedMeasuresNode.setNode(1);
-			repeatedMeasuresNode.setParent(0);	
+			repeatedMeasuresNode.setNode(2);
+			repeatedMeasuresNode.setParent(1);	
 			repeatedMeasuresNode.setNumberOfMeasurements(1);
 			repeatedMeasuresNode.setRepeatedMeasuresDimensionType(RepeatedMeasuresDimensionType.ORDINAL);
 				spacingList = new ArrayList<Spacing>();
@@ -197,8 +199,10 @@ public class TestRepeatedMeasures extends TestCase
 		else
 		{
 			System.out.println("testUpdate() : ");
-			for(RepeatedMeasuresNode rmNode: repeatedMeasuresTree)
-				System.out.println(rmNode);
+			Gson gson = new Gson();
+            String json = gson.toJson(repeatedMeasuresTree);  
+            System.out.println(json);
+            assertTrue(repeatedMeasuresTree!=null);
 		}
 	}
 	
@@ -241,7 +245,7 @@ public class TestRepeatedMeasures extends TestCase
 	 * Test to delete a RepeatedMeasuresNode List
 	 */
 	@Test
-	private void testDelete()
+	public void testDelete()
 	{
 		List<RepeatedMeasuresNode> repeatedMeasuresTree = null;			
 		
@@ -263,8 +267,9 @@ public class TestRepeatedMeasures extends TestCase
         else
         {     
         	System.out.println("testDelete() : ");
-			for(RepeatedMeasuresNode rmNode: repeatedMeasuresTree)
-				System.out.println(rmNode);  
+        	Gson gson = new Gson();
+            String json = gson.toJson(repeatedMeasuresTree);  
+            System.out.println(json);
             assertTrue(repeatedMeasuresTree!=null);
         }
 	}
