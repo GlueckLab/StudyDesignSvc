@@ -505,6 +505,67 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_POWER_METHOD_MAP` (
 )
 ENGINE = InnoDB;
 
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`REPEATED_MEASURES`
+-- --------------------------------------------------------
+drop table if exists REPEATED_MEASURES;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`REPEATED_MEASURES` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) ,
+  `repeatType` ENUM( 'Numerical','Ordinal','Categorical') ,
+  `node` INT ,
+  `parent` INT,
+  `units` VARCHAR(45) ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`STUDY_REPEATED_MEASURES_MAP`
+-- -----------------------------------------------------
+drop table if exists STUDY_REPEATED_MEASURES_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_REPEATED_MEASURES_MAP` (
+  `uuid` BINARY(16) NOT NULL,
+  `id` INT NOT NULL UNIQUE,
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`REPEATED_MEASURES`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN`(`uuid`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`SPACING_LIST`
+-- -----------------------------------------------------
+drop table if exists SPACING_LIST;
+CREATE TABLE IF NOT EXISTS `studydesigndb`.`SPACING_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT , 
+  `data` INT ,
+  PRIMARY KEY(`id`) )
+ENGINE = InnoDB; 
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`REPEATED_MEASURES_SPACING_MAP`
+-- -----------------------------------------------------
+drop table if exists REPEATED_MEASURES_SPACING_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`REPEATED_MEASURES_SPACING_MAP` (
+  `id` INT NOT NULL,
+  `spacingId` INT NOT NULL UNIQUE,
+  `listorder` INT,
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`REPEATED_MEASURES`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`spacingId`)
+  REFERENCES `studydesigndb`.`SPACING_LIST`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
 
 # Turn foreign key checks back on
 set foreign_key_checks = 1;
