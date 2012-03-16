@@ -54,7 +54,7 @@ implements PowerMethodResource
 	boolean uuidFlag;
 
 	/**
-     * Retrieve a PowerMethod object for specified UUID.
+     * Retrieve a List<PowerMethod> object for specified UUID.
      * 
      * @param byte[]
      * @return List<PowerMethod>
@@ -110,7 +110,7 @@ implements PowerMethodResource
 	}
 
 	/**
-     * Create a PowerMethod object for specified UUID.
+     * Create a List<PowerMethod> object for specified UUID.
      * 
      * @param byte[]
      * @param List<PowerMethod>
@@ -142,7 +142,7 @@ implements PowerMethodResource
 			/* ----------------------------------------------------
 			 * Remove existing PowerMethod for this object 
 			 * ----------------------------------------------------*/			
-			if(powerMethodList!=null)
+			if(powerMethodList!=null && studyDesign.getPowerMethodList()!=null)
 				removeFrom(studyDesign);	
 			/* ----------------------------------------------------
 			 * Save new PowerMethod List object 
@@ -184,7 +184,7 @@ implements PowerMethodResource
 	}
 
 	/**
-     * Update a PowerMethod object for specified UUID.
+     * Update a List<PowerMethod> object for specified UUID.
      * 
      * @param byte[]
      * @param List<PowerMethod>
@@ -222,10 +222,7 @@ implements PowerMethodResource
             	{		
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						powerMethodList = studyDesign.getPowerMethodList();
-					if(powerMethodList.isEmpty())
-						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no PowerMethod is specified");					
+						powerMethodList = studyDesign.getPowerMethodList();								
             	}				
 			studyDesignManager.commit();
 			/* ----------------------------------------------------
@@ -267,7 +264,7 @@ implements PowerMethodResource
 	}
 
 	/**
-     * Delete a PowerMethod object for specified Study Design.
+     * Delete a List<PowerMethod> object for specified Study Design.
      * 
      * @param StudyDesign
      * @return List<PowerMethod>
