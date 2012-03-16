@@ -214,7 +214,7 @@ ENGINE = InnoDB;
 drop table if exists STATISTICAL_TEST_LIST;
 CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STATISTICAL_TEST_LIST` (
   `id` INT NOT NULL AUTO_INCREMENT ,
-  `type` VARCHAR(45),  
+  `type` ENUM('unirep','unirepBox','unirepGG','unirepHF','wl','pbt','hlt'),  
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
@@ -329,6 +329,181 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_COVARIANCE_MAP` (
 )
 ENGINE = InnoDB;
 
+-- ------------------------------------------------------
+-- Table `studydesigndb`.`MATRIX`
+-- ------------------------------------------------------
+drop table if exists MATRIX;
+CREATE TABLE IF NOT EXISTS `studydesigndb`.`MATRIX` (
+  `id` INT NOT NULL AUTO_INCREMENT , 
+  `name` VARCHAR(45) ,
+  `rows` INT ,
+  `columns` INT ,
+  `data` MEDIUMBLOB,
+  PRIMARY KEY(`id`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`STUDY_MATRIX_MAP`
+-- -----------------------------------------------------
+drop table if exists STUDY_MATRIX_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_MATRIX_MAP` (
+  `uuid` BINARY(16) NOT NULL,
+  `id` INT NOT NULL UNIQUE,   
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`MATRIX`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN`(`uuid`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`ALPHA_LIST`
+-- --------------------------------------------------------
+drop table if exists ALPHA_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`ALPHA_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,  
+  `alpha_value` DOUBLE ,  
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`STUDY_ALPHA_MAP`
+-- -----------------------------------------------------
+drop table if exists STUDY_ALPHA_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_ALPHA_MAP` (
+  `uuid` BINARY(16) NOT NULL,
+  `id` INT NOT NULL UNIQUE,
+  `listorder` INT,  
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`ALPHA_LIST`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN`(`uuid`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`SIGMA_SCALE_LIST`
+-- --------------------------------------------------------
+drop table if exists SIGMA_SCALE_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`SIGMA_SCALE_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,  
+  `sigma_scale_value` DOUBLE ,  
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`STUDY_SIGMA_SCALE_MAP`
+-- -----------------------------------------------------
+drop table if exists STUDY_SIGMA_SCALE_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_SIGMA_SCALE_MAP` (
+  `uuid` BINARY(16) NOT NULL,
+  `id` INT NOT NULL UNIQUE,
+  `listorder` INT,  
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`SIGMA_SCALE_LIST`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN`(`uuid`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`QUANTILE_LIST`
+-- --------------------------------------------------------
+drop table if exists QUANTILE_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`QUANTILE_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,  
+  `quantile_value` DOUBLE ,  
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`STUDY_QUANTILE_MAP`
+-- -----------------------------------------------------
+drop table if exists STUDY_QUANTILE_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_QUANTILE_MAP` (
+  `uuid` BINARY(16) NOT NULL,
+  `id` INT NOT NULL UNIQUE,
+  `listorder` INT,  
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`QUANTILE_LIST`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN`(`uuid`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`RELATIVE_GROUP_SIZE_LIST`
+-- --------------------------------------------------------
+drop table if exists RELATIVE_GROUP_SIZE_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`RELATIVE_GROUP_SIZE_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,  
+  `relative_group_size_value` INT ,  
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`STUDY_RELATIVE_GROUP_SIZE_MAP`
+-- -----------------------------------------------------
+drop table if exists STUDY_RELATIVE_GROUP_SIZE_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_RELATIVE_GROUP_SIZE_MAP` (
+  `uuid` BINARY(16) NOT NULL,
+  `id` INT NOT NULL UNIQUE,
+  `listorder` INT,  
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`RELATIVE_GROUP_SIZE_LIST`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN`(`uuid`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`POWER_METHOD_LIST`
+-- --------------------------------------------------------
+drop table if exists POWER_METHOD_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`POWER_METHOD_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,  
+  `method` ENUM('Conditional' , 'Unconditional' , 'Quantile'),  
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`STUDY_POWER_METHOD_MAP`
+-- -----------------------------------------------------
+drop table if exists STUDY_POWER_METHOD_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_POWER_METHOD_MAP` (
+  `uuid` BINARY(16) NOT NULL,
+  `id` INT NOT NULL UNIQUE,
+  `listorder` INT,  
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`POWER_METHOD_LIST`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN`(`uuid`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
 
 
 # Turn foreign key checks back on
