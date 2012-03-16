@@ -30,6 +30,8 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import com.google.gson.Gson;
+
 import edu.ucdenver.bios.studydesignsvc.resource.SigmaScaleServerResource;
 import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
@@ -42,7 +44,6 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 public class TestSigmaScaleList extends TestCase
 {
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	private static String STUDY_NAME = "Junit Test Study Design";
 	SigmaScaleServerResource resource = new SigmaScaleServerResource();
 	byte[] uuid = null;		
 		
@@ -52,30 +53,23 @@ public class TestSigmaScaleList extends TestCase
 	}
 	
 	/**
-	 * Test to create a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Test to create a SigmaScale List
 	 */
 	@Test
 	public void testCreate()
 	{	
 		
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);				
-				
 		List<SigmaScale> sigmaScaleList = new ArrayList<SigmaScale>();		
 		SigmaScale sigmaScale = new SigmaScale();		
-			sigmaScale.setStudyDesign(studyDesign);			
 			sigmaScale.setValue(0.5);	
 		sigmaScaleList.add(sigmaScale);	
 		sigmaScale = new SigmaScale();		
-			sigmaScale.setStudyDesign(studyDesign);			
 			sigmaScale.setValue(1);			
 		sigmaScaleList.add(sigmaScale);		
 				
 		try
 		{
-			sigmaScaleList = resource.create(sigmaScaleList);			
+			sigmaScaleList = resource.create(uuid,sigmaScaleList);			
 		}		
 		catch(Exception e)
 		{
@@ -89,29 +83,31 @@ public class TestSigmaScaleList extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : Beta Scale list size after persistance: "+sigmaScaleList.size());
+			System.out.println("testCreate() : ");
+			Gson gson = new Gson();
+            String json = gson.toJson(sigmaScaleList);  
+            System.out.println(json);
+           assertTrue(sigmaScaleList!=null);
 		}
 	}	
 	
+	/**
+	 * Test to update a SigmaScale List
+	 */
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);				
-				
 		List<SigmaScale> sigmaScaleList = new ArrayList<SigmaScale>();		
 		SigmaScale sigmaScale = new SigmaScale();		
-			sigmaScale.setStudyDesign(studyDesign);			
 			sigmaScale.setValue(0.11);	
 		sigmaScaleList.add(sigmaScale);	
 		sigmaScale = new SigmaScale();		
-			sigmaScale.setStudyDesign(studyDesign);			
 			sigmaScale.setValue(0.22);			
 		sigmaScaleList.add(sigmaScale);		
 				
 		try
 		{
-			sigmaScaleList = resource.update(sigmaScaleList);			
+			sigmaScaleList = resource.update(uuid,sigmaScaleList);			
 		}		
 		catch(Exception e)
 		{
@@ -125,43 +121,16 @@ public class TestSigmaScaleList extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : Beta Scale list size after persistance: "+sigmaScaleList.size());
+			System.out.println("testUpdate() : ");
+			Gson gson = new Gson();
+            String json = gson.toJson(sigmaScaleList);  
+            System.out.println(json);
+           assertTrue(sigmaScaleList!=null);
 		}
-	}
-	
-	@Test
-	public void testDelete()
-	{
-		List<SigmaScale> sigmaScaleList = null;			
-		
-		try
-		{
-			sigmaScaleList = resource.remove(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			sigmaScaleList=null;
-			fail();
-		}
-		if (sigmaScaleList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
-        }
-        else
-        {     
-        	System.out.println("testDelete() : ");
-        	for(SigmaScale sigmaScale: sigmaScaleList)
-        		System.out.println(sigmaScale.getValue());
-            assertTrue(sigmaScaleList!=null);
-        }
 	}
 	
 	/**
-	 * Test retrieving a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Test to retrieve a SigmaScale List
 	 */
 	@Test
 	public void testRetrieve()
@@ -186,9 +155,44 @@ public class TestSigmaScaleList extends TestCase
         else
         {     
         	System.out.println("testRetrieve() : ");
-        	for(SigmaScale sigmaScale: sigmaScaleList)
-        		System.out.println(sigmaScale.getValue());
-            assertTrue(sigmaScaleList!=null);
+        	Gson gson = new Gson();
+            String json = gson.toJson(sigmaScaleList);  
+            System.out.println(json);
+           assertTrue(sigmaScaleList!=null);
         }
 	}
+	
+	/**
+	 * Test to delete a SigmaScale List
+	 */
+	@Test
+	public void testDelete()
+	{
+		List<SigmaScale> sigmaScaleList = null;			
+		
+		try
+		{
+			sigmaScaleList = resource.remove(uuid);			
+		}		
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			sigmaScaleList=null;
+			fail();
+		}
+		if (sigmaScaleList == null)
+        {
+        	System.err.println("No matching confidence interval found");
+        	fail();
+        }
+        else
+        {     
+        	System.out.println("testDelete() : ");
+        	Gson gson = new Gson();
+            String json = gson.toJson(sigmaScaleList);  
+            System.out.println(json);
+           assertTrue(sigmaScaleList!=null);
+        }
+	}
+		
 }

@@ -26,13 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import junit.framework.TestCase;
+
 import org.junit.Test;
+
+import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.RelativeGroupSizeServerResource;
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
-import junit.framework.TestCase;
 /**
  * JUnit test cases for 'RelativeGroupSize' object - CRUD operations.
  * 
@@ -41,7 +44,6 @@ import junit.framework.TestCase;
 public class TestRelativeGroupSize extends TestCase
 {
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	private static String STUDY_NAME = "Junit Test Study Design";
 	RelativeGroupSizeServerResource resource = new RelativeGroupSizeServerResource();
 	byte[] uuid = null;		
 		
@@ -51,30 +53,23 @@ public class TestRelativeGroupSize extends TestCase
 	}
 	
 	/**
-	 * Test to create a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Test to create a RelativeGroupSize List
 	 */
 	@Test
-	private void testCreate()
+	public void testCreate()
 	{	
 		
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);				
-				
 		List<RelativeGroupSize> relativeGroupSizeList = new ArrayList<RelativeGroupSize>();		
 		RelativeGroupSize relativeGroupSize = new RelativeGroupSize();		
-			relativeGroupSize.setStudyDesign(studyDesign);			
 			relativeGroupSize.setValue(5);	
 		relativeGroupSizeList.add(relativeGroupSize);	
 		relativeGroupSize = new RelativeGroupSize();		
-			relativeGroupSize.setStudyDesign(studyDesign);			
 			relativeGroupSize.setValue(1);			
 		relativeGroupSizeList.add(relativeGroupSize);		
 				
 		try
 		{
-			relativeGroupSizeList = resource.create(relativeGroupSizeList);			
+			relativeGroupSizeList = resource.create(uuid,relativeGroupSizeList);			
 		}		
 		catch(Exception e)
 		{
@@ -88,10 +83,17 @@ public class TestRelativeGroupSize extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : RelativeGroupSize list size after persistance: "+relativeGroupSizeList.size());
+			System.out.println("testCreate() ");
+			Gson gson = new Gson();
+            String json = gson.toJson(relativeGroupSizeList);  
+            System.out.println(json);
+           assertTrue(relativeGroupSizeList!=null);
 		}
 	}	
 	
+	/**
+	 * Test to update a RelativeGroupSize List
+	 */
 	@Test
 	public void testUpdate()
 	{
@@ -100,17 +102,15 @@ public class TestRelativeGroupSize extends TestCase
 				
 		List<RelativeGroupSize> relativeGroupSizeList = new ArrayList<RelativeGroupSize>();		
 		RelativeGroupSize relativeGroupSize = new RelativeGroupSize();		
-			relativeGroupSize.setStudyDesign(studyDesign);			
 			relativeGroupSize.setValue(11);	
 		relativeGroupSizeList.add(relativeGroupSize);	
 		relativeGroupSize = new RelativeGroupSize();		
-			relativeGroupSize.setStudyDesign(studyDesign);			
 			relativeGroupSize.setValue(22);			
 		relativeGroupSizeList.add(relativeGroupSize);		
 				
 		try
 		{
-			relativeGroupSizeList = resource.update(relativeGroupSizeList);			
+			relativeGroupSizeList = resource.update(uuid,relativeGroupSizeList);			
 		}		
 		catch(Exception e)
 		{
@@ -124,43 +124,16 @@ public class TestRelativeGroupSize extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : RelativeGroupSize list size after persistance: "+relativeGroupSizeList.size());
+			System.out.println("testUpdate() : ");
+			Gson gson = new Gson();
+            String json = gson.toJson(relativeGroupSizeList);  
+            System.out.println(json);
+           assertTrue(relativeGroupSizeList!=null);
 		}
-	}
-	
-	@Test
-	public void testDelete()
-	{
-		List<RelativeGroupSize> relativeGroupSizeList = null;			
-		
-		try
-		{
-			relativeGroupSizeList = resource.remove(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			relativeGroupSizeList=null;
-			fail();
-		}
-		if (relativeGroupSizeList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
-        }
-        else
-        {     
-        	System.out.println("testDelete() : ");
-        	for(RelativeGroupSize relativeGroupSize: relativeGroupSizeList)
-        		System.out.println(relativeGroupSize.getValue());
-            assertTrue(relativeGroupSizeList!=null);
-        }
 	}
 	
 	/**
-	 * Test retrieving a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Test to retrieve a RelativeGroupSize List
 	 */
 	@Test
 	public void testRetrieve()
@@ -185,9 +158,44 @@ public class TestRelativeGroupSize extends TestCase
         else
         {     
         	System.out.println("testRetrieve() : ");
-        	for(RelativeGroupSize relativeGroupSize: relativeGroupSizeList)
-        		System.out.println(relativeGroupSize.getValue());
-            assertTrue(relativeGroupSizeList!=null);
+        	Gson gson = new Gson();
+            String json = gson.toJson(relativeGroupSizeList);  
+            System.out.println(json);
+           assertTrue(relativeGroupSizeList!=null);
         }
 	}
+	
+	/**
+	 * Test to delete a RelativeGroupSize List
+	 */
+	@Test
+	public void testDelete()
+	{
+		List<RelativeGroupSize> relativeGroupSizeList = null;			
+		
+		try
+		{
+			relativeGroupSizeList = resource.remove(uuid);			
+		}		
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			relativeGroupSizeList=null;
+			fail();
+		}
+		if (relativeGroupSizeList == null)
+        {
+        	System.err.println("No matching confidence interval found");
+        	fail();
+        }
+        else
+        {     
+        	System.out.println("testDelete() : ");
+        	Gson gson = new Gson();
+            String json = gson.toJson(relativeGroupSizeList);  
+            System.out.println(json);
+           assertTrue(relativeGroupSizeList!=null);
+        }
+	}
+		
 }

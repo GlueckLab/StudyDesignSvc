@@ -124,7 +124,11 @@ public class TestBetaScaleList extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() :  "+betaScaleList);
+			System.out.println("testCreate() :  ");
+			Gson gson = new Gson();
+            String json = gson.toJson(betaScaleList);  
+            System.out.println(json);
+           assertTrue(betaScaleList!=null);
 		}		
 	}	
 	
@@ -132,7 +136,7 @@ public class TestBetaScaleList extends TestCase
 	 * Test to update a BetaScale List
 	 */
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{
 		List<BetaScale> betaScaleList = new ArrayList<BetaScale>();		
 		BetaScale betaScale = new BetaScale();					
@@ -162,7 +166,10 @@ public class TestBetaScaleList extends TestCase
 		else
 		{
 			System.out.println("testUpdate() : ");
-			System.out.println(betaScale);
+			Gson gson = new Gson();
+            String json = gson.toJson(betaScaleList);  
+            System.out.println(json);
+           assertTrue(betaScaleList!=null);
 		}
 	}
 	
@@ -170,7 +177,7 @@ public class TestBetaScaleList extends TestCase
 	 * Test to delete a BetaScale List
 	 */
 	@Test
-	private void testDelete()
+	public void testDelete()
 	{
 		List<BetaScale> betaScaleList = null;			
 		
@@ -192,9 +199,10 @@ public class TestBetaScaleList extends TestCase
         else
         {     
         	System.out.println("testDelete() : ");
-        	for(BetaScale betaScale: betaScaleList)
-        		System.out.println(betaScale);
-            assertTrue(betaScaleList!=null);
+        	Gson gson = new Gson();
+            String json = gson.toJson(betaScaleList);  
+            System.out.println(json);
+           assertTrue(betaScaleList!=null);
         }
 	}
 	

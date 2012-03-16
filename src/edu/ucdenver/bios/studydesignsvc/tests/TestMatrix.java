@@ -22,7 +22,19 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import junit.framework.TestCase;
+
+import org.junit.Test;
+
+import com.google.gson.Gson;
+
+import edu.ucdenver.bios.studydesignsvc.resource.MatrixServerResource;
+import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
  * JUnit test cases for 'NamedMatrix' object - CRUD operations.
@@ -31,203 +43,355 @@ import junit.framework.TestCase;
  */
 public class TestMatrix extends TestCase
 {
-	/*private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	private static String STUDY_NAME = "Junit Test Study Design";
+	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 	private static String THETA_MATRIX_NAME = "Theta Null Matrix";
 	private static String BETA_MATRIX_NAME = "Beta Matrix";
 	MatrixServerResource resource = new MatrixServerResource();
 	byte[] uuid = null;		
+	int rows, columns;
 		
 	public void setUp()
 	{
 		uuid = UUIDUtils.asByteArray(STUDY_UUID);
 	}
 	
+	/**
+	 * Test to create a Set<NamedMatrix>
+	 */
 	@Test
-	private void testCreateMatrixMap()
+	public void testCreateMatrixSet()
 	{	
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);
-		studyDesign.setName(STUDY_NAME);
-		studyDesign.setGaussianCovariate(true);				
-		studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER);		
-				
-		Map<String,NamedMatrix> namedMatrixMap = new HashMap<String,NamedMatrix>();	
-		NamedMatrix namedMatrix = new NamedMatrix();
-		List<NamedMatrixCell> matrixCellList = new ArrayList<NamedMatrixCell>();		
-			
-			NamedMatrixCell matrixCell = new NamedMatrixCell();				
-			matrixCell.setRow(0);
-			matrixCell.setColumn(0);
-			matrixCell.setValue(2.5);
-				
-			matrixCellList.add(matrixCell);
-			namedMatrix.setMatrixCellList(matrixCellList);
-				
-				matrixCell = new NamedMatrixCell();				
-				matrixCell.setRow(0);
-				matrixCell.setColumn(1);
-				matrixCell.setValue(5.5);
-				matrixCell.setNamedMatrix(namedMatrix);
-				
-			matrixCellList.add(matrixCell);				
-			namedMatrix.setMatrixCellList(matrixCellList);
-			//namedMatrix.setStudyDesign(studyDesign);			
-			
-			namedMatrix.setStudyDesign(studyDesign);
-		namedMatrixMap.put(THETA_MATRIX_NAME,namedMatrix);			
-		namedMatrix = new NamedMatrix();		
-		matrixCellList = new ArrayList<NamedMatrixCell>();		
-		
-			matrixCell = new NamedMatrixCell();				
-			matrixCell.setRow(0);
-			matrixCell.setColumn(0);
-			matrixCell.setValue(50);
-				
-			matrixCellList.add(matrixCell);
-			namedMatrix.setMatrixCellList(matrixCellList);
-				
-				matrixCell = new NamedMatrixCell();				
-				matrixCell.setRow(0);
-				matrixCell.setColumn(1);
-				matrixCell.setValue(50.5);
-				matrixCell.setNamedMatrix(namedMatrix);
-				
-		matrixCellList.add(matrixCell);				
-		namedMatrix.setMatrixCellList(matrixCellList);
-		namedMatrix.setStudyDesign(studyDesign);			
-		namedMatrixMap.put(BETA_MATRIX_NAME,namedMatrix);	
+		Set<NamedMatrix> matrixSet = new HashSet<NamedMatrix>();	
+		NamedMatrix matrix = new NamedMatrix(THETA_MATRIX_NAME);
+			rows=2;
+			columns=2;
+			matrix.setColumns(columns);
+			matrix.setRows(rows);
+				double[][] data = new double[rows][columns];
+				data[0][0]=2.5;
+				data[0][1]=5.5;
+			matrix.setData(data);	
+		matrixSet.add(matrix);			
+		rows=1;
+		matrix = new NamedMatrix(BETA_MATRIX_NAME);		
+			matrix.setColumns(columns);
+			matrix.setRows(rows);
+				data = new double[rows][columns];
+				data[0][0]=10;
+				data[0][1]=50;
+			matrix.setData(data);	
+		matrixSet.add(matrix);	
 				
 		try
 		{
-			namedMatrixMap = resource.create(namedMatrixMap);			
+			matrixSet = resource.create(uuid,matrixSet);			
 		}		
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			namedMatrixMap=null;
+			matrixSet=null;
 			fail();
 		}
-		if(namedMatrixMap==null)
+		if(matrixSet==null)
 		{
 			fail();
 		}
 		else
 		{
-			System.out.println("testCreate() : Matrix size after persistance: "+namedMatrixMap.size());
+			System.out.println("testCreateMatrixSet() : Matrix size after persistance: "+matrixSet.size());
+			Gson gson = new Gson();
+            String json = gson.toJson(matrixSet);  
+            System.out.println(json);
+            assertTrue(matrixSet!=null);
 		}
 	}
 	
+	/**
+	 * Test to retrieve a NamedMatrix
+	 */
 	@Test
-	private void testCreateMatrix()
+	public void testCreateMatrix()
 	{	
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);
-		studyDesign.setName(STUDY_NAME);
-		studyDesign.setGaussianCovariate(true);				
-		studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER);		
-						
-		NamedMatrix namedMatrix = new NamedMatrix();
-		List<NamedMatrixCell> matrixCellList = new ArrayList<NamedMatrixCell>();		
-			
-			NamedMatrixCell matrixCell = new NamedMatrixCell();				
-			matrixCell.setRow(0);
-			matrixCell.setColumn(0);
-			matrixCell.setValue(2.5);
+		NamedMatrix matrix = new NamedMatrix(THETA_MATRIX_NAME);
+			rows=3;
+			columns=3;
+			matrix.setColumns(columns);
+			matrix.setRows(rows);
+				double[][] data = new double[rows][columns];
+				data[0][0]=5.0;
+				data[0][1]=5.0;
+			matrix.setData(data);	
 				
-			matrixCellList.add(matrixCell);
-			namedMatrix.setMatrixCellList(matrixCellList);
-				
-				matrixCell = new NamedMatrixCell();				
-				matrixCell.setRow(0);
-				matrixCell.setColumn(1);
-				matrixCell.setValue(5.5);
-				matrixCell.setNamedMatrix(namedMatrix);
-				
-			matrixCellList.add(matrixCell);				
-		namedMatrix.setMatrixCellList(matrixCellList);
-		namedMatrix.setName(THETA_MATRIX_NAME);
-		namedMatrix.setStudyDesign(studyDesign);			
-						
 		try
 		{
-			namedMatrix = resource.create(namedMatrix);			
+			matrix = resource.create(uuid,matrix);			
 		}		
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			namedMatrix=null;
+			matrix=null;
 			fail();
 		}
-		if(namedMatrix==null)
+		if(matrix==null)
 		{
 			fail();
 		}
 		else
 		{
-			System.out.println("testCreate() : Matrix size after persistance: "+namedMatrix.getName());
+			System.out.println("testCreateMatrix() : ");
+			Gson gson = new Gson();
+            String json = gson.toJson(matrix);  
+            System.out.println(json);
+            assertTrue(matrix!=null);
 		}
-	}
-
+	}	
 	
+	/**
+	 * Test to retrieve a Set<NamedMatrix>
+	 */
 	@Test
-	private void testRetrieveMatrix()
+	public void testRetrieveMatrixSet()
 	{
-		NamedMatrix namedMatrix = null;			
+		Set<NamedMatrix> matrixSet = null;			
 		
 		try
 		{
-			namedMatrix = resource.retrieve(uuid,THETA_MATRIX_NAME);			
+			matrixSet = resource.retrieve(uuid);			
 		}		
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			namedMatrix=null;
+			matrixSet=null;
 			fail();
 		}
-		if (namedMatrix == null)
+		if (matrixSet == null)
         {
-        	System.err.println("No matching confidence interval found");
+        	System.err.println("No matching NamedMatrix found");
         	fail();
         }
         else
         {     
-        	System.out.println("testRetrieve() : ");        	
-        	System.out.println(namedMatrix.getName());
-    		System.out.println(namedMatrix.getMatrixCellList().size());
-            assertTrue(namedMatrix!=null);
+        	System.out.println("testRetrieveMatrixSet() : "+matrixSet.size());
+        	 Gson gson = new Gson();
+             String json = gson.toJson(matrixSet);  
+             System.out.println(json);
+            assertTrue(matrixSet!=null);
         }
 	}
 	
-	
+	/**
+	 * Test to retrieve a NamedMatrix
+	 */
 	@Test
-	private void testRetrieveMatrixMap()
+	public void testRetrieveMatrix()
 	{
-		Map<String,NamedMatrix> namedMatrixMap = null;			
+		NamedMatrix matrix = null;				
 		
 		try
 		{
-			namedMatrixMap = resource.retrieve(uuid);			
+			matrix = resource.retrieve(uuid,THETA_MATRIX_NAME);			
 		}		
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			namedMatrixMap=null;
+			matrix=null;
 			fail();
 		}
-		if (namedMatrixMap == null)
+		if (matrix == null)
         {
-        	System.err.println("No matching confidence interval found");
+        	System.err.println("No matching NamedMatrix found");
         	fail();
         }
         else
         {     
-        	System.out.println("testRetrieve() : ");        	
-        	System.out.println(namedMatrixMap.size());
-    		System.out.println(namedMatrixMap.toString());
-            assertTrue(namedMatrixMap!=null);
+        	System.out.println("testRetrieveMatrix() : ");
+        	 Gson gson = new Gson();
+             String json = gson.toJson(matrix);  
+             System.out.println(json);
+            assertTrue(matrix!=null);
         }
 	}
+	
+	/**
+	 * Test to update a NamedMatrix
+	 */
+	@Test
+	public void testUpdateMatrix()
+	{
+		NamedMatrix matrix = new NamedMatrix(THETA_MATRIX_NAME);
+		rows=10;
+		columns=10;
+		matrix.setColumns(columns);
+		matrix.setRows(rows);
+			double[][] data = new double[rows][columns];
+			for(int i=0; i<columns ; i++)
+			{
+				for(int j =0 ; j<rows; j++)
+				{
+					data[j][i]=1.1;
+				}
+			}	
+		matrix.setData(data);
+		
+		try
+		{
+			matrix = resource.update(uuid,matrix);			
+		}		
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			matrix=null;
+			fail();
+		}
+		if(matrix==null)
+		{
+			fail();
+		}
+		else
+		{
+			System.out.println("testUpdateMatrix() : ");
+			Gson gson = new Gson();
+            String json = gson.toJson(matrix);  
+            System.out.println(json);
+           assertTrue(matrix!=null);
+		}
+	}
+	
+	/**
+	 * Test to update a Set<NamedMatrix>
+	 */
+	@Test
+	public void testUpdateMatrixSet()
+	{
+		Set<NamedMatrix> matrixSet = new HashSet<NamedMatrix>();		
+		NamedMatrix matrix = new NamedMatrix(THETA_MATRIX_NAME);
+		rows=10;
+		columns=10;
+		matrix.setColumns(columns);
+		matrix.setRows(rows);
+			double[][] data = new double[rows][columns];
+			for(int i=0; i<columns ; i++)
+			{
+				for(int j =0 ; j<rows; j++)
+				{
+					data[j][i]=1.1;
+				}
+			}	
+		matrix.setData(data);
+		matrixSet.add(matrix);	
+					
+		matrix = new NamedMatrix(BETA_MATRIX_NAME);
+		rows=5;
+		columns=5;
+		matrix.setColumns(columns);
+		matrix.setRows(rows);
+			data = new double[rows][columns];
+			for(int i=0; i<columns ; i++)
+			{
+				for(int j =0 ; j<rows; j++)
+				{
+					data[j][i]=11;
+				}
+			}	
+		matrix.setData(data);
+		matrixSet.add(matrix);	
+		
+		try
+		{
+			matrixSet = resource.update(uuid,matrixSet);			
+		}		
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			matrixSet=null;
+			fail();
+		}
+		if(matrixSet==null)
+		{
+			fail();
+		}
+		else
+		{
+			System.out.println("testUpdateMatrixSet() : "+matrixSet.size());
+			Gson gson = new Gson();
+            String json = gson.toJson(matrixSet);  
+            System.out.println(json);
+           assertTrue(matrixSet!=null);
+		}
+	}
+	
+	/**
+	 * Test to delete a NamedMatrix
+	 */
+	@Test
+	public void testDeleteMatrix()
+	{
+		NamedMatrix matrix = null;			
+		
+		try
+		{
+			matrix = resource.remove(uuid,THETA_MATRIX_NAME);			
+		}		
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			matrix=null;
+			fail();
+		}
+		if (matrix == null)
+        {
+        	System.err.println("No matching NamedMatrix found");
+        	fail();
+        }
+        else
+        {     
+        	System.out.println("testDeleteMatrix() : ");
+        	Gson gson = new Gson();
+            String json = gson.toJson(matrix);  
+            System.out.println(json);
+           assertTrue(matrix!=null);
+            assertTrue(matrix!=null);
+        }
+	}
+	
+	/**
+	 * Test to delete a Set<NamedMatrix>
+	 */
+	@Test
+	public void testDeleteMatrixSet()
+	{
+		Set<NamedMatrix> matrixSet = null;			
+		
+		try
+		{
+			matrixSet = resource.remove(uuid);			
+		}		
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			matrixSet=null;
+			fail();
+		}
+		if (matrixSet == null)
+        {
+        	System.err.println("No matching NamedMatrix found");
+        	fail();
+        }
+        else
+        {     
+        	System.out.println("testDeleteMatrixSet() : "+matrixSet.size());
+        	Gson gson = new Gson();
+            String json = gson.toJson(matrixSet);  
+            System.out.println(json);
+           assertTrue(matrixSet!=null);
+            assertTrue(matrixSet!=null);
+        }
+	}
+		
+		
+	
+	/*
+		
 	
 	private void testDeleteMatrix()
 	{		
@@ -254,43 +418,7 @@ public class TestMatrix extends TestCase
             assertTrue(namedMatrix!=null);
         }
 	}
-	
-	private void testDeleteMatrixMap()
-	{		
-		List<NamedMatrix> namedMatrixList = null;			 	
-		try
-		{
-			namedMatrixList = resource.remove(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			namedMatrixList=null;
-			fail();
-		}
-		if (namedMatrixList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
-        }
-        else
-        {         
-        	System.out.println(namedMatrixList.size());
-    		System.out.println(namedMatrixList.toString());
-            assertTrue(namedMatrixList!=null);
-        }
-	}
-	
-	@Test
-	public void testUpdateMatrix()
-	{
 		
-	}
-	
-	@Test
-	public void testUpdateMatrixMap()
-	{
-		
-	}*/
+	*/
 	
 }

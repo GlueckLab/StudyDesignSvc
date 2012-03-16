@@ -30,9 +30,10 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import com.google.gson.Gson;
+
 import edu.ucdenver.bios.studydesignsvc.resource.PowerMethodServerResource;
 import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.enums.PowerMethodEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 /**
@@ -43,7 +44,6 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 public class TestPowerMethodList extends TestCase
 {
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-
 	PowerMethodServerResource resource = new PowerMethodServerResource();
 	byte[] uuid = null;		
 		
@@ -53,33 +53,23 @@ public class TestPowerMethodList extends TestCase
 	}
 	
 	/**
-	 * Test to create a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Test to create a PowerMethod List
 	 */
 	@Test
-	private void testCreate()
+	public void testCreate()
 	{	
 		
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);		
-		/*studyDesign.setName(STUDY_NAME);
-		studyDesign.setGaussianCovariate(true);		
-		studyDesign.setPowerMethodEnum(PowerMethodEnum.CONDITIONAL);*/
-				
 		List<PowerMethod> powerMethodList = new ArrayList<PowerMethod>();		
 		PowerMethod powerMethod = new PowerMethod();		
-			powerMethod.setStudyDesign(studyDesign);			
 			powerMethod.setPowerMethodEnum(PowerMethodEnum.UNCONDITIONAL);	
 		powerMethodList.add(powerMethod);	
 		powerMethod = new PowerMethod();		
-			powerMethod.setStudyDesign(studyDesign);			
 			powerMethod.setPowerMethodEnum(PowerMethodEnum.QUANTILE);			
 		powerMethodList.add(powerMethod);		
 				
 		try
 		{
-			powerMethodList = resource.create(powerMethodList);			
+			powerMethodList = resource.create(uuid,powerMethodList);			
 		}		
 		catch(Exception e)
 		{
@@ -93,26 +83,29 @@ public class TestPowerMethodList extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : Beta Scale list size after persistance: "+powerMethodList.size());
+			System.out.println("testCreate() : ");
+			Gson gson = new Gson();
+            String json = gson.toJson(powerMethodList);  
+            System.out.println(json);
+           assertTrue(powerMethodList!=null);
 		}
 	}	
 	
+	/**
+	 * Test to update a PowerMethod List
+	 */
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);		
-		
 		List<PowerMethod> powerMethodList = new ArrayList<PowerMethod>();		
 		PowerMethod powerMethod = new PowerMethod();		
-			powerMethod.setStudyDesign(studyDesign);			
 			powerMethod.setPowerMethodEnum(PowerMethodEnum.QUANTILE);	
 		powerMethodList.add(powerMethod);	
 		
 				
 		try
 		{
-			powerMethodList = resource.update(powerMethodList);			
+			powerMethodList = resource.update(uuid,powerMethodList);			
 		}		
 		catch(Exception e)
 		{
@@ -126,10 +119,50 @@ public class TestPowerMethodList extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : Beta Scale list size after persistance: "+powerMethodList.size());
+			System.out.println("testUpdate() : ");
+			Gson gson = new Gson();
+            String json = gson.toJson(powerMethodList);  
+            System.out.println(json);
+           assertTrue(powerMethodList!=null);
 		}
 	}
 	
+	/**
+	 * Test to retrieve a PowerMethod List
+	 */
+	@Test
+	public void testRetrieve()
+	{
+		List<PowerMethod> powerMethodList = null;			
+		
+		try
+		{
+			powerMethodList = resource.retrieve(uuid);			
+		}		
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			powerMethodList=null;
+			fail();
+		}
+		if (powerMethodList == null)
+        {
+        	System.err.println("No matching confidence interval found");
+        	fail();
+        }
+        else
+        {     
+        	System.out.println("testRetrieve() : ");
+        	Gson gson = new Gson();
+            String json = gson.toJson(powerMethodList);  
+            System.out.println(json);
+           assertTrue(powerMethodList!=null);
+        }
+	}
+	
+	/**
+	 * Test to delete a PowerMethod List
+	 */
 	@Test
 	public void testDelete()
 	{
@@ -153,43 +186,11 @@ public class TestPowerMethodList extends TestCase
         else
         {     
         	System.out.println("testDelete() : ");
-        	for(PowerMethod powerMethod: powerMethodList)
-        		System.out.println(powerMethod.getPowerMethodEnum());
-            assertTrue(powerMethodList!=null);
+        	Gson gson = new Gson();
+            String json = gson.toJson(powerMethodList);  
+            System.out.println(json);
+           assertTrue(powerMethodList!=null);
         }
 	}
-	
-	/**
-	 * Test retrieving a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
-	 */
-	@Test
-	private void testRetrieve()
-	{
-		List<PowerMethod> powerMethodList = null;			
 		
-		try
-		{
-			powerMethodList = resource.retrieve(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			powerMethodList=null;
-			fail();
-		}
-		if (powerMethodList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
-        }
-        else
-        {     
-        	System.out.println("testRetrieve() : ");
-        	for(PowerMethod powerMethod: powerMethodList)
-        		System.out.println(powerMethod.getPowerMethodEnum());
-            assertTrue(powerMethodList!=null);
-        }
-	}
 }

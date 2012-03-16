@@ -30,6 +30,8 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import com.google.gson.Gson;
+
 import edu.ucdenver.bios.studydesignsvc.resource.QuantileServerResource;
 import edu.ucdenver.bios.webservice.common.domain.Quantile;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
@@ -42,7 +44,6 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 public class TestQuantileList extends TestCase
 {
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	private static String STUDY_NAME = "Junit Test Study Design";
 	QuantileServerResource resource = new QuantileServerResource();
 	byte[] uuid = null;		
 		
@@ -52,30 +53,23 @@ public class TestQuantileList extends TestCase
 	}
 	
 	/**
-	 * Test to create a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Test to create a Quantile List
 	 */
 	@Test
 	public void testCreate()
 	{	
 		
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);				
-				
 		List<Quantile> quantileList = new ArrayList<Quantile>();		
 		Quantile quantile = new Quantile();		
-			quantile.setStudyDesign(studyDesign);			
 			quantile.setValue(0.5);	
 		quantileList.add(quantile);	
 		quantile = new Quantile();		
-			quantile.setStudyDesign(studyDesign);			
 			quantile.setValue(1);			
 		quantileList.add(quantile);		
 				
 		try
 		{
-			quantileList = resource.create(quantileList);			
+			quantileList = resource.create(uuid,quantileList);			
 		}		
 		catch(Exception e)
 		{
@@ -89,29 +83,34 @@ public class TestQuantileList extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : Quantile list size after persistance: "+quantileList.size());
+			System.out.println("testCreate() : ");
+			Gson gson = new Gson();
+            String json = gson.toJson(quantileList);  
+            System.out.println(json);
+           assertTrue(quantileList!=null);
 		}
 	}	
 	
+	/**
+	 * Test to update a Quantile List
+	 */
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{
 		StudyDesign studyDesign = new StudyDesign();		
 		studyDesign.setUuid(uuid);				
 				
 		List<Quantile> quantileList = new ArrayList<Quantile>();		
 		Quantile quantile = new Quantile();		
-			quantile.setStudyDesign(studyDesign);			
 			quantile.setValue(0.11);	
 		quantileList.add(quantile);	
 		quantile = new Quantile();		
-			quantile.setStudyDesign(studyDesign);			
 			quantile.setValue(0.22);			
 		quantileList.add(quantile);		
 				
 		try
 		{
-			quantileList = resource.update(quantileList);			
+			quantileList = resource.update(uuid,quantileList);			
 		}		
 		catch(Exception e)
 		{
@@ -125,46 +124,19 @@ public class TestQuantileList extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : Quantile list size after persistance: "+quantileList.size());
+			System.out.println("testUpdate() : ");
+			Gson gson = new Gson();
+            String json = gson.toJson(quantileList);  
+            System.out.println(json);
+           assertTrue(quantileList!=null);
 		}
-	}
-	
-	@Test
-	private void testDelete()
-	{
-		List<Quantile> quantileList = null;			
-		
-		try
-		{
-			quantileList = resource.remove(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			quantileList=null;
-			fail();
-		}
-		if (quantileList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
-        }
-        else
-        {     
-        	System.out.println("testDelete() : ");
-        	for(Quantile quantile: quantileList)
-        		System.out.println(quantile.getValue());
-            assertTrue(quantileList!=null);
-        }
 	}
 	
 	/**
-	 * Test retrieving a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Test to retrieve a Quantile List
 	 */
 	@Test
-	private void testRetrieve()
+	public void testRetrieve()
 	{
 		List<Quantile> quantileList = null;			
 		
@@ -186,9 +158,44 @@ public class TestQuantileList extends TestCase
         else
         {     
         	System.out.println("testRetrieve() : ");
-        	for(Quantile quantile: quantileList)
-        		System.out.println(quantile.getValue());
-            assertTrue(quantileList!=null);
+        	Gson gson = new Gson();
+            String json = gson.toJson(quantileList);  
+            System.out.println(json);
+           assertTrue(quantileList!=null);
         }
 	}
+	
+	/**
+	 * Test to delete a Quantile List
+	 */
+	@Test
+	public void testDelete()
+	{
+		List<Quantile> quantileList = null;			
+		
+		try
+		{
+			quantileList = resource.remove(uuid);			
+		}		
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			quantileList=null;
+			fail();
+		}
+		if (quantileList == null)
+        {
+        	System.err.println("No matching confidence interval found");
+        	fail();
+        }
+        else
+        {     
+        	System.out.println("testDelete() : ");
+        	Gson gson = new Gson();
+            String json = gson.toJson(quantileList);  
+            System.out.println(json);
+           assertTrue(quantileList!=null);
+        }
+	}
+		
 }

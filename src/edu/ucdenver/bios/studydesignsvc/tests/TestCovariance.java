@@ -54,10 +54,10 @@ public class TestCovariance extends TestCase
 	private static final String COVARIANCE_NAME_2 = "Covariance 2";
 	
 	CovarianceServerResource resource = new CovarianceServerResource();
-	byte[] uuid = null;		
+	byte[] uuid = null;	
+	int rows, columns;
 	
 	ClientResource clientResource = null; 
-	BetaScaleResource betaScaleResource = null;
 		
 	public void setUp()
 	{
@@ -84,41 +84,41 @@ public class TestCovariance extends TestCase
 		Set<Covariance> covarianceSet = new HashSet<Covariance>();		
 		Covariance covariance = new Covariance();						
 			covariance.setName(COVARIANCE_NAME_1);
-			covariance.setColumns(3);
-			covariance.setRows(2);
+			rows=2;
+			columns=3;
+			covariance.setColumns(columns);
+			covariance.setRows(rows);
 			covariance.setRoh(1.2);
 			covariance.setDelta(2.5);
 			covariance.setSd(5);			
-			Blob2DArray blob = new Blob2DArray();
-			double[][] data = new double[2][2];
-				for(int i=0; i<2 ; i++)
+				double[][] data = new double[rows][columns];
+				for(int i=0; i<columns ; i++)
 				{
-					for(int j =0 ; j<2; j++)
+					for(int j =0 ; j<rows; j++)
 					{
 						data[j][i]=2.0;
 					}
 				}
-			blob.setData(data);
-			covariance.setBlob(blob);
+			covariance.setBlob(data);
 		covarianceSet.add(covariance);	
 		covariance = new Covariance();					
 			covariance.setName(COVARIANCE_NAME_2);
-			covariance.setColumns(1);
-			covariance.setRows(5);
+			rows=5;
+			columns=1;
+			covariance.setColumns(columns);
+			covariance.setRows(rows);
 			covariance.setRoh(1.1);
 			covariance.setDelta(0.5);
 			covariance.setSd(0.1);			
-			blob = new Blob2DArray();
-			data = new double[3][2];
-				for(int i=0; i<2 ; i++)
+				data = new double[rows][columns];
+				for(int i=0; i<columns ; i++)
 				{
-					for(int j =0 ; j<3; j++)
+					for(int j =0 ; j<rows; j++)
 					{
 						data[j][i]=2.0;
 					}
 				}
-			blob.setData(data);
-			covariance.setBlob(blob);
+			covariance.setBlob(data);
 		covarianceSet.add(covariance);		
 				
 		try
@@ -146,6 +146,39 @@ public class TestCovariance extends TestCase
 	}	
 	
 	/**
+	 * Test to retrieve a Covariance
+	 */
+	@Test
+	public void testRetrieve()
+	{
+		Set<Covariance> covarianceSet = null;			
+		
+		try
+		{
+			covarianceSet = resource.retrieve(uuid);			
+		}		
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			covarianceSet=null;
+			fail();
+		}
+		if (covarianceSet == null)
+        {
+        	System.err.println("No matching Covariance found");
+        	fail();
+        }
+        else
+        {     
+        	System.out.println("testRetrieve() : "+covarianceSet.size());
+        	 Gson gson = new Gson();
+             String json = gson.toJson(covarianceSet);  
+             System.out.println(json);
+            assertTrue(covarianceSet!=null);
+        }
+	}
+	
+	/**
 	 * Test to update a Covariance
 	 */
 	@Test
@@ -154,22 +187,22 @@ public class TestCovariance extends TestCase
 		Set<Covariance> covarianceSet = new HashSet<Covariance>();		
 		Covariance covariance = new Covariance();						
 			covariance.setName(COVARIANCE_NAME_1+" Updated");
-			covariance.setColumns(3);
-			covariance.setRows(2);
+			rows=10;
+			columns=10;
+			covariance.setColumns(columns);
+			covariance.setRows(rows);
 			covariance.setRoh(1.2);
 			covariance.setDelta(2.5);
 			covariance.setSd(5);			
-			Blob2DArray blob = new Blob2DArray();
-			double[][] data = new double[10][10];
-				for(int i=0; i<3 ; i++)
+				double[][] data = new double[rows][columns];
+				for(int i=0; i<columns ; i++)
 				{
-					for(int j =0 ; j<3; j++)
+					for(int j =0 ; j<rows; j++)
 					{
-						data[j][i]=4.4;
+							data[j][i]=4.4;
 					}
-				}
-			blob.setData(data);
-			covariance.setBlob(blob);
+				}				
+			covariance.setBlob(data);			
 		covarianceSet.add(covariance);	
 						
 		try
@@ -229,37 +262,5 @@ public class TestCovariance extends TestCase
             assertTrue(covarianceSet!=null);
         }
 	}
-	
-	/**
-	 * Test to retrieve a Covariance
-	 */
-	@Test
-	public void testRetrieve()
-	{
-		Set<Covariance> covarianceSet = null;			
 		
-		try
-		{
-			covarianceSet = resource.retrieve(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			covarianceSet=null;
-			fail();
-		}
-		if (covarianceSet == null)
-        {
-        	System.err.println("No matching Covariance found");
-        	fail();
-        }
-        else
-        {     
-        	System.out.println("testRetrieve() : "+covarianceSet.size());
-        	 Gson gson = new Gson();
-             String json = gson.toJson(covarianceSet);  
-             System.out.println(json);
-            assertTrue(covarianceSet!=null);
-        }
-	}
 }

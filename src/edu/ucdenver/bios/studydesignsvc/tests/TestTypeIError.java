@@ -30,6 +30,8 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import com.google.gson.Gson;
+
 import edu.ucdenver.bios.studydesignsvc.resource.TypeIErrorServerResource;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.TypeIError;
@@ -43,7 +45,6 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 public class TestTypeIError extends TestCase
 {
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	private static String STUDY_NAME = "Junit Test Study Design";
 	TypeIErrorServerResource resource = new TypeIErrorServerResource();
 	byte[] uuid = null;		
 		
@@ -53,33 +54,22 @@ public class TestTypeIError extends TestCase
 	}
 	
 	/**
-	 * Test to create a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Test to create a TypeIError List
 	 */
 	@Test
 	public void testCreate()
-	{	
-		
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);		
-		/*studyDesign.setName(STUDY_NAME);
-		studyDesign.setGaussianCovariate(true);		
-		studyDesign.setPowerMethodEnum(PowerMethodEnum.CONDITIONAL);*/
-				
+	{			
 		List<TypeIError> typeIErrorList = new ArrayList<TypeIError>();		
 		TypeIError typeIError = new TypeIError();		
-			typeIError.setStudyDesign(studyDesign);			
 			typeIError.setAlphaValue(0.5);	
 		typeIErrorList.add(typeIError);	
 		typeIError = new TypeIError();		
-			typeIError.setStudyDesign(studyDesign);			
 			typeIError.setAlphaValue(1);			
 		typeIErrorList.add(typeIError);		
 				
 		try
 		{
-			typeIErrorList = resource.create(typeIErrorList);			
+			typeIErrorList = resource.create(uuid,typeIErrorList);			
 		}		
 		catch(Exception e)
 		{
@@ -93,32 +83,31 @@ public class TestTypeIError extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : Type I Error list size after persistance: "+typeIErrorList.size());
+			System.out.println("testCreate() :  ");
+			 Gson gson = new Gson();
+             String json = gson.toJson(typeIErrorList);  
+             System.out.println(json);
+            assertTrue(typeIErrorList!=null);
 		}
 	}	
 	
+	/**
+	 * Test to update a TypeIError List
+	 */
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{
-		StudyDesign studyDesign = new StudyDesign();		
-		studyDesign.setUuid(uuid);		
-		/*studyDesign.setName(STUDY_NAME);
-		studyDesign.setGaussianCovariate(true);		
-		studyDesign.setPowerMethodEnum(PowerMethodEnum.CONDITIONAL);*/
-				
 		List<TypeIError> typeIErrorList = new ArrayList<TypeIError>();		
 		TypeIError typeIError = new TypeIError();		
-			typeIError.setStudyDesign(studyDesign);			
 			typeIError.setAlphaValue(0.11);	
 		typeIErrorList.add(typeIError);	
 		typeIError = new TypeIError();		
-			typeIError.setStudyDesign(studyDesign);			
 			typeIError.setAlphaValue(0.22);			
 		typeIErrorList.add(typeIError);		
 				
 		try
 		{
-			typeIErrorList = resource.update(typeIErrorList);			
+			typeIErrorList = resource.update(uuid,typeIErrorList);			
 		}		
 		catch(Exception e)
 		{
@@ -132,43 +121,16 @@ public class TestTypeIError extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : Type I Error list size after persistance: "+typeIErrorList.size());
-		}
-	}
-	
-	@Test
-	private void testDelete()
-	{
-		List<TypeIError> typeIErrorList = null;			
-		
-		try
-		{
-			typeIErrorList = resource.remove(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			typeIErrorList=null;
-			fail();
-		}
-		if (typeIErrorList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
-        }
-        else
-        {     
-        	System.out.println("testDelete() : ");
-        	for(TypeIError typeIError: typeIErrorList)
-        		System.out.println(typeIError.getAlphaValue());
+			System.out.println("testUpdate() :  ");
+			 Gson gson = new Gson();
+             String json = gson.toJson(typeIErrorList);  
+             System.out.println(json);
             assertTrue(typeIErrorList!=null);
-        }
+		}
 	}
 	
 	/**
-	 * Test retrieving a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Test to retrieve a TypeIError List
 	 */
 	@Test
 	public void testRetrieve()
@@ -193,9 +155,43 @@ public class TestTypeIError extends TestCase
         else
         {     
         	System.out.println("testRetrieve() : ");
-        	for(TypeIError typeIError: typeIErrorList)
-        		System.out.println(typeIError.getAlphaValue());
+        	 Gson gson = new Gson();
+             String json = gson.toJson(typeIErrorList);  
+             System.out.println(json);
             assertTrue(typeIErrorList!=null);
         }
 	}
+	
+	/**
+	 * Test to delete a TypeIError List
+	 */
+	@Test
+	public void testDelete()
+	{
+		List<TypeIError> typeIErrorList = null;			
+		
+		try
+		{
+			typeIErrorList = resource.remove(uuid);			
+		}		
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			typeIErrorList=null;
+			fail();
+		}
+		if (typeIErrorList == null)
+        {
+        	System.err.println("No matching confidence interval found");
+        	fail();
+        }
+        else
+        {     
+        	System.out.println("testDelete() : ");
+        	 Gson gson = new Gson();
+             String json = gson.toJson(typeIErrorList);  
+             System.out.println(json);
+            assertTrue(typeIErrorList!=null);
+        }
+	}	
 }
