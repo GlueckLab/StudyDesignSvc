@@ -30,13 +30,12 @@
 		<param name="enumClass">edu.ucdenver.bios.webservice.common.enums.RepeatedMeasuresDimensionType</param>
 	</typedef>
 	
-	<class name="edu.ucdenver.bios.webservice.common.domain.Spacing" table="REPEATED_MEASURES_SPACING">				
+	<class name="edu.ucdenver.bios.webservice.common.domain.Spacing" table="SPACING_LIST" lazy="false">				
 		<id name="id" column="id"><generator class="native"/></id>				
 		<property name="value" column="data"/>					
-		<!-- <many-to-one name="repeatedMeasuresNode" column="idRepeatedMeasures" not-null="true" unique="true"/>-->		 					
 	</class>	
 
-	<class name="edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode" table="REPEATED_MEASURES">
+	<class name="edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode" table="REPEATED_MEASURES" lazy="false">
 		<id name="id" column="id"><generator class="native"/></id>
 		<property name="dimension" column="name" type="java.lang.String"/>
 		<property name="node" column="node"/>
@@ -46,12 +45,13 @@
 			column="repeatType" 
 			type="repeatedMeasuresDimensionType"
 			not-null="false"
-			update="false"/>
-		<list name="spacingList" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
-		  <key column="idRepeatedMeasures" unique="true"/> 
-		  <list-index column="listorder"/>
-		  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.Spacing" not-found="exception"/>		 			  		  
-		</list>	
+			update="false"/>		
+		<list name="spacingList" table="REPEATED_MEASURES_SPACING_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+			  <key column="id" unique="true"/> 
+			  <list-index column="listorder"/>
+			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.Spacing" 
+				column="spacingId" lazy="false"/>			 			  		  
+		</list>
 		<!-- <many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>-->
 	</class>
 </hibernate-mapping>

@@ -155,7 +155,7 @@
 			</bag>	
 		<!-- End : Mapping List of ClusterNode -->
 		
-     	 <!-- Begin : Mapping of RepeatedMeasures object -->
+		<!-- Begin : Mapping of RepeatedMeasures object -->
      	 	<!-- <list name="repeatedMeasuresTree" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 
 			  <list-index column="node"/>
@@ -167,7 +167,12 @@
 			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode" 
 			  column=""/>		 			  		  
 			</list>-->
-     	 <!-- End : Mapping of BetweenParticipantFactor object -->
+			<bag name="repeatedMeasuresTree" table="STUDY_REPEATED_MEASURES_MAP" cascade="all" lazy="false">
+			  <key column="uuid"/> 			
+			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode" 
+			  	column="id"/>		 			  		  
+			</bag>
+     	 <!-- End : Mapping of BetweenParticipantFactor object -->		     	
 					
 		<!-- <set name="solutionType" table="SOLUTION_TYPE" cascade="all" sort="unsorted" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 		  <key column="id" on-delete="noaction" unique="true"/> 
