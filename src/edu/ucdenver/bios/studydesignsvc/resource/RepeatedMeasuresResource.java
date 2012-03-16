@@ -85,5 +85,5 @@ public interface RepeatedMeasuresResource
      * @return the deleted object
      */
     @Delete
-    public List<RepeatedMeasuresNode> remove(StudyDesign studyDesign);
+    public List<RepeatedMeasuresNode> removeFrom(StudyDesign studyDesign);
 }

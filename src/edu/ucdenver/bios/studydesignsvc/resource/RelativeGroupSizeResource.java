@@ -30,6 +30,7 @@ import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
  * Generic Resource class for handling requests for the 
@@ -55,7 +56,7 @@ public interface RelativeGroupSizeResource
 	 * @return updated Object.
 	 */	 
     @Post
-    public List<RelativeGroupSize> create(List<RelativeGroupSize> relativeGroupSizeList);
+    public List<RelativeGroupSize> create(byte[] uuid,List<RelativeGroupSize> relativeGroupSizeList);
            
     /**
      * Update the specified object. If there is no
@@ -66,7 +67,7 @@ public interface RelativeGroupSizeResource
      * @return Object
      */    
     @Put
-    public List<RelativeGroupSize> update(List<RelativeGroupSize> relativeGroupSizeList);
+    public List<RelativeGroupSize> update(byte[] uuid,List<RelativeGroupSize> relativeGroupSizeList);
     
     /** 
      * Delete the Relative Group Size object with the specified UUID
@@ -76,4 +77,13 @@ public interface RelativeGroupSizeResource
      */
     @Delete
     public List<RelativeGroupSize> remove(byte[] uuid);
+    
+    /** 
+     * Delete the List<RelativeGroupSize> object with the specified UUID
+     * 
+     * @param studyDesign from which object is to be removed
+     * @return the deleted object
+     */
+    @Delete
+    public List<RelativeGroupSize> removeFrom(StudyDesign studyDesign);
 }

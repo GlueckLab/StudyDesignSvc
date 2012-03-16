@@ -144,7 +144,7 @@ implements RepeatedMeasuresResource
 			 * Remove existing RepeatedMeasuresNode for this object 
 			 * ----------------------------------------------------*/
 			if(uuidFlag && studyDesign.getRepeatedMeasuresTree()!=null)
-				remove(uuid);	
+				removeFrom(studyDesign);	
 			/* ----------------------------------------------------
 			 * Set reference of Study Design Object to each RepeatedMeasuresNode element 
 			 * ----------------------------------------------------*/	
@@ -236,8 +236,8 @@ implements RepeatedMeasuresResource
 			{
 				repeatedMeasuresManager = new RepeatedMeasuresManager();
 				repeatedMeasuresManager.beginTransaction();
-					repeatedMeasuresTree = repeatedMeasuresManager.delete(uuid);
-					repeatedMeasuresManager.commit();
+					repeatedMeasuresTree = repeatedMeasuresManager.delete(uuid,repeatedMeasuresTree);
+				repeatedMeasuresManager.commit();
 			}
 		}
 		catch (BaseManagerException bme)
@@ -268,15 +268,32 @@ implements RepeatedMeasuresResource
 	}
 
 	/**
-     * Delete a RepeatedMeasuresNode object for StudyDesign.
+     * Delete a RepeatedMeasuresNode object for specified Study Design.
      * 
      * @param StudyDesign
      * @return List<RepeatedMeasuresNode>
      */
 	@Override
-	public List<RepeatedMeasuresNode> remove(StudyDesign studyDesign) {
-		// TODO Auto-generated method stub
-		return null;
+	@Delete("json")
+	public List<RepeatedMeasuresNode> removeFrom(StudyDesign studyDesign) 
+	{
+		List<RepeatedMeasuresNode> repeatedMeasuresTree = null;	
+        try
+        {                    			
+        	repeatedMeasuresManager = new RepeatedMeasuresManager();
+        	repeatedMeasuresManager.beginTransaction();
+        		repeatedMeasuresTree=repeatedMeasuresManager.delete(studyDesign.getUuid(),studyDesign.getRepeatedMeasuresTree());
+        	repeatedMeasuresManager.commit();        	       
+        }
+        catch (BaseManagerException bme)
+        {
+        	System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
+            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
+            if (repeatedMeasuresManager != null) try { repeatedMeasuresManager.rollback(); } catch (BaseManagerException e) {}
+            repeatedMeasuresTree = null;           
+        }
+       return repeatedMeasuresTree;
 	}
 
 }

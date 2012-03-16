@@ -51,13 +51,13 @@ public interface BetaScaleResource
     public List<BetaScale> retrieve(byte[] uuid);
     
     /**
-	 * Store Beta Scale object to the database.
+	 * Store List<BetaScale> object to the database.
 	 * 
 	 * @param Object
 	 * @return updated Object.
 	 */	 
     @Post
-    public List<BetaScale> create(byte[] uuid,List<BetaScale> betaScaleList);
+    public List<BetaScale> create(byte[] uuid,List<BetaScale> list);
            
     /**
      * Update the specified object. If there is no
@@ -65,10 +65,10 @@ public interface BetaScaleResource
      * will be treated as new and a UUID assigned.
      * 
      * @param Object
-     * @return Object
+     * @return List<BetaScale>
      */    
     @Put
-    public List<BetaScale> update(byte[] uuid,List<BetaScale> betaScaleList);
+    public List<BetaScale> update(byte[] uuid,List<BetaScale> list);
     
     /** 
      * Delete the Beta Scale object with the specified UUID
@@ -80,7 +80,7 @@ public interface BetaScaleResource
     public List<BetaScale> remove(byte[] uuid);
     
     /** 
-     * Delete the Beta Scale object with the specified UUID
+     * Delete the List<BetaScale> object with the specified UUID
      * 
      * @param studyDesign from which object is to be removed
      * @return the deleted object

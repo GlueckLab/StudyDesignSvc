@@ -30,6 +30,7 @@ import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
  * Generic Resource class for handling requests for the 
@@ -49,13 +50,13 @@ public interface SigmaScaleResource
     public List<SigmaScale> retrieve(byte[] uuid);
     
     /**
-	 * Store Sigma Scale object to the database.
+	 * Store List<SigmaScale> object to the database.
 	 * 
 	 * @param Object
 	 * @return updated Object.
 	 */	 
     @Post
-    public List<SigmaScale> create(List<SigmaScale> sigmaScaleList);
+    public List<SigmaScale> create(byte[] uuid,List<SigmaScale> sigmaScaleList);
            
     /**
      * Update the specified object. If there is no
@@ -63,17 +64,26 @@ public interface SigmaScaleResource
      * will be treated as new and a UUID assigned.
      * 
      * @param Object
-     * @return Object
+     * @return List<SigmaScale>
      */    
     @Put
-    public List<SigmaScale> update(List<SigmaScale> sigmaScaleList);
+    public List<SigmaScale> update(byte[] uuid,List<SigmaScale> sigmaScaleList);
     
     /** 
-     * Delete the Sigma Scale object with the specified UUID
+     * Delete the List<SigmaScale> object with the specified UUID
      * 
      * @param uuid of the object to remove
      * @return the deleted object
      */
     @Delete
     public List<SigmaScale> remove(byte[] uuid);
+    
+    /** 
+     * Delete the List<SigmaScale> object with the specified UUID
+     * 
+     * @param studyDesign from which object is to be removed
+     * @return the deleted object
+     */
+    @Delete
+    public List<SigmaScale> removeFrom(StudyDesign studyDesign);
 }

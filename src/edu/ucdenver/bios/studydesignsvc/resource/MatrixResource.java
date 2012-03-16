@@ -22,6 +22,16 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.Set;
+
+import org.restlet.resource.Delete;
+import org.restlet.resource.Get;
+import org.restlet.resource.Post;
+import org.restlet.resource.Put;
+
+import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+
 
 /**
  * Generic Resource class for handling requests for the 
@@ -37,16 +47,16 @@ public interface MatrixResource
 	 * Returns "not found" if no matching Object is available.
 	 * @return Object for specified UUID
 	 */
-	 /*@Get
-     public Map<String,NamedMatrix> retrieve(byte[] uuid);*/
+	 @Get
+     public Set<NamedMatrix> retrieve(byte[] uuid);
 	 
 	 /**
 	 * Retrieve the object for the specified UUID.
 	 * Returns "not found" if no matching Object is available.
 	 * @return Object for specified UUID
 	 */
-	/* @Get
-    public NamedMatrix retrieve(byte[] uuid,String name);*/
+	 @Get
+     public NamedMatrix retrieve(byte[] uuid,String name);
     
     /**
 	 * Store Matrix object to the database.
@@ -54,8 +64,8 @@ public interface MatrixResource
 	 * @param Object
 	 * @return updated Object.
 	 */	 
-    /*@Post
-    public Map<String,NamedMatrix> create(Map<String,NamedMatrix> namedMatrixMap);*/
+     @Post
+     public Set<NamedMatrix> create(byte[] uuid,Set<NamedMatrix> namedMatrixMap);
     
     /**
    	 * Store Matrix object to the database.
@@ -63,8 +73,8 @@ public interface MatrixResource
    	 * @param Object
    	 * @return updated Object.
    	 */	 
-      /* @Post
-       public NamedMatrix create(NamedMatrix namedMatrix);*/
+     @Post
+     public NamedMatrix create(byte[] uuid,NamedMatrix namedMatrix);
            
     /**
      * Update the specified object. If there is no
@@ -74,8 +84,8 @@ public interface MatrixResource
      * @param Object
      * @return Object
      */    
-    /*@Put
-    public Map<String,NamedMatrix> update(Map<String,NamedMatrix> namedMatrixMap);*/
+    @Put
+    public Set<NamedMatrix> update(byte[] uuid,Set<NamedMatrix> namedMatrix);
     
     /**
      * Update the specified object. If there is no
@@ -85,24 +95,42 @@ public interface MatrixResource
      * @param Object
      * @return Object
      */    
-    /*@Put
-    public NamedMatrix update(NamedMatrix namedMatrix);*/
+    @Put
+    public NamedMatrix update(byte[] uuid,NamedMatrix namedMatrix);
     
     /** 
-     * Delete the Beta Scale object with the specified UUID
+     * Delete the NamedMatrix object with the specified UUID
      * 
      * @param uuid of the object to remove
      * @return the deleted object
      */
-    /*@Delete
-    public List<NamedMatrix> remove(byte[] uuid);*/
+    @Delete
+    public Set<NamedMatrix> remove(byte[] uuid);
     
     /** 
-     * Delete the Beta Scale object with the specified UUID
+     * Delete the NamedMatrix object with the specified UUID
      * 
      * @param uuid of the object to remove
      * @return the deleted object
      */
-    /*@Delete
-    public NamedMatrix remove(byte[] uuid,String name);*/
+    @Delete
+    public NamedMatrix remove(byte[] uuid,String name);
+     
+     /** 
+      * Delete the NamedMatrix object with the specified UUID
+      * 
+      * @param studyDesign from which object is to be removed
+      * @return the deleted object
+      */
+     @Delete
+     public Set<NamedMatrix> removeFrom(StudyDesign studyDesign);
+     
+     /** 
+      * Delete the NamedMatrix object with the specified UUID
+      * 
+      * @param studyDesign from which object is to be removed
+      * @return the deleted object
+      */
+     @Delete
+     public NamedMatrix removeFrom(StudyDesign studyDesign,String name);
 }

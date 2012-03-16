@@ -29,6 +29,7 @@ import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.TypeIError;
 
 /**
@@ -49,13 +50,13 @@ public interface TypeIErrorResource
     public List<TypeIError> retrieve(byte[] uuid);
     
     /**
-	 * Store the Type I Error object to the database.
+	 * Store List<TypeIError> object to the database.
 	 * 
 	 * @param Object
 	 * @return updated Object.
 	 */	 
     @Post
-    public List<TypeIError> create(List<TypeIError> typeIErrorList);
+    public List<TypeIError> create(byte[] uuid,List<TypeIError> typeIErrorList);
            
     /**
      * Update the specified object. If there is no
@@ -63,17 +64,26 @@ public interface TypeIErrorResource
      * will be treated as new and a UUID assigned.
      * 
      * @param Object
-     * @return Object
+     * @return List<TypeIError>
      */    
     @Put
-    public List<TypeIError> update(List<TypeIError> typeIErrorList);
+    public List<TypeIError> update(byte[] uuid,List<TypeIError> typeIErrorList);
     
     /** 
-     * Delete the study with the specified UUID
+     * Delete the List<TypeIError> object with the specified UUID
      * 
      * @param uuid of the object to remove
      * @return the deleted object
      */
     @Delete
     public List<TypeIError> remove(byte[] uuid);
+    
+    /** 
+     * Delete the List<TypeIError> object with the specified UUID
+     * 
+     * @param studyDesign from which object is to be removed
+     * @return the deleted object
+     */
+    @Delete
+    public List<TypeIError> removeFrom(StudyDesign studyDesign);
 }

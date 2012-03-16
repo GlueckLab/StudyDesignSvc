@@ -23,7 +23,6 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import java.util.List;
-import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -35,10 +34,8 @@ import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.studydesignsvc.manager.BetaScaleManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StatisticalTestManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
 import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -131,7 +128,7 @@ implements StatisticalTestResource
 			 * Remove existing StatisticalTest for this object 
 			 * ----------------------------------------------------*/			
 			if(uuidFlag && studyDesign.getStatisticalTestList()!=null)
-				remove(studyDesign);	
+				removeFrom(studyDesign);	
 			/* ----------------------------------------------------
 			 * Set reference of Study Design Object to each StatisticalTest element 
 			 * ----------------------------------------------------*/	
@@ -204,7 +201,7 @@ implements StatisticalTestResource
 						testList = studyDesign.getStatisticalTestList();
 					if(testList.isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no TypeIError is specified");					
+								"no StatisticalTest is specified");					
             	}				
 			studyDesignManager.commit();
 			/* ----------------------------------------------------
@@ -244,17 +241,17 @@ implements StatisticalTestResource
 		}		
 		return testList;
 	}
-
+	
 	/**
      * Delete a StatisticalTest object for specified Study Design.
      * 
      * @param StudyDesign
      * @return List<StatisticalTest>
      */
+	@Override
 	@Delete("json")
-	public List<StatisticalTest> remove(StudyDesign studyDesign) 
+	public List<StatisticalTest> removeFrom(StudyDesign studyDesign) 
 	{
-		boolean flag;	
 		List<StatisticalTest> testList = null;	
         try
         {                    			
@@ -270,7 +267,7 @@ implements StatisticalTestResource
             if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
             if (testManager != null) try { testManager.rollback(); } catch (BaseManagerException e) {}
             testList = null;           
-        }        
-        return testList;
+        }
+       return testList;
 	}
 }

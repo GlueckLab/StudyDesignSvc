@@ -30,6 +30,7 @@ import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 /**
  * Generic Resource class for handling requests for the 
  * domain List object of a Power Method. 
@@ -48,13 +49,13 @@ public interface PowerMethodResource
     public List<PowerMethod> retrieve(byte[] uuid);
     
     /**
-	 * Store PowerMethod object to the database.
+	 * Store List<PowerMethod> object to the database.
 	 * 
 	 * @param Object
 	 * @return updated Object.
 	 */	 
     @Post
-    public List<PowerMethod> create(List<PowerMethod> powerMethodList);
+    public List<PowerMethod> create(byte[] uuid,List<PowerMethod> powerMethodList);
            
     /**
      * Update the specified object. If there is no
@@ -62,17 +63,26 @@ public interface PowerMethodResource
      * will be treated as new and a UUID assigned.
      * 
      * @param Object
-     * @return Object
+     * @return List<PowerMethod>
      */    
     @Put
-    public List<PowerMethod> update(List<PowerMethod> powerMethodList);
+    public List<PowerMethod> update(byte[] uuid,List<PowerMethod> powerMethodList);
     
     /** 
-     * Delete the PowerMethod object with the specified UUID
+     * Delete the List<PowerMethod> object with the specified UUID
      * 
      * @param uuid of the object to remove
      * @return the deleted object
      */
     @Delete
     public List<PowerMethod> remove(byte[] uuid);
+    
+    /** 
+     * Delete the List<PowerMethod> object with the specified UUID
+     * 
+     * @param studyDesign from which object is to be removed
+     * @return the deleted object
+     */
+    @Delete
+    public List<PowerMethod> removeFrom(StudyDesign studyDesign);
 }

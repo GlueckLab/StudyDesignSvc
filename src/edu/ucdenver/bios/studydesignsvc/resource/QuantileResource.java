@@ -49,13 +49,13 @@ public interface QuantileResource
     public List<Quantile> retrieve(byte[] uuid);
     
     /**
-	 * Store Quantile object to the database.
+	 * Store List<Quantile> object to the database.
 	 * 
 	 * @param Object
 	 * @return updated Object.
 	 */	 
     @Post
-    public List<Quantile> create(List<Quantile> quantileList);
+    public List<Quantile> create(byte[] uuid,List<Quantile> quantileList);
            
     /**
      * Update the specified object. If there is no
@@ -66,10 +66,10 @@ public interface QuantileResource
      * @return Object
      */    
     @Put
-    public List<Quantile> update(List<Quantile> quantileList);
+    public List<Quantile> update(byte[] uuid,List<Quantile> quantileList);
     
     /** 
-     * Delete the Quantile object with the specified UUID
+     * Delete the List<Quantile> object with the specified UUID
      * 
      * @param uuid of the object to remove
      * @return the deleted object
@@ -78,7 +78,7 @@ public interface QuantileResource
     public List<Quantile> remove(byte[] uuid);
     
     /** 
-     * Delete the Quantile object with the specified UUID
+     * Delete the List<Quantile> object with the specified UUID
      * 
      * @param studyDesign from which object is to be removed
      * @return the deleted object

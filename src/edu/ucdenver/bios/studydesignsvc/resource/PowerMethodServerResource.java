@@ -36,7 +36,6 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.PowerMethodManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.studydesignsvc.resource.PowerMethodResource;
 import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -54,10 +53,19 @@ implements PowerMethodResource
 	StudyDesignManager studyDesignManager = null;
 	boolean uuidFlag;
 
+	/**
+     * Retrieve a PowerMethod object for specified UUID.
+     * 
+     * @param byte[]
+     * @return List<PowerMethod>
+     */
 	@Get("json")
 	public List<PowerMethod> retrieve(byte[] uuid) 
 	{
 		List<PowerMethod> powerMethodList = null;
+		if(uuid==null)
+			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");		
 		try
 		{
 			/* ----------------------------------------------------
@@ -65,22 +73,12 @@ implements PowerMethodResource
 			 * ----------------------------------------------------*/
 			studyDesignManager = new StudyDesignManager();			
 			studyDesignManager.beginTransaction();								
-				if(uuid==null)
-					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-							"no study design UUID specified");
 				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag)
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
-					powerMethodList = studyDesign.getPowerMethodList();
-					if(powerMethodList.isEmpty())
-						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no TypeIError is specified");
-					else
-					{
-						for(PowerMethod powerMethod : powerMethodList)					
-							powerMethod.setStudyDesign(studyDesign);									
-					}
+					if(studyDesign!=null)
+						powerMethodList = studyDesign.getPowerMethodList();					
             	}				
 			studyDesignManager.commit();					
 		}
@@ -111,10 +109,20 @@ implements PowerMethodResource
 		return powerMethodList;
 	}
 
+	/**
+     * Create a PowerMethod object for specified UUID.
+     * 
+     * @param byte[]
+     * @param List<PowerMethod>
+     * @return List<PowerMethod>
+     */
 	@Post("json")
-	public List<PowerMethod> create(List<PowerMethod> powerMethodList) 
+	public List<PowerMethod> create(byte[] uuid,List<PowerMethod> powerMethodList) 
 	{		
 		StudyDesign studyDesign =null;
+		if(uuid==null)
+			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");		
 		try
 		{
 			/* ----------------------------------------------------
@@ -122,35 +130,31 @@ implements PowerMethodResource
 			 * ----------------------------------------------------*/
 			studyDesignManager = new StudyDesignManager();
 			studyDesignManager.beginTransaction();				
-				byte[] uuid = powerMethodList.get(0).getStudyDesign().getUuid();
-				if(uuid==null)
-					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-							"no study design UUID specified");
 				uuidFlag = studyDesignManager.hasUUID(uuid);				
 				if(uuidFlag)
-            	{studyDesign = studyDesignManager.get(uuid);}																									            				
+            	{
+					studyDesign = studyDesignManager.get(uuid);					
+				}																									            				
 				else
 				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 						"no study design UUID specified");}
 			studyDesignManager.commit();
 			/* ----------------------------------------------------
-			 * Remove existing Power Method for this object 
+			 * Remove existing PowerMethod for this object 
 			 * ----------------------------------------------------*/			
-			if(studyDesign.getPowerMethodList()!=null)
-				remove(uuid);	
+			if(powerMethodList!=null)
+				removeFrom(studyDesign);	
 			/* ----------------------------------------------------
-			 * Set reference of Study Design Object to each Power Method element 
-			 * ----------------------------------------------------*/	
-			for(PowerMethod PowerMethod : powerMethodList)					
-				PowerMethod.setStudyDesign(studyDesign);
-			studyDesign.setPowerMethodList(powerMethodList);
-			/* ----------------------------------------------------
-			 * Save new Power Method List object 
+			 * Save new PowerMethod List object 
 			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();
-				studyDesignManager.saveOrUpdate(studyDesign, false);
-			studyDesignManager.commit();						
+			if(uuidFlag)
+			{
+				studyDesign.setPowerMethodList(powerMethodList);
+				studyDesignManager = new StudyDesignManager();
+				studyDesignManager.beginTransaction();
+					studyDesignManager.saveOrUpdate(studyDesign, false);
+				studyDesignManager.commit();
+			}
 		}
 		catch (BaseManagerException bme)
 		{
@@ -179,17 +183,33 @@ implements PowerMethodResource
 		return powerMethodList;
 	}
 
+	/**
+     * Update a PowerMethod object for specified UUID.
+     * 
+     * @param byte[]
+     * @param List<PowerMethod>
+     * @return List<PowerMethod>
+     */
 	@Put("json")
-	public List<PowerMethod> update(List<PowerMethod> powerMethodList) 
+	public List<PowerMethod> update(byte[] uuid,List<PowerMethod> powerMethodList) 
 	{
-		return create(powerMethodList);
+		return create(uuid,powerMethodList);
 	}
 
+	/**
+     * Delete a PowerMethod object for specified UUID.
+     * 
+     * @param byte[]
+     * @return List<PowerMethod>
+     */
 	@Delete("json")
 	public List<PowerMethod> remove(byte[] uuid) 
 	{
 		List<PowerMethod> powerMethodList = null;
 		StudyDesign studyDesign = null;
+		if(uuid==null)
+			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");		
 		try
 		{
 			/* ----------------------------------------------------
@@ -197,27 +217,25 @@ implements PowerMethodResource
 			 * ----------------------------------------------------*/
 			studyDesignManager = new StudyDesignManager();			
 			studyDesignManager.beginTransaction();								
-				if(uuid==null)
-					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-							"no study design UUID specified");
 				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag)
             	{		
 					studyDesign = studyDesignManager.get(uuid);
-					powerMethodList = studyDesign.getPowerMethodList();
+					if(studyDesign!=null)
+						powerMethodList = studyDesign.getPowerMethodList();
 					if(powerMethodList.isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no TypeIError is specified");					
+								"no PowerMethod is specified");					
             	}				
 			studyDesignManager.commit();
 			/* ----------------------------------------------------
-			 * Remove existing Power Method objects for this object 
+			 * Remove existing PowerMethod objects for this object 
 			 * ----------------------------------------------------*/
 			if(studyDesign.getPowerMethodList()!=null)
 			{
 				powerMethodManager = new PowerMethodManager();
 				powerMethodManager.beginTransaction();
-					powerMethodList = powerMethodManager.delete(uuid);
+					powerMethodList = powerMethodManager.delete(uuid,powerMethodList);
 				powerMethodManager.commit();
 			}
 		}
@@ -248,4 +266,32 @@ implements PowerMethodResource
 		return powerMethodList;
 	}
 
+	/**
+     * Delete a PowerMethod object for specified Study Design.
+     * 
+     * @param StudyDesign
+     * @return List<PowerMethod>
+     */
+	@Override
+	@Delete("json")
+	public List<PowerMethod> removeFrom(StudyDesign studyDesign) 
+	{
+		List<PowerMethod> powerMethodList = null;	
+        try
+        {                    			
+        	powerMethodManager = new PowerMethodManager();
+        	powerMethodManager.beginTransaction();
+        		powerMethodList=powerMethodManager.delete(studyDesign.getUuid(),studyDesign.getPowerMethodList());
+        	powerMethodManager.commit();        	       
+        }
+        catch (BaseManagerException bme)
+        {
+        	System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
+            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
+            if (powerMethodManager != null) try { powerMethodManager.rollback(); } catch (BaseManagerException e) {}
+            powerMethodList = null;           
+        }
+       return powerMethodList;
+	}
 }

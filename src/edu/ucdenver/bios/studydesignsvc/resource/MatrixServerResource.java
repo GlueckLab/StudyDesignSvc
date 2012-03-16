@@ -22,11 +22,9 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
+import org.codehaus.jackson.map.util.Named;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -52,35 +50,35 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 public class MatrixServerResource  extends ServerResource
 implements MatrixResource 
 {
-	/*MatrixManager matrixManager = null; 
+	MatrixManager matrixManager = null; 
 	StudyDesignManager studyDesignManager = null;
 	boolean uuidFlag;
 	
-	@Get("json")
+	/**
+     * Retrieve a NamedMatrix object for specified UUID.
+     * 
+     * @param byte[]
+     * @return NamedMatrix
+     */
+	@Get
 	public NamedMatrix retrieve(byte[] uuid, String name) 
 	{
-		NamedMatrix namedMatrix = null;
-		Map<String,NamedMatrix> namedMatrixMap = null;
+		NamedMatrix matrix = null;		
+		if(uuid==null)
+			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");					 
 		try
 		{
-			 ----------------------------------------------------
+			/*----------------------------------------------------
 			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------
+			 * ----------------------------------------------------*/
 			studyDesignManager = new StudyDesignManager();			
 			studyDesignManager.beginTransaction();								
-				if(uuid==null)
-					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-							"no study design UUID specified");
 				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag)
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
-					namedMatrixMap = studyDesign.getMatrixMap();
-					if(namedMatrixMap.isEmpty())
-						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no TypeIError is specified");									
-					namedMatrix = namedMatrixMap.get(name);
-					//System.out.println(namedMatrix.getMatrixCellList().size());
+					matrix = studyDesign.getNamedMatrix(name);									
             	}				
 			studyDesignManager.commit();					
 		}
@@ -93,9 +91,9 @@ implements MatrixResource
 				try
 				{matrixManager.rollback();}				
 				catch(BaseManagerException re)
-				{namedMatrix = null;}				
+				{matrix = null;}				
 			}
-			namedMatrix = null;
+			matrix = null;
 		}	
 		catch(StudyDesignException sde)
 		{
@@ -104,32 +102,38 @@ implements MatrixResource
 			if(studyDesignManager!=null)
 			{
 				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {namedMatrix = null;}					
+				catch(BaseManagerException re) {matrix = null;}					
 			}
-			namedMatrixMap = null;
+			matrix = null;
 		}								
-		return namedMatrix;
+		return matrix;
 	}
 	
-	@Get("json")
-	public Map<String, NamedMatrix> retrieve(byte[] uuid) 
+	/**
+     * Retrieve a Set<NamedMatrix> object for specified UUID.
+     * 
+     * @param byte[]
+     * @return Set<NamedMatrix>
+     */
+	@Get
+	public Set<NamedMatrix> retrieve(byte[] uuid) 
 	{		
-		Map<String,NamedMatrix> namedMatrixMap = null;
+		Set<NamedMatrix> matrixSet = null;
+		if(uuid==null)
+			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");		
 		try
 		{
-			 ----------------------------------------------------
+			 /*----------------------------------------------------
 			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------
+			 * ----------------------------------------------------*/
 			studyDesignManager = new StudyDesignManager();			
 			studyDesignManager.beginTransaction();								
-				if(uuid==null)
-					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-							"no study design UUID specified");
 				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag)
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
-					namedMatrixMap = studyDesign.getMatrixMap();																
+					matrixSet = studyDesign.getMatrixSet();																
             	}				
 			studyDesignManager.commit();					
 		}
@@ -142,9 +146,9 @@ implements MatrixResource
 				try
 				{matrixManager.rollback();}				
 				catch(BaseManagerException re)
-				{namedMatrixMap = null;}				
+				{matrixSet = null;}				
 			}
-			namedMatrixMap = null;
+			matrixSet = null;
 		}	
 		catch(StudyDesignException sde)
 		{
@@ -153,94 +157,62 @@ implements MatrixResource
 			if(studyDesignManager!=null)
 			{
 				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {namedMatrixMap = null;}					
+				catch(BaseManagerException re) {matrixSet = null;}					
 			}
-			namedMatrixMap = null;
+			matrixSet = null;
 		}								
-		return namedMatrixMap;
+		return matrixSet;
 	}
 
-	@Post("json")
-	public Map<String, NamedMatrix> create(Map<String,NamedMatrix> namedMatrixMap) 
+	/**
+     * Create a Set<NamedMatrix> object for specified UUID.
+     * 
+     * @param byte[]
+     * @return Set<NamedMatrix>
+     */
+	@Post
+	public Set<NamedMatrix> create(byte[] uuid,Set<NamedMatrix> matrixSet) 
 	{		
 		StudyDesign studyDesign = null;
-		//Map<String,NamedMatrix> namedMatrixMap = studyDesign.getMatrixMap();
+		if(uuid==null)
+			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");
 		try
-		{
-			Iterator itr = namedMatrixMap.entrySet().iterator();
-			byte uuid[] = null;
-			while(itr.hasNext())
-			{
-				Map.Entry<String, NamedMatrix> entry = (Map.Entry<String,NamedMatrix>)itr.next();
-				uuid=entry.getValue().getStudyDesign().getUuid();
-				break;
-			}
-			if(uuid==null)
-				throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-						"no study design UUID specified");
-			 ----------------------------------------------------
+		{					
+			 /*----------------------------------------------------
 			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();				
-			Iterator itr = namedMatrixMap.entrySet().iterator();
-			while(itr.hasNext())
-			{
-				System.out.println("NamedMatrixMap Size() : "+namedMatrixMap.size());
-				entry = (Map.Entry<String,NamedMatrix>)itr.next();
-				uuid = entry.getValue().getStudyDesign().getUuid();
-				break;
-			}			
-				uuidFlag = studyDesignManager.hasUUID(uuid);				
-				if(uuidFlag)
-            	{studyDesign = studyDesignManager.get(uuid);}																									            				
-				else
-				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-						"no study design UUID specified");}
-			studyDesignManager.commit();
-			 ----------------------------------------------------
-			 * Remove existing Beta Scale for this object 
-			 * ----------------------------------------------------
-			Map<String,NamedMatrix> map = studyDesign.getMatrixMap();
-			if(!map.isEmpty())
-			{				
-				itr = map.entrySet().iterator();
-				while(itr.hasNext())
-				{
-					Map.Entry<String, NamedMatrix> entry = (Map.Entry<String,NamedMatrix>)itr.next();
-					//List<NamedMatrixCell> namedMatrixCell= entry.getValue().getMatrixCellList();
-					remove(uuid,entry.getKey());
-				}
-			}				
-			 ----------------------------------------------------
-			 * Set reference of Study Design Object to each Beta Scale element 
-			 * ----------------------------------------------------
-			
-			for(NamedMatrix NamedMatrix : namedMatrixMap)					
-				NamedMatrix.setStudyDesign(studyDesign);
-			studyDesign.setBetaScaleList(namedMatrixMap);
-
-			while(itr.hasNext())
-			{
-				entry = (Map.Entry<String,NamedMatrix>)itr.next();
-				entry.getValue().setStudyDesign(studyDesign);
-			}
-			itr = namedMatrixMap.entrySet().iterator();
-			while(itr.hasNext())
-			{
-				Map.Entry<String, NamedMatrix> entry = (Map.Entry<String,NamedMatrix>)itr.next();
-				entry.getValue().setStudyDesign(studyDesign);
-			}
-			studyDesign.setMatrixMap(namedMatrixMap);
-			
-			
-			 ----------------------------------------------------
-			 * Save new Beta Scale List object 
-			 * ----------------------------------------------------
+			 * ----------------------------------------------------*/
 			studyDesignManager = new StudyDesignManager();
 			studyDesignManager.beginTransaction();
-				studyDesignManager.saveOrUpdate(studyDesign, false);
-			studyDesignManager.commit();						
+				uuidFlag = studyDesignManager.hasUUID(uuid);
+				if(uuidFlag)
+	        	{		
+					studyDesign = studyDesignManager.get(uuid);																			
+	        	}		
+				else
+				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+						"no study design for specified UUID is stored");}				
+			studyDesignManager.commit();
+			 /*----------------------------------------------------
+			 * Remove existing NamedMatrix for this object 
+			 * ----------------------------------------------------*/			
+			if(uuidFlag && studyDesign.getMatrixSet()!=null)
+				removeFrom(studyDesign);
+			if(uuidFlag)
+			{
+				matrixManager = new MatrixManager();
+				matrixManager.beginTransaction();
+					matrixManager.saveOrUpdate(matrixSet,true);
+				matrixManager.commit();
+				/*----------------------------------------------------
+				 * Save new NamedMatrix List object 
+				 * ----------------------------------------------------*/
+				studyDesign.setMatrixSet(matrixSet);
+				studyDesignManager = new StudyDesignManager();
+				studyDesignManager.beginTransaction();
+					studyDesignManager.saveOrUpdate(studyDesign, false);
+				studyDesignManager.commit();
+			}								 					
 		}
 		catch (BaseManagerException bme)
 		{
@@ -251,9 +223,9 @@ implements MatrixResource
 				try
 				{matrixManager.rollback();}				
 				catch(BaseManagerException re)
-				{namedMatrixMap = null;}				
+				{matrixSet = null;}				
 			}
-			namedMatrixMap = null;
+			matrixSet = null;
 		}	
 		catch(StudyDesignException sde)
 		{
@@ -262,42 +234,48 @@ implements MatrixResource
 			if(studyDesignManager!=null)
 			{
 				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {namedMatrixMap = null;}					
+				catch(BaseManagerException re) {matrixSet = null;}					
 			}
-			namedMatrixMap = null;
+			matrixSet = null;
 		}								
-		return namedMatrixMap;
+		return matrixSet;
 	}
 	
-	@Post("json")
-	public NamedMatrix create(NamedMatrix namedMatrix) 
+	/**
+     * Create a NamedMatrix object for specified UUID.
+     * 
+     * @param byte[]
+     * @return NamedMatrix
+     */
+	@Post
+	public NamedMatrix create(byte[] uuid,NamedMatrix namedMatrix) 
 	{		
 		StudyDesign studyDesign = null;
-		byte uuid[] = null;
-		//Map<String,NamedMatrix> namedMatrixMap = studyDesign.getMatrixMap();
+		if(uuid==null)
+			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");
+		String name = namedMatrix.getName();
 		try
 		{			
-			uuid = namedMatrix.getStudyDesign().getUuid();			
-			if(uuid==null)
-				throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-						"no study design UUID specified");
-			 ----------------------------------------------------
+			 /*----------------------------------------------------
 			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------
+			 * ----------------------------------------------------*/
 			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);				
+			studyDesignManager.beginTransaction();
+				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag)
-            	{studyDesign = studyDesignManager.get(uuid);}																									            				
+	        	{		
+					studyDesign = studyDesignManager.get(uuid);																			
+	        	}		
 				else
 				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-						"no study design UUID specified");}
+						"no study design for specified UUID is stored");}				
 			studyDesignManager.commit();
-			 ----------------------------------------------------
+			 /*----------------------------------------------------
 			 * Remove existing Matrix for this object 
-			 * ----------------------------------------------------			
-			Map<String,NamedMatrix> map = studyDesign.getMatrixMap();
-			if(!map.isEmpty())
+			 * ----------------------------------------------------*/			
+			/*Set<NamedMatrix> map = studyDesign.getMatrixSet();
+			if(map != null )
 			{			
 				
 				Iterator itr = map.entrySet().iterator();
@@ -308,25 +286,39 @@ implements MatrixResource
 					if(entry.getKey().equals(namedMatrix.getName()))
 					{ remove(uuid,entry.getKey());}									
 				}				
-			}				
-			else
-			{
-				 ----------------------------------------------------
+			}	*/			
+			/*else
+			{*/
+				 /*----------------------------------------------------
 				 * Set reference of Study Design Object to Matrix element 
-				 * ----------------------------------------------------					
-				map = new HashMap<String, NamedMatrix>();				
+				 * ----------------------------------------------------*/					
+			/*	map = new HashSet<NamedMatrix>();				
 			}		
-			namedMatrix.setStudyDesign(studyDesign);
-			map.put(namedMatrix.getName(), namedMatrix);
-			studyDesign.setMatrixMap(map);
-						
-			 ----------------------------------------------------
-			 * Save new Beta Scale List object 
-			 * ----------------------------------------------------
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();
-				studyDesignManager.saveOrUpdate(studyDesign, false);
-			studyDesignManager.commit();						
+			map.put(namedMatrix.getName(), namedMatrix);*/
+			boolean flag = studyDesign.hasNamedMatrix(name);
+			if(uuidFlag && studyDesign.getMatrixSet()!=null && flag)
+			{
+				/*----------------------------------------------------
+				 * Remove existing Matrix for this object 
+				 * ----------------------------------------------------*/					
+				removeFrom(studyDesign,name);	
+			}
+			if(uuidFlag && studyDesign.getMatrixSet()!=null) 
+			{
+				matrixManager = new MatrixManager();
+				matrixManager.beginTransaction();
+					matrixManager.saveOrUpdate(namedMatrix,true);
+				matrixManager.commit();
+				 /*----------------------------------------------------
+				 * Save new NamedMatrix List object 
+				 * ----------------------------------------------------*/
+				studyDesign.setNamedMatrix(namedMatrix);
+				studyDesignManager = new StudyDesignManager();
+				studyDesignManager.beginTransaction();
+					studyDesignManager.saveOrUpdate(studyDesign, false);
+				studyDesignManager.commit();	
+			}
+								
 		}
 		catch (BaseManagerException bme)
 		{
@@ -355,105 +347,154 @@ implements MatrixResource
 		return namedMatrix;
 	}
 	
+	/**
+     * Update a NamedMatrix object for specified UUID.
+     * 
+     * @param byte[]
+     * @return Set<NamedMatrix>
+     */
+	@Put("json")
+	public Set<NamedMatrix> update(byte[] uuid,Set<NamedMatrix> matrixSet) 
+	{				
+		return create(uuid,matrixSet);			
+	}	
+	
+	/**
+     * Update a NamedMatrix object for specified UUID.
+     * 
+     * @param byte[]
+     * @return Set<NamedMatrix>
+     */
+	@Put("json")
+	public NamedMatrix update(byte[] uuid,NamedMatrix namedMatrix) 
+	{				
+		return create(uuid,namedMatrix);			
+	}
+
+	/**
+     * Delete a NamedMatrix object for specified UUID.
+     * 
+     * @param byte[]
+     * @return Set<NamedMatrix>
+     */
+	@Delete("json")
+	public Set<NamedMatrix> remove(byte[] uuid) 
+	{
+		Set<NamedMatrix> matrixSet = null;
+		StudyDesign studyDesign = null;
+		if(uuid==null)
+			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");
+		try
+		{			
+			/* ----------------------------------------------------
+			 * Check for existence of a UUID in Study Design object 
+			 * ----------------------------------------------------*/
+			studyDesignManager = new StudyDesignManager();			
+			studyDesignManager.beginTransaction();												
+				uuidFlag = studyDesignManager.hasUUID(uuid);
+				if(uuidFlag)
+            	{		
+					studyDesign = studyDesignManager.get(uuid);
+					if(studyDesign!=null)
+						matrixSet = studyDesign.getMatrixSet();								
+            	}				
+			studyDesignManager.commit();
+			/* ----------------------------------------------------
+			 * Remove existing NamedMatrix objects for this object 
+			 * ----------------------------------------------------*/
+			if(matrixSet!=null)
+			{
+				matrixManager = new MatrixManager();
+				matrixManager.beginTransaction();
+					matrixSet = matrixManager.delete(uuid,matrixSet);
+				matrixManager.commit();
+				/* ----------------------------------------------------
+    			 * Set reference of NamedMatrix Object to Study Design object 
+    			 * ----------------------------------------------------*/
+            	/*studyDesign.setBetaScaleList(null);            	
+            	studyDesignManager = new StudyDesignManager();
+            	studyDesignManager.beginTransaction();            		
+            		studyDesign = studyDesignManager.saveOrUpdate(studyDesign, false);				
+				studyDesignManager.commit();
+				matrixSet=studyDesign.getMatrixSet();*/
+			}
+		}
+		catch (BaseManagerException bme)
+		{
+			System.out.println(bme.getMessage());
+			StudyDesignLogger.getInstance().error(bme.getMessage());
+			if(matrixManager!=null)
+			{
+				try
+				{matrixManager.rollback();}				
+				catch(BaseManagerException re)
+				{matrixSet = null;}				
+			}
+			matrixSet = null;
+		}	
+		catch(StudyDesignException sde)
+		{
+			System.out.println(sde.getMessage());
+			StudyDesignLogger.getInstance().error(sde.getMessage());
+			if(studyDesignManager!=null)
+			{
+				try {studyDesignManager.rollback();}
+				catch(BaseManagerException re) {matrixSet = null;}					
+			}
+			matrixSet = null;
+		}		
+		return matrixSet;
+	}
+	
+	/**
+     * Delete a NamedMatrix object for specified UUID.
+     * 
+     * @param byte[]
+     * @return Set<NamedMatrix>
+     */
 	@Delete("json")
 	public NamedMatrix remove(byte[] uuid,String name) 
-	{		
-		NamedMatrix namedMatrix = null;
-		Map<String,NamedMatrix> namedMatrixMap = null;
-		StudyDesign studyDesign = null;
-		try
-		{
-			----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				if(uuid==null)
-					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-							"no study design UUID specified");
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					studyDesign = studyDesignManager.get(uuid);
-					namedMatrixMap = studyDesign.getMatrixMap();					
-					if(namedMatrixMap.isEmpty())
-						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no TypeIError is specified");						
-            	}				
-			studyDesignManager.commit();
-			----------------------------------------------------
-			 * Remove existing specified Matrix objects of this object 
-			 * ----------------------------------------------------
-			if(!namedMatrixMap.isEmpty() && namedMatrixMap.get(name)!=null)
-			{
-				matrixManager = new MatrixManager();
-				matrixManager.beginTransaction();
-					namedMatrix = matrixManager.delete(uuid,name);
-				matrixManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(matrixManager!=null)
-			{
-				try
-				{matrixManager.rollback();}				
-				catch(BaseManagerException re)
-				{namedMatrix = null;}				
-			}
-			namedMatrix = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {namedMatrix = null;}					
-			}
-			namedMatrix = null;
-		}		
-		return namedMatrix;
-	}
-
-	@Delete("json")
-	public List<NamedMatrix> remove(byte[] uuid) 
 	{
-		Map<String,NamedMatrix> namedMatrixMap = null;
-		List<NamedMatrix> namedMatrixList = null;
+		Set<NamedMatrix> matrixSet = null;
+		NamedMatrix matrix = null;
 		StudyDesign studyDesign = null;
+		if(uuid==null)
+			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+					"no study design UUID specified");
 		try
-		{
-			----------------------------------------------------
+		{			
+			/* ----------------------------------------------------
 			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------
+			 * ----------------------------------------------------*/
 			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				if(uuid==null)
-					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-							"no study design UUID specified");
+			studyDesignManager.beginTransaction();												
 				uuidFlag = studyDesignManager.hasUUID(uuid);
 				if(uuidFlag)
             	{		
 					studyDesign = studyDesignManager.get(uuid);
-					namedMatrixMap = studyDesign.getMatrixMap();					
-					if(namedMatrixMap.isEmpty())
-						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no TypeIError is specified");						
+					if(studyDesign!=null)
+						matrixSet = studyDesign.getMatrixSet();								
             	}				
 			studyDesignManager.commit();
-			----------------------------------------------------
-			 * Remove existing specified Matrix objects of this object 
-			 * ----------------------------------------------------
-			if(!namedMatrixMap.isEmpty())
+			/* ----------------------------------------------------
+			 * Remove existing NamedMatrix objects for this object 
+			 * ----------------------------------------------------*/
+			if(matrixSet!=null && studyDesign.hasNamedMatrix(name))
 			{
 				matrixManager = new MatrixManager();
 				matrixManager.beginTransaction();
-					namedMatrixList = matrixManager.delete(uuid);
+					matrix = matrixManager.delete(uuid, studyDesign.getNamedMatrix(name));
 				matrixManager.commit();
+				/* ----------------------------------------------------
+    			 * Set reference of NamedMatrix Object to Study Design object 
+    			 * ----------------------------------------------------*/
+            	/*studyDesign.setBetaScaleList(null);            	
+            	studyDesignManager = new StudyDesignManager();
+            	studyDesignManager.beginTransaction();            		
+            		studyDesign = studyDesignManager.saveOrUpdate(studyDesign, false);				
+				studyDesignManager.commit();
+				matrixSet=studyDesign.getMatrixSet();*/
 			}
 		}
 		catch (BaseManagerException bme)
@@ -465,9 +506,9 @@ implements MatrixResource
 				try
 				{matrixManager.rollback();}				
 				catch(BaseManagerException re)
-				{namedMatrixList = null;}				
+				{matrix = null;}				
 			}
-			namedMatrixList = null;
+			matrix = null;
 		}	
 		catch(StudyDesignException sde)
 		{
@@ -476,19 +517,68 @@ implements MatrixResource
 			if(studyDesignManager!=null)
 			{
 				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {namedMatrixList = null;}					
+				catch(BaseManagerException re) {matrix = null;}					
 			}
-			namedMatrixList = null;
+			matrix = null;
 		}		
-		return namedMatrixList;
+		return matrix;
+	}	
+	
+	/**
+     * Delete a NamedMatrix object for specified Study Design.
+     * 
+     * @param StudyDesign
+     * @return Set<NamedMatrix>
+     */
+	@Delete
+	public Set<NamedMatrix> removeFrom(StudyDesign studyDesign) 
+	{
+		boolean flag;	
+		Set<NamedMatrix> matrixSet = null;	
+        try
+        {                    			
+        	matrixManager = new MatrixManager();
+        	matrixManager.beginTransaction();
+        		matrixSet=matrixManager.delete(studyDesign.getUuid(),studyDesign.getMatrixSet());
+        	matrixManager.commit();        	      
+        }
+        catch (BaseManagerException bme)
+        {
+        	System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
+            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
+            if (matrixManager != null) try { matrixManager.rollback(); } catch (BaseManagerException e) {}
+            matrixSet = null;           
+        }       
+        return matrixSet;
 	}
 
-	@Put("json")
-	public Map<String, NamedMatrix> update(Map<String, NamedMatrix> namedMatrixMap) 
-	{return create(namedMatrixMap);}
-
-	@Put("json")
-	public NamedMatrix update(NamedMatrix namedMatrix) 
-	{return create(namedMatrix);}*/
-
+	/**
+     * Delete a NamedMatrix object for specified Study Design.
+     * 
+     * @param StudyDesign
+     * @return Set<NamedMatrix>
+     */
+	@Delete
+	public NamedMatrix removeFrom(StudyDesign studyDesign,String name) 
+	{
+		boolean flag;	
+		NamedMatrix matrix = null;	
+        try
+        {                    			
+        	matrixManager = new MatrixManager();
+        	matrixManager.beginTransaction();
+        		matrix=matrixManager.delete(studyDesign.getUuid(),studyDesign.getNamedMatrix(name));
+        	matrixManager.commit();        	      
+        }
+        catch (BaseManagerException bme)
+        {
+        	System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
+            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
+            if (matrixManager != null) try { matrixManager.rollback(); } catch (BaseManagerException e) {}
+            matrix = null;           
+        }       
+        return matrix;
+	}
 }

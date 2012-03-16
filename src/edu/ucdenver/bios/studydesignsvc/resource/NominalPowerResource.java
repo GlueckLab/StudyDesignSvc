@@ -31,6 +31,7 @@ import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.NominalPower;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.NominalPower;
 /**
  * Generic Resource class for handling requests for the 
  * domain List object of a NominalPower. 
@@ -49,7 +50,7 @@ public interface NominalPowerResource
     public List<NominalPower> retrieve(byte[] uuid);
     
     /**
-	 * Store Nominal Power object to the database.
+	 * Store List<NominalPower> object to the database.
 	 * 
 	 * @param Object
 	 * @return updated Object.
@@ -63,13 +64,13 @@ public interface NominalPowerResource
      * will be treated as new and a UUID assigned.
      * 
      * @param Object
-     * @return Object
+     * @return List<NominalPower>
      */    
     @Put
     public List<NominalPower> update(byte[] uuid,List<NominalPower> nominalPowerList);
     
     /** 
-     * Delete the Nominal Power object with the specified UUID
+     * Delete the List<NominalPower> object with the specified UUID
      * 
      * @param uuid of the object to remove
      * @return the deleted object
@@ -78,7 +79,7 @@ public interface NominalPowerResource
     public List<NominalPower> remove(byte[] uuid);
     
     /** 
-     * Delete the Nominal Power object with the specified StudyDesign
+     * Delete the List<NominalPower> object with the specified UUID
      * 
      * @param studyDesign from which object is to be removed
      * @return the deleted object

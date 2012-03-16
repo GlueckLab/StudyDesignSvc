@@ -34,7 +34,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
  * Generic Resource class for handling requests for the 
- * domain list object of a StatisticalTest. 
+ * domain statisticalTestList object of a StatisticalTest. 
  * See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
@@ -50,13 +50,13 @@ public interface StatisticalTestResource
     public List<StatisticalTest> retrieve(byte[] uuid);
     
     /**
-	 * Store StatisticalTest object to the database.
+	 * Store List<StatisticalTest> object to the database.
 	 * 
 	 * @param Object
 	 * @return updated Object.
 	 */	 
     @Post
-    public List<StatisticalTest> create(byte[] uuid,List<StatisticalTest> testList);
+    public List<StatisticalTest> create(byte[] uuid,List<StatisticalTest> statisticalTestList);
            
     /**
      * Update the specified object. If there is no
@@ -64,13 +64,13 @@ public interface StatisticalTestResource
      * will be treated as new and a UUID assigned.
      * 
      * @param Object
-     * @return Object
+     * @return List<StatisticalTest>
      */    
     @Put
-    public List<StatisticalTest> update(byte[] uuid,List<StatisticalTest> testList);
+    public List<StatisticalTest> update(byte[] uuid,List<StatisticalTest> statisticalTestList);
     
     /** 
-     * Delete the StatisticalTest object with the specified UUID
+     * Delete the List<StatisticalTest> object with the specified UUID
      * 
      * @param uuid of the object to remove
      * @return the deleted object
@@ -79,11 +79,11 @@ public interface StatisticalTestResource
     public List<StatisticalTest> remove(byte[] uuid);
     
     /** 
-     * Delete the StatisticalTest object with the specified studyDesign
+     * Delete the List<StatisticalTest> object with the specified UUID
      * 
-     * @param uuid of the object to remove
+     * @param studyDesign from which object is to be removed
      * @return the deleted object
      */
     @Delete
-    public List<StatisticalTest> remove(StudyDesign studyDesign);
+    public List<StatisticalTest> removeFrom(StudyDesign studyDesign);
 }
