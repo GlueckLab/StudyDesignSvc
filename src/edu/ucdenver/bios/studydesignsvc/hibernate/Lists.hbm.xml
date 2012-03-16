@@ -34,10 +34,9 @@
 		<param name="enumClass">edu.ucdenver.bios.webservice.common.enums.StatisticalTestTypeEnum</param>
 	</typedef>
 		
-	<class name="edu.ucdenver.bios.webservice.common.domain.TypeIError" table="ALPHA_LIST">					
+	<class name="edu.ucdenver.bios.webservice.common.domain.TypeIError" table="ALPHA_LIST" lazy="false">					
 		<id name="id" column="id"><generator class="native"/></id>				
-		<property name="alphaValue" column="alpha_value"/>					
-		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
+		<property name="alphaValue" column="alpha_value"/>								 				
 	</class>
 	
 	<class name="edu.ucdenver.bios.webservice.common.domain.BetaScale" table="BETA_SCALE_LIST" lazy="false">				
@@ -64,32 +63,28 @@
 		<property name="value" column="node_value"/>						 					
 	</class>	
 		
-	<class name="edu.ucdenver.bios.webservice.common.domain.SigmaScale" table="SIGMA_SCALE_LIST">				
+	<class name="edu.ucdenver.bios.webservice.common.domain.SigmaScale" table="SIGMA_SCALE_LIST" lazy="false">				
 		<id name="id" column="id"><generator class="native"/></id>				
 		<property name="value" column="sigma_scale_value"/>					
-		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
 	</class>
 	
-	<class name="edu.ucdenver.bios.webservice.common.domain.Quantile" table="QUANTILE_LIST">				
+	<class name="edu.ucdenver.bios.webservice.common.domain.Quantile" table="QUANTILE_LIST" lazy="false">				
 		<id name="id" column="id"><generator class="native"/></id>				
 		<property name="value" column="quantile_value"/>					
-		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
 	</class>
 	
-	<class name="edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize" table="RELATIVE_GROUP_SIZE_LIST">				
+	<class name="edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize" table="RELATIVE_GROUP_SIZE_LIST" lazy="false">				
 		<id name="id" column="id"><generator class="native"/></id>				
 		<property name="value" column="relative_group_size_value"/>					
-		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
 	</class>
 		
-	<class name="edu.ucdenver.bios.webservice.common.domain.PowerMethod" table="POWER_METHOD_LIST">				
+	<class name="edu.ucdenver.bios.webservice.common.domain.PowerMethod" table="POWER_METHOD_LIST" lazy="false">				
 		<id name="id" column="id"><generator class="native"/></id>				
 		<property name="powerMethodEnum" 
 			column="method" 
 			type="powerMethodEnum"
 			not-null="false"
 			update="false"/>					
-		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>		 					
 	</class>
 		
 </hibernate-mapping>

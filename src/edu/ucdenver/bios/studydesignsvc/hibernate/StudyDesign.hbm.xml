@@ -63,14 +63,16 @@
 			  <key column="uuid" unique="true"/> 			  
 			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.TypeIError" not-found="exception"/>		 			  		  
 			</bag> -->
-		<!-- End : Mapping List of Alpha Values -->
-			<!-- <list name="alphaList" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+		<!-- End : Mapping List of Alpha Values -->					
+		
+		<!-- Begin : Mapping of List objects -->	
+			<list name="alphaList" table="STUDY_ALPHA_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 
 			  <list-index column="listorder"/>
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.TypeIError" not-found="exception"/>		 			  		  
-			</list>-->			
-		
-		<!-- Begin : Mapping of List objects -->			
+			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.TypeIError" 
+				column="id" lazy="false"/>			 			  		  
+			</list>
+					
 			<list name="betaScaleList" table="STUDY_BETA_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid"/> 
 			  <list-index column="listorder"/>
@@ -92,60 +94,51 @@
 			  	column="id" lazy="false"/>		 			  		  
 			</list>
 			
-			<list name="nominalPower" table="STUDY_NOMINAL_POWER_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+			<list name="nominalPowerList" table="STUDY_NOMINAL_POWER_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 
 			  <list-index column="listorder"/>
 			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.NominalPower" 
 			  	column="id" lazy="false"/>			 			  		  
 			</list>	
-			 <!--
-			
-			<list name="sigmaScaleList" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+			 			
+			<list name="sigmaScaleList" table="STUDY_SIGMA_SCALE_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 
 			  <list-index column="listorder"/>
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.SigmaScale" not-found="exception"/>		 			  		  
+			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.SigmaScale" 
+			  	column="id" lazy="false"/>		 			  		  
 			</list>
 			
-			<list name="quantileList" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+			<list name="quantileList" table="STUDY_QUANTILE_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 
 			  <list-index column="listorder"/>
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.Quantile" not-found="exception"/>		 			  		  
+			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.Quantile" 
+			  	column="id" lazy="false"/>	 			  		  
 			</list>
 			
-			<list name="relativeGroupSizeList" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+			<list name="relativeGroupSizeList" table="STUDY_RELATIVE_GROUP_SIZE_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 
 			  <list-index column="listorder"/>
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize" not-found="exception"/>		 			  		  
+			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize" 
+			  	column="id" lazy="false"/>	 			  		  
 			</list>									
 			
-			<list name="powerMethodList" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+			<list name="powerMethodList" table="STUDY_POWER_METHOD_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 
 			  <list-index column="listorder"/>
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.PowerMethod" not-found="exception"/>		 			  		  
+			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.PowerMethod" 
+				column="id" lazy="false"/>		 			  		  
 			</list>
-			
-			 -->
+						 
 		<!-- End : Mapping of List objects -->
 		
-		<!-- Begin : Mapping of Matrix objects -->
-			<!-- <map name="matrixMap" cascade="all" table="MATRIX">				
-		         <key column="uuid"/>		         
-		         <map-key column="name" type="string"/>		          
-		         <many-to-many class="edu.ucdenver.bios.webservice.common.domain.NamedMatrix" not-found="exception"/>     
-	     	 </map> -->
-	     	<!--  <map name="matrixMap" lazy="false" cascade="all" table="MATRIX">	     	 
-	     	 	<key column="uuid"/>
-	     	 	<index column="name" type="string"/>
-	     	 	<one-to-many class="edu.ucdenver.bios.webservice.common.domain.NamedMatrix"/>	
-	     	 </map> -->
+		<!-- Begin : Mapping of Matrix objects -->			    		     	 
+	     	 <set name="matrixSet" table="STUDY_MATRIX_MAP" lazy="false">
+		        <key column="uuid"/>
+		        <many-to-many column="id" unique="true" lazy="false" class="edu.ucdenver.bios.webservice.common.domain.NamedMatrix"/>
+		    </set>
      	 <!-- End : Mapping of Matrix objects -->     	 	
      	 
-     	 <!-- Begin : Mapping of BetweenParticipantFactor object -->
-     	 <!-- 	<list name="betweenParticipantFactorList" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
-			  <key column="uuid" unique="true"/> 
-			  <list-index column="listorder"/>
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor" not-found="exception"/>		 			  		  
-			</list> -->			
+     	 <!-- Begin : Mapping of BetweenParticipantFactor object -->     	 		
 			<list name="betweenParticipantFactorList" table="STUDY_BETWEEN_PARTICIPANT_EFFECTS_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid"/> 
 			  <list-index column="listorder"/>
@@ -153,6 +146,7 @@
 			  	column="id"/>			 		 			  		 
 			</list>
      	 <!-- End : Mapping of BetweenParticipantFactor object -->
+     	 
      	 <!-- Begin : Mapping List of ClusterNode -->					
 			<bag name="clusteringTree" table="STUDY_CLUSTERING_MAP" cascade="all" lazy="false">
 			  <key column="uuid"/> 			
@@ -160,6 +154,7 @@
 			  	column="id"/>		 			  		  
 			</bag>	
 		<!-- End : Mapping List of ClusterNode -->
+		
      	 <!-- Begin : Mapping of RepeatedMeasures object -->
      	 	<!-- <list name="repeatedMeasuresTree" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 

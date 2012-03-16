@@ -25,16 +25,14 @@
 <!DOCTYPE hibernate-mapping PUBLIC
     "-//Hibernate/Hibernate Mapping DTD//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- <hibernate-mapping>	
-	<class name="edu.ucdenver.bios.webservice.common.domain.NamedMatrix" table="MATRIX">
+<hibernate-mapping>	
+	<class name="edu.ucdenver.bios.webservice.common.domain.NamedMatrix" table="MATRIX" lazy="false">
 		<id name="id" column="id"><generator class="native"/></id>
-		<property name="name"  column="name" type="java.lang.String"/>				
-		<many-to-one name="studyDesign" column="uuid" class="edu.ucdenver.bios.webservice.common.domain.StudyDesign" cascade="save-update" not-null="true"/>
-		<list name="matrixCellList" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
-		  <key column="idMatrix" unique="true"/> 
-		  <list-index column="listorder"/>
-		  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.NamedMatrixCell" not-found="exception"/>		 			  		  
-		</list>
-		
+		<property name="name"  column="name"/>
+		<property name="rows" column="rows"/>						
+		<property name="columns" column="columns"/>
+		<property name="data" type="edu.ucdenver.bios.webservice.common.domain.Blob2DArray">
+			<column name="data" />
+		</property>
 	</class>
-</hibernate-mapping> -->
+</hibernate-mapping>
