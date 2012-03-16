@@ -50,7 +50,7 @@ public interface RepeatedMeasuresResource
     public List<RepeatedMeasuresNode> retrieve(byte[] uuid);
     
     /**
-	 * Store RepeatedMeasuresNode object to the database.
+	 * Store List<RepeatedMeasuresNode> object to the database.
 	 * 
 	 * @param Object
 	 * @return updated Object.
@@ -70,7 +70,7 @@ public interface RepeatedMeasuresResource
     public List<RepeatedMeasuresNode> update(byte[] uuid,List<RepeatedMeasuresNode> repeatedMeasuresTree);
     
     /** 
-     * Delete the RepeatedMeasuresNode object with the specified UUID
+     * Delete the List<RepeatedMeasuresNode> object with the specified UUID
      * 
      * @param uuid of the object to remove
      * @return the deleted object
@@ -79,7 +79,7 @@ public interface RepeatedMeasuresResource
     public List<RepeatedMeasuresNode> remove(byte[] uuid);
     
     /** 
-     * Delete the RepeatedMeasuresNode object with a StudyDesign
+     * Delete the List<RepeatedMeasuresNode> object with a StudyDesign
      * 
      * @param uuid of the object to remove
      * @return the deleted object
