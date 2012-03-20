@@ -29,9 +29,23 @@ import org.restlet.Restlet;
 import org.restlet.routing.Router;
 
 import edu.ucdenver.bios.studydesignsvc.resource.BetaScaleServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.BetweenParticipantServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.ClusterNodeServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.ConfidenceIntervalServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.DefaultResource;
+import edu.ucdenver.bios.studydesignsvc.resource.HypothesisServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.MatrixServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.NominalPowerServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.PowerMethodServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.QuantileServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.RelativeGroupSizeServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.RepeatedMeasuresServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.ResponsesServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.SampleSizeServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.SigmaScaleServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StatisticalTestServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.TypeIErrorServerResource;
 
 /**
  * Main Restlet application class for the Study Design Service. Defines URI
@@ -72,23 +86,53 @@ public class StudyDesignApplication extends Application {
 		/* Power Curve Description */
 		router.attach("/"+StudyDesignConstants.TAG_POWER_CURVE_DESCRIPTION,
 				ConfidenceIntervalServerResource.class);
+		
 		/* Beta Scale List Resource */
 		router.attach("/"+StudyDesignConstants.TAG_BETA_SCALE_LIST,
 				BetaScaleServerResource.class);
+		/* Alpha List Resource */
+        router.attach("/"+StudyDesignConstants.TAG_ALPHA_LIST,
+                TypeIErrorServerResource.class);
+        /* Relative Group Size List Resource */
+        router.attach("/"+StudyDesignConstants.TAG_RELATIVE_GROUP_SIZE_LIST,
+                RelativeGroupSizeServerResource.class);
+        /* Sample Size List Resource */
+        router.attach("/"+StudyDesignConstants.TAG_SAMPLE_SIZE_LIST,
+                SampleSizeServerResource.class);
+        /* Sigma Scale List Resource */
+        router.attach("/"+StudyDesignConstants.TAG_SIGMA_SCALE_LIST,
+                SigmaScaleServerResource.class);
+        /* Statistical Test List Resource */
+        router.attach("/"+StudyDesignConstants.TAG_TEST_LIST,
+                StatisticalTestServerResource.class);
+        /* Power Method List Resource */
+        router.attach("/"+StudyDesignConstants.TAG_POWER_METHOD_LIST,
+                PowerMethodServerResource.class);
+        /* Quantile List Resource */
+        router.attach("/"+StudyDesignConstants.TAG_QUANTILE_LIST,
+                QuantileServerResource.class);
+        /* Response List */
+        router.attach("/"+StudyDesignConstants.TAG_RESPONSE_LIST,
+                ResponsesServerResource.class);
+        /* Nominal Power List */
+        router.attach("/"+StudyDesignConstants.TAG_NOMINAL_POWER_LIST,
+                NominalPowerServerResource.class);
+        
 		/* Matrix Resource */
-
+		router.attach("/"+StudyDesignConstants.TAG_MATRIX,
+                MatrixServerResource.class);
 		/* Between Subject Effect object Resource */
-
-		/* Within Subject Effect object Resource */
-
-		/* Response List */
-
+		router.attach("/"+StudyDesignConstants.TAG_BETWEEN_PARTICIPANT_FACTOR,
+                BetweenParticipantServerResource.class);		
 		/* Clustering */
-
+		router.attach("/"+StudyDesignConstants.TAG_CLUSTERING,
+                ClusterNodeServerResource.class);
 		/* Repeated Measures */
-
+		router.attach("/"+StudyDesignConstants.TAG_REPEATEDMEASURES,
+                RepeatedMeasuresServerResource.class);
 		/* Hypothesis object Resource */
-
+		router.attach("/"+StudyDesignConstants.TAG_HYPOTHESIS,
+                HypothesisServerResource.class);
 		return router;
 	}
 }
