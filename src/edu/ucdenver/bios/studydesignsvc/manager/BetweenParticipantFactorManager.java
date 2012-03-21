@@ -45,7 +45,7 @@ public class BetweenParticipantFactorManager extends BaseManager
 	public BetweenParticipantFactorManager() throws BaseManagerException
 	{
 		super();
-	}
+	}	
 	
 	/**
      * Check existence of a BetweenParticipantFactor object by the specified UUID
