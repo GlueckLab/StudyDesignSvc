@@ -86,5 +86,10 @@
 			not-null="false"
 			update="false"/>					
 	</class>
+	
+	<class name="edu.ucdenver.bios.webservice.common.domain.SampleSize" table="SAMPLE_SIZE_LIST" lazy="false">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="value" column="sample_size_value"/>					
+	</class>
 		
 </hibernate-mapping>

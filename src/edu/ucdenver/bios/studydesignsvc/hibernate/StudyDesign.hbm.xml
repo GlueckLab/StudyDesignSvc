@@ -30,11 +30,11 @@
 	<typedef name="solutionType" class="edu.ucdenver.bios.studydesignsvc.application.GenericEnumUserType">
 		<param name="enumClass">edu.ucdenver.bios.webservice.common.enums.SolutionTypeEnum</param>
 	</typedef>	
-	<!-- <class name="edu.ucdenver.bios.webservice.common.domain.StudyDesign.SolutionType" table="SOLUTION_TYPE">
-		<id name="id"><generator class="native"/></id>
-		<property name="solutionType" column="solution_type"/>
-		<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>
-	</class>-->	
+	
+	<typedef name="viewType" class="edu.ucdenver.bios.studydesignsvc.application.GenericEnumUserType">
+		<param name="enumClass">edu.ucdenver.bios.webservice.common.enums.StudyDesignViewTypeEnum</param>
+	</typedef>	
+		
 	<class name="edu.ucdenver.bios.webservice.common.domain.StudyDesign" table="STUDY_DESIGN" lazy="false">
         <id name="uuid"><generator class="assigned"/></id>						
 		<!-- <property name="flagSolveFor" column="flagSolveFor">			
@@ -49,22 +49,12 @@
 		not-null="false"
 		update="false"/>
 		
-		<!-- <one-to-one name="confidenceIntervalDescription" lazy="false" class="edu.cudenver.bios.studydesignsvc.domain.ConfidenceInterval" cascade="all"/>-->		
-		<!-- <many-to-one name="powerMethod" column="power_method" not-null="true" unique="true"/>-->				
-							
-		<!-- Begin : Mapping List of ClusterNode -->		
-			<!-- <bag name="clusteringTree" cascade="all" lazy="false">
-			  <key column="uuid"/> 			
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.ClusterNode" not-found="exception"/>		 			  		  
-			</bag> -->
-		<!-- End : Mapping List of ClusterNode -->
-		<!-- Begin : Mapping List of Alpha Values -->	
-			<!-- <bag name="alphaList" cascade="all" order-by="alpha_value" lazy="false">
-			  <key column="uuid" unique="true"/> 			  
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.TypeIError" not-found="exception"/>		 			  		  
-			</bag> -->
-		<!-- End : Mapping List of Alpha Values -->					
-		
+		<property name="viewTypeEnum" 
+		column="viewType" 
+		type="viewType"
+		not-null="false"
+		update="false"/>
+			
 		<!-- Begin : Mapping of List objects -->	
 			<list name="alphaList" table="STUDY_ALPHA_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 			  <key column="uuid" unique="true"/> 
@@ -128,6 +118,13 @@
 			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.PowerMethod" 
 				column="id" lazy="false"/>		 			  		  
 			</list>
+			
+			<list name="sampleSizeList" table="STUDY_SAMPLE_SIZE_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+			  <key column="uuid" unique="true"/> 
+			  <list-index column="listorder"/>
+			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.SampleSize" 
+			  	column="id" lazy="false"/>			 			  		  
+			</list>	
 						 
 		<!-- End : Mapping of List objects -->
 		
@@ -155,34 +152,25 @@
 			</bag>	
 		<!-- End : Mapping List of ClusterNode -->
 		
-		<!-- Begin : Mapping of RepeatedMeasures object -->
-     	 	<!-- <list name="repeatedMeasuresTree" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
-			  <key column="uuid" unique="true"/> 
-			  <list-index column="node"/>
-			  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode" not-found="exception"/>		 			  		  
-			</list> -->
-			<!--<list name="repeatedMeasuresTree" table="" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
-			  <key column="uuid"/> 
-			  <list-index column="node"/>
-			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode" 
-			  column=""/>		 			  		  
-			</list>-->
+		<!-- Begin : Mapping of RepeatedMeasures object -->     	 	
 			<bag name="repeatedMeasuresTree" table="STUDY_REPEATED_MEASURES_MAP" cascade="all" lazy="false">
 			  <key column="uuid"/> 			
 			  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode" 
 			  	column="id"/>		 			  		  
 			</bag>
-     	 <!-- End : Mapping of BetweenParticipantFactor object -->		     	
-					
-		<!-- <set name="solutionType" table="SOLUTION_TYPE" cascade="all" sort="unsorted" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
-		  <key column="id" on-delete="noaction" unique="true"/> 
-		  <one-to-many class="edu.ucdenver.bios.webservice.common.domain.StudyDesign.SolutionType" not-found="exception" embed-xml="true" /> 
-		</set>		-->
+   	 	<!-- End : Mapping of BetweenParticipantFactor object -->		     							
 		
 		<!-- Begin : Mapping of Covariance object -->
 		    <set name="covariance" table="STUDY_COVARIANCE_MAP" lazy="false">
 		        <key column="uuid"/>
 		        <many-to-many column="id" unique="true" lazy="false" class="edu.ucdenver.bios.webservice.common.domain.Covariance"/>
+		    </set>
+	    <!-- End : Mapping of Covariance object -->
+	    
+	    <!-- Begin : Mapping of Hypothesis object -->
+		    <set name="hypothesis" table="STUDY_HYPOTHESIS_MAP" lazy="false">
+		        <key column="uuid"/>
+		        <many-to-many column="id" unique="true" lazy="false" class="edu.ucdenver.bios.webservice.common.domain.Hypothesis"/>
 		    </set>
 	    <!-- End : Mapping of Covariance object -->
 	    		
