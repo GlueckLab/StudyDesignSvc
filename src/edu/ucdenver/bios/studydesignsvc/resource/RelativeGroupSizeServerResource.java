@@ -142,7 +142,7 @@ implements RelativeGroupSizeResource
 			/* ----------------------------------------------------
 			 * Remove existing RelativeGroupSize for this object 
 			 * ----------------------------------------------------*/			
-			if(relativeGroupSizeList!=null)
+			 if(uuidFlag && studyDesign.getRelativeGroupSizeList()!=null)
 				removeFrom(studyDesign);	
 			/* ----------------------------------------------------
 			 * Save new RelativeGroupSize List object 

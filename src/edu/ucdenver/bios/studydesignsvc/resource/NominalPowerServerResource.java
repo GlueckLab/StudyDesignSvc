@@ -142,7 +142,7 @@ implements NominalPowerResource
 			/* ----------------------------------------------------
 			 * Remove existing Nominal Power for this object 
 			 * ----------------------------------------------------*/			
-			if(nominalPowerList!=null)
+			 if(uuidFlag && studyDesign.getNominalPowerList()!=null)
 				removeFrom(studyDesign);	
 			/* ----------------------------------------------------
 			 * Save new Nominal Power List object 

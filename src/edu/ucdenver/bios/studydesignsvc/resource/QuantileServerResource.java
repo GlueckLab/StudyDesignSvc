@@ -142,7 +142,7 @@ implements QuantileResource
 			/* ----------------------------------------------------
 			 * Remove existing Quantile for this object 
 			 * ----------------------------------------------------*/			
-			if(quantileList!=null)
+			 if(uuidFlag && studyDesign.getQuantileList()!=null)
 				removeFrom(studyDesign);	
 			/* ----------------------------------------------------
 			 * Save new Quantile List object 
