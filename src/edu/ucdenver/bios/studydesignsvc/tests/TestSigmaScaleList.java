@@ -36,6 +36,7 @@ import edu.ucdenver.bios.studydesignsvc.resource.SigmaScaleServerResource;
 import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'SigmaScale' object - CRUD operations.
  * 
@@ -43,17 +44,26 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestSigmaScaleList extends TestCase
 {
+	
+	/** The STUD y_ uuid. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	
+	/** The resource. */
 	SigmaScaleServerResource resource = new SigmaScaleServerResource();
+	
+	/** The uuid. */
 	byte[] uuid = null;		
 		
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	public void setUp()
 	{
 		uuid = UUIDUtils.asByteArray(STUDY_UUID);
 	}
 	
 	/**
-	 * Test to create a SigmaScale List
+	 * Test to create a SigmaScale List.
 	 */
 	@Test
 	public void testCreate()
@@ -92,10 +102,10 @@ public class TestSigmaScaleList extends TestCase
 	}	
 	
 	/**
-	 * Test to update a SigmaScale List
+	 * Test to update a SigmaScale List.
 	 */
 	@Test
-	public void testUpdate()
+	private void testUpdate()
 	{
 		List<SigmaScale> sigmaScaleList = new ArrayList<SigmaScale>();		
 		SigmaScale sigmaScale = new SigmaScale();		
@@ -130,7 +140,7 @@ public class TestSigmaScaleList extends TestCase
 	}
 	
 	/**
-	 * Test to retrieve a SigmaScale List
+	 * Test to retrieve a SigmaScale List.
 	 */
 	@Test
 	public void testRetrieve()
@@ -163,10 +173,10 @@ public class TestSigmaScaleList extends TestCase
 	}
 	
 	/**
-	 * Test to delete a SigmaScale List
+	 * Test to delete a SigmaScale List.
 	 */
 	@Test
-	public void testDelete()
+	private void testDelete()
 	{
 		List<SigmaScale> sigmaScaleList = null;			
 		

@@ -36,6 +36,7 @@ import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 import junit.framework.TestCase;
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'ResponseNode' object - CRUD operations.
  * 
@@ -43,18 +44,29 @@ import junit.framework.TestCase;
  */
 public class TestResponseList extends TestCase
 {
+	
+	/** The STUD y_ uuid. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	
+	/** The STUD y_ name. */
 	private static String STUDY_NAME = "Junit Test Study Design";
+	
+	/** The resource. */
 	ResponsesServerResource resource = new ResponsesServerResource();
+	
+	/** The uuid. */
 	byte[] uuid = null;		
 		
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	public void setUp()
 	{
 		uuid = UUIDUtils.asByteArray(STUDY_UUID);
 	}
 	
 	/**
-	 * Test to create a Response List
+	 * Test to create a Response List.
 	 */
 	@Test
 	public void testCreate()
@@ -88,8 +100,11 @@ public class TestResponseList extends TestCase
 		}
 	}	
 	
+	/**
+	 * Test update.
+	 */
 	@Test
-	public void testUpdate()
+	private void testUpdate()
 	{
 		List<ResponseNode> responseList = new ArrayList<ResponseNode>();		
 		ResponseNode responseNode = new ResponseNode();		
@@ -121,10 +136,10 @@ public class TestResponseList extends TestCase
 	}
 	
 	/**
-	 * Test to delete a Response List
+	 * Test to delete a Response List.
 	 */
 	@Test
-	public void testDelete()
+	private void testDelete()
 	{
 		List<ResponseNode> responseList = null;			
 		
@@ -152,7 +167,7 @@ public class TestResponseList extends TestCase
 	}
 	
 	/**
-	 * Test to Retrieve a Response List
+	 * Test to Retrieve a Response List.
 	 */
 	@Test
 	public void testRetrieve()

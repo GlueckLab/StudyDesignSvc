@@ -41,7 +41,7 @@ import edu.ucdenver.bios.webservice.common.domain.Blob2DArray;
 import edu.ucdenver.bios.webservice.common.domain.Covariance;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
-
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'Covariance' object - CRUD operations.
  * 
@@ -49,16 +49,31 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestCovariance extends TestCase
 {
+	
+	/** The STUD y_ uuid. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	
+	/** The Constant COVARIANCE_NAME_1. */
 	private static final String COVARIANCE_NAME_1 = "Covariance 1";
+	
+	/** The Constant COVARIANCE_NAME_2. */
 	private static final String COVARIANCE_NAME_2 = "Covariance 2";
 	
+	/** The resource. */
 	CovarianceServerResource resource = new CovarianceServerResource();
+	
+	/** The uuid. */
 	byte[] uuid = null;	
+	
+	/** The columns. */
 	int rows, columns;
 	
+	/** The client resource. */
 	ClientResource clientResource = null; 
 		
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	public void setUp()
 	{
 		uuid = UUIDUtils.asByteArray(STUDY_UUID);
@@ -76,7 +91,7 @@ public class TestCovariance extends TestCase
 	}
 
 	/**
-	 * Test to create a Covariance
+	 * Test to create a Covariance.
 	 */
 	@Test
 	public void testCreate()
@@ -146,7 +161,7 @@ public class TestCovariance extends TestCase
 	}	
 	
 	/**
-	 * Test to retrieve a Covariance
+	 * Test to retrieve a Covariance.
 	 */
 	@Test
 	public void testRetrieve()
@@ -179,10 +194,10 @@ public class TestCovariance extends TestCase
 	}
 	
 	/**
-	 * Test to update a Covariance
+	 * Test to update a Covariance.
 	 */
 	@Test
-	public void testUpdate()
+	private void testUpdate()
 	{
 		Set<Covariance> covarianceSet = new HashSet<Covariance>();		
 		Covariance covariance = new Covariance();						
@@ -230,7 +245,7 @@ public class TestCovariance extends TestCase
 	}
 	
 	/**
-	 * Test to delete a Covariance
+	 * Test to delete a Covariance.
 	 */
 	@Test
 	private void testDelete()

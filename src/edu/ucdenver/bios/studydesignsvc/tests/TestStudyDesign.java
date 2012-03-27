@@ -22,6 +22,7 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,39 +31,66 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.restlet.resource.ClientResource;
 
+import com.google.gson.Gson;
+
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignServerResource;
+import edu.ucdenver.bios.webservice.common.domain.SampleSize;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.enums.SolutionTypeEnum;
+import edu.ucdenver.bios.webservice.common.enums.StudyDesignViewTypeEnum;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
+// TODO: Auto-generated Javadoc
 /**
- * Test basic create, read, update, delete for TableStudyDesign
- * @author Sarah Kreidler
+ * Test basic create, read, update, delete for TableStudyDesign.
  *
+ * @author Sarah Kreidler
  */
 public class TestStudyDesign extends TestCase
 {	
 	
+	/** The STUDY_UUID. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	
+	/** The STUDY_UUID_ONE. */
+    private static UUID STUDY_UUID_ONE = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51b");
+	
+	/** The STUD y_ name. */
 	private static String STUDY_NAME = "Junit Test Study Design";
+	
+	/** The PARTICIPAN t_ label. */
 	private static String PARTICIPANT_LABEL = "subjects";
+	
+	/** The SAMPL e_ size. */
 	private static int SAMPLE_SIZE = 100;
+	
+	/** The uuid. */
 	byte[] uuid = null;
+	
+	/** The uuid_one. */
+    byte[] uuid_one = null;
 
+	/** The resource. */
 	StudyDesignServerResource resource = new StudyDesignServerResource();
+	
+	/** The client resource. */
 	ClientResource clientResource = null; 
+	
+	/** The study design resource. */
 	StudyDesignResource studyDesignResource = null;
+	
 	/**
-     * Connect to the server
-     */
+	 * Connect to the server.
+	 */
     public void setUp()
     {
     	uuid = UUIDUtils.asByteArray(STUDY_UUID);	
+    	uuid_one = UUIDUtils.asByteArray(STUDY_UUID_ONE);
         try
         {
         	clientResource = new ClientResource("http://localhost:8080/study/study"); 
@@ -76,7 +104,7 @@ public class TestStudyDesign extends TestCase
     }
     
     /**
-     * Call the calculatePower function
+     * Call the calculatePower function.
      */
     private void testFunction()
     {    	
@@ -99,23 +127,43 @@ public class TestStudyDesign extends TestCase
 	
 	/**
 	 * Test retrieving a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Note, this test must run after testCreate of a
+	 * not found will be thrown.
 	 */
 	@Test
-	public void testCreate()
+	public void testCreate()	
 	{	
 		StudyDesign studyDesign = new StudyDesign();
 		//studyDesign.setStudyUUID(STUDY_UUID);
 		studyDesign.setParticipantLabel(PARTICIPANT_LABEL);
 		studyDesign.setUuid(UUIDUtils.asByteArray(STUDY_UUID));
 		studyDesign.setName(STUDY_NAME);
+		studyDesign.setViewTypeEnum(StudyDesignViewTypeEnum.GUIDED_MODE);
 		studyDesign.setGaussianCovariate(true);				
-		studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER);				
+		studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER);
+		
+		/*StudyDesign studyDesign1 = new StudyDesign();
+        //studyDesign.setStudyUUID(STUDY_UUID);
+        studyDesign1.setParticipantLabel(PARTICIPANT_LABEL);
+        studyDesign1.setUuid(UUIDUtils.asByteArray(STUDY_UUID_ONE));
+        studyDesign1.setName(STUDY_NAME+" 1");
+        studyDesign1.setViewTypeEnum(StudyDesignViewTypeEnum.GUIDED_MODE);
+        studyDesign1.setGaussianCovariate(true);             
+        studyDesign1.setSolutionTypeEnum(SolutionTypeEnum.POWER);
+            List<SampleSize> sampleSizeList = new ArrayList<SampleSize>();        
+            SampleSize sampleSize = new SampleSize();     
+                sampleSize.setValue(5); 
+            sampleSizeList.add(sampleSize); 
+            sampleSize = new SampleSize();      
+                sampleSize.setValue(1);           
+            sampleSizeList.add(sampleSize);     
+		studyDesign1.setSampleSizeList(sampleSizeList);*/
 		
         try
 		{
         	studyDesign=resource.create(studyDesign);
+        	
+        	/*studyDesign1=resource.create(studyDesign1);*/
 		}
 		catch(Exception e)
 		{
@@ -129,15 +177,19 @@ public class TestStudyDesign extends TestCase
 		}
 		else
 		{
-			System.out.println("ID: "+studyDesign.getUuid()+" SampleSize: "+studyDesign.getName());
+			System.out.println("testCreate():");
+			 Gson gson = new Gson();
+	            String json = gson.toJson(studyDesign);  
+	            System.out.println(json);
+	           assertTrue(studyDesign!=null);
 		}
 	}
 	
 	
 	/**
 	 * Test retrieving a UUID from the database
-	 * Note, this test must run after testCreate of a 
-	 * not found will be thrown
+	 * Note, this test must run after testCreate of a
+	 * not found will be thrown.
 	 */
 	@Test
 	public void testRetrieve()
@@ -160,100 +212,80 @@ public class TestStudyDesign extends TestCase
         }
         else
         {     
-        	System.out.println("testRetrieve() : ");        	        	
-        	//System.out.println("Name: "+studyDesign.getName()+"\nConf Int: "+studyDesign.getConfidenceIntervalDescriptions().getId());
-        	System.out.println(studyDesign);
-            assertTrue(studyDesign!=null);
+            System.out.println("testRetrieve():");
+            Gson gson = new Gson();
+               String json = gson.toJson(studyDesign);  
+               System.out.println(json);
+              assertTrue(studyDesign!=null);
         }
 
 	}
 
+	/**
+	 * Test retrieve list.
+	 */
 	@Test
-	private void testRetrieveList()
+	public void testRetrieveList()
 	{
-		StudyDesignManager manager = null;
-		List<StudyDesign> studyDesignList = null;
+	    List<StudyDesign> studyDesignList = null;
         try
         {
-            manager = new StudyDesignManager();
-            manager.beginTransaction();
-            studyDesignList = manager.getStudyUUIDs();
-            manager.commit();
-        }
-        catch (BaseManagerException bme)
+            studyDesignList = resource.retrieve();          
+        }       
+        catch(Exception e)
         {
-        	System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
-            if (manager != null) try { manager.rollback(); } catch (BaseManagerException e) {}
-            studyDesignList = null;
+            System.out.println(e.getMessage());
+            studyDesignList=null;
             fail();
         }
-        catch (StudyDesignException sde)
-        {
-        	System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + sde.getMessage());
-            if (manager != null) try { manager.rollback(); } catch (BaseManagerException e) {}
-            studyDesignList = null;
-            fail();
-        }
-        
-        
         if (studyDesignList == null)
         {
-        	System.err.println("No matching studydesign found");
-        	fail();
+            System.err.println("No matching confidence interval found");
+            fail();
         }
         else
-        {
-            String name = studyDesignList.get(0).getName();
-            assertTrue(STUDY_NAME.equals(name));
+        {     
+            System.out.println("testRetrieveList():"+studyDesignList.size());            
+           for(StudyDesign studyDesign : studyDesignList)
+           {
+               System.out.println(studyDesign);
+           }
         }
 
 	}
 
 	
 	/**
-	 * Test deletion of record from the table
+	 * Test deletion of record from the table.
 	 */
 	@Test
 	private void testDelete()
 	{
-		StudyDesignManager manager = null;
-		StudyDesign studyDesign = null;
+	    StudyDesign studyDesign = null;                
+        
         try
         {
-            manager = new StudyDesignManager();
-            manager.beginTransaction();
-            studyDesign = manager.delete(UUIDUtils.asByteArray(STUDY_UUID));
-            manager.commit();
+            /*studyDesign=resource.remove(uuid_one);*/
+            
+            studyDesign=resource.remove(uuid);
         }
-        catch (BaseManagerException bme)
+        catch(Exception e)
         {
-        	System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to delete Study Design information: " + bme.getMessage());
-            if (manager != null) try { manager.rollback(); } catch (BaseManagerException e) {}
-            studyDesign = null;
+            System.out.println(e.getMessage());
+            studyDesign=null;
             fail();
         }
-        catch (StudyDesignException sde)
+        if(studyDesign==null)
         {
-        	System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to delete Study Design information: " + sde.getMessage());
-            if (manager != null) try { manager.rollback(); } catch (BaseManagerException e) {}
-            studyDesign = null;
             fail();
-        }
-        
-        
-        if (studyDesign == null)
-        {
-        	System.err.println("No matching studydesign found");
-        	fail();
         }
         else
         {
-            String name = studyDesign.getName();
-            assertTrue(STUDY_NAME.equals(name));
+            System.out.println("testDelete():");
+             Gson gson = new Gson();
+                String json = gson.toJson(studyDesign);  
+                System.out.println(json);
+               assertTrue(studyDesign!=null);
         }
 	}
 }

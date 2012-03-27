@@ -45,6 +45,7 @@ import edu.ucdenver.bios.webservice.common.domain.HypothesisRepeatedMeasuresMapp
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
 import edu.ucdenver.bios.webservice.common.enums.HypothesisTypeEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'Hypothesis' object - CRUD operations.
  * 
@@ -52,16 +53,31 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestHypothesis extends TestCase
 {
+    
+    /** The STUD y_ uuid. */
     private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+    
+    /** The Constant COVARIANCE_NAME_1. */
     private static final String COVARIANCE_NAME_1 = "Hypothesis 1";
+    
+    /** The Constant COVARIANCE_NAME_2. */
     private static final String COVARIANCE_NAME_2 = "Hypothesis 2";
     
+    /** The resource. */
     HypothesisServerResource resource = new HypothesisServerResource();
+    
+    /** The uuid. */
     byte[] uuid = null; 
+    
+    /** The columns. */
     int rows, columns;
     
+    /** The client resource. */
     ClientResource clientResource = null; 
         
+    /* (non-Javadoc)
+     * @see junit.framework.TestCase#setUp()
+     */
     public void setUp()
     {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);
@@ -91,36 +107,36 @@ public class TestHypothesis extends TestCase
            List<HypothesisBetweenParticipantMapping> betweenParticipantList = new ArrayList<HypothesisBetweenParticipantMapping>(); 
                HypothesisBetweenParticipantMapping map = new HypothesisBetweenParticipantMapping();
                    BetweenParticipantFactor b = new BetweenParticipantFactor();
-                   b.setId(1);
+                   b.setId(3);
                map.setBetweenParticipantFactor(b);
                map.setType(HypothesisTypeEnum.INTERACTION);
                betweenParticipantList.add(map);
                
                map = new HypothesisBetweenParticipantMapping();
                    b = new BetweenParticipantFactor();
-                   b.setId(2);
+                   b.setId(4);
                map.setBetweenParticipantFactor(b);
                map.setType(HypothesisTypeEnum.INTERACTION);
                betweenParticipantList.add(map);
                 
                hypothesis.setBetweenParticipantFactorMapList(betweenParticipantList);
                
-           List<HypothesisRepeatedMeasuresMapping> repeatedMeasuresTree = new ArrayList<HypothesisRepeatedMeasuresMapping>(); 
+           /*List<HypothesisRepeatedMeasuresMapping> repeatedMeasuresTree = new ArrayList<HypothesisRepeatedMeasuresMapping>(); 
                HypothesisRepeatedMeasuresMapping repeatedMeasuresMap = new HypothesisRepeatedMeasuresMapping();
                    RepeatedMeasuresNode r = new RepeatedMeasuresNode();
-                   r.setId(3);
+                   r.setId(1);
                repeatedMeasuresMap.setRepeatedMeasuresNode(r);
                repeatedMeasuresMap.setType(HypothesisTypeEnum.TREND);
                repeatedMeasuresTree.add(repeatedMeasuresMap);
                
                repeatedMeasuresMap = new HypothesisRepeatedMeasuresMapping();
                    r = new RepeatedMeasuresNode();
-                   r.setId(4);
+                   r.setId(2);
                repeatedMeasuresMap.setRepeatedMeasuresNode(r);
                repeatedMeasuresMap.setType(HypothesisTypeEnum.INTERACTION);
                repeatedMeasuresTree.add(repeatedMeasuresMap);
                 
-               hypothesis.setRepeatedMeasuresMapTree(repeatedMeasuresTree);
+               hypothesis.setRepeatedMeasuresMapTree(repeatedMeasuresTree);*/
                
           hypothesisSet.add(hypothesis);  
                         
@@ -159,7 +175,7 @@ public class TestHypothesis extends TestCase
      * Test to retrieve a Hypothesis.
      */
     @Test
-    public void testRetrieve()
+    private void testRetrieve()
     {
         Set<Hypothesis> hypothesisSet = null;           
         
@@ -234,7 +250,7 @@ public class TestHypothesis extends TestCase
      * Test to delete a Hypothesis.
      */
     @Test
-    public void testDelete()
+    private void testDelete()
     {
         Set<Hypothesis> hypothesisSet = null;           
         

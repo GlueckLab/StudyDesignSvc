@@ -36,6 +36,7 @@ import edu.ucdenver.bios.studydesignsvc.resource.PowerMethodServerResource;
 import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
 import edu.ucdenver.bios.webservice.common.enums.PowerMethodEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'PowerMethod' object - CRUD operations.
  * 
@@ -43,17 +44,26 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestPowerMethodList extends TestCase
 {
+	
+	/** The STUD y_ uuid. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	
+	/** The resource. */
 	PowerMethodServerResource resource = new PowerMethodServerResource();
+	
+	/** The uuid. */
 	byte[] uuid = null;		
 		
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	public void setUp()
 	{
 		uuid = UUIDUtils.asByteArray(STUDY_UUID);
 	}
 	
 	/**
-	 * Test to create a PowerMethod List
+	 * Test to create a PowerMethod List.
 	 */
 	@Test
 	public void testCreate()
@@ -92,10 +102,10 @@ public class TestPowerMethodList extends TestCase
 	}	
 	
 	/**
-	 * Test to update a PowerMethod List
+	 * Test to update a PowerMethod List.
 	 */
 	@Test
-	public void testUpdate()
+	private void testUpdate()
 	{
 		List<PowerMethod> powerMethodList = new ArrayList<PowerMethod>();		
 		PowerMethod powerMethod = new PowerMethod();		
@@ -128,7 +138,7 @@ public class TestPowerMethodList extends TestCase
 	}
 	
 	/**
-	 * Test to retrieve a PowerMethod List
+	 * Test to retrieve a PowerMethod List.
 	 */
 	@Test
 	public void testRetrieve()
@@ -161,10 +171,10 @@ public class TestPowerMethodList extends TestCase
 	}
 	
 	/**
-	 * Test to delete a PowerMethod List
+	 * Test to delete a PowerMethod List.
 	 */
 	@Test
-	public void testDelete()
+	private void testDelete()
 	{
 		List<PowerMethod> powerMethodList = null;			
 		

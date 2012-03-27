@@ -1,4 +1,4 @@
-<!--  
+/*
  * Study Design Service for the GLIMMPSE Software System.  
  * This service stores study design definitions for users of the GLIMMSE interface.
  * Service contain all information related to a power or sample size calculation.  
@@ -19,33 +19,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- -->
+ */
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-</head>
-<body bgcolor="white">
-Unit tests for the Study Design service
-
-<h2>Package Specification</h2>
-
-Dependencies:
-<ul>
-<li>JRE 1.6.0 or higher</li>
-<li>Restlet 1.1.6</li>
-<li>Log4J 1.2.15</li>
-<li>JUnit 4.7</li>
-<li>Apache Commons Math 2.1 or higher</li>
-</ul>
-
-<h2>Related Documentation</h2>
-
-This package is part of the Power web service component for the Glimmpse software system, please see
-the following for more information:
-<ul>
-  <li><a href="http://www.glimmpse.com/">http://www.glimmpse.com/</a>
-</ul>
-</body>
-</html>
- 
+/*
+ * Provides Unit tests for the Study Design Service.
+ * <p>
+ * Dependencies:
+ * <ul>
+ * <li>JRE 1.6.0 or higher</li>
+ * <li>Restlet 1.1.6</li>
+ * <li>Log4J 1.2.15</li>
+ * <li>JUnit 4.7</li>
+ * <li>Apache Commons Math 2.1 or higher</li>
+ * <li><a href="http://www.jsc.nildram.co.uk/">JSC Statistics Package</a></li>
+ * </ul>
+ * 
+ */
+package edu.ucdenver.bios.studydesignsvc.tests;

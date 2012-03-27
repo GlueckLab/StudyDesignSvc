@@ -37,6 +37,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.enums.StatisticalTestTypeEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'StatisticalTest' object - CRUD operations.
  * 
@@ -44,18 +45,29 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestStatisticalTestList extends TestCase
 {
+	
+	/** The STUD y_ uuid. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	
+	/** The STUD y_ name. */
 	private static String STUDY_NAME = "Junit StatisticalTest Study Design";
+	
+	/** The resource. */
 	StatisticalTestServerResource resource = new StatisticalTestServerResource();
+	
+	/** The uuid. */
 	byte[] uuid = null;		
 		
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	public void setUp()
 	{
 		uuid = UUIDUtils.asByteArray(STUDY_UUID);
 	}
 	
 	/**
-	 * Test to create a BetaScale List
+	 * Test to create a BetaScale List.
 	 */
 	@Test
 	public void testCreate()
@@ -92,10 +104,10 @@ public class TestStatisticalTestList extends TestCase
 	}	
 	
 	/**
-	 * Test to update a BetaScale List
+	 * Test to update a BetaScale List.
 	 */
 	@Test
-	public void testUpdate()
+	private void testUpdate()
 	{
 		List<StatisticalTest> testList = new ArrayList<StatisticalTest>();		
 		StatisticalTest test = new StatisticalTest();		
@@ -128,7 +140,7 @@ public class TestStatisticalTestList extends TestCase
 	}
 	
 	/**
-	 * Test to delete a BetaScale List
+	 * Test to delete a BetaScale List.
 	 */
 	@Test
 	private void testDelete()
@@ -159,7 +171,7 @@ public class TestStatisticalTestList extends TestCase
 	}
 	
 	/**
-	 * Test to retrieve a BetaScale List
+	 * Test to retrieve a BetaScale List.
 	 */
 	@Test
 	public void testRetrieve()

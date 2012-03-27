@@ -38,6 +38,7 @@ import edu.ucdenver.bios.webservice.common.domain.Spacing;
 import edu.ucdenver.bios.webservice.common.enums.RepeatedMeasuresDimensionType;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'RepeatedMeasuresNode' object - CRUD operations.
  * 
@@ -45,18 +46,29 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestRepeatedMeasures extends TestCase
 {
+	
+	/** The STUD y_ uuid. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	
+	/** The STUD y_ name. */
 	private static String STUDY_NAME = "Junit Test Study Design";
+	
+	/** The resource. */
 	RepeatedMeasuresServerResource resource = new RepeatedMeasuresServerResource();
+	
+	/** The uuid. */
 	byte[] uuid = null;		
 		
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	public void setUp()
 	{
 		uuid = UUIDUtils.asByteArray(STUDY_UUID);
 	}
 	
 	/**
-	 * Test to create a RepeatedMeasuresNode List
+	 * Test to create a RepeatedMeasuresNode List.
 	 */
 	@Test
 	public void testCreate()
@@ -124,10 +136,10 @@ public class TestRepeatedMeasures extends TestCase
 	}		
 	
 	/**
-	 * Test to update a RepeatedMeasuresNode List
+	 * Test to update a RepeatedMeasuresNode List.
 	 */
 	@Test
-	public void testUpdate()
+	private void testUpdate()
 	{
 		List<RepeatedMeasuresNode> repeatedMeasuresTree = new ArrayList<RepeatedMeasuresNode>();		
 		RepeatedMeasuresNode repeatedMeasuresNode = new RepeatedMeasuresNode();		
@@ -207,7 +219,7 @@ public class TestRepeatedMeasures extends TestCase
 	}
 	
 	/**
-	 * Test to retrieve a RepeatedMeasuresNode List
+	 * Test to retrieve a RepeatedMeasuresNode List.
 	 */
 	@Test
 	public void testRetrieve()
@@ -242,10 +254,10 @@ public class TestRepeatedMeasures extends TestCase
 	}
 	
 	/**
-	 * Test to delete a RepeatedMeasuresNode List
+	 * Test to delete a RepeatedMeasuresNode List.
 	 */
 	@Test
-	public void testDelete()
+	private void testDelete()
 	{
 		List<RepeatedMeasuresNode> repeatedMeasuresTree = null;			
 		

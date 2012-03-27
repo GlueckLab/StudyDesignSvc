@@ -36,6 +36,7 @@ import edu.ucdenver.bios.studydesignsvc.resource.MatrixServerResource;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'NamedMatrix' object - CRUD operations.
  * 
@@ -43,20 +44,35 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestMatrix extends TestCase
 {
+	
+	/** The STUD y_ uuid. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	
+	/** The THET a_ matri x_ name. */
 	private static String THETA_MATRIX_NAME = "Theta Null Matrix";
+	
+	/** The BET a_ matri x_ name. */
 	private static String BETA_MATRIX_NAME = "Beta Matrix";
+	
+	/** The resource. */
 	MatrixServerResource resource = new MatrixServerResource();
+	
+	/** The uuid. */
 	byte[] uuid = null;		
+	
+	/** The columns. */
 	int rows, columns;
 		
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	public void setUp()
 	{
 		uuid = UUIDUtils.asByteArray(STUDY_UUID);
 	}
 	
 	/**
-	 * Test to create a Set<NamedMatrix>
+	 * Test to create a Set<NamedMatrix>.
 	 */
 	@Test
 	public void testCreateMatrixSet()
@@ -107,7 +123,7 @@ public class TestMatrix extends TestCase
 	}
 	
 	/**
-	 * Test to retrieve a NamedMatrix
+	 * Test to retrieve a NamedMatrix.
 	 */
 	@Test
 	public void testCreateMatrix()
@@ -147,7 +163,7 @@ public class TestMatrix extends TestCase
 	}	
 	
 	/**
-	 * Test to retrieve a Set<NamedMatrix>
+	 * Test to retrieve a Set<NamedMatrix>.
 	 */
 	@Test
 	public void testRetrieveMatrixSet()
@@ -180,7 +196,7 @@ public class TestMatrix extends TestCase
 	}
 	
 	/**
-	 * Test to retrieve a NamedMatrix
+	 * Test to retrieve a NamedMatrix.
 	 */
 	@Test
 	public void testRetrieveMatrix()
@@ -213,10 +229,10 @@ public class TestMatrix extends TestCase
 	}
 	
 	/**
-	 * Test to update a NamedMatrix
+	 * Test to update a NamedMatrix.
 	 */
 	@Test
-	public void testUpdateMatrix()
+	private void testUpdateMatrix()
 	{
 		NamedMatrix matrix = new NamedMatrix(THETA_MATRIX_NAME);
 		rows=10;
@@ -258,10 +274,10 @@ public class TestMatrix extends TestCase
 	}
 	
 	/**
-	 * Test to update a Set<NamedMatrix>
+	 * Test to update a Set<NamedMatrix>.
 	 */
 	@Test
-	public void testUpdateMatrixSet()
+	private void testUpdateMatrixSet()
 	{
 		Set<NamedMatrix> matrixSet = new HashSet<NamedMatrix>();		
 		NamedMatrix matrix = new NamedMatrix(THETA_MATRIX_NAME);
@@ -321,10 +337,10 @@ public class TestMatrix extends TestCase
 	}
 	
 	/**
-	 * Test to delete a NamedMatrix
+	 * Test to delete a NamedMatrix.
 	 */
 	@Test
-	public void testDeleteMatrix()
+	private void testDeleteMatrix()
 	{
 		NamedMatrix matrix = null;			
 		
@@ -355,10 +371,10 @@ public class TestMatrix extends TestCase
 	}
 	
 	/**
-	 * Test to delete a Set<NamedMatrix>
+	 * Test to delete a Set<NamedMatrix>.
 	 */
 	@Test
-	public void testDeleteMatrixSet()
+	private void testDeleteMatrixSet()
 	{
 		Set<NamedMatrix> matrixSet = null;			
 		

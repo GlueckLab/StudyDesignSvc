@@ -36,6 +36,7 @@ import edu.ucdenver.bios.studydesignsvc.resource.RelativeGroupSizeServerResource
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'RelativeGroupSize' object - CRUD operations.
  * 
@@ -43,17 +44,26 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestRelativeGroupSize extends TestCase
 {
+	
+	/** The STUD y_ uuid. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	
+	/** The resource. */
 	RelativeGroupSizeServerResource resource = new RelativeGroupSizeServerResource();
+	
+	/** The uuid. */
 	byte[] uuid = null;		
 		
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	public void setUp()
 	{
 		uuid = UUIDUtils.asByteArray(STUDY_UUID);
 	}
 	
 	/**
-	 * Test to create a RelativeGroupSize List
+	 * Test to create a RelativeGroupSize List.
 	 */
 	@Test
 	public void testCreate()
@@ -92,10 +102,10 @@ public class TestRelativeGroupSize extends TestCase
 	}	
 	
 	/**
-	 * Test to update a RelativeGroupSize List
+	 * Test to update a RelativeGroupSize List.
 	 */
 	@Test
-	public void testUpdate()
+	private void testUpdate()
 	{
 		StudyDesign studyDesign = new StudyDesign();		
 		studyDesign.setUuid(uuid);				
@@ -133,7 +143,7 @@ public class TestRelativeGroupSize extends TestCase
 	}
 	
 	/**
-	 * Test to retrieve a RelativeGroupSize List
+	 * Test to retrieve a RelativeGroupSize List.
 	 */
 	@Test
 	public void testRetrieve()
@@ -166,10 +176,10 @@ public class TestRelativeGroupSize extends TestCase
 	}
 	
 	/**
-	 * Test to delete a RelativeGroupSize List
+	 * Test to delete a RelativeGroupSize List.
 	 */
 	@Test
-	public void testDelete()
+	private void testDelete()
 	{
 		List<RelativeGroupSize> relativeGroupSizeList = null;			
 		

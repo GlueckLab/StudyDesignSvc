@@ -44,8 +44,9 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestClusterNode extends TestCase
 {
-	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	private static String STUDY_NAME = "Junit Test Study Design";
+	
+	/** The STUDY_UUID. */
+	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");	
 	byte[] uuid = null;	
 	StudyDesignManager studyDesignManager = null;
 	ClusterNodeManager clusterNodeManager = null;
@@ -140,7 +141,7 @@ public class TestClusterNode extends TestCase
 	 * Test to delete a ClusterNode List
 	 */
 	@Test
-	public void testDelete()
+	private void testDelete()
 	{		
 		List<ClusterNode> clusterNodeList = new ArrayList<ClusterNode>();		
 		ClusterNodeServerResource resource = new ClusterNodeServerResource();	
@@ -171,7 +172,7 @@ public class TestClusterNode extends TestCase
 	 * Test to update a ClusterNode List
 	 */
 	@Test
-	public void testUpdate()
+	private void testUpdate()
 	{			
 		boolean flag;
 		List<ClusterNode> clusterNodeList = new ArrayList<ClusterNode>();		

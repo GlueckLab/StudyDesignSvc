@@ -40,6 +40,7 @@ import edu.ucdenver.bios.webservice.common.domain.BetaScale;
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'ConfidenceIntervalDescription' - CRUD operations.
  * 
@@ -47,18 +48,29 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestConfidenceInterval extends TestCase 
 {	
+	
+	/** The STUD y_ uuid. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	
+	/** The SAMPL e_ size. */
 	private static int SAMPLE_SIZE = 100;
+	
+	/** The uuid. */
 	byte[] uuid = null;
+	
+	/** The resource. */
 	ConfidenceIntervalServerResource resource = new ConfidenceIntervalServerResource();
 	
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	public void setUp()
 	{
 		uuid = UUIDUtils.asByteArray(STUDY_UUID);		
 	}
 		
 	/**
-	 * Test to create a ConfidenceIntervalDescription
+	 * Test to create a ConfidenceIntervalDescription.
 	 */
 	@Test
 	public void testCreate()
@@ -94,7 +106,7 @@ public class TestConfidenceInterval extends TestCase
 	}
 	
 	/**
-	 * Test to update a ConfidenceIntervalDescription
+	 * Test to update a ConfidenceIntervalDescription.
 	 */
 	@Test
 	private void testUpdate()
@@ -129,7 +141,7 @@ public class TestConfidenceInterval extends TestCase
 	}
 	
 	/**
-	 * Test to retrieve a ConfidenceIntervalDescription
+	 * Test to retrieve a ConfidenceIntervalDescription.
 	 */
 	@Test
 	public void testRetrieve()
@@ -159,7 +171,7 @@ public class TestConfidenceInterval extends TestCase
 	}
 	
 	/**
-	 * Test to delete a ConfidenceIntervalDescription
+	 * Test to delete a ConfidenceIntervalDescription.
 	 */
 	@Test
 	private void testDelete()

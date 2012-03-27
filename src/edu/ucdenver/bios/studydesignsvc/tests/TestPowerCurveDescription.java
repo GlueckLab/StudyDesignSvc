@@ -38,6 +38,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.enums.HorizontalAxisLabelEnum;
 import edu.ucdenver.bios.webservice.common.enums.StratificationVariableEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'PowerCurveDescription' object - CRUD operations.
  * 
@@ -45,19 +46,29 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestPowerCurveDescription extends TestCase 
 {
+	
+	/** The STUD y_ uuid. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	
+	/** The uuid. */
 	byte[] uuid = null;
 	//private static int SAMPLE_SIZE = 100;
+	/** The study design manager. */
 	StudyDesignManager studyDesignManager = null;
+	
+	/** The confidence interval manager. */
 	ConfidenceIntervalManager confidenceIntervalManager = null;
 		
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	public void setUp()
 	{
 		uuid = UUIDUtils.asByteArray(STUDY_UUID);
 	}
 	
 	/**
-	 * Test to create a PowerCurveDescription
+	 * Test to create a PowerCurveDescription.
 	 */
 	@Test
 	public void testCreate()
@@ -99,7 +110,7 @@ public class TestPowerCurveDescription extends TestCase
 	}
 	
 	/**
-	 * Test to update a PowerCurveDescription
+	 * Test to update a PowerCurveDescription.
 	 */
 	@Test
 	private void testUpdate()
@@ -139,7 +150,7 @@ public class TestPowerCurveDescription extends TestCase
 	}
 	
 	/**
-	 * Test to retrieve a PowerCurveDescription
+	 * Test to retrieve a PowerCurveDescription.
 	 */
 	@Test
 	public void testRetrieve()
@@ -175,7 +186,7 @@ public class TestPowerCurveDescription extends TestCase
 	}
 	
 	/**
-	 * Test to delete a PowerCurveDescription
+	 * Test to delete a PowerCurveDescription.
 	 */
 	@Test
 	private void testDelete()
