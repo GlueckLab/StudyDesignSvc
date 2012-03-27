@@ -13,6 +13,7 @@ drop table if exists STUDY_DESIGN;
 CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_DESIGN` (
   `uuid` BINARY(16) NOT NULL ,  
   `solutionType` ENUM( 'Power' , 'Samplesize' , 'Detectable Difference' ) ,
+  `viewType` ENUM( 'Guided Mode', 'Matrix Mode', 'Upload'),
   `hasGaussianCovariate` BOOLEAN ,
   `name` VARCHAR(256) ,
   `participantLabel` VARCHAR(45),
@@ -566,7 +567,103 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`REPEATED_MEASURES_SPACING_MAP` (
 )
 ENGINE = InnoDB;
 
+-- --------------------------------------------------------
+-- Table `studydesigndb`.`SAMPLE_SIZE_LIST`
+-- --------------------------------------------------------
+drop table if exists SAMPLE_SIZE_LIST;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`SAMPLE_SIZE_LIST` (
+  `id` INT NOT NULL AUTO_INCREMENT ,  
+  `sample_size_value` INT , 
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`STUDY_SAMPLE_SIZE_MAP`
+-- -----------------------------------------------------
+drop table if exists STUDY_SAMPLE_SIZE_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_SAMPLE_SIZE_MAP` (
+  `uuid` BINARY(16) NOT NULL,
+  `id` INT NOT NULL UNIQUE,
+  `listorder` INT,  
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`SAMPLE_SIZE_LIST`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN`(`uuid`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`HYPOTHESIS`
+-- -----------------------------------------------------
+drop table if exists HYPOTHESIS;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`HYPOTHESIS` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `trendType` ENUM( 'Main Effect','Interaction','Trend') , 
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`STUDY_HYPOTHESIS_MAP`
+-- -----------------------------------------------------
+drop table if exists STUDY_HYPOTHESIS_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STUDY_HYPOTHESIS_MAP` (
+  `uuid` BINARY(16) NOT NULL,
+  `id` INT NOT NULL UNIQUE,  
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`HYPOTHESIS`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`uuid`)
+  REFERENCES `studydesigndb`.`STUDY_DESIGN`(`uuid`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`HYPOTHESIS_BETWEEN_PARTICIPANT_MAP`
+-- -----------------------------------------------------
+drop table if exists HYPOTHESIS_BETWEEN_PARTICIPANT_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`HYPOTHESIS_BETWEEN_PARTICIPANT_MAP` (
+  `id` INT NOT NULL,
+  `betweenParticipantId` INT UNIQUE,   
+  `trendType` ENUM( 'Main Effect','Interaction','Trend') , 
+  `listorder` INT,
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`HYPOTHESIS`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`betweenParticipantId`)
+  REFERENCES `studydesigndb`.`BETWEEN_PARTICIPANT_EFFECTS`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`HYPOTHESIS_REPEATED_MEASURES_MAP`
+-- -----------------------------------------------------
+drop table if exists HYPOTHESIS_REPEATED_MEASURES_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`HYPOTHESIS_REPEATED_MEASURES_MAP` (
+  `id` INT NOT NULL,
+  `repeatedMeasuresId` INT UNIQUE,
+  `trendType` ENUM( 'Main Effect','Interaction','Trend') ,  
+  `listorder` INT, 
+  FOREIGN KEY (`id`)
+  REFERENCES `studydesigndb`.`HYPOTHESIS`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`repeatedMeasuresId`)
+  REFERENCES `studydesigndb`.`REPEATED_MEASURES`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
+ENGINE = InnoDB;
+
 
 # Turn foreign key checks back on
 set foreign_key_checks = 1;
-
