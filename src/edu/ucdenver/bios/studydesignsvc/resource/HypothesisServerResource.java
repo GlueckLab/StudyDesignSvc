@@ -319,16 +319,38 @@ implements HypothesisResource
             /* ----------------------------------------------------
              * Check existance of BetweenParticipantEfect 
              * ----------------------------------------------------*/
-            List<BetweenParticipantFactor> studyBetweenParticipantList = studyDesign.getBetweenParticipantFactorList();
-            List<RepeatedMeasuresNode> studyRepeatedMeasuresTree = studyDesign.getRepeatedMeasuresTree();
-            if(uuidFlag && studyBetweenParticipantList!=null)
+            List<BetweenParticipantFactor> studyBetweenParticipantList = null;
+            List<RepeatedMeasuresNode> studyRepeatedMeasuresTree = null;
+            if(studyDesign.getBetweenParticipantFactorList()!=null) {
+                studyBetweenParticipantList = studyDesign.getBetweenParticipantFactorList();
+            }
+            if(studyDesign.getRepeatedMeasuresTree()!=null){
+                studyRepeatedMeasuresTree = studyDesign.getRepeatedMeasuresTree();
+            }
+            if(uuidFlag && studyDesign!=null)
             {
-               boolean flag = checkBetweenParticipantFactorEntry(studyBetweenParticipantList, hypothesisSet);
-               flag = checkRepeatedMeasuresNodeEntry(studyRepeatedMeasuresTree, hypothesisSet);
-               if(flag)
+               boolean flagBetweenParticipant = false;
+               boolean flagRepeatedMeasures = false;
+               if(studyBetweenParticipantList!=null){
+                   checkBetweenParticipantFactorEntry(studyBetweenParticipantList, hypothesisSet);
+               }
+               if(studyRepeatedMeasuresTree!=null){
+                   checkRepeatedMeasuresNodeEntry(studyRepeatedMeasuresTree, hypothesisSet);
+               }
+               if(flagBetweenParticipant && flagRepeatedMeasures)
                {
                    //hypothesisSet = setBetweenParticipantFactorEntry(studyBetweenParticipantList, hypothesisSet);
                    hypothesisSet = setEntry(studyBetweenParticipantList, studyRepeatedMeasuresTree, hypothesisSet);
+               }
+               else if(flagBetweenParticipant)
+               {
+                   //hypothesisSet = setBetweenParticipantFactorEntry(studyBetweenParticipantList, hypothesisSet);
+                   hypothesisSet = setEntry(studyBetweenParticipantList, null, hypothesisSet);
+               }
+               else if(flagRepeatedMeasures)
+               {
+                   //hypothesisSet = setBetweenParticipantFactorEntry(studyBetweenParticipantList, hypothesisSet);
+                   hypothesisSet = setEntry(null, studyRepeatedMeasuresTree, hypothesisSet);
                }
             }
             /* ----------------------------------------------------

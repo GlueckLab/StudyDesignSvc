@@ -39,6 +39,7 @@ import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+// TODO: Auto-generated Javadoc
 /**
  * Server Resource class for handling requests for the RepeatedMeasuresNode object. 
  * See the StudyDesignApplication class for URI mappings
@@ -48,16 +49,22 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 public class RepeatedMeasuresServerResource  extends ServerResource
 implements RepeatedMeasuresResource 
 {
+	
+	/** The repeated measures manager. */
 	RepeatedMeasuresManager repeatedMeasuresManager = null; 
+	
+	/** The study design manager. */
 	StudyDesignManager studyDesignManager = null;
+	
+	/** The uuid flag. */
 	boolean uuidFlag;
 	
 	/**
-     * Retrieve a List<RepeatedMeasuresNode> object for specified UUID.
-     * 
-     * @param byte[]
-     * @return List<RepeatedMeasuresNode>
-     */
+	 * Retrieve a List<RepeatedMeasuresNode> object for specified UUID.
+	 *
+	 * @param uuid the uuid
+	 * @return List<RepeatedMeasuresNode>
+	 */
 	@Get("json")
 	public List<RepeatedMeasuresNode> retrieve(byte[] uuid) 
 	{
@@ -110,11 +117,12 @@ implements RepeatedMeasuresResource
 
 
 	/**
-     * Create a List<RepeatedMeasuresNode> object for specified UUID.
-     * 
-     * @param byte[]
-     * @return List<RepeatedMeasuresNode>
-     */
+	 * Create a List<RepeatedMeasuresNode> object for specified UUID.
+	 *
+	 * @param uuid the uuid
+	 * @param repeatedMeasuresTree the repeated measures tree
+	 * @return List<RepeatedMeasuresNode>
+	 */
 	@Post("json")
 	public List<RepeatedMeasuresNode> create(byte[] uuid,List<RepeatedMeasuresNode> repeatedMeasuresTree) 
 	{		
@@ -183,11 +191,12 @@ implements RepeatedMeasuresResource
 	}
 
 	/**
-     * Update a List<RepeatedMeasuresNode> object for specified UUID.
-     * 
-     * @param byte[]
-     * @return List<RepeatedMeasuresNode>
-     */
+	 * Update a List<RepeatedMeasuresNode> object for specified UUID.
+	 *
+	 * @param uuid the uuid
+	 * @param repeatedMeasuresTree the repeated measures tree
+	 * @return List<RepeatedMeasuresNode>
+	 */
 	@Put("json")
 	public List<RepeatedMeasuresNode> update(byte[] uuid,List<RepeatedMeasuresNode> repeatedMeasuresTree) 
 	{				
@@ -195,11 +204,11 @@ implements RepeatedMeasuresResource
 	}	
 
 	/**
-     * Delete a List<RepeatedMeasuresNode> object for specified UUID.
-     * 
-     * @param byte[]
-     * @return List<RepeatedMeasuresNode>
-     */
+	 * Delete a List<RepeatedMeasuresNode> object for specified UUID.
+	 *
+	 * @param uuid the uuid
+	 * @return List<RepeatedMeasuresNode>
+	 */
 	@Delete("json")
 	public List<RepeatedMeasuresNode> remove(byte[] uuid) 
 	{
@@ -262,11 +271,11 @@ implements RepeatedMeasuresResource
 	}
 
 	/**
-     * Delete a List<RepeatedMeasuresNode> object for specified Study Design.
-     * 
-     * @param StudyDesign
-     * @return List<RepeatedMeasuresNode>
-     */
+	 * Delete a List<RepeatedMeasuresNode> object for specified Study Design.
+	 *
+	 * @param studyDesign the study design
+	 * @return List<RepeatedMeasuresNode>
+	 */
 	@Override
 	@Delete("json")
 	public List<RepeatedMeasuresNode> removeFrom(StudyDesign studyDesign) 

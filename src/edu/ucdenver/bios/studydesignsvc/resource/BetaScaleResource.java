@@ -1,10 +1,11 @@
 /*
- * Study Design Service for the GLIMMPSE Software System.  
- * This service stores study design definitions for users of the GLIMMSE interface.
- * Service contain all information related to a power or sample size calculation.  
- * The Study Design Service simplifies communication between different screens in the user interface.
- * 
- * Copyright (C) 2010 Regents of the University of Colorado.  
+ * Study Design Service for the GLIMMPSE Software System.
+ * This service stores study design definitions for users
+ * of the GLIMMSE interface. Service contain all information
+ * related to a power or sample size calculation.
+ * The Study Design Service simplifies communication between
+ * different screens in the user interface.
+ * Copyright (C) 2010 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,11 +19,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
 import java.util.List;
 
 import org.restlet.resource.Delete;
@@ -33,58 +34,68 @@ import org.restlet.resource.Put;
 import edu.ucdenver.bios.webservice.common.domain.BetaScale;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
+// to-do: Auto-generated Javadoc
 /**
- * Generic Resource class for handling requests for the 
- * domain list object of a Beta Scale. 
- * See the StudyDesignApplication class for URI mappings
- * 
+ * Generic Resource class for handling requests for the domain list object of a
+ * Beta Scale. See the StudyDesignApplication class for URI mappings
+ *
  * @author Uttara Sakhadeo
  */
-public interface BetaScaleResource 
-{
-	/**
-	 * Retrieve the object for the specified UUID.
-	 * Returns "not found" if no matching Object is available.
-	 * @return Object for specified UUID
-	 */
-	 @Get
-    public List<BetaScale> retrieve(byte[] uuid);
-    
+public interface BetaScaleResource {
     /**
-	 * Store List<BetaScale> object to the database.
-	 * 
-	 * @param Object
-	 * @return updated Object.
-	 */	 
+     * Retrieve the object for the specified UUID. Returns "not found" if no
+     * matching Object is available.
+     *
+     * @param uuid
+     *            the uuid
+     * @return Object for specified UUID
+     */
+    @Get
+    List<BetaScale> retrieve(byte[] uuid);
+
+    /**
+     * Store List<BetaScale> object to the database.
+     *
+     * @param uuid
+     *            the uuid
+     * @param list
+     *            the list
+     * @return updated Object.
+     */
     @Post
-    public List<BetaScale> create(byte[] uuid,List<BetaScale> list);
-           
+    List<BetaScale> create(byte[] uuid, List<BetaScale> list);
+
     /**
-     * Update the specified object. If there is no
-     * object set for specified UUID, then this object  
-     * will be treated as new and a UUID assigned.
-     * 
-     * @param Object
+     * Update the specified object. If there is no object set for specified UUID
+     * , then this object will be treated as new and a UUID assigned.
+     *
+     * @param uuid
+     *            the uuid
+     * @param list
+     *            the list
      * @return List<BetaScale>
-     */    
+     */
     @Put
-    public List<BetaScale> update(byte[] uuid,List<BetaScale> list);
-    
-    /** 
-     * Delete the Beta Scale object with the specified UUID
-     * 
-     * @param uuid of the object to remove
+    List<BetaScale> update(byte[] uuid, List<BetaScale> list);
+
+    /**
+     * Delete the Beta Scale object with the specified UUID.
+     *
+     * @param uuid
+     *            of the object to remove
      * @return the deleted object
      */
     @Delete
-    public List<BetaScale> remove(byte[] uuid);
-    
-    /** 
-     * Delete the List<BetaScale> object with the specified UUID
-     * 
-     * @param studyDesign from which object is to be removed
-     * @return the deleted object
+    List<BetaScale> remove(byte[] uuid);
+
+    /**
+     * Delete the List<BetaScale> object with the specified UUID.
+     *
+     * @param studyDesign
+     *            from which object is to be removed
+     * @return List<BetaScale>
+     *            the deleted object
      */
     @Delete
-    public List<BetaScale> removeFrom(StudyDesign studyDesign);
+    List<BetaScale> removeFrom(StudyDesign studyDesign);
 }

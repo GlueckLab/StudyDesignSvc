@@ -1,24 +1,26 @@
 /*
- * Study Design Service for the GLIMMPSE Software System.  
- * This service stores study design definitions for users of the GLIMMSE interface.
- * Service contain all information related to a power or sample size calculation.  
- * The Study Design Service simplifies communication between different screens in the user interface.
- * 
- * Copyright (C) 2010 Regents of the University of Colorado.  
+ * Study Design Service for the GLIMMPSE Software System.
+ * This service stores study design definitions for users
+ * of the GLIMMSE interface. Service contain all information
+ * related to a power or sample size calculation.
+ * The Study Design Service simplifies communication between
+ * different screens in the user interface.
+ * Copyright (C) 2010 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * of the License ,  or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful ,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * along with this program; if not ,  write to the Free Software
+ * Foundation ,  Inc. 51 Franklin Street ,  Fifth Floor ,  Boston ,  MA
+ * 02110-1301 ,  USA.
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
@@ -33,57 +35,66 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.TypeIError;
 
 /**
- * Generic Resource class for handling requests for the 
- * domain objects of a Type I Error object. 
- * See the StudyDesignApplication class for URI mappings
- * 
+ * Generic Resource class for handling requests for the domain objects of a Type
+ * I Error object. See the StudyDesignApplication class for URI mappings
+ *
  * @author Uttara Sakhadeo
  */
-public interface TypeIErrorResource 
-{
-	/**
-	 * Retrieve the object for the specified UUID.
-	 * Returns "not found" if no matching Object is available.
-	 * @return Object for specified UUID
-	 */
-	 @Get
-    public List<TypeIError> retrieve(byte[] uuid);
-    
+interface TypeIErrorResource {
+
     /**
-	 * Store List<TypeIError> object to the database.
-	 * 
-	 * @param Object
-	 * @return updated Object.
-	 */	 
+     * Retrieve the object for the specified UUID. Returns "not found" if no
+     * matching Object is available.
+     *
+     * @param uuid
+     *            the uuid
+     * @return Object for specified UUID
+     */
+    @Get
+    List<TypeIError> retrieve(byte[] uuid);
+
+    /**
+     * Store List<TypeIError> object to the database.
+     *
+     * @param uuid
+     *            the uuid
+     * @param typeIErrorList
+     *            the type i error list
+     * @return updated Object.
+     */
     @Post
-    public List<TypeIError> create(byte[] uuid,List<TypeIError> typeIErrorList);
-           
+    List<TypeIError> create(byte[] uuid ,  List<TypeIError> typeIErrorList);
+
     /**
-     * Update the specified object. If there is no
-     * object set for specified UUID, then this object  
-     * will be treated as new and a UUID assigned.
-     * 
-     * @param Object
+     * Update the specified object. If there is no object set for specified
+     * UUID ,  then this object will be treated as new and a UUID assigned.
+     *
+     * @param uuid
+     *            the uuid
+     * @param typeIErrorList
+     *            the type i error list
      * @return List<TypeIError>
-     */    
+     */
     @Put
-    public List<TypeIError> update(byte[] uuid,List<TypeIError> typeIErrorList);
-    
-    /** 
-     * Delete the List<TypeIError> object with the specified UUID
-     * 
-     * @param uuid of the object to remove
+    List<TypeIError> update(byte[] uuid ,  List<TypeIError> typeIErrorList);
+
+    /**
+     * Delete the List<TypeIError> object with the specified UUID.
+     *
+     * @param uuid
+     *            of the object to remove
      * @return the deleted object
      */
     @Delete
-    public List<TypeIError> remove(byte[] uuid);
-    
-    /** 
-     * Delete the List<TypeIError> object with the specified UUID
-     * 
-     * @param studyDesign from which object is to be removed
+    List<TypeIError> remove(byte[] uuid);
+
+    /**
+     * Delete the List<TypeIError> object with the specified UUID.
+     *
+     * @param studyDesign
+     *            from which object is to be removed
      * @return the deleted object
      */
     @Delete
-    public List<TypeIError> removeFrom(StudyDesign studyDesign);
+    List<TypeIError> removeFrom(StudyDesign studyDesign);
 }

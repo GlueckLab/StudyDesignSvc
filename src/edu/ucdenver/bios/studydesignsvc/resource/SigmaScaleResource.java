@@ -1,10 +1,11 @@
 /*
- * Study Design Service for the GLIMMPSE Software System.  
- * This service stores study design definitions for users of the GLIMMSE interface.
- * Service contain all information related to a power or sample size calculation.  
- * The Study Design Service simplifies communication between different screens in the user interface.
- * 
- * Copyright (C) 2010 Regents of the University of Colorado.  
+ * Study Design Service for the GLIMMPSE Software System.
+ * This service stores study design definitions for users
+ * of the GLIMMSE interface. Service contain all information
+ * related to a power or sample size calculation.
+ * The Study Design Service simplifies communication between
+ * different screens in the user interface.
+ * Copyright (C) 2010 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,7 +19,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
@@ -32,58 +34,68 @@ import org.restlet.resource.Put;
 import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
+// to-do: Auto-generated Javadoc
 /**
- * Generic Resource class for handling requests for the 
- * domain List object of a Sigma Scale. 
- * See the StudyDesignApplication class for URI mappings
- * 
+ * Generic Resource class for handling requests for the domain List object of a
+ * Sigma Scale. See the StudyDesignApplication class for URI mappings
+ *
  * @author Uttara Sakhadeo
  */
-public interface SigmaScaleResource 
-{
-	/**
-	 * Retrieve the object for the specified UUID.
-	 * Returns "not found" if no matching Object is available.
-	 * @return Object for specified UUID
-	 */
-	 @Get
-    public List<SigmaScale> retrieve(byte[] uuid);
-    
+public interface SigmaScaleResource {
+
     /**
-	 * Store List<SigmaScale> object to the database.
-	 * 
-	 * @param Object
-	 * @return updated Object.
-	 */	 
+     * Retrieve the object for the specified UUID. Returns "not found" if no
+     * matching Object is available.
+     *
+     * @param uuid
+     *            the uuid
+     * @return Object for specified UUID
+     */
+    @Get
+    List<SigmaScale> retrieve(byte[] uuid);
+
+    /**
+     * Store List<SigmaScale> object to the database.
+     *
+     * @param uuid
+     *            the uuid
+     * @param sigmaScaleList
+     *            the sigma scale list
+     * @return updated Object.
+     */
     @Post
-    public List<SigmaScale> create(byte[] uuid,List<SigmaScale> sigmaScaleList);
-           
+    List<SigmaScale> create(byte[] uuid, List<SigmaScale> sigmaScaleList);
+
     /**
-     * Update the specified object. If there is no
-     * object set for specified UUID, then this object  
-     * will be treated as new and a UUID assigned.
-     * 
-     * @param Object
+     * Update the specified object. If there is no object set for specified
+     * UUID, then this object will be treated as new and a UUID assigned.
+     *
+     * @param uuid
+     *            the uuid
+     * @param sigmaScaleList
+     *            the sigma scale list
      * @return List<SigmaScale>
-     */    
+     */
     @Put
-    public List<SigmaScale> update(byte[] uuid,List<SigmaScale> sigmaScaleList);
-    
-    /** 
-     * Delete the List<SigmaScale> object with the specified UUID
-     * 
-     * @param uuid of the object to remove
+    List<SigmaScale> update(byte[] uuid, List<SigmaScale> sigmaScaleList);
+
+    /**
+     * Delete the List<SigmaScale> object with the specified UUID.
+     *
+     * @param uuid
+     *            of the object to remove
      * @return the deleted object
      */
     @Delete
-    public List<SigmaScale> remove(byte[] uuid);
-    
-    /** 
-     * Delete the List<SigmaScale> object with the specified UUID
-     * 
-     * @param studyDesign from which object is to be removed
+    List<SigmaScale> remove(byte[] uuid);
+
+    /**
+     * Delete the List<SigmaScale> object with the specified UUID.
+     *
+     * @param studyDesign
+     *            from which object is to be removed
      * @return the deleted object
      */
     @Delete
-    public List<SigmaScale> removeFrom(StudyDesign studyDesign);
+    List<SigmaScale> removeFrom(StudyDesign studyDesign);
 }
