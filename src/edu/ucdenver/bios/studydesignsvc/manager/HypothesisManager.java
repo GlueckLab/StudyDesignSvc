@@ -31,6 +31,7 @@ import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table Hypothesis object.
@@ -40,6 +41,11 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 public class HypothesisManager extends BaseManager
 {
 
+    /**
+     * Instantiates a new hypothesis manager.
+     *
+     * @throws BaseManagerException the base manager exception
+     */
     public HypothesisManager() throws BaseManagerException 
     {
         super();
@@ -47,8 +53,9 @@ public class HypothesisManager extends BaseManager
 
     /**
      * Delete a Hypothesis object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
+     *
+     * @param uuidBytes the uuid bytes
+     * @param hypothesisSet the hypothesis set
      * @return Set<Hypothesis>
      */
     public Set<Hypothesis> delete(byte[] uuidBytes,Set<Hypothesis> hypothesisSet)

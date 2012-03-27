@@ -32,6 +32,7 @@ import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table Sigma Scale object.
@@ -40,17 +41,24 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class SigmaScaleManager extends BaseManager
 {
+	
+	/**
+	 * Instantiates a new sigma scale manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public SigmaScaleManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Delete a SigmaScale object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return ArrayList<SigmaScale>
-     */
+	 * Delete a SigmaScale object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param sigmaScaleList the sigma scale list
+	 * @return ArrayList<SigmaScale>
+	 */
 	public List<SigmaScale> delete(byte[] uuidBytes,List<SigmaScale> sigmaScaleList)
 	{
 		if(!transactionStarted) 

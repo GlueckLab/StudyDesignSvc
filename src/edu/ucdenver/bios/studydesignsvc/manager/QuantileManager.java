@@ -32,6 +32,7 @@ import edu.ucdenver.bios.webservice.common.domain.Quantile;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table Quantile object.
@@ -40,17 +41,24 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class QuantileManager extends BaseManager
 {
+	
+	/**
+	 * Instantiates a new quantile manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public QuantileManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Delete a Quantile object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return ArrayList<Quantile>
-     */
+	 * Delete a Quantile object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param quantileList the quantile list
+	 * @return ArrayList<Quantile>
+	 */
 	public List<Quantile> delete(byte[] uuidBytes,List<Quantile> quantileList)
 	{
 		if(!transactionStarted) 

@@ -34,6 +34,7 @@ import edu.ucdenver.bios.webservice.common.domain.NominalPower;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table NominalPower object.
@@ -42,17 +43,24 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class NominalPowerManager extends BaseManager
 {
+	
+	/**
+	 * Instantiates a new nominal power manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public NominalPowerManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Check existence of a Nominal Power object by the specified UUID
-     * 
-     * @param studyUuid : byte[]
-     * @return boolean
-     */
+	 * Check existence of a Nominal Power object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param nominalPowerList the nominal power list
+	 * @return boolean
+	 */
     /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");

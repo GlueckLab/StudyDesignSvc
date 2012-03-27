@@ -32,6 +32,7 @@ import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table RepeatedMeasuresNode object.
@@ -40,17 +41,24 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class RepeatedMeasuresManager extends BaseManager
 {
+	
+	/**
+	 * Instantiates a new repeated measures manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public RepeatedMeasuresManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Delete a RepeatedMeasuresNode object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return ArrayList<RepeatedMeasuresNode>
-     */
+	 * Delete a RepeatedMeasuresNode object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param repeatedMeasuresList the repeated measures list
+	 * @return ArrayList<RepeatedMeasuresNode>
+	 */
 	public List<RepeatedMeasuresNode> delete(byte[] uuidBytes,List<RepeatedMeasuresNode> repeatedMeasuresList)
 	{
 		if(!transactionStarted) 

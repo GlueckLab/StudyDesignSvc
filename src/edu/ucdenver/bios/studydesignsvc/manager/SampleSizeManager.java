@@ -3,8 +3,8 @@
  * This service stores study design definitions for users of the GLIMMSE interface.
  * Service contain all information related to a power or sample size calculation.  
  * The Study Design Service simplifies communication between different screens in the user interface.
- * 
- * Copyright (C) 2010 Regents of the University of Colorado.  
+ *
+ * Copyright (C) 2010 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,70 +32,83 @@ import edu.ucdenver.bios.webservice.common.domain.SampleSize;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality 
+ * Manager class which provides CRUD functionality
  * for MySQL table SampleSize object.
- * 
+ *
  * @author Uttara Sakhadeo
  */
-public class SampleSizeManager extends BaseManager
-{
-    public SampleSizeManager() throws BaseManagerException
-    {
+public class SampleSizeManager extends BaseManager {
+
+    /**
+     * Instantiates a new sample size manager.
+     *
+     * @throws BaseManagerException
+     *             the base manager exception
+     */
+    public SampleSizeManager() throws BaseManagerException {
         super();
     }
-    
+
     /**
      * Delete a SampleSize object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
+     *
+     * @param uuidBytes
+     *            the uuid bytes
+     * @param sampleSizeList
+     *            the sample size list
      * @return ArrayList<SampleSize>
      */
-    public List<SampleSize> delete(byte[] uuidBytes,List<SampleSize> sampleSizeList)
-    {
-        if(!transactionStarted) 
-            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-        try
-        {
-            for(SampleSize sampleSize : sampleSizeList)
-                session.delete(sampleSize);
+    public List<SampleSize> delete(final byte[] uuidBytes,
+            final List<SampleSize> sampleSizeList) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
         }
-        catch(Exception e)
-        {
+        try {
+            for (SampleSize sampleSize : sampleSizeList) {
+                session.delete(sampleSize);
+            }
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete SampleSize object for UUID '" + uuidBytes + "': " + e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete SampleSize object for UUID '" + uuidBytes
+                            + "': " + e.getMessage());
         }
         return sampleSizeList;
     }
-    
+
     /**
      * Retrieve a SampleSize object by the specified UUID.
-     * 
-     * @param sampleSizeList : ArrayList<SampleSize>
-     * @param isCreation : boolean
+     *
+     * @param sampleSizeList
+     *            : ArrayList<SampleSize>
+     * @param isCreation
+     *            : boolean
      * @return sampleSizeList : ArrayList<SampleSize>
      */
-    public ArrayList<SampleSize> saveOrUpdate(ArrayList<SampleSize> sampleSizeList,boolean isCreation)
-    {
-        if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");     
-        try
-        {           
-            if(isCreation==true)
-            {
-                for(SampleSize sampleSize : sampleSizeList)               
-                    session.save(sampleSize);             
-            }
-            else
-            {
-                for(SampleSize sampleSize : sampleSizeList)
-                    session.update(sampleSize);
-            }
+    public ArrayList<SampleSize> saveOrUpdate(
+            ArrayList<SampleSize> sampleSizeList, boolean isCreation) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
         }
-        catch(Exception e)
-        {
-            sampleSizeList=null;
+        try {
+            if (isCreation) {
+                for (SampleSize sampleSize : sampleSizeList) {
+                    session.save(sampleSize);
+                }
+            } else {
+                for (SampleSize sampleSize : sampleSizeList) {
+                    session.update(sampleSize);
+                }
+            }
+        } catch (Exception e) {
+            sampleSizeList = null;
             System.out.println(e.getMessage());
-            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save SampleSize object : " + e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to save SampleSize object : " + e.getMessage());
         }
         return sampleSizeList;
     }

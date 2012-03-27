@@ -35,6 +35,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table PowerCurveDescription.
@@ -43,17 +44,24 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class PowerCurveManager extends BaseManager 
 {
+	
+	/**
+	 * Instantiates a new power curve manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public PowerCurveManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Check existance of a power curve description object by the specified UUID
-     * 
-     * @param studyUuid : byte[]
-     * @return boolean
-     */
+	 * Check existance of a power curve description object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param powerCurve the power curve
+	 * @return boolean
+	 */
     /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
@@ -151,11 +159,12 @@ public class PowerCurveManager extends BaseManager
 	}
 	
 	/**
-     * Retrieve a power curve description by the specified UUID.
-     * 
-     * @param studyUUID:UUID
-     * @return Power Curve Description object
-     */
+	 * Retrieve a power curve description by the specified UUID.
+	 *
+	 * @param powerCurveDescription the power curve description
+	 * @param isCreation the is creation
+	 * @return Power Curve Description object
+	 */
 	public PowerCurveDescription saveOrUpdate(PowerCurveDescription powerCurveDescription,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		

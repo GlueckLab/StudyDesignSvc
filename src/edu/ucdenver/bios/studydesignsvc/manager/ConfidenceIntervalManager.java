@@ -32,6 +32,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table ConfidenceIntervalDescription.
@@ -40,17 +41,24 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class ConfidenceIntervalManager extends BaseManager
 {
+	
+	/**
+	 * Instantiates a new confidence interval manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public ConfidenceIntervalManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Check existance of a confidence interval description object by the specified UUID
-     * 
-     * @param studyUuid
-     * @return boolean
-     */
+	 * Check existance of a confidence interval description object by the specified UUID.
+	 *
+	 * @param uuid the uuid
+	 * @param confidenceInterval the confidence interval
+	 * @return boolean
+	 */
     /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
@@ -183,11 +191,12 @@ public class ConfidenceIntervalManager extends BaseManager
 	}*/
 	
 	/**
-     * Retrieve a Confidence Interval Description by the specified UUID.
-     * 
-     * @param studyUUID:UUID
-     * @return study design object
-     */
+	 * Retrieve a Confidence Interval Description by the specified UUID.
+	 *
+	 * @param confidenceInterval the confidence interval
+	 * @param isCreation the is creation
+	 * @return study design object
+	 */
 	public ConfidenceIntervalDescription saveOrUpdate(ConfidenceIntervalDescription confidenceInterval,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		

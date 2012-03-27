@@ -30,6 +30,7 @@ import org.restlet.resource.ResourceException;
 import edu.ucdenver.bios.webservice.common.domain.Covariance;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table Covariance object.
@@ -39,17 +40,23 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 public class CovarianceManager extends BaseManager
 {
 
+	/**
+	 * Instantiates a new covariance manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public CovarianceManager() throws BaseManagerException 
 	{
 		super();
 	}
 
 	/**
-     * Delete a Covariance object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return Set<Covariance>
-     */
+	 * Delete a Covariance object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param covarianceSet the covariance set
+	 * @return Set<Covariance>
+	 */
 	public Set<Covariance> delete(byte[] uuidBytes,Set<Covariance> covarianceSet)
 	{
 		if(!transactionStarted) 

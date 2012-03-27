@@ -36,6 +36,7 @@ import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table StatisticalTest object.
@@ -44,17 +45,24 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class StatisticalTestManager extends BaseManager
 {
+	
+	/**
+	 * Instantiates a new statistical test manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public StatisticalTestManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Check existence of a StatisticalTest object by the specified UUID
-     * 
-     * @param studyUuid : byte[]
-     * @return boolean
-     */
+	 * Check existence of a StatisticalTest object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param testList the test list
+	 * @return boolean
+	 */
     /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");

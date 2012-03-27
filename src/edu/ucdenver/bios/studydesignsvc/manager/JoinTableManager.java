@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
@@ -5,21 +8,28 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JoinTableManager.
+ */
 public class JoinTableManager extends BaseManager
 {
+	
 	/**
-	 * Create a database manager class for JoinTableManager
-	 * 
-	 * @throws StudyDesignException
+	 * Create a database manager class for JoinTableManager.
+	 *
+	 * @throws BaseManagerException the base manager exception
 	 */
 	public JoinTableManager() throws BaseManagerException {super();}
 	
 	/**
-     * Create or update an object in the database
-     * 
-     * @param studyUUID:UUID
-     * @return study design object
-     */
+	 * Create or update an object in the database.
+	 *
+	 * @param studyDesign the study design
+	 * @param isCreation the is creation
+	 * @return study design object
+	 * @throws StudyDesignException the study design exception
+	 */
 	public StudyDesign saveOrUpdate(StudyDesign studyDesign, boolean isCreation)
 	throws StudyDesignException
 	{

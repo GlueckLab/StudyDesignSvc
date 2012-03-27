@@ -32,6 +32,7 @@ import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table Power Method object.
@@ -40,17 +41,24 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class PowerMethodManager extends BaseManager
 {
+	
+	/**
+	 * Instantiates a new power method manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public PowerMethodManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Delete a PowerMethod object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return ArrayList<PowerMethod>
-     */
+	 * Delete a PowerMethod object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param powerMethodList the power method list
+	 * @return ArrayList<PowerMethod>
+	 */
 	public List<PowerMethod> delete(byte[] uuidBytes,List<PowerMethod> powerMethodList)
 	{
 		if(!transactionStarted) 

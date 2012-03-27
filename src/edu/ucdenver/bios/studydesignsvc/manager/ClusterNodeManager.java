@@ -32,6 +32,7 @@ import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table ClusterNode object.
@@ -41,14 +42,20 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 public class ClusterNodeManager extends BaseManager 
 {
 
+	/**
+	 * Instantiates a new cluster node manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public ClusterNodeManager() throws BaseManagerException {super();}
 	
 	/**
-     * Check existance of a Cluster Node object by the specified UUID
-     * 
-     * @param studyUuid
-     * @return boolean
-     */
+	 * Check existance of a Cluster Node object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param clusteringTree the clustering tree
+	 * @return boolean
+	 */
     /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
@@ -118,11 +125,12 @@ public class ClusterNodeManager extends BaseManager
 	}
 	
 	/**
-     * Retrieve a Cluster Node by the specified UUID.
-     * 
-     * @param studyUUID:UUID
-     * @return study design object
-     */
+	 * Retrieve a Cluster Node by the specified UUID.
+	 *
+	 * @param clusterNodeList the cluster node list
+	 * @param isCreation the is creation
+	 * @return study design object
+	 */
 	public List<ClusterNode> saveOrUpdate(List<ClusterNode> clusterNodeList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		

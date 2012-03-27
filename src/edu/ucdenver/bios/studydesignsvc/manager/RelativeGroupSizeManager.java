@@ -32,6 +32,7 @@ import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table RelativeGroupSize object.
@@ -40,17 +41,24 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class RelativeGroupSizeManager extends BaseManager
 {
+	
+	/**
+	 * Instantiates a new relative group size manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public RelativeGroupSizeManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Delete a RelativeGroupSize object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return ArrayList<RelativeGroupSize>
-     */
+	 * Delete a RelativeGroupSize object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param relativeGroupSizeList the relative group size list
+	 * @return ArrayList<RelativeGroupSize>
+	 */
 	public List<RelativeGroupSize> delete(byte[] uuidBytes,List<RelativeGroupSize> relativeGroupSizeList)
 	{
 		if(!transactionStarted) 

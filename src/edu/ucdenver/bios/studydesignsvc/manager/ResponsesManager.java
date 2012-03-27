@@ -32,6 +32,7 @@ import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table Responses object.
@@ -40,17 +41,24 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class ResponsesManager extends BaseManager 
 {
+	
+	/**
+	 * Instantiates a new responses manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public ResponsesManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Check existence of a ResponseNode object by the specified UUID
-     * 
-     * @param studyUuid : byte[]
-     * @return boolean
-     */
+	 * Check existence of a ResponseNode object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param responseList the response list
+	 * @return boolean
+	 */
     /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");

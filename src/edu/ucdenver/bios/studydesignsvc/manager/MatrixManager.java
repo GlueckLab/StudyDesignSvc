@@ -31,6 +31,7 @@ import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality 
  * for MySQL table NamedMatrix object.
@@ -39,17 +40,24 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class MatrixManager extends BaseManager
 {
+	
+	/**
+	 * Instantiates a new matrix manager.
+	 *
+	 * @throws BaseManagerException the base manager exception
+	 */
 	public MatrixManager() throws BaseManagerException
 	{
 		super();
 	}
 	
 	/**
-     * Delete a Set<NamedMatrix> object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return Set<NamedMatrix>
-     */
+	 * Delete a Set<NamedMatrix> object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param matrixSet the matrix set
+	 * @return Set<NamedMatrix>
+	 */
 	public Set<NamedMatrix> delete(byte[] uuidBytes,Set<NamedMatrix> matrixSet)
 	{
 		if(!transactionStarted) 
@@ -68,11 +76,12 @@ public class MatrixManager extends BaseManager
 	}
 	
 	/**
-     * Delete a NamedMatrix object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return NamedMatrix
-     */
+	 * Delete a NamedMatrix object by the specified UUID.
+	 *
+	 * @param uuidBytes the uuid bytes
+	 * @param matrix the matrix
+	 * @return NamedMatrix
+	 */
 	public NamedMatrix delete(byte[] uuidBytes,NamedMatrix matrix)
 	{
 		if(!transactionStarted) 
