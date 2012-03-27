@@ -44,6 +44,7 @@
 		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/RepeatedMeasures.hbm.xml"/>		
 		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Covariance.hbm.xml"/>
 		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Matrix.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Hypothesis.hbm.xml"/>
 				
 		<!-- <mapping resource="com/jdpa/mlg/datafeed/BetweenSubjectEffect.hbm.xml"/> -->
 			
