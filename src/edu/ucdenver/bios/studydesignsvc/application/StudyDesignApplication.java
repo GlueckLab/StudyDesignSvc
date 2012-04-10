@@ -44,9 +44,13 @@ import edu.ucdenver.bios.studydesignsvc.resource.ResponsesServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.SampleSizeServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.SigmaScaleServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StatisticalTestServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignRetrieveServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignUploadRetrieveResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignUploadRetrieveServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.TypeIErrorServerResource;
 
+// TODO: Auto-generated Javadoc
 /**
  * Main Restlet application class for the Study Design Service. Defines URI
  * mappings to the appropriate requests
@@ -54,18 +58,25 @@ import edu.ucdenver.bios.studydesignsvc.resource.TypeIErrorServerResource;
  * @author Uttara Sakhadeo
  */
 public class StudyDesignApplication extends Application {
+	
 	/**
+	 * Instantiates a new study design application.
+	 *
+	 * @param parentContext the parent context
+	 * @throws Exception the exception
 	 * @method Constructor
 	 * @description
-	 * @param parentContext
 	 */
-	public StudyDesignApplication(Context parentContext) throws Exception {
+	public StudyDesignApplication(final Context parentContext) throws Exception {
 		super(parentContext);
 
 		StudyDesignLogger.getInstance().info("Study Design service starting.");
 	}
 
 	/**
+	 * Creates the inbound root.
+	 *
+	 * @return the restlet
 	 * @method createRoot()
 	 * @description Define URI mappings
 	 */
@@ -79,17 +90,20 @@ public class StudyDesignApplication extends Application {
 		/* Defines only one default route, self-identifies server */
 		router.attachDefault(DefaultResource.class);
 		/* Study Design Resource */
-		router.attach("/study/", StudyDesignServerResource.class);
+		router.attach("/study", StudyDesignServerResource.class);
+		/* Study Design Retrieve Resource */
+        router.attach("/studyRetrieve", StudyDesignRetrieveServerResource.class);
+		/* Study Design Upload Retrieve Resource */
+        router.attach("/studyUploadRetrieve", StudyDesignUploadRetrieveServerResource.class);
 		/* ConfidenceInterval Resource */
-		router.attach("/"+StudyDesignConstants.TAG_CONFIDENCE_INTERVAL_DESCRIPTION,
+		router.attach("/confidenceIntervalDescription",
 				ConfidenceIntervalServerResource.class);
 		/* Power Curve Description */
 		router.attach("/"+StudyDesignConstants.TAG_POWER_CURVE_DESCRIPTION,
 				ConfidenceIntervalServerResource.class);
 		
 		/* Beta Scale List Resource */
-		router.attach("/"+StudyDesignConstants.TAG_BETA_SCALE_LIST,
-				BetaScaleServerResource.class);
+		router.attach("/betaScaleList",BetaScaleServerResource.class);
 		/* Alpha List Resource */
         router.attach("/"+StudyDesignConstants.TAG_ALPHA_LIST,
                 TypeIErrorServerResource.class);
