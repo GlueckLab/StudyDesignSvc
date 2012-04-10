@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.RepeatedMeasuresServerResource;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
+import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNodeList;
 import edu.ucdenver.bios.webservice.common.domain.Spacing;
 import edu.ucdenver.bios.webservice.common.enums.RepeatedMeasuresDimensionType;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -73,14 +74,14 @@ public class TestRepeatedMeasures extends TestCase
 	@Test
 	public void testCreate()
 	{			
-		List<RepeatedMeasuresNode> repeatedMeasuresTree = new ArrayList<RepeatedMeasuresNode>();		
+		RepeatedMeasuresNodeList repeatedMeasuresTree = new RepeatedMeasuresNodeList();		
 		RepeatedMeasuresNode repeatedMeasuresNode = new RepeatedMeasuresNode();		
 			repeatedMeasuresNode.setDimension("Week");
 			repeatedMeasuresNode.setNode(0);
 			repeatedMeasuresNode.setParent(null);	
 			repeatedMeasuresNode.setNumberOfMeasurements(2);
 			repeatedMeasuresNode.setRepeatedMeasuresDimensionType(RepeatedMeasuresDimensionType.NUMERICAL);
-				List<Spacing> spacingList = new ArrayList<Spacing>();
+				ArrayList<Spacing> spacingList = new ArrayList<Spacing>();
 					Spacing spacing = new Spacing();
 					//spacing.setRepeatedMeasuresNode(repeatedMeasuresNode);
 					spacing.setValue(10);
@@ -141,14 +142,14 @@ public class TestRepeatedMeasures extends TestCase
 	@Test
 	private void testUpdate()
 	{
-		List<RepeatedMeasuresNode> repeatedMeasuresTree = new ArrayList<RepeatedMeasuresNode>();		
+	    RepeatedMeasuresNodeList repeatedMeasuresTree = new RepeatedMeasuresNodeList();		
 		RepeatedMeasuresNode repeatedMeasuresNode = new RepeatedMeasuresNode();		
 			repeatedMeasuresNode.setDimension("Week");
 			repeatedMeasuresNode.setNode(0);
 			repeatedMeasuresNode.setParent(null);	
 			repeatedMeasuresNode.setNumberOfMeasurements(2);
 			repeatedMeasuresNode.setRepeatedMeasuresDimensionType(RepeatedMeasuresDimensionType.NUMERICAL);
-				List<Spacing> spacingList = new ArrayList<Spacing>();
+			ArrayList<Spacing> spacingList = new ArrayList<Spacing>();
 					Spacing spacing = new Spacing();
 					//spacing.setRepeatedMeasuresNode(repeatedMeasuresNode);
 					spacing.setValue(10);

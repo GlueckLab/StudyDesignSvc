@@ -86,7 +86,7 @@ public class TestMatrix extends TestCase
 				double[][] data = new double[rows][columns];
 				data[0][0]=2.5;
 				data[0][1]=5.5;
-			matrix.setData(data);	
+			matrix.setDataFromArray(data);	
 		matrixSet.add(matrix);			
 		rows=1;
 		matrix = new NamedMatrix(BETA_MATRIX_NAME);		
@@ -95,7 +95,7 @@ public class TestMatrix extends TestCase
 				data = new double[rows][columns];
 				data[0][0]=10;
 				data[0][1]=50;
-			matrix.setData(data);	
+			matrix.setDataFromArray(data);	
 		matrixSet.add(matrix);	
 				
 		try
@@ -136,7 +136,7 @@ public class TestMatrix extends TestCase
 				double[][] data = new double[rows][columns];
 				data[0][0]=5.0;
 				data[0][1]=5.0;
-			matrix.setData(data);	
+			matrix.setDataFromArray(data);	
 				
 		try
 		{
@@ -247,7 +247,7 @@ public class TestMatrix extends TestCase
 					data[j][i]=1.1;
 				}
 			}	
-		matrix.setData(data);
+		matrix.setDataFromArray(data);
 		
 		try
 		{
@@ -293,7 +293,7 @@ public class TestMatrix extends TestCase
 					data[j][i]=1.1;
 				}
 			}	
-		matrix.setData(data);
+		matrix.setDataFromArray(data);
 		matrixSet.add(matrix);	
 					
 		matrix = new NamedMatrix(BETA_MATRIX_NAME);
@@ -309,7 +309,7 @@ public class TestMatrix extends TestCase
 					data[j][i]=11;
 				}
 			}	
-		matrix.setData(data);
+		matrix.setDataFromArray(data);
 		matrixSet.add(matrix);	
 		
 		try

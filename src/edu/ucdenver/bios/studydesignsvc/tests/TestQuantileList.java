@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.QuantileServerResource;
 import edu.ucdenver.bios.webservice.common.domain.Quantile;
+import edu.ucdenver.bios.webservice.common.domain.QuantileList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
@@ -71,7 +72,7 @@ public class TestQuantileList extends TestCase {
     @Test
     public final void testCreate() {
 
-        List<Quantile> quantileList = new ArrayList<Quantile>();
+        QuantileList quantileList = new QuantileList();
         Quantile quantile = new Quantile();
         quantile.setValue(0.5);
         quantileList.add(quantile);
@@ -105,7 +106,7 @@ public class TestQuantileList extends TestCase {
         StudyDesign studyDesign = new StudyDesign();
         studyDesign.setUuid(uuid);
 
-        List<Quantile> quantileList = new ArrayList<Quantile>();
+        QuantileList quantileList = new QuantileList();
         Quantile quantile = new Quantile();
         quantile.setValue(0.11);
         quantileList.add(quantile);

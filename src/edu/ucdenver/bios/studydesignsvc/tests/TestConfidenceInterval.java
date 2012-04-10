@@ -109,7 +109,7 @@ public class TestConfidenceInterval extends TestCase
 	 * Test to update a ConfidenceIntervalDescription.
 	 */
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{	
 		ConfidenceIntervalDescription confidenceInterval = new ConfidenceIntervalDescription();
 		confidenceInterval.setSigmaFixed(true);		
@@ -174,7 +174,7 @@ public class TestConfidenceInterval extends TestCase
 	 * Test to delete a ConfidenceIntervalDescription.
 	 */
 	@Test
-	private void testDelete()
+	public void testDelete()
 	{
 		ConfidenceIntervalDescription confidenceInterval = null;
 		try

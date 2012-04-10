@@ -22,7 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,8 +32,8 @@ import org.junit.Test;
 import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.TypeIErrorServerResource;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.TypeIError;
+import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 // TODO: Auto-generated Javadoc
@@ -69,7 +68,7 @@ public class TestTypeIError extends TestCase
 	@Test
 	public void testCreate()
 	{			
-		List<TypeIError> typeIErrorList = new ArrayList<TypeIError>();		
+	    TypeIErrorList typeIErrorList = new TypeIErrorList();		
 		TypeIError typeIError = new TypeIError();		
 			typeIError.setAlphaValue(0.5);	
 		typeIErrorList.add(typeIError);	
@@ -107,7 +106,7 @@ public class TestTypeIError extends TestCase
 	@Test
 	private void testUpdate()
 	{
-		List<TypeIError> typeIErrorList = new ArrayList<TypeIError>();		
+	    TypeIErrorList typeIErrorList = new TypeIErrorList();		
 		TypeIError typeIError = new TypeIError();		
 			typeIError.setAlphaValue(0.11);	
 		typeIErrorList.add(typeIError);	

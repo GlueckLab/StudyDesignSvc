@@ -22,7 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +33,7 @@ import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.RelativeGroupSizeServerResource;
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
+import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 // TODO: Auto-generated Javadoc
@@ -69,7 +69,7 @@ public class TestRelativeGroupSize extends TestCase
 	public void testCreate()
 	{	
 		
-		List<RelativeGroupSize> relativeGroupSizeList = new ArrayList<RelativeGroupSize>();		
+		RelativeGroupSizeList relativeGroupSizeList = new RelativeGroupSizeList();		
 		RelativeGroupSize relativeGroupSize = new RelativeGroupSize();		
 			relativeGroupSize.setValue(5);	
 		relativeGroupSizeList.add(relativeGroupSize);	
@@ -110,7 +110,7 @@ public class TestRelativeGroupSize extends TestCase
 		StudyDesign studyDesign = new StudyDesign();		
 		studyDesign.setUuid(uuid);				
 				
-		List<RelativeGroupSize> relativeGroupSizeList = new ArrayList<RelativeGroupSize>();		
+		RelativeGroupSizeList relativeGroupSizeList = new RelativeGroupSizeList();		
 		RelativeGroupSize relativeGroupSize = new RelativeGroupSize();		
 			relativeGroupSize.setValue(11);	
 		relativeGroupSizeList.add(relativeGroupSize);	

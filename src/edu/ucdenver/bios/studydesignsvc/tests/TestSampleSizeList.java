@@ -22,7 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +33,7 @@ import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.SampleSizeServerResource;
 import edu.ucdenver.bios.webservice.common.domain.SampleSize;
+import edu.ucdenver.bios.webservice.common.domain.SampleSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
@@ -71,7 +71,7 @@ public class TestSampleSizeList extends TestCase
     public void testCreate()
     {   
         
-        List<SampleSize> sampleSizeList = new ArrayList<SampleSize>();        
+        SampleSizeList sampleSizeList = new SampleSizeList();        
         SampleSize sampleSize = new SampleSize();     
             sampleSize.setValue(5); 
         sampleSizeList.add(sampleSize); 
@@ -112,7 +112,7 @@ public class TestSampleSizeList extends TestCase
         StudyDesign studyDesign = new StudyDesign();        
         studyDesign.setUuid(uuid);              
                 
-        List<SampleSize> sampleSizeList = new ArrayList<SampleSize>();        
+        SampleSizeList sampleSizeList = new SampleSizeList();        
         SampleSize sampleSize = new SampleSize();     
             sampleSize.setValue(11);    
         sampleSizeList.add(sampleSize); 

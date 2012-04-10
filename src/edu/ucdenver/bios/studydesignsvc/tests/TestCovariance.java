@@ -23,8 +23,6 @@
 package edu.ucdenver.bios.studydesignsvc.tests;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,10 +33,9 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.BetaScaleResource;
 import edu.ucdenver.bios.studydesignsvc.resource.CovarianceServerResource;
-import edu.ucdenver.bios.webservice.common.domain.Blob2DArray;
 import edu.ucdenver.bios.webservice.common.domain.Covariance;
+import edu.ucdenver.bios.webservice.common.domain.CovarianceSet;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 // TODO: Auto-generated Javadoc
@@ -96,14 +93,14 @@ public class TestCovariance extends TestCase
 	@Test
 	public void testCreate()
 	{			
-		Set<Covariance> covarianceSet = new HashSet<Covariance>();		
+		CovarianceSet covarianceSet = new CovarianceSet();		
 		Covariance covariance = new Covariance();						
 			covariance.setName(COVARIANCE_NAME_1);
 			rows=2;
 			columns=3;
 			covariance.setColumns(columns);
 			covariance.setRows(rows);
-			covariance.setRoh(1.2);
+			covariance.setRho(1.2);
 			covariance.setDelta(2.5);
 			covariance.setSd(5);			
 				double[][] data = new double[rows][columns];
@@ -114,7 +111,7 @@ public class TestCovariance extends TestCase
 						data[j][i]=2.0;
 					}
 				}
-			covariance.setBlob(data);
+			covariance.setBlobFromArray(data);
 		covarianceSet.add(covariance);	
 		covariance = new Covariance();					
 			covariance.setName(COVARIANCE_NAME_2);
@@ -122,7 +119,7 @@ public class TestCovariance extends TestCase
 			columns=1;
 			covariance.setColumns(columns);
 			covariance.setRows(rows);
-			covariance.setRoh(1.1);
+			covariance.setRho(1.1);
 			covariance.setDelta(0.5);
 			covariance.setSd(0.1);			
 				data = new double[rows][columns];
@@ -133,7 +130,7 @@ public class TestCovariance extends TestCase
 						data[j][i]=2.0;
 					}
 				}
-			covariance.setBlob(data);
+			covariance.setBlobFromArray(data);
 		covarianceSet.add(covariance);		
 				
 		try
@@ -197,16 +194,16 @@ public class TestCovariance extends TestCase
 	 * Test to update a Covariance.
 	 */
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{
-		Set<Covariance> covarianceSet = new HashSet<Covariance>();		
+	    CovarianceSet covarianceSet = new CovarianceSet();		
 		Covariance covariance = new Covariance();						
 			covariance.setName(COVARIANCE_NAME_1+" Updated");
 			rows=10;
 			columns=10;
 			covariance.setColumns(columns);
 			covariance.setRows(rows);
-			covariance.setRoh(1.2);
+			covariance.setRho(1.2);
 			covariance.setDelta(2.5);
 			covariance.setSd(5);			
 				double[][] data = new double[rows][columns];
@@ -217,7 +214,7 @@ public class TestCovariance extends TestCase
 							data[j][i]=4.4;
 					}
 				}				
-			covariance.setBlob(data);			
+			covariance.setBlobFromArray(data);			
 		covarianceSet.add(covariance);	
 						
 		try
@@ -248,7 +245,7 @@ public class TestCovariance extends TestCase
 	 * Test to delete a Covariance.
 	 */
 	@Test
-	private void testDelete()
+	public void testDelete()
 	{
 		Set<Covariance> covarianceSet = null;			
 		

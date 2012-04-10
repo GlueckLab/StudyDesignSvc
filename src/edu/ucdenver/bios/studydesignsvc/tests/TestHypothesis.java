@@ -23,7 +23,6 @@
 package edu.ucdenver.bios.studydesignsvc.tests;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -38,11 +37,9 @@ import com.google.gson.Gson;
 import edu.ucdenver.bios.studydesignsvc.resource.BetweenParticipantServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.HypothesisServerResource;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
-import edu.ucdenver.bios.webservice.common.domain.Category;
 import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
 import edu.ucdenver.bios.webservice.common.domain.HypothesisBetweenParticipantMapping;
-import edu.ucdenver.bios.webservice.common.domain.HypothesisRepeatedMeasuresMapping;
-import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
+import edu.ucdenver.bios.webservice.common.domain.HypothesisSet;
 import edu.ucdenver.bios.webservice.common.enums.HypothesisTypeEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 // TODO: Auto-generated Javadoc
@@ -100,26 +97,24 @@ public class TestHypothesis extends TestCase
     @Test
     public void testCreate()
     {           
-        Set<Hypothesis> hypothesisSet = new HashSet<Hypothesis>();      
+        HypothesisSet hypothesisSet = new HypothesisSet();      
         Hypothesis hypothesis = new Hypothesis();                       
             hypothesis.setType(HypothesisTypeEnum.INTERACTION);
             
-           List<HypothesisBetweenParticipantMapping> betweenParticipantList = new ArrayList<HypothesisBetweenParticipantMapping>(); 
-               HypothesisBetweenParticipantMapping map = new HypothesisBetweenParticipantMapping();
-                   BetweenParticipantFactor b = new BetweenParticipantFactor();
-                   b.setId(3);
-               map.setBetweenParticipantFactor(b);
-               map.setType(HypothesisTypeEnum.INTERACTION);
-               betweenParticipantList.add(map);
-               
-               map = new HypothesisBetweenParticipantMapping();
-                   b = new BetweenParticipantFactor();
-                   b.setId(4);
-               map.setBetweenParticipantFactor(b);
-               map.setType(HypothesisTypeEnum.INTERACTION);
-               betweenParticipantList.add(map);
-                
-               hypothesis.setBetweenParticipantFactorMapList(betweenParticipantList);
+            ArrayList<HypothesisBetweenParticipantMapping> betweenParticipantList = new ArrayList<HypothesisBetweenParticipantMapping>(); 
+            HypothesisBetweenParticipantMapping map = null;
+            
+            BetweenParticipantServerResource betResource = new BetweenParticipantServerResource();
+            List<BetweenParticipantFactor> betweenParticipantFactorList = betResource.retrieve(uuid);
+            
+            for(BetweenParticipantFactor factor : betweenParticipantFactorList) {
+                map = new HypothesisBetweenParticipantMapping();
+                map.setBetweenParticipantFactor(factor);
+                map.setType(HypothesisTypeEnum.INTERACTION);
+                betweenParticipantList.add(map);
+            }
+                             
+           hypothesis.setBetweenParticipantFactorMapList(betweenParticipantList);
                
            /*List<HypothesisRepeatedMeasuresMapping> repeatedMeasuresTree = new ArrayList<HypothesisRepeatedMeasuresMapping>(); 
                HypothesisRepeatedMeasuresMapping repeatedMeasuresMap = new HypothesisRepeatedMeasuresMapping();
@@ -138,7 +133,7 @@ public class TestHypothesis extends TestCase
                 
                hypothesis.setRepeatedMeasuresMapTree(repeatedMeasuresTree);*/
                
-          hypothesisSet.add(hypothesis);  
+      hypothesisSet.add(hypothesis);  
                         
         try
         {
@@ -217,7 +212,7 @@ public class TestHypothesis extends TestCase
     @Test
     private void testUpdate()
     {
-        Set<Hypothesis> hypothesisSet = new HashSet<Hypothesis>();      
+        HypothesisSet hypothesisSet = new HypothesisSet();      
         Hypothesis hypothesis = new Hypothesis();                       
             hypothesis.setType(HypothesisTypeEnum.INTERACTION);
         hypothesisSet.add(hypothesis);  

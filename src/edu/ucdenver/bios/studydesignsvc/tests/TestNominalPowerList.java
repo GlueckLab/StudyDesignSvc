@@ -24,7 +24,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +35,7 @@ import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.NominalPowerServerResource;
 import edu.ucdenver.bios.webservice.common.domain.NominalPower;
+import edu.ucdenver.bios.webservice.common.domain.NominalPowerList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
@@ -70,7 +70,7 @@ public class TestNominalPowerList extends TestCase {
      */
     @Test
     public final void testCreate() {
-        List<NominalPower> nominalPowerList = new ArrayList<NominalPower>();
+        NominalPowerList nominalPowerList = new NominalPowerList();
         NominalPower nominalPower = new NominalPower();
         nominalPower.setValue(0.5);
         nominalPowerList.add(nominalPower);
@@ -98,7 +98,7 @@ public class TestNominalPowerList extends TestCase {
      */
     @Test
     private final void testUpdate() {
-        List<NominalPower> nominalPowerList = new ArrayList<NominalPower>();
+        NominalPowerList nominalPowerList = new NominalPowerList();
         NominalPower nominalPower = new NominalPower();
         nominalPower.setValue(0.11);
         nominalPowerList.add(nominalPower);

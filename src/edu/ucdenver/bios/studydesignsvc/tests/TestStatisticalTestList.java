@@ -22,18 +22,18 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
+
 import org.junit.Test;
 
 import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.StatisticalTestServerResource;
 import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.StatisticalTestList;
 import edu.ucdenver.bios.webservice.common.enums.StatisticalTestTypeEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
@@ -73,7 +73,7 @@ public class TestStatisticalTestList extends TestCase
 	public void testCreate()
 	{	
 		
-		List<StatisticalTest> testList = new ArrayList<StatisticalTest>();		
+		StatisticalTestList testList = new StatisticalTestList();		
 		StatisticalTest test = new StatisticalTest();		
 			test.setType(StatisticalTestTypeEnum.UNIREP);	
 		testList.add(test);	
@@ -109,7 +109,7 @@ public class TestStatisticalTestList extends TestCase
 	@Test
 	private void testUpdate()
 	{
-		List<StatisticalTest> testList = new ArrayList<StatisticalTest>();		
+	    StatisticalTestList testList = new StatisticalTestList();		
 		StatisticalTest test = new StatisticalTest();		
 			test.setType(StatisticalTestTypeEnum.UNIREPGG);
 		testList.add(test);	

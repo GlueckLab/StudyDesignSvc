@@ -36,6 +36,7 @@ import edu.ucdenver.bios.studydesignsvc.manager.ClusterNodeManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.studydesignsvc.resource.ClusterNodeServerResource;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
+import edu.ucdenver.bios.webservice.common.domain.ClusterNodeList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 /**
  * JUnit test cases for 'ClusterNode' object - CRUD operations.
@@ -63,7 +64,7 @@ public class TestClusterNode extends TestCase
 	public void testCreate()
 	{	
 		
-		List<ClusterNode> clusterNodeList = new ArrayList<ClusterNode>();		
+		ClusterNodeList clusterNodeList = new ClusterNodeList();		
 			ClusterNode clusterNode = new ClusterNode();		
 			clusterNode.setGroupName("group1");
 			clusterNode.setGroupSize(new Integer(10));			
@@ -141,7 +142,7 @@ public class TestClusterNode extends TestCase
 	 * Test to delete a ClusterNode List
 	 */
 	@Test
-	private void testDelete()
+	public void testDelete()
 	{		
 		List<ClusterNode> clusterNodeList = new ArrayList<ClusterNode>();		
 		ClusterNodeServerResource resource = new ClusterNodeServerResource();	
@@ -172,10 +173,10 @@ public class TestClusterNode extends TestCase
 	 * Test to update a ClusterNode List
 	 */
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{			
 		boolean flag;
-		List<ClusterNode> clusterNodeList = new ArrayList<ClusterNode>();		
+		ClusterNodeList clusterNodeList = new ClusterNodeList();		
 			ClusterNode clusterNode = new ClusterNode();		
 			clusterNode.setGroupName("group1");
 			clusterNode.setGroupSize(new Integer(100));			

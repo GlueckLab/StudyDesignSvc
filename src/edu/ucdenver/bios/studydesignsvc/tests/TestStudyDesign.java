@@ -23,26 +23,33 @@
 package edu.ucdenver.bios.studydesignsvc.tests;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
+import org.codehaus.jackson.map.JsonSerializer;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.junit.Test;
+import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignRetrieveResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignRetrieveServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignUploadRetrieveResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignUploadRetrieveServerResource;
 import edu.ucdenver.bios.webservice.common.domain.SampleSize;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.enums.SolutionTypeEnum;
 import edu.ucdenver.bios.webservice.common.enums.StudyDesignViewTypeEnum;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 // TODO: Auto-generated Javadoc
@@ -78,23 +85,44 @@ public class TestStudyDesign extends TestCase
 	/** The resource. */
 	StudyDesignServerResource resource = new StudyDesignServerResource();
 	
+	/** The retrieve resource. */
+    StudyDesignRetrieveServerResource resourceRetrieve = new StudyDesignRetrieveServerResource();
+	
+	/** The resource. */
+    StudyDesignUploadRetrieveServerResource resourceUpload = new StudyDesignUploadRetrieveServerResource();
+	
 	/** The client resource. */
-	ClientResource clientResource = null; 
+	ClientResource clientStudyResource = null; 
+	
+	/** The client resource. */
+    /*ClientResource clientStudyUploadResource = null;*/
 	
 	/** The study design resource. */
 	StudyDesignResource studyDesignResource = null;
+	
+	/** The study design retrieve resource. */
+    StudyDesignRetrieveResource studyDesignRetrieveResource = null;
+	
+	/** The study design upload retrieve resource. */
+    StudyDesignUploadRetrieveResource studyDesignUploadResource = null;
 	
 	/**
 	 * Connect to the server.
 	 */
     public void setUp()
-    {
+    {       
     	uuid = UUIDUtils.asByteArray(STUDY_UUID);	
     	uuid_one = UUIDUtils.asByteArray(STUDY_UUID_ONE);
         try
         {
-        	clientResource = new ClientResource("http://localhost:8080/study/study"); 
-            studyDesignResource = clientResource.wrap(StudyDesignResource.class);
+        	clientStudyResource = new ClientResource("http://localhost:8080/study/study"); 
+            studyDesignResource = clientStudyResource.wrap(StudyDesignResource.class);
+            
+            clientStudyResource = new ClientResource("http://localhost:8080/study/studyUploadRetrieve"); 
+            studyDesignUploadResource = clientStudyResource.wrap(StudyDesignUploadRetrieveResource.class);
+            
+            clientStudyResource = new ClientResource("http://localhost:8080/study/studyRetrieve"); 
+            studyDesignRetrieveResource = clientStudyResource.wrap(StudyDesignRetrieveResource.class);
         }
         catch (Exception e)
         {
@@ -120,8 +148,6 @@ public class TestStudyDesign extends TestCase
             System.err.println("Failed to retrieve: " + e.getMessage());
             fail();
         }
-
-
     }
 
 	
@@ -134,18 +160,16 @@ public class TestStudyDesign extends TestCase
 	public void testCreate()	
 	{	
 		StudyDesign studyDesign = new StudyDesign();
-		//studyDesign.setStudyUUID(STUDY_UUID);
+		studyDesign.setUuid(uuid);
 		studyDesign.setParticipantLabel(PARTICIPANT_LABEL);
-		studyDesign.setUuid(UUIDUtils.asByteArray(STUDY_UUID));
 		studyDesign.setName(STUDY_NAME);
 		studyDesign.setViewTypeEnum(StudyDesignViewTypeEnum.GUIDED_MODE);
 		studyDesign.setGaussianCovariate(true);				
 		studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER);
 		
 		/*StudyDesign studyDesign1 = new StudyDesign();
-        //studyDesign.setStudyUUID(STUDY_UUID);
+        studyDesign1.setUuid(uuid_one);
         studyDesign1.setParticipantLabel(PARTICIPANT_LABEL);
-        studyDesign1.setUuid(UUIDUtils.asByteArray(STUDY_UUID_ONE));
         studyDesign1.setName(STUDY_NAME+" 1");
         studyDesign1.setViewTypeEnum(StudyDesignViewTypeEnum.GUIDED_MODE);
         studyDesign1.setGaussianCovariate(true);             
@@ -161,7 +185,10 @@ public class TestStudyDesign extends TestCase
 		
         try
 		{
-        	studyDesign=resource.create(studyDesign);
+        	/*studyDesign=resource.create(studyDesign);*/
+            studyDesign = resourceUpload.upload(studyDesign);
+            
+            /*studyDesign1 = resourceUpload.upload(studyDesign1);*/
         	
         	/*studyDesign1=resource.create(studyDesign1);*/
 		}
@@ -194,10 +221,31 @@ public class TestStudyDesign extends TestCase
 	@Test
 	public void testRetrieve()
 	{
-		StudyDesign studyDesign = null;
+	    StudyDesign studyDesign = null;
+	    JsonRepresentation representation = null;
 		try
 		{
-			studyDesign = resource.retrieve(uuid);			
+		    /*Gson gson = new Gson();
+            String json = gson.toJson(uuid_one);  
+               System.out.println(json);*/
+		    JSONArray array = new JSONArray(uuid_one);
+		    representation = new JsonRepresentation(array);
+	        //System.out.println(representation);
+		    
+		    /*representation = resourceRetrieve.retrieve(representation);
+		    Gson gson = new Gson();
+		    String json = gson.toJson(representation.getJsonObject());
+		    studyDesign = gson.fromJson(json, StudyDesign.class);*/
+		    
+		    //studyDesign = resourceRetrieve.retrieve(representation);		    
+		    //JSONObject object = resourceRetrieve.retrieve(representation);
+		    JSONObject object = studyDesignRetrieveResource.retrieve(representation);
+		    Gson gson = new Gson();		    
+		    String json = object.toString();
+		    System.out.println(json);
+		    studyDesign = gson.fromJson(json, StudyDesign.class);
+		    //studyDesign = new Gson().fromJson(representation.getJsonObject().getJSONArray(""+StudyDesign.class), StudyDesign.class);
+		    
 		}		
 		catch(Exception e)
 		{
@@ -214,7 +262,7 @@ public class TestStudyDesign extends TestCase
         {     
             System.out.println("testRetrieve():");
             Gson gson = new Gson();
-               String json = gson.toJson(studyDesign);  
+            String json = gson.toJson(studyDesign);  
                System.out.println(json);
               assertTrue(studyDesign!=null);
         }
@@ -225,12 +273,12 @@ public class TestStudyDesign extends TestCase
 	 * Test retrieve list.
 	 */
 	@Test
-	public void testRetrieveList()
+	private void testRetrieveList()
 	{
-	    List<StudyDesign> studyDesignList = null;
+	    ArrayList<StudyDesign> studyDesignList = null;
         try
         {
-            studyDesignList = resource.retrieve();          
+            studyDesignList = studyDesignUploadResource.retrieve();          
         }       
         catch(Exception e)
         {
@@ -267,7 +315,7 @@ public class TestStudyDesign extends TestCase
         {
             /*studyDesign=resource.remove(uuid_one);*/
             
-            studyDesign=resource.remove(uuid);
+            studyDesign=studyDesignResource.remove(uuid);
         }
         catch(Exception e)
         {

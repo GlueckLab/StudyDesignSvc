@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.BetweenParticipantServerResource;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
+import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
 import edu.ucdenver.bios.webservice.common.domain.Category;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
@@ -68,12 +69,12 @@ public class TestBetweenParticipantFactor extends TestCase {
      */
     @Test
     private void testCreate() {
-        List<BetweenParticipantFactor> betweenParticipantFactorList =
-                new ArrayList<BetweenParticipantFactor>();
+        BetweenParticipantFactorList betweenParticipantFactorList =
+                new BetweenParticipantFactorList();
         BetweenParticipantFactor betweenParticipantFactor =
                 new BetweenParticipantFactor();
         betweenParticipantFactor.setPredictorName("Medicine");
-        List<Category> categoryList = new ArrayList<Category>();
+        ArrayList<Category> categoryList = new ArrayList<Category>();
         categoryList.add(new Category("A"));
         categoryList.add(new Category("B"));
         betweenParticipantFactor.setCategoryList(categoryList);
@@ -108,12 +109,12 @@ public class TestBetweenParticipantFactor extends TestCase {
      */
     @Test
     public final void testUpdate() {
-        List<BetweenParticipantFactor> betweenParticipantFactorList =
-                new ArrayList<BetweenParticipantFactor>();
+        BetweenParticipantFactorList betweenParticipantFactorList =
+                new BetweenParticipantFactorList();
         BetweenParticipantFactor betweenParticipantFactor =
                 new BetweenParticipantFactor();
         betweenParticipantFactor.setPredictorName("Medicine");
-        List<Category> categoryList = new ArrayList<Category>();
+        ArrayList<Category> categoryList = new ArrayList<Category>();
         categoryList.add(new Category("Alpha"));
         categoryList.add(new Category("Beta"));
         betweenParticipantFactor.setCategoryList(categoryList);

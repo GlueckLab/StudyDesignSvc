@@ -22,20 +22,19 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import junit.framework.TestCase;
 
 import org.junit.Test;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.BetaScaleServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.ResponsesServerResource;
+import edu.ucdenver.bios.webservice.common.domain.ResponseList;
 import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
-import junit.framework.TestCase;
 // TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'ResponseNode' object - CRUD operations.
@@ -71,7 +70,7 @@ public class TestResponseList extends TestCase
 	@Test
 	public void testCreate()
 	{			
-		List<ResponseNode> responseList = new ArrayList<ResponseNode>();		
+		ResponseList responseList = new ResponseList();		
 		ResponseNode ResponseNode = new ResponseNode();		
 			ResponseNode.setName("node1");	
 		responseList.add(ResponseNode);	
@@ -106,7 +105,7 @@ public class TestResponseList extends TestCase
 	@Test
 	private void testUpdate()
 	{
-		List<ResponseNode> responseList = new ArrayList<ResponseNode>();		
+	    ResponseList responseList = new ResponseList();		
 		ResponseNode responseNode = new ResponseNode();		
 			responseNode.setName("node_11");	
 		responseList.add(responseNode);	

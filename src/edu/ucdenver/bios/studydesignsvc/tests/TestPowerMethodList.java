@@ -22,7 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +33,7 @@ import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.PowerMethodServerResource;
 import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
+import edu.ucdenver.bios.webservice.common.domain.PowerMethodList;
 import edu.ucdenver.bios.webservice.common.enums.PowerMethodEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 // TODO: Auto-generated Javadoc
@@ -69,7 +69,7 @@ public class TestPowerMethodList extends TestCase
 	public void testCreate()
 	{	
 		
-		List<PowerMethod> powerMethodList = new ArrayList<PowerMethod>();		
+		PowerMethodList powerMethodList = new PowerMethodList();		
 		PowerMethod powerMethod = new PowerMethod();		
 			powerMethod.setPowerMethodEnum(PowerMethodEnum.UNCONDITIONAL);	
 		powerMethodList.add(powerMethod);	
@@ -105,9 +105,9 @@ public class TestPowerMethodList extends TestCase
 	 * Test to update a PowerMethod List.
 	 */
 	@Test
-	private void testUpdate()
+	public void testUpdate()
 	{
-		List<PowerMethod> powerMethodList = new ArrayList<PowerMethod>();		
+	    PowerMethodList powerMethodList = new PowerMethodList();		
 		PowerMethod powerMethod = new PowerMethod();		
 			powerMethod.setPowerMethodEnum(PowerMethodEnum.QUANTILE);	
 		powerMethodList.add(powerMethod);	
@@ -174,7 +174,7 @@ public class TestPowerMethodList extends TestCase
 	 * Test to delete a PowerMethod List.
 	 */
 	@Test
-	private void testDelete()
+	public void testDelete()
 	{
 		List<PowerMethod> powerMethodList = null;			
 		

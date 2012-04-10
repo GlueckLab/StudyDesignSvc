@@ -22,7 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +33,7 @@ import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.SigmaScaleServerResource;
 import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.SigmaScaleList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 // TODO: Auto-generated Javadoc
 /**
@@ -69,7 +68,7 @@ public class TestSigmaScaleList extends TestCase
 	public void testCreate()
 	{	
 		
-		List<SigmaScale> sigmaScaleList = new ArrayList<SigmaScale>();		
+		SigmaScaleList sigmaScaleList = new SigmaScaleList();		
 		SigmaScale sigmaScale = new SigmaScale();		
 			sigmaScale.setValue(0.5);	
 		sigmaScaleList.add(sigmaScale);	
@@ -107,7 +106,7 @@ public class TestSigmaScaleList extends TestCase
 	@Test
 	private void testUpdate()
 	{
-		List<SigmaScale> sigmaScaleList = new ArrayList<SigmaScale>();		
+	    SigmaScaleList sigmaScaleList = new SigmaScaleList();		
 		SigmaScale sigmaScale = new SigmaScale();		
 			sigmaScale.setValue(0.11);	
 		sigmaScaleList.add(sigmaScale);	
