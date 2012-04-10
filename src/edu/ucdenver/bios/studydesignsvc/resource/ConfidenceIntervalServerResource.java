@@ -422,7 +422,6 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
      *            the study design
      * @return ConfidenceIntervalDescription
      */
-    @Delete("json")
     public final ConfidenceIntervalDescription removeFrom(
             final StudyDesign studyDesign) {
         ConfidenceIntervalDescription confidenceInterval = null;

@@ -23,14 +23,13 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
@@ -43,6 +42,7 @@ import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
 import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
 import edu.ucdenver.bios.webservice.common.domain.HypothesisBetweenParticipantMapping;
 import edu.ucdenver.bios.webservice.common.domain.HypothesisRepeatedMeasuresMapping;
+import edu.ucdenver.bios.webservice.common.domain.HypothesisSet;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
@@ -68,12 +68,12 @@ implements HypothesisResource
      * Retrieve a Hypothesis object for specified UUID.
      * 
      * @param byte[]
-     * @return Set<Hypothesis>
+     * @return HypothesisSet
      */
     @Get
-    public Set<Hypothesis> retrieve(byte[] uuid) 
+    public HypothesisSet retrieve(byte[] uuid) 
     {
-        Set<Hypothesis> hypothesisSet = null;
+        HypothesisSet hypothesisSet = null;
         if(uuid==null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
                     "no study design UUID specified");
@@ -89,7 +89,7 @@ implements HypothesisResource
                 {       
                     StudyDesign studyDesign = studyDesignManager.get(uuid);
                     if(studyDesign!=null)
-                        hypothesisSet = studyDesign.getHypothesis();                    
+                        hypothesisSet = new HypothesisSet(studyDesign.getHypothesis());                    
                 }               
             studyDesignManager.commit();                    
         }
@@ -200,26 +200,33 @@ implements HypothesisResource
      * @param hypothesisSet
      * @return
      */
-    public boolean checkBetweenParticipantFactorEntry(List<BetweenParticipantFactor> studyBetweenParticipantList,Set<Hypothesis> hypothesisSet)
+    public boolean checkBetweenParticipantFactorEntry(List<BetweenParticipantFactor> studyBetweenParticipantList,HypothesisSet hypothesisSet)
     {
-        Iterator<Hypothesis> itr = hypothesisSet.iterator();
-        boolean flag = false;
-        while(itr.hasNext())
+        try
         {
-            Hypothesis hypothesis = itr.next();
-            List<BetweenParticipantFactor> list = hypothesis.getBetweenParticipantFactorList();
-            for(BetweenParticipantFactor betweenParticipantFactor : list)
+            Iterator<Hypothesis> itr = hypothesisSet.iterator();
+            boolean flag = false;
+            while(itr.hasNext())
             {
-                if(checkBetweenParticipantFactorId(studyBetweenParticipantList, betweenParticipantFactor.getId()))
-                    flag = true;
-                else
+                Hypothesis hypothesis = itr.next();
+                List<BetweenParticipantFactor> list = hypothesis.getBetweenParticipantFactorList();
+                for(BetweenParticipantFactor betweenParticipantFactor : list)
                 {
-                    flag = false;
-                    break;
+                    if(checkBetweenParticipantFactorId(studyBetweenParticipantList, betweenParticipantFactor.getId()))
+                        flag = true;
+                    else
+                    {
+                        flag = false;
+                        break;
+                    }
                 }
-            }
+            } 
+            return flag;
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+            return false;
         }        
-        return flag;
     }
     
     /**
@@ -230,26 +237,33 @@ implements HypothesisResource
      * @param hypothesisSet
      * @return flag
      */
-    public boolean checkRepeatedMeasuresNodeEntry(List<RepeatedMeasuresNode> studyRepeatedMeasuresTree,Set<Hypothesis> hypothesisSet)
+    public boolean checkRepeatedMeasuresNodeEntry(List<RepeatedMeasuresNode> studyRepeatedMeasuresTree,HypothesisSet hypothesisSet)
     {
-        Iterator<Hypothesis> itr = hypothesisSet.iterator();
-        boolean flag = false;
-        while(itr.hasNext())
+        try
         {
-            Hypothesis hypothesis = itr.next();
-            List<RepeatedMeasuresNode> list = hypothesis.getRepeatedMeasuresList();
-            for(RepeatedMeasuresNode repeatedMeasuresNode : list)
+            Iterator<Hypothesis> itr = hypothesisSet.iterator();
+            boolean flag = false;
+            while(itr.hasNext())
             {
-                if(checkRepeatedMeasuresNodeId(studyRepeatedMeasuresTree, repeatedMeasuresNode.getId()))
-                    flag = true;
-                else
+                Hypothesis hypothesis = itr.next();
+                List<RepeatedMeasuresNode> list = hypothesis.getRepeatedMeasuresList();
+                for(RepeatedMeasuresNode repeatedMeasuresNode : list)
                 {
-                    flag = false;
-                    break;
+                    if(checkRepeatedMeasuresNodeId(studyRepeatedMeasuresTree, repeatedMeasuresNode.getId()))
+                        flag = true;
+                    else
+                    {
+                        flag = false;
+                        break;
+                    }
                 }
             }
-        }        
-        return flag;
+            return flag;
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+            return false;
+        }         
     }
     
     /**
@@ -261,42 +275,50 @@ implements HypothesisResource
      * @param hypothesisSet
      * @return
      */
-    public Set<Hypothesis> setEntry(List<BetweenParticipantFactor> studyBetweenParticipantList,List<RepeatedMeasuresNode> studyRepeatedMeasuresTree,Set<Hypothesis> hypothesisSet)
+    public HypothesisSet setEntry(List<BetweenParticipantFactor> studyBetweenParticipantList,List<RepeatedMeasuresNode> studyRepeatedMeasuresTree,HypothesisSet hypothesisSet)
     {
-        Set<Hypothesis> set = new HashSet<Hypothesis>();        
+        HypothesisSet set = new HypothesisSet();        
         Iterator<Hypothesis> itr = hypothesisSet.iterator();
         
         while(itr.hasNext())
         {
             Hypothesis hypothesis = itr.next();
-            List<HypothesisBetweenParticipantMapping> bList = hypothesis.getBetweenParticipantFactorMapList();
-            List<HypothesisBetweenParticipantMapping> newBList = new ArrayList<HypothesisBetweenParticipantMapping>();
-            for(HypothesisBetweenParticipantMapping betweenParticipantFactorMap : bList)
+            List<HypothesisBetweenParticipantMapping> newBList = null;
+            List<HypothesisRepeatedMeasuresMapping> newRList = null;
+            if(studyBetweenParticipantList !=null && !studyBetweenParticipantList.isEmpty())
             {
-                //BetweenParticipantFactor b = getBetweenParticipantFactor(studyBetweenParticipantList,betweenParticipantFactor.getId());    
-                BetweenParticipantFactor b = getBetweenParticipantFactor(studyBetweenParticipantList,betweenParticipantFactorMap.getBetweenParticipantFactor().getId()); 
-                if(b!=null)
-                {    
-                    newBList.add(new HypothesisBetweenParticipantMapping(betweenParticipantFactorMap.getType(),b));
+                List<HypothesisBetweenParticipantMapping> bList = hypothesis.getBetweenParticipantFactorMapList();
+                newBList = new ArrayList<HypothesisBetweenParticipantMapping>();
+                for(HypothesisBetweenParticipantMapping betweenParticipantFactorMap : bList)
+                {
+                    //BetweenParticipantFactor b = getBetweenParticipantFactor(studyBetweenParticipantList,betweenParticipantFactor.getId());    
+                    BetweenParticipantFactor b = getBetweenParticipantFactor(studyBetweenParticipantList,betweenParticipantFactorMap.getBetweenParticipantFactor().getId()); 
+                    if(b!=null)
+                    {    
+                        newBList.add(new HypothesisBetweenParticipantMapping(betweenParticipantFactorMap.getType(),b));
+                    }
                 }
             }
-            List<HypothesisRepeatedMeasuresMapping> rList = hypothesis.getRepeatedMeasuresMapTree();
-            List<HypothesisRepeatedMeasuresMapping> newRList = new ArrayList<HypothesisRepeatedMeasuresMapping>();
-            for(HypothesisRepeatedMeasuresMapping repeatedMeasuresMap : rList)
+            if(studyRepeatedMeasuresTree != null && !studyRepeatedMeasuresTree.isEmpty())
             {
-                RepeatedMeasuresNode r = getRepeatedMeasuresNode(studyRepeatedMeasuresTree,repeatedMeasuresMap.getRepeatedMeasuresNode().getId()); 
-                if(r!=null)
-                {    
-                    newRList.add(new HypothesisRepeatedMeasuresMapping(repeatedMeasuresMap.getType(),r));
-                }
-            }                       
+                List<HypothesisRepeatedMeasuresMapping> rList = hypothesis.getRepeatedMeasuresMapTree();
+                newRList = new ArrayList<HypothesisRepeatedMeasuresMapping>();
+                for(HypothesisRepeatedMeasuresMapping repeatedMeasuresMap : rList)
+                {
+                    RepeatedMeasuresNode r = getRepeatedMeasuresNode(studyRepeatedMeasuresTree,repeatedMeasuresMap.getRepeatedMeasuresNode().getId()); 
+                    if(r!=null)
+                    {    
+                        newRList.add(new HypothesisRepeatedMeasuresMapping(repeatedMeasuresMap.getType(),r));
+                    }
+                } 
+            }
            set.add(new Hypothesis(hypothesis.getType(),newBList,newRList));
         }  
        return set;
     }
            
-    @Override
-    public Set<Hypothesis> create(byte[] uuid, Set<Hypothesis> hypothesisSet) 
+    @Post
+    public HypothesisSet create(byte[] uuid, HypothesisSet hypothesisSet) 
     {
         StudyDesign studyDesign =null;
         if(uuid==null)
@@ -321,21 +343,21 @@ implements HypothesisResource
              * ----------------------------------------------------*/
             List<BetweenParticipantFactor> studyBetweenParticipantList = null;
             List<RepeatedMeasuresNode> studyRepeatedMeasuresTree = null;
-            if(studyDesign.getBetweenParticipantFactorList()!=null) {
+            if(!studyDesign.getBetweenParticipantFactorList().isEmpty()) {
                 studyBetweenParticipantList = studyDesign.getBetweenParticipantFactorList();
             }
-            if(studyDesign.getRepeatedMeasuresTree()!=null){
+            if(!studyDesign.getRepeatedMeasuresTree().isEmpty()){
                 studyRepeatedMeasuresTree = studyDesign.getRepeatedMeasuresTree();
             }
             if(uuidFlag && studyDesign!=null)
             {
                boolean flagBetweenParticipant = false;
                boolean flagRepeatedMeasures = false;
-               if(studyBetweenParticipantList!=null){
-                   checkBetweenParticipantFactorEntry(studyBetweenParticipantList, hypothesisSet);
+               if(studyBetweenParticipantList != null && !studyBetweenParticipantList.isEmpty()){
+                   flagBetweenParticipant = checkBetweenParticipantFactorEntry(studyBetweenParticipantList, hypothesisSet);
                }
-               if(studyRepeatedMeasuresTree!=null){
-                   checkRepeatedMeasuresNodeEntry(studyRepeatedMeasuresTree, hypothesisSet);
+               if(studyRepeatedMeasuresTree !=null && !studyRepeatedMeasuresTree.isEmpty()){
+                   flagRepeatedMeasures = checkRepeatedMeasuresNodeEntry(studyRepeatedMeasuresTree, hypothesisSet);
                }
                if(flagBetweenParticipant && flagRepeatedMeasures)
                {
@@ -356,7 +378,7 @@ implements HypothesisResource
             /* ----------------------------------------------------
              * Remove existing Hypothesis for this object 
              * ----------------------------------------------------*/            
-            if(uuidFlag && studyDesign.getHypothesis()!=null)
+            if(uuidFlag && !studyDesign.getHypothesis().isEmpty())
                 removeFrom(studyDesign);                
             if(uuidFlag)
             {   
@@ -365,7 +387,7 @@ implements HypothesisResource
                     hypothesisManager.saveOrUpdate(hypothesisSet, true);
                 hypothesisManager.commit();             
                 /* ----------------------------------------------------
-                 * Set reference of Set<Hypothesis> Object to Study Design object 
+                 * Set reference of HypothesisSet Object to Study Design object 
                  * ----------------------------------------------------*/
                 studyDesign.setHypothesis(hypothesisSet);               
                 studyDesignManager = new StudyDesignManager();
@@ -405,10 +427,10 @@ implements HypothesisResource
      * Update a Hypothesis object for specified UUID.
      * 
      * @param byte[]
-     * @return Set<Hypothesis>
+     * @return HypothesisSet
      */
     @Put("json")
-    public Set<Hypothesis> update(byte[] uuid,Set<Hypothesis> hypothesisSet) 
+    public HypothesisSet update(byte[] uuid,HypothesisSet hypothesisSet) 
     {               
         return create(uuid,hypothesisSet);          
     }   
@@ -417,12 +439,12 @@ implements HypothesisResource
      * Delete a Hypothesis object for specified UUID.
      * 
      * @param byte[]
-     * @return Set<Hypothesis>
+     * @return HypothesisSet
      */
     @Delete("json")
-    public Set<Hypothesis> remove(byte[] uuid) 
+    public HypothesisSet remove(byte[] uuid) 
     {
-        Set<Hypothesis> hypothesisSet = null;
+        HypothesisSet hypothesisSet = null;
         StudyDesign studyDesign = null;
         if(uuid==null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
@@ -439,17 +461,17 @@ implements HypothesisResource
                 {       
                     studyDesign = studyDesignManager.get(uuid);
                     if(studyDesign!=null)
-                        hypothesisSet = studyDesign.getHypothesis();                                
+                        hypothesisSet = new HypothesisSet(studyDesign.getHypothesis());                                
                 }               
             studyDesignManager.commit();
             /* ----------------------------------------------------
              * Remove existing Hypothesis objects for this object 
              * ----------------------------------------------------*/
-            if(hypothesisSet!=null)
+            if(!hypothesisSet.isEmpty())
             {
                 hypothesisManager = new HypothesisManager();
                 hypothesisManager.beginTransaction();
-                    hypothesisSet = hypothesisManager.delete(uuid,hypothesisSet);
+                    hypothesisSet = new HypothesisSet(hypothesisManager.delete(uuid,hypothesisSet));
                 hypothesisManager.commit();
                 /* ----------------------------------------------------
                  * Set reference of Hypothesis Object to Study Design object 
@@ -493,18 +515,17 @@ implements HypothesisResource
      * Delete a Hypothesis object for specified Study Design.
      * 
      * @param StudyDesign
-     * @return Set<Hypothesis>
+     * @return HypothesisSet
      */
-    @Delete("json")
-    public Set<Hypothesis> removeFrom(StudyDesign studyDesign) 
+    public HypothesisSet removeFrom(StudyDesign studyDesign) 
     {
         boolean flag;   
-        Set<Hypothesis> hypothesisSet = null;   
+        HypothesisSet hypothesisSet = null;   
         try
         {                               
             hypothesisManager = new HypothesisManager();
             hypothesisManager.beginTransaction();
-                hypothesisSet=hypothesisManager.delete(studyDesign.getUuid(),studyDesign.getHypothesis());
+                hypothesisSet=new HypothesisSet(hypothesisManager.delete(studyDesign.getUuid(),studyDesign.getHypothesis()));
             hypothesisManager.commit();
             /* ----------------------------------------------------
              * Set reference of Hypothesis Object to Study Design object 

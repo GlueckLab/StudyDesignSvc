@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
+import edu.ucdenver.bios.webservice.common.domain.PowerMethodList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
@@ -50,16 +48,16 @@ public interface PowerMethodResource {
      * @return Object for specified UUID
      */
      @Get
-    List<PowerMethod> retrieve(byte[] uuid);
+    PowerMethodList retrieve(byte[] uuid);
     /**
-     * Store List<PowerMethod> object to the database.
+     * Store PowerMethodList object to the database.
      *
      * @param uuid the uuid
      * @param powerMethodList the power method list
      * @return updated Object.
      */
     @Post
-    List<PowerMethod> create(byte[] uuid , List<PowerMethod> powerMethodList);
+    PowerMethodList create(byte[] uuid , PowerMethodList powerMethodList);
     /**
      * Update the specified object. If there is no
      * object set for specified UUID ,  then this object
@@ -67,24 +65,23 @@ public interface PowerMethodResource {
      *
      * @param uuid the uuid
      * @param powerMethodList the power method list
-     * @return List<PowerMethod>
+     * @return PowerMethodList
      */
     @Put
-    List<PowerMethod> update(byte[] uuid , List<PowerMethod> powerMethodList);
+    PowerMethodList update(byte[] uuid , PowerMethodList powerMethodList);
     /**
-     * Delete the List<PowerMethod> object with the specified UUID.
+     * Delete the PowerMethodList object with the specified UUID.
      *
      * @param uuid of the object to remove
      * @return the deleted object
      */
     @Delete
-    List<PowerMethod> remove(byte[] uuid);
+    PowerMethodList remove(byte[] uuid);
     /**
-     * Delete the List<PowerMethod> object with the specified UUID.
+     * Delete the PowerMethodList object with the specified UUID.
      *
      * @param studyDesign from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    List<PowerMethod> removeFrom(StudyDesign studyDesign);
+    PowerMethodList removeFrom(StudyDesign studyDesign);
 }

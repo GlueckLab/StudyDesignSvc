@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
+import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
@@ -50,7 +48,7 @@ interface RelativeGroupSizeResource {
      * @return Object for specified UUID
      */
      @Get
-    List<RelativeGroupSize> retrieve(byte[] uuid);
+    RelativeGroupSizeList retrieve(byte[] uuid);
     /**
      * Store Relative Group Size object to the database.
      *
@@ -59,8 +57,8 @@ interface RelativeGroupSizeResource {
      * @return updated Object.
      */
     @Post
-    List<RelativeGroupSize> create(byte[] uuid ,
-            List<RelativeGroupSize> relativeGroupSizeList);
+    RelativeGroupSizeList create(byte[] uuid ,
+            RelativeGroupSizeList relativeGroupSizeList);
     /**
      * Update the specified object. If there is no
      * object set for specified UUID ,  then this object
@@ -71,8 +69,8 @@ interface RelativeGroupSizeResource {
      * @return Object
      */
     @Put
-    List<RelativeGroupSize> update(byte[] uuid ,
-            List<RelativeGroupSize> relativeGroupSizeList);
+    RelativeGroupSizeList update(byte[] uuid ,
+            RelativeGroupSizeList relativeGroupSizeList);
     /**
      * Delete the Relative Group Size object with the specified UUID.
      *
@@ -80,13 +78,12 @@ interface RelativeGroupSizeResource {
      * @return the deleted object
      */
     @Delete
-    List<RelativeGroupSize> remove(byte[] uuid);
+    RelativeGroupSizeList remove(byte[] uuid);
     /**
-     * Delete the List<RelativeGroupSize> object with the specified UUID.
+     * Delete the RelativeGroupSizeList object with the specified UUID.
      *
      * @param studyDesign from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    List<RelativeGroupSize> removeFrom(StudyDesign studyDesign);
+    RelativeGroupSizeList removeFrom(StudyDesign studyDesign);
 }

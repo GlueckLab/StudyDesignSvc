@@ -22,8 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -36,7 +34,7 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.RelativeGroupSizeManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
+import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -57,12 +55,12 @@ implements RelativeGroupSizeResource
      * Retrieve a RelativeGroupSize object for specified UUID.
      * 
      * @param byte[]
-     * @return List<RelativeGroupSize>
+     * @return RelativeGroupSizeList
      */
 	@Get("json")
-	public List<RelativeGroupSize> retrieve(byte[] uuid) 
+	public RelativeGroupSizeList retrieve(byte[] uuid) 
 	{
-		List<RelativeGroupSize> relativeGroupSizeList = null;
+		RelativeGroupSizeList relativeGroupSizeList = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -78,7 +76,7 @@ implements RelativeGroupSizeResource
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						relativeGroupSizeList = studyDesign.getRelativeGroupSizeList();					
+						relativeGroupSizeList = new RelativeGroupSizeList(studyDesign.getRelativeGroupSizeList());					
             	}				
 			studyDesignManager.commit();					
 		}
@@ -113,11 +111,11 @@ implements RelativeGroupSizeResource
      * Create a RelativeGroupSize object for specified UUID.
      * 
      * @param byte[]
-     * @param List<RelativeGroupSize>
-     * @return List<RelativeGroupSize>
+     * @param RelativeGroupSizeList
+     * @return RelativeGroupSizeList
      */
 	@Post("json")
-	public List<RelativeGroupSize> create(byte[] uuid,List<RelativeGroupSize> relativeGroupSizeList) 
+	public RelativeGroupSizeList create(byte[] uuid,RelativeGroupSizeList relativeGroupSizeList) 
 	{		
 		StudyDesign studyDesign =null;
 		if(uuid==null)
@@ -187,11 +185,11 @@ implements RelativeGroupSizeResource
      * Update a RelativeGroupSize object for specified UUID.
      * 
      * @param byte[]
-     * @param List<RelativeGroupSize>
-     * @return List<RelativeGroupSize>
+     * @param RelativeGroupSizeList
+     * @return RelativeGroupSizeList
      */
 	@Put("json")
-	public List<RelativeGroupSize> update(byte[] uuid,List<RelativeGroupSize> relativeGroupSizeList) 
+	public RelativeGroupSizeList update(byte[] uuid,RelativeGroupSizeList relativeGroupSizeList) 
 	{
 		return create(uuid,relativeGroupSizeList);
 	}
@@ -200,12 +198,12 @@ implements RelativeGroupSizeResource
      * Delete a RelativeGroupSize object for specified UUID.
      * 
      * @param byte[]
-     * @return List<RelativeGroupSize>
+     * @return RelativeGroupSizeList
      */
 	@Delete("json")
-	public List<RelativeGroupSize> remove(byte[] uuid) 
+	public RelativeGroupSizeList remove(byte[] uuid) 
 	{
-		List<RelativeGroupSize> relativeGroupSizeList = null;
+		RelativeGroupSizeList relativeGroupSizeList = null;
 		StudyDesign studyDesign = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
@@ -222,7 +220,7 @@ implements RelativeGroupSizeResource
             	{		
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						relativeGroupSizeList = studyDesign.getRelativeGroupSizeList();
+						relativeGroupSizeList = new RelativeGroupSizeList(studyDesign.getRelativeGroupSizeList());
 					if(relativeGroupSizeList.isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 								"no RelativeGroupSize is specified");					
@@ -235,7 +233,7 @@ implements RelativeGroupSizeResource
 			{
 				relativeGroupSizeManager = new RelativeGroupSizeManager();
 				relativeGroupSizeManager.beginTransaction();
-					relativeGroupSizeList = relativeGroupSizeManager.delete(uuid,relativeGroupSizeList);
+					relativeGroupSizeList = new RelativeGroupSizeList(relativeGroupSizeManager.delete(uuid,relativeGroupSizeList));
 				relativeGroupSizeManager.commit();
 			}
 		}
@@ -270,18 +268,16 @@ implements RelativeGroupSizeResource
      * Delete a RelativeGroupSize object for specified Study Design.
      * 
      * @param StudyDesign
-     * @return List<RelativeGroupSize>
+     * @return RelativeGroupSizeList
      */
-	@Override
-	@Delete("json")
-	public List<RelativeGroupSize> removeFrom(StudyDesign studyDesign) 
+	public RelativeGroupSizeList removeFrom(StudyDesign studyDesign) 
 	{
-		List<RelativeGroupSize> relativeGroupSizeList = null;	
+		RelativeGroupSizeList relativeGroupSizeList = null;	
         try
         {                    			
         	relativeGroupSizeManager = new RelativeGroupSizeManager();
         	relativeGroupSizeManager.beginTransaction();
-        		relativeGroupSizeList=relativeGroupSizeManager.delete(studyDesign.getUuid(),studyDesign.getRelativeGroupSizeList());
+        		relativeGroupSizeList=new RelativeGroupSizeList(relativeGroupSizeManager.delete(studyDesign.getUuid(),studyDesign.getRelativeGroupSizeList()));
         	relativeGroupSizeManager.commit();        	       
         }
         catch (BaseManagerException bme)

@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.SampleSize;
+import edu.ucdenver.bios.webservice.common.domain.SampleSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
@@ -50,10 +48,10 @@ public interface SampleSizeResource {
      * @return Object for specified UUID
      */
     @Get
-    List<SampleSize> retrieve(byte[] uuid);
+    SampleSizeList retrieve(byte[] uuid);
 
     /**
-     * Store List<SampleSize> object to the database.
+     * Store SampleSizeList object to the database.
      *
      * @param uuid
      *            the uuid
@@ -62,7 +60,7 @@ public interface SampleSizeResource {
      * @return updated Object.
      */
     @Post
-    List<SampleSize> create(byte[] uuid , List<SampleSize> list);
+    SampleSizeList create(byte[] uuid , SampleSizeList list);
 
     /**
      * Update the specified object. If there is no object set for specified
@@ -72,10 +70,10 @@ public interface SampleSizeResource {
      *            the uuid
      * @param list
      *            the list
-     * @return List<SampleSize>
+     * @return SampleSizeList
      */
     @Put
-    List<SampleSize> update(byte[] uuid , List<SampleSize> list);
+    SampleSizeList update(byte[] uuid , SampleSizeList list);
 
     /**
      * Delete the SampleSize object with the specified UUID.
@@ -85,15 +83,14 @@ public interface SampleSizeResource {
      * @return the deleted object
      */
     @Delete
-    List<SampleSize> remove(byte[] uuid);
+    SampleSizeList remove(byte[] uuid);
 
     /**
-     * Delete the List<SampleSize> object with the specified UUID.
+     * Delete the SampleSizeList object with the specified UUID.
      *
      * @param studyDesign
      *            from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    List<SampleSize> removeFrom(StudyDesign studyDesign);
+    SampleSizeList removeFrom(StudyDesign studyDesign);
 }

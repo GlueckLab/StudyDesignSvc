@@ -530,7 +530,6 @@ implements MatrixResource
      * @param StudyDesign
      * @return Set<NamedMatrix>
      */
-	@Delete
 	public Set<NamedMatrix> removeFrom(StudyDesign studyDesign) 
 	{
 		boolean flag;	
@@ -559,7 +558,6 @@ implements MatrixResource
      * @param StudyDesign
      * @return Set<NamedMatrix>
      */
-	@Delete
 	public NamedMatrix removeFrom(StudyDesign studyDesign,String name) 
 	{
 		boolean flag;	

@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
+import edu.ucdenver.bios.webservice.common.domain.SigmaScaleList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 // to-do: Auto-generated Javadoc
@@ -52,10 +50,10 @@ public interface SigmaScaleResource {
      * @return Object for specified UUID
      */
     @Get
-    List<SigmaScale> retrieve(byte[] uuid);
+    SigmaScaleList retrieve(byte[] uuid);
 
     /**
-     * Store List<SigmaScale> object to the database.
+     * Store SigmaScaleList object to the database.
      *
      * @param uuid
      *            the uuid
@@ -64,7 +62,7 @@ public interface SigmaScaleResource {
      * @return updated Object.
      */
     @Post
-    List<SigmaScale> create(byte[] uuid, List<SigmaScale> sigmaScaleList);
+    SigmaScaleList create(byte[] uuid, SigmaScaleList sigmaScaleList);
 
     /**
      * Update the specified object. If there is no object set for specified
@@ -74,28 +72,27 @@ public interface SigmaScaleResource {
      *            the uuid
      * @param sigmaScaleList
      *            the sigma scale list
-     * @return List<SigmaScale>
+     * @return SigmaScaleList
      */
     @Put
-    List<SigmaScale> update(byte[] uuid, List<SigmaScale> sigmaScaleList);
+    SigmaScaleList update(byte[] uuid, SigmaScaleList sigmaScaleList);
 
     /**
-     * Delete the List<SigmaScale> object with the specified UUID.
+     * Delete the SigmaScaleList object with the specified UUID.
      *
      * @param uuid
      *            of the object to remove
      * @return the deleted object
      */
     @Delete
-    List<SigmaScale> remove(byte[] uuid);
+    SigmaScaleList remove(byte[] uuid);
 
     /**
-     * Delete the List<SigmaScale> object with the specified UUID.
+     * Delete the SigmaScaleList object with the specified UUID.
      *
      * @param studyDesign
      *            from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    List<SigmaScale> removeFrom(StudyDesign studyDesign);
+    SigmaScaleList removeFrom(StudyDesign studyDesign);
 }

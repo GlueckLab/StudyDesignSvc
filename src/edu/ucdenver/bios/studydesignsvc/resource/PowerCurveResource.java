@@ -86,6 +86,5 @@ public interface PowerCurveResource {
      * @param studyDesign from which object is to be removed
      * @return the deleted study design object
      */
-    @Delete
     PowerCurveDescription removeFrom(StudyDesign studyDesign);
 }

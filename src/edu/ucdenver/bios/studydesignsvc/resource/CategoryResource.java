@@ -24,14 +24,11 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
-import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.Category;
+import edu.ucdenver.bios.webservice.common.domain.CategoryList;
 
 /**
  * Generic Resource class for handling requests for the
@@ -49,7 +46,7 @@ public interface CategoryResource {
      * @return Object for specified UUID
      */
      @Get
-    List<Category> retrieve(byte[] uuid);
+    CategoryList retrieve(byte[] uuid);
 
     /**
      * Store Category object to the database.
@@ -59,7 +56,7 @@ public interface CategoryResource {
      * @return updated Object.
      */
     @Post
-    List<Category> create(byte[] uuid , List<Category> category);
+    CategoryList create(byte[] uuid , CategoryList category);
 
     /**
      * Update the specified object. If there is no
@@ -71,7 +68,7 @@ public interface CategoryResource {
      * @return Object
      */
     @Put
-    List<Category> update(byte[] uuid , List<Category> category);
+    CategoryList update(byte[] uuid , CategoryList category);
 
     /**
      * Delete the Category object with the specified UUID.
@@ -79,6 +76,5 @@ public interface CategoryResource {
      * @param uuid of the object to remove
      * @return the deleted object
      */
-    @Delete
-    List<Category> remove(byte[] uuid);
+    CategoryList remove(byte[] uuid);
 }

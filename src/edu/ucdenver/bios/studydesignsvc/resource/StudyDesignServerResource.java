@@ -28,13 +28,22 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.restlet.data.Status;
+import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializer;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
@@ -57,8 +66,8 @@ import edu.ucdenver.bios.studydesignsvc.manager.SigmaScaleManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StatisticalTestManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.studydesignsvc.manager.TypeIErrorManager;
-import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignResource;
 import edu.ucdenver.bios.webservice.common.domain.BetaScale;
+import edu.ucdenver.bios.webservice.common.domain.BetaScaleList;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
@@ -91,16 +100,17 @@ public class StudyDesignServerResource extends ServerResource
 implements StudyDesignResource
 {
 	static Logger logger = StudyDesignLogger.getInstance();	
-	
+	StudyDesignManager studyDesignManager = null;
+		
 	/**
 	 * Retrieve the study design matching the specified UUID.
 	 * Returns "not found" if no matching designs are available
 	 * @return study designs with specified UUID
 	 */
-	@Get("json")
+	/*@Get
 	public StudyDesign retrieve(byte[] uuid)
 	{
-		StudyDesignManager studyDesignManager = null;
+		studyDesignManager = null;
 		StudyDesign studyDesign = null; 
 		
 		try
@@ -110,8 +120,7 @@ implements StudyDesignResource
 	
 			studyDesignManager = new StudyDesignManager();
 			studyDesignManager.beginTransaction();		
-			studyDesign = studyDesignManager.get(uuid);
-
+			    studyDesign = studyDesignManager.get(uuid);
 			studyDesignManager.commit();
 		}
 		catch(BaseManagerException bme)
@@ -133,108 +142,66 @@ implements StudyDesignResource
 			}
 		}						
 		return studyDesign;			
-	}
+	}*/
+	
 
-	@Get("json")
-	public List<StudyDesign> retrieve()
-	{
-		StudyDesignManager studyDesignManager = null;
-		List<StudyDesign> studyDesignList = null; 
-		
-		try
-		{			
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();		
-			studyDesignList = studyDesignManager.getStudyDesigns();
-
-			studyDesignManager.commit();
-		}
-		catch(BaseManagerException bme)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {studyDesignList = null;}					
-			}
-		}	
-		catch(StudyDesignException sde)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {studyDesignList = null;}					
-			}
-		}						
-		return studyDesignList;			
-
-	}
-
-	@Post("json")
-	public StudyDesign create(StudyDesign studyDesign)
-	{
-		StudyDesignManager studyDesignManager = null;		
-		
-		try
-		{			
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();		
-				studyDesign = studyDesignManager.saveOrUpdate(studyDesign,true);
-			studyDesignManager.commit();
-		}
-		catch(BaseManagerException bme)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {studyDesign = null;}					
-			}
-		}	
-		catch(StudyDesignException sde)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {studyDesign = null;}					
-			}
-		}						
-		return studyDesign;
-	}
-
-	@Put("json")
+	
+	@Put
 	public StudyDesign update(StudyDesign studyDesign)
 	{
-		StudyDesignManager studyDesignManager = null;		
-		
-		try
-		{			
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();		
-				studyDesign = studyDesignManager.saveOrUpdate(studyDesign,false);
-			studyDesignManager.commit();
-		}
-		catch(BaseManagerException bme)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {studyDesign = null;}					
-			}
-		}	
-		catch(StudyDesignException sde)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {studyDesign = null;}					
-			}
-		}						
-		return studyDesign;
+	    StudyDesignManager studyDesignManager = null;
+        boolean uuidFlag = false;
+        byte[] uuid = studyDesign.getUuid(); 
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        try
+        {       
+            /*
+             * ----------------------------------------------------
+             * Check for existence of a UUID in Study Design object
+             * ----------------------------------------------------
+             */
+            studyDesignManager = new StudyDesignManager();
+            studyDesignManager.beginTransaction();
+            uuidFlag = studyDesignManager.hasUUID(uuid);
+            /*if (uuidFlag) {
+                studyDesign = studyDesignManager.get(uuid);           
+            }*/
+            studyDesignManager.commit();
+            /*
+             * ---------------------------------------------------- 
+             * Remove existing Study Design for this object
+             * ----------------------------------------------------
+             */            
+            if (uuidFlag) {
+                studyDesign = remove(uuid);                
+            }            
+            studyDesignManager = new StudyDesignManager();
+            studyDesignManager.beginTransaction();      
+                studyDesign = studyDesignManager.saveOrUpdate(studyDesign,true);
+            studyDesignManager.commit();          
+        }
+        catch(BaseManagerException bme)
+        {
+            StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
+            if(studyDesignManager!=null)
+            {
+                try {studyDesignManager.rollback();}
+                catch(BaseManagerException re) {studyDesign = null;}                    
+            }
+        }   
+        catch(StudyDesignException sde)
+        {
+            StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
+            if(studyDesignManager!=null)
+            {
+                try {studyDesignManager.rollback();}
+                catch(BaseManagerException re) {studyDesign = null;}                    
+            }
+        }                       
+        return studyDesign;
 	}
 
 	/*
@@ -245,7 +212,7 @@ implements StudyDesignResource
 	 * set the objects in the study design to obtained objects
 	 * 3) change in this approach required
 	 */
-	@Delete("json")
+	@Delete
 	public StudyDesign remove(byte[] uuid)
 	{
 		StudyDesignManager studyDesignManager = null;
@@ -325,28 +292,28 @@ implements StudyDesignResource
                 BetaScaleManager betaScaleManager = new BetaScaleManager();
                 if(studyDesign.getBetaScaleList()!=null){
                     betaScaleManager.beginTransaction();      
-                        betaScaleList=betaScaleManager.delete(uuid,studyDesign.getBetaScaleList());
+                        betaScaleList = betaScaleManager.delete(uuid,studyDesign.getBetaScaleList());
                     betaScaleManager.commit();
                 }
                 
                 SigmaScaleManager sigmaScaleManager = new SigmaScaleManager();
                 if(studyDesign.getSigmaScaleList()!=null){
                     sigmaScaleManager.beginTransaction();      
-                        sigmaScaleList=sigmaScaleManager.delete(uuid,studyDesign.getSigmaScaleList());
+                        sigmaScaleList = sigmaScaleManager.delete(uuid,studyDesign.getSigmaScaleList());
                     sigmaScaleManager.commit();
                 }
                 
                 SampleSizeManager sampleSizeManager = new SampleSizeManager();
                 if(studyDesign.getSampleSizeList()!=null){
                     sampleSizeManager.beginTransaction();      
-                        sampleSizeList=sampleSizeManager.delete(uuid,studyDesign.getSampleSizeList());
+                        sampleSizeList = sampleSizeManager.delete(uuid,studyDesign.getSampleSizeList());
                     sampleSizeManager.commit();
                 }
                 
                 TypeIErrorManager typeIErrorManager = new TypeIErrorManager();
                 if(studyDesign.getAlphaList()!=null){
                     typeIErrorManager.beginTransaction();      
-                        alphaList=typeIErrorManager.delete(uuid,studyDesign.getAlphaList());
+                        alphaList = typeIErrorManager.delete(uuid,studyDesign.getAlphaList());
                     typeIErrorManager.commit();
                 }
                 
@@ -516,7 +483,7 @@ implements StudyDesignResource
 		return studyDesign;
 	}
 
-	@Post("json")
+	@Post
 	public StudyDesign create() 
 	{
 		StudyDesignManager studyDesignManager = null;		
@@ -550,100 +517,5 @@ implements StudyDesignResource
 			}
 		}						
 		return studyDesign;
-	}
-
-//	@Override
-//	public StudyDesign retrieve() 
-//	{
-//		StudyDesignManager studyDesignManager = null;
-//		StudyDesign studyDesign = null; 
-//		try
-//		{
-//			studyUUID = studyUUIDStr = this.getRequest().getAttributes().get(StudyDesignConstants.TAG_STUDY_UUID);
-//			if (studyUUIDStr == null)
-//			//System.out.println(this.studyUUID);
-//			//studyDesign=new StudyDesign(this.studyUUID);			
-//			studyDesignManager = new StudyDesignManager();
-//			studyDesignManager.beginTransaction();		
-//				studyDesign=studyDesignManager.getStudyDesign(this.studyUUID);
-//				/*List<UUID> list = studyDesignManager.getStudyUUIDs();			
-//				if(list!=null)
-//				{
-//					System.out.println(list.toString());
-//				}
-//				else
-//				{
-//					System.out.println("empty list");
-//				}*/	
-//			studyDesignManager.commit();
-//		}
-//		catch(ResourceException e)
-//		{
-//			StudyDesignLogger.getInstance().error("StudyDesignResource : "+e.getMessage());
-//			if(studyDesignManager!=null)
-//			{
-//				try
-//				{studyDesignManager.rollback();}				
-//				catch(ResourceException re)
-//				{studyDesign = null;}				
-//			}
-//		}						
-//		return studyDesign;			
-//	}
-//	
-//	
-//	@Override
-//	public StudyDesign create(StudyDesign studyDesign) 
-//	{
-//		StudyDesignManager studyDesignManager = null;    	
-//		try
-//		{
-//			/* create a new UUID for the study design */
-//			studyDesign.setStudyUUID(UUID.randomUUID());
-//			/* save it to the database */
-//			studyDesignManager = new StudyDesignManager();
-//			studyDesignManager.beginTransaction();
-//			studyDesignManager.saveOrUpdateStudyDesign(studyDesign, true);
-//			studyDesignManager.commit();
-//		}
-//		catch(ResourceException e)
-//		{
-//			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: "+e.getMessage());
-//			if(studyDesignManager!=null)
-//			{
-//				try
-//				{studyDesignManager.rollback();}				
-//				catch(ResourceException re)
-//				{studyDesign = null;}				
-//			}
-//		}		
-//    	/* return the study design with updated UUID */
-//		return studyDesign;	  
-//	}
-//	@Override
-//	public StudyDesign update(StudyDesign contact) 
-//	{
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//	@Override
-//	public StudyDesign remove() 
-//	{
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//	@Override
-//	public StudyDesign retrieve(UUID uuid)
-//	{
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//	@Override
-//	public StudyDesign remove(UUID uuid)
-//	{
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//	
-	
+	}	
 }

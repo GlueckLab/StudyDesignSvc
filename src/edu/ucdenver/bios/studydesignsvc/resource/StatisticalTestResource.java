@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
+import edu.ucdenver.bios.webservice.common.domain.StatisticalTestList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 // to-do: Auto-generated Javadoc
@@ -51,18 +49,18 @@ interface StatisticalTestResource {
      * @return Object for specified UUID
      */
     @Get
-    List<StatisticalTest> retrieve(byte[] uuid);
+    StatisticalTestList retrieve(byte[] uuid);
 
     /**
-     * Store List<StatisticalTest> object to the database.
+     * Store StatisticalTestList object to the database.
      *
      * @param uuid the uuid
      * @param statisticalTestList the statistical test list
      * @return updated Object.
      */
     @Post
-    List<StatisticalTest> create(byte[] uuid ,
-            List<StatisticalTest> statisticalTestList);
+    StatisticalTestList create(byte[] uuid ,
+            StatisticalTestList statisticalTestList);
 
     /**
      * Update the specified object. If there is no object set for specified
@@ -70,27 +68,26 @@ interface StatisticalTestResource {
      *
      * @param uuid the uuid
      * @param statisticalTestList the statistical test list
-     * @return List<StatisticalTest>
+     * @return StatisticalTestList
      */
     @Put
-    List<StatisticalTest> update(byte[] uuid ,
-            List<StatisticalTest> statisticalTestList);
+    StatisticalTestList update(byte[] uuid ,
+            StatisticalTestList statisticalTestList);
 
     /**
-     * Delete the List<StatisticalTest> object with the specified UUID.
+     * Delete the StatisticalTestList object with the specified UUID.
      *
      * @param uuid of the object to remove
      * @return the deleted object
      */
     @Delete
-    List<StatisticalTest> remove(byte[] uuid);
+    StatisticalTestList remove(byte[] uuid);
 
     /**
-     * Delete the List<StatisticalTest> object with the specified UUID.
+     * Delete the StatisticalTestList object with the specified UUID.
      *
      * @param studyDesign from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    List<StatisticalTest> removeFrom(StudyDesign studyDesign);
+    StatisticalTestList removeFrom(StudyDesign studyDesign);
 }

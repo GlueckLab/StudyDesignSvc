@@ -22,8 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -36,7 +34,7 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.QuantileManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.webservice.common.domain.Quantile;
+import edu.ucdenver.bios.webservice.common.domain.QuantileList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -57,12 +55,12 @@ implements QuantileResource
      * Retrieve a Quantile object for specified UUID.
      * 
      * @param byte[]
-     * @return List<Quantile>
+     * @return QuantileList
      */
 	@Get("json")
-	public List<Quantile> retrieve(byte[] uuid) 
+	public QuantileList retrieve(byte[] uuid) 
 	{
-		List<Quantile> quantileList = null;
+		QuantileList quantileList = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -78,7 +76,7 @@ implements QuantileResource
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						quantileList = studyDesign.getQuantileList();					
+						quantileList = new QuantileList(studyDesign.getQuantileList());					
             	}				
 			studyDesignManager.commit();					
 		}
@@ -113,11 +111,11 @@ implements QuantileResource
      * Create a Quantile object for specified UUID.
      * 
      * @param byte[]
-     * @param List<Quantile>
-     * @return List<Quantile>
+     * @param QuantileList
+     * @return QuantileList
      */
 	@Post("json")
-	public List<Quantile> create(byte[] uuid,List<Quantile> quantileList) 
+	public QuantileList create(byte[] uuid,QuantileList quantileList) 
 	{		
 		StudyDesign studyDesign =null;
 		if(uuid==null)
@@ -187,11 +185,11 @@ implements QuantileResource
      * Update a Quantile object for specified UUID.
      * 
      * @param byte[]
-     * @param List<Quantile>
-     * @return List<Quantile>
+     * @param QuantileList
+     * @return QuantileList
      */
 	@Put("json")
-	public List<Quantile> update(byte[] uuid,List<Quantile> quantileList) 
+	public QuantileList update(byte[] uuid,QuantileList quantileList) 
 	{
 		return create(uuid,quantileList);
 	}
@@ -200,12 +198,12 @@ implements QuantileResource
      * Delete a Quantile object for specified UUID.
      * 
      * @param byte[]
-     * @return List<Quantile>
+     * @return QuantileList
      */
 	@Delete("json")
-	public List<Quantile> remove(byte[] uuid) 
+	public QuantileList remove(byte[] uuid) 
 	{
-		List<Quantile> quantileList = null;
+		QuantileList quantileList = null;
 		StudyDesign studyDesign = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
@@ -222,7 +220,7 @@ implements QuantileResource
             	{		
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						quantileList = studyDesign.getQuantileList();
+						quantileList = new QuantileList(studyDesign.getQuantileList());
 					if(quantileList.isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 								"no Quantile is specified");					
@@ -235,7 +233,7 @@ implements QuantileResource
 			{
 				quantileManager = new QuantileManager();
 				quantileManager.beginTransaction();
-					quantileList = quantileManager.delete(uuid,quantileList);
+					quantileList = new QuantileList(quantileManager.delete(uuid,quantileList));
 				quantileManager.commit();
 			}
 		}
@@ -270,18 +268,16 @@ implements QuantileResource
      * Delete a Quantile object for specified Study Design.
      * 
      * @param StudyDesign
-     * @return List<Quantile>
+     * @return QuantileList
      */
-	@Override
-	@Delete("json")
-	public List<Quantile> removeFrom(StudyDesign studyDesign) 
+	public QuantileList removeFrom(StudyDesign studyDesign) 
 	{
-		List<Quantile> quantileList = null;	
+		QuantileList quantileList = null;	
         try
         {                    			
         	quantileManager = new QuantileManager();
         	quantileManager.beginTransaction();
-        		quantileList=quantileManager.delete(studyDesign.getUuid(),studyDesign.getQuantileList());
+        		quantileList=new QuantileList(quantileManager.delete(studyDesign.getUuid(),studyDesign.getQuantileList()));
         	quantileManager.commit();        	       
         }
         catch (BaseManagerException bme)

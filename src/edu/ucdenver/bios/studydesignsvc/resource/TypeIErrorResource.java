@@ -24,15 +24,13 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
-import edu.ucdenver.bios.webservice.common.domain.TypeIError;
+import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
 
 /**
  * Generic Resource class for handling requests for the domain objects of a Type
@@ -51,10 +49,10 @@ interface TypeIErrorResource {
      * @return Object for specified UUID
      */
     @Get
-    List<TypeIError> retrieve(byte[] uuid);
+    TypeIErrorList retrieve(byte[] uuid);
 
     /**
-     * Store List<TypeIError> object to the database.
+     * Store TypeIErrorList object to the database.
      *
      * @param uuid
      *            the uuid
@@ -63,7 +61,7 @@ interface TypeIErrorResource {
      * @return updated Object.
      */
     @Post
-    List<TypeIError> create(byte[] uuid ,  List<TypeIError> typeIErrorList);
+    TypeIErrorList create(byte[] uuid ,  TypeIErrorList typeIErrorList);
 
     /**
      * Update the specified object. If there is no object set for specified
@@ -73,28 +71,27 @@ interface TypeIErrorResource {
      *            the uuid
      * @param typeIErrorList
      *            the type i error list
-     * @return List<TypeIError>
+     * @return TypeIErrorList
      */
     @Put
-    List<TypeIError> update(byte[] uuid ,  List<TypeIError> typeIErrorList);
+    TypeIErrorList update(byte[] uuid ,  TypeIErrorList typeIErrorList);
 
     /**
-     * Delete the List<TypeIError> object with the specified UUID.
+     * Delete the TypeIErrorList object with the specified UUID.
      *
      * @param uuid
      *            of the object to remove
      * @return the deleted object
      */
     @Delete
-    List<TypeIError> remove(byte[] uuid);
+    TypeIErrorList remove(byte[] uuid);
 
     /**
-     * Delete the List<TypeIError> object with the specified UUID.
+     * Delete the TypeIErrorList object with the specified UUID.
      *
      * @param studyDesign
      *            from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    List<TypeIError> removeFrom(StudyDesign studyDesign);
+    TypeIErrorList removeFrom(StudyDesign studyDesign);
 }

@@ -22,8 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -36,7 +34,7 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.PowerMethodManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
+import edu.ucdenver.bios.webservice.common.domain.PowerMethodList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -54,15 +52,15 @@ implements PowerMethodResource
 	boolean uuidFlag;
 
 	/**
-     * Retrieve a List<PowerMethod> object for specified UUID.
+     * Retrieve a PowerMethodList object for specified UUID.
      * 
      * @param byte[]
-     * @return List<PowerMethod>
+     * @return PowerMethodList
      */
 	@Get("json")
-	public List<PowerMethod> retrieve(byte[] uuid) 
+	public PowerMethodList retrieve(byte[] uuid) 
 	{
-		List<PowerMethod> powerMethodList = null;
+		PowerMethodList powerMethodList = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -78,7 +76,7 @@ implements PowerMethodResource
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						powerMethodList = studyDesign.getPowerMethodList();					
+						powerMethodList = new PowerMethodList(studyDesign.getPowerMethodList());					
             	}				
 			studyDesignManager.commit();					
 		}
@@ -110,14 +108,14 @@ implements PowerMethodResource
 	}
 
 	/**
-     * Create a List<PowerMethod> object for specified UUID.
+     * Create a PowerMethodList object for specified UUID.
      * 
      * @param byte[]
-     * @param List<PowerMethod>
-     * @return List<PowerMethod>
+     * @param PowerMethodList
+     * @return PowerMethodList
      */
 	@Post("json")
-	public List<PowerMethod> create(byte[] uuid,List<PowerMethod> powerMethodList) 
+	public PowerMethodList create(byte[] uuid,PowerMethodList powerMethodList) 
 	{		
 		StudyDesign studyDesign =null;
 		if(uuid==null)
@@ -184,14 +182,14 @@ implements PowerMethodResource
 	}
 
 	/**
-     * Update a List<PowerMethod> object for specified UUID.
+     * Update a PowerMethodList object for specified UUID.
      * 
      * @param byte[]
-     * @param List<PowerMethod>
-     * @return List<PowerMethod>
+     * @param PowerMethodList
+     * @return PowerMethodList
      */
 	@Put("json")
-	public List<PowerMethod> update(byte[] uuid,List<PowerMethod> powerMethodList) 
+	public PowerMethodList update(byte[] uuid,PowerMethodList powerMethodList) 
 	{
 		return create(uuid,powerMethodList);
 	}
@@ -200,12 +198,12 @@ implements PowerMethodResource
      * Delete a PowerMethod object for specified UUID.
      * 
      * @param byte[]
-     * @return List<PowerMethod>
+     * @return PowerMethodList
      */
 	@Delete("json")
-	public List<PowerMethod> remove(byte[] uuid) 
+	public PowerMethodList remove(byte[] uuid) 
 	{
-		List<PowerMethod> powerMethodList = null;
+		PowerMethodList powerMethodList = null;
 		StudyDesign studyDesign = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
@@ -222,7 +220,7 @@ implements PowerMethodResource
             	{		
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						powerMethodList = studyDesign.getPowerMethodList();								
+						powerMethodList = new PowerMethodList(studyDesign.getPowerMethodList());								
             	}				
 			studyDesignManager.commit();
 			/* ----------------------------------------------------
@@ -232,7 +230,7 @@ implements PowerMethodResource
 			{
 				powerMethodManager = new PowerMethodManager();
 				powerMethodManager.beginTransaction();
-					powerMethodList = powerMethodManager.delete(uuid,powerMethodList);
+					powerMethodList = new PowerMethodList(powerMethodManager.delete(uuid,powerMethodList));
 				powerMethodManager.commit();
 			}
 		}
@@ -264,21 +262,19 @@ implements PowerMethodResource
 	}
 
 	/**
-     * Delete a List<PowerMethod> object for specified Study Design.
+     * Delete a PowerMethodList object for specified Study Design.
      * 
      * @param StudyDesign
-     * @return List<PowerMethod>
+     * @return PowerMethodList
      */
-	@Override
-	@Delete("json")
-	public List<PowerMethod> removeFrom(StudyDesign studyDesign) 
+	public PowerMethodList removeFrom(StudyDesign studyDesign) 
 	{
-		List<PowerMethod> powerMethodList = null;	
+		PowerMethodList powerMethodList = null;	
         try
         {                    			
         	powerMethodManager = new PowerMethodManager();
         	powerMethodManager.beginTransaction();
-        		powerMethodList=powerMethodManager.delete(studyDesign.getUuid(),studyDesign.getPowerMethodList());
+        		powerMethodList=new PowerMethodList(powerMethodManager.delete(studyDesign.getUuid(),studyDesign.getPowerMethodList()));
         	powerMethodManager.commit();        	       
         }
         catch (BaseManagerException bme)

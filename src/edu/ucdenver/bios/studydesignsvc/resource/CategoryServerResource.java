@@ -16,6 +16,7 @@ import edu.ucdenver.bios.studydesignsvc.manager.CategoryManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
 import edu.ucdenver.bios.webservice.common.domain.Category;
+import edu.ucdenver.bios.webservice.common.domain.CategoryList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -37,8 +38,8 @@ public class CategoryServerResource extends ServerResource implements
 
     
     @Get
-    public List<Category> retrieve(final byte[] uuid) {
-        List<Category> categoryList = null;
+    public CategoryList retrieve(final byte[] uuid) {
+        CategoryList categoryList = null;
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
@@ -92,7 +93,7 @@ public class CategoryServerResource extends ServerResource implements
      * java.util.List)
      */
     @Post("json")
-    public List<Category> create(byte[] uuid, List<Category> categoryList) {
+    public CategoryList create(byte[] uuid, CategoryList categoryList) {
         StudyDesign studyDesign = null;
         if (uuid == null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
@@ -119,7 +120,7 @@ public class CategoryServerResource extends ServerResource implements
              * ----------------------------------------------------
              */
             if (uuidFlag
-                    && studyDesign.getBetweenParticipantFactorList() != null)
+                    && !studyDesign.getBetweenParticipantFactorList().isEmpty())
                 remove(studyDesign);
             /*
              * ---------------------------------------------------- Set
@@ -133,7 +134,7 @@ public class CategoryServerResource extends ServerResource implements
             if (uuidFlag) {
                 categoryManager = new CategoryManager();
                 categoryManager.beginTransaction();
-                categoryList = categoryManager.saveOrUpdate(categoryList, true);
+                categoryList = new CategoryList(categoryManager.saveOrUpdate(categoryList, true));
                 categoryManager.commit();
                 /*
                  * ---------------------------------------------------- Set
@@ -185,7 +186,7 @@ public class CategoryServerResource extends ServerResource implements
      * java.util.List)
      */
     @Put
-    public List<Category> update(byte[] uuid, List<Category> categoryList) {
+    public CategoryList update(byte[] uuid, CategoryList categoryList) {
         return create(uuid, categoryList);
     }
 
@@ -196,8 +197,8 @@ public class CategoryServerResource extends ServerResource implements
      * edu.ucdenver.bios.studydesignsvc.resource.CategoryResource#remove(byte[])
      */
     @Delete
-    public List<Category> remove(final byte[] uuid) {
-        List<Category> categoryList = null;
+    public CategoryList remove(final byte[] uuid) {
+        CategoryList categoryList = null;
         StudyDesign studyDesign = null;
         if (uuid == null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
@@ -226,10 +227,10 @@ public class CategoryServerResource extends ServerResource implements
              * existing Beta Scale objects for this object
              * ----------------------------------------------------
              */
-            if (categoryList != null) {
+            if (!categoryList.isEmpty()) {
                 categoryManager = new CategoryManager();
                 categoryManager.beginTransaction();
-                categoryList = categoryManager.delete(uuid, categoryList);
+                categoryList = new CategoryList(categoryManager.delete(uuid, categoryList));
                 categoryManager.commit();
                 /*
                  * ---------------------------------------------------- Set
@@ -276,10 +277,9 @@ public class CategoryServerResource extends ServerResource implements
      *            the study design
      * @return ConfidenceIntervalDescription
      */
-    @Delete("json")
-    public final List<Category> remove(StudyDesign studyDesign) {
+    public final CategoryList remove(StudyDesign studyDesign) {
         boolean flag;
-        List<Category> categoryList = null;
+        CategoryList categoryList = null;
         try {
             categoryManager = new CategoryManager();
             categoryManager.beginTransaction();

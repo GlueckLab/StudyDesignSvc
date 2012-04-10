@@ -22,11 +22,10 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.Set;
-
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
@@ -35,7 +34,7 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.CovarianceManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.webservice.common.domain.Covariance;
+import edu.ucdenver.bios.webservice.common.domain.CovarianceSet;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 /**
@@ -55,12 +54,12 @@ implements CovarianceResource
      * Retrieve a Covariance object for specified UUID.
      * 
      * @param byte[]
-     * @return Set<Covariance>
+     * @return CovarianceSet
      */
 	@Get
-	public Set<Covariance> retrieve(byte[] uuid) 
+	public CovarianceSet retrieve(byte[] uuid) 
 	{
-		Set<Covariance> covarianceSet = null;
+		CovarianceSet covarianceSet = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");
@@ -76,7 +75,7 @@ implements CovarianceResource
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						covarianceSet = studyDesign.getCovariance();					
+						covarianceSet = new CovarianceSet(studyDesign.getCovariance());					
             	}				
 			studyDesignManager.commit();					
 		}
@@ -107,8 +106,8 @@ implements CovarianceResource
 		return covarianceSet;
 	}
 
-	@Override
-	public Set<Covariance> create(byte[] uuid, Set<Covariance> covarianceSet) 
+	@Post
+	public CovarianceSet create(byte[] uuid, CovarianceSet covarianceSet) 
 	{
 		StudyDesign studyDesign =null;
 		if(uuid==null)
@@ -131,7 +130,7 @@ implements CovarianceResource
 			/* ----------------------------------------------------
 			 * Remove existing Covariance for this object 
 			 * ----------------------------------------------------*/
-			if(uuidFlag && studyDesign.getCovariance()!=null)
+			if(uuidFlag && !studyDesign.getCovariance().isEmpty())
 				removeFrom(studyDesign);				
 			if(uuidFlag)
 			{	
@@ -140,7 +139,7 @@ implements CovarianceResource
             		covarianceManager.saveOrUpdate(covarianceSet, true);
             	covarianceManager.commit();            	
             	/* ----------------------------------------------------
-    			 * Set reference of Set<Covariance> Object to Study Design object 
+    			 * Set reference of CovarianceSet Object to Study Design object 
     			 * ----------------------------------------------------*/
             	studyDesign.setCovariance(covarianceSet);            	
             	studyDesignManager = new StudyDesignManager();
@@ -180,10 +179,10 @@ implements CovarianceResource
      * Update a Covariance object for specified UUID.
      * 
      * @param byte[]
-     * @return Set<Covariance>
+     * @return CovarianceSet
      */
 	@Put("json")
-	public Set<Covariance> update(byte[] uuid,Set<Covariance> covarianceSet) 
+	public CovarianceSet update(byte[] uuid,CovarianceSet covarianceSet) 
 	{				
 		return create(uuid,covarianceSet);			
 	}	
@@ -192,12 +191,12 @@ implements CovarianceResource
      * Delete a Covariance object for specified UUID.
      * 
      * @param byte[]
-     * @return Set<Covariance>
+     * @return CovarianceSet
      */
 	@Delete("json")
-	public Set<Covariance> remove(byte[] uuid) 
+	public CovarianceSet remove(byte[] uuid) 
 	{
-		Set<Covariance> covarianceSet = null;
+		CovarianceSet covarianceSet = null;
 		StudyDesign studyDesign = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
@@ -214,17 +213,17 @@ implements CovarianceResource
             	{		
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						covarianceSet = studyDesign.getCovariance();								
+						covarianceSet = new CovarianceSet(studyDesign.getCovariance());								
             	}				
 			studyDesignManager.commit();
 			/* ----------------------------------------------------
 			 * Remove existing Covariance objects for this object 
 			 * ----------------------------------------------------*/
-			if(covarianceSet!=null)
+			if(!covarianceSet.isEmpty())
 			{
 				covarianceManager = new CovarianceManager();
 				covarianceManager.beginTransaction();
-					covarianceSet = covarianceManager.delete(uuid,covarianceSet);
+					covarianceSet = new CovarianceSet(covarianceManager.delete(uuid,covarianceSet));
 				covarianceManager.commit();
 				/* ----------------------------------------------------
     			 * Set reference of Covariance Object to Study Design object 
@@ -268,18 +267,17 @@ implements CovarianceResource
      * Delete a Covariance object for specified Study Design.
      * 
      * @param StudyDesign
-     * @return Set<Covariance>
+     * @return CovarianceSet
      */
-	@Delete("json")
-	public Set<Covariance> removeFrom(StudyDesign studyDesign) 
+	public CovarianceSet removeFrom(StudyDesign studyDesign) 
 	{
 		boolean flag;	
-		Set<Covariance> covarianceSet = null;	
+		CovarianceSet covarianceSet = null;	
         try
         {                    			
         	covarianceManager = new CovarianceManager();
         	covarianceManager.beginTransaction();
-        		covarianceSet=covarianceManager.delete(studyDesign.getUuid(),studyDesign.getCovariance());
+        		covarianceSet=new CovarianceSet(covarianceManager.delete(studyDesign.getUuid(),studyDesign.getCovariance()));
         	covarianceManager.commit();
         	/* ----------------------------------------------------
 			 * Set reference of Covariance Object to Study Design object 

@@ -12,7 +12,7 @@
  * as published by the Free Software Foundation; either version 2
  * of the License ,  or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful , 
+ * This program is distributed in the hope that it will be useful ,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -24,16 +24,13 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.NominalPower;
+import edu.ucdenver.bios.webservice.common.domain.NominalPowerList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
-import edu.ucdenver.bios.webservice.common.domain.NominalPower;
 
 /**
  * Generic Resource class for handling requests for the
@@ -52,18 +49,18 @@ public interface NominalPowerResource {
      * @return Object for specified UUID
      */
      @Get
-     List<NominalPower> retrieve(byte[] uuid);
+     NominalPowerList retrieve(byte[] uuid);
 
     /**
-     * Store List<NominalPower> object to the database.
+     * Store NominalPowerList object to the database.
      *
      * @param uuid the uuid
      * @param nominalPowerList the nominal power list
      * @return updated Object.
      */
     @Post
-     List<NominalPower> create(byte[] uuid ,
-             List<NominalPower> nominalPowerList);
+     NominalPowerList create(byte[] uuid ,
+             NominalPowerList nominalPowerList);
 
     /**
      * Update the specified object. If there is no
@@ -72,27 +69,26 @@ public interface NominalPowerResource {
      *
      * @param uuid the uuid
      * @param nominalPowerList the nominal power list
-     * @return List<NominalPower>
+     * @return NominalPowerList
      */
     @Put
-     List<NominalPower> update(byte[] uuid ,
-             List<NominalPower> nominalPowerList);
+     NominalPowerList update(byte[] uuid ,
+             NominalPowerList nominalPowerList);
 
     /**
-     * Delete the List<NominalPower> object with the specified UUID.
+     * Delete the NominalPowerList object with the specified UUID.
      *
      * @param uuid of the object to remove
      * @return the deleted object
      */
     @Delete
-     List<NominalPower> remove(byte[] uuid);
+     NominalPowerList remove(byte[] uuid);
 
     /**
-     * Delete the List<NominalPower> object with the specified UUID.
+     * Delete the NominalPowerList object with the specified UUID.
      *
      * @param studyDesign from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-     List<NominalPower> removeFrom(StudyDesign studyDesign);
+    NominalPowerList removeFrom(StudyDesign studyDesign);
 }

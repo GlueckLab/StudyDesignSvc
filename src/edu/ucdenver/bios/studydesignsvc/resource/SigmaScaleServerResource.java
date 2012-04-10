@@ -22,8 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -36,7 +34,7 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.SigmaScaleManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
+import edu.ucdenver.bios.webservice.common.domain.SigmaScaleList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -57,12 +55,12 @@ implements SigmaScaleResource
      * Retrieve a SigmaScale object for specified UUID.
      * 
      * @param byte[]
-     * @return List<SigmaScale>
+     * @return SigmaScaleList
      */
 	@Get("json")
-	public List<SigmaScale> retrieve(byte[] uuid) 
+	public SigmaScaleList retrieve(byte[] uuid) 
 	{
-		List<SigmaScale> sigmaScaleList = null;
+		SigmaScaleList sigmaScaleList = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -78,7 +76,7 @@ implements SigmaScaleResource
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						sigmaScaleList = studyDesign.getSigmaScaleList();					
+						sigmaScaleList = new SigmaScaleList(studyDesign.getSigmaScaleList());					
             	}				
 			studyDesignManager.commit();					
 		}
@@ -113,11 +111,11 @@ implements SigmaScaleResource
      * Create a SigmaScale object for specified UUID.
      * 
      * @param byte[]
-     * @param List<SigmaScale>
-     * @return List<SigmaScale>
+     * @param SigmaScaleList
+     * @return SigmaScaleList
      */
 	@Post("json")
-	public List<SigmaScale> create(byte[] uuid,List<SigmaScale> sigmaScaleList) 
+	public SigmaScaleList create(byte[] uuid,SigmaScaleList sigmaScaleList) 
 	{		
 		StudyDesign studyDesign =null;
 		if(uuid==null)
@@ -187,11 +185,11 @@ implements SigmaScaleResource
      * Update a SigmaScale object for specified UUID.
      * 
      * @param byte[]
-     * @param List<SigmaScale>
-     * @return List<SigmaScale>
+     * @param SigmaScaleList
+     * @return SigmaScaleList
      */
 	@Put("json")
-	public List<SigmaScale> update(byte[] uuid,List<SigmaScale> sigmaScaleList) 
+	public SigmaScaleList update(byte[] uuid,SigmaScaleList sigmaScaleList) 
 	{
 		return create(uuid,sigmaScaleList);
 	}
@@ -200,12 +198,12 @@ implements SigmaScaleResource
      * Delete a SigmaScale object for specified UUID.
      * 
      * @param byte[]
-     * @return List<SigmaScale>
+     * @return SigmaScaleList
      */
 	@Delete("json")
-	public List<SigmaScale> remove(byte[] uuid) 
+	public SigmaScaleList remove(byte[] uuid) 
 	{
-		List<SigmaScale> sigmaScaleList = null;
+		SigmaScaleList sigmaScaleList = null;
 		StudyDesign studyDesign = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
@@ -222,7 +220,7 @@ implements SigmaScaleResource
             	{		
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						sigmaScaleList = studyDesign.getSigmaScaleList();
+						sigmaScaleList = new SigmaScaleList(studyDesign.getSigmaScaleList());
 					if(sigmaScaleList.isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 								"no SigmaScale is specified");					
@@ -235,7 +233,7 @@ implements SigmaScaleResource
 			{
 				sigmaScaleManager = new SigmaScaleManager();
 				sigmaScaleManager.beginTransaction();
-					sigmaScaleList = sigmaScaleManager.delete(uuid,sigmaScaleList);
+					sigmaScaleList = new SigmaScaleList(sigmaScaleManager.delete(uuid,sigmaScaleList));
 				sigmaScaleManager.commit();
 			}
 		}
@@ -270,18 +268,16 @@ implements SigmaScaleResource
      * Delete a SigmaScale object for specified Study Design.
      * 
      * @param StudyDesign
-     * @return List<SigmaScale>
+     * @return SigmaScaleList
      */
-	@Override
-	@Delete("json")
-	public List<SigmaScale> removeFrom(StudyDesign studyDesign) 
+	public SigmaScaleList removeFrom(StudyDesign studyDesign) 
 	{
-		List<SigmaScale> sigmaScaleList = null;	
+		SigmaScaleList sigmaScaleList = null;	
         try
         {                    			
         	sigmaScaleManager = new SigmaScaleManager();
         	sigmaScaleManager.beginTransaction();
-        		sigmaScaleList=sigmaScaleManager.delete(studyDesign.getUuid(),studyDesign.getSigmaScaleList());
+        		sigmaScaleList=new SigmaScaleList(sigmaScaleManager.delete(studyDesign.getUuid(),studyDesign.getSigmaScaleList()));
         	sigmaScaleManager.commit();        	       
         }
         catch (BaseManagerException bme)

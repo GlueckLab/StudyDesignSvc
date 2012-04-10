@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.Set;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
+import edu.ucdenver.bios.webservice.common.domain.HypothesisSet;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
@@ -51,17 +49,17 @@ public interface HypothesisResource {
      * @return Object for specified UUID
      */
      @Get
-    Set<Hypothesis> retrieve(byte[] uuid);
+    HypothesisSet retrieve(byte[] uuid);
 
     /**
-     * Store Set<Hypothesis> object to the database.
+     * Store HypothesisSet object to the database.
      *
      * @param uuid the uuid
      * @param hypothesisList the hypothesis list
      * @return updated Object.
      */
     @Post
-    Set<Hypothesis> create(byte[] uuid , Set<Hypothesis> hypothesisList);
+    HypothesisSet create(byte[] uuid , HypothesisSet hypothesisList);
 
     /**
      * Update the specified object. If there is no
@@ -70,10 +68,10 @@ public interface HypothesisResource {
      *
      * @param uuid the uuid
      * @param hypothesisList the hypothesis list
-     * @return Set<Hypothesis>
+     * @return HypothesisSet
      */
     @Put
-    Set<Hypothesis> update(byte[] uuid , Set<Hypothesis> hypothesisList);
+    HypothesisSet update(byte[] uuid , HypothesisSet hypothesisList);
 
     /**
      * Delete the Hypothesis object with the specified UUID.
@@ -82,14 +80,13 @@ public interface HypothesisResource {
      * @return the deleted object
      */
     @Delete
-    Set<Hypothesis> remove(byte[] uuid);
+    HypothesisSet remove(byte[] uuid);
 
     /**
-     * Delete the Set<Hypothesis> object with the specified UUID.
+     * Delete the HypothesisSet object with the specified UUID.
      *
      * @param studyDesign from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    Set<Hypothesis> removeFrom(StudyDesign studyDesign);
+    HypothesisSet removeFrom(StudyDesign studyDesign);
 }

@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
+import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNodeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
@@ -50,17 +48,17 @@ public interface RepeatedMeasuresResource {
      * @return Object for specified UUID
      */
      @Get
-    List<RepeatedMeasuresNode> retrieve(byte[] uuid);
+    RepeatedMeasuresNodeList retrieve(byte[] uuid);
     /**
-     * Store List<RepeatedMeasuresNode> object to the database.
+     * Store RepeatedMeasuresNodeList object to the database.
      *
      * @param uuid the uuid
      * @param repeatedMeasuresTree the repeated measures tree
      * @return updated Object.
      */
     @Post
-    List<RepeatedMeasuresNode> create(byte[] uuid ,
-            List<RepeatedMeasuresNode> repeatedMeasuresTree);
+    RepeatedMeasuresNodeList create(byte[] uuid ,
+            RepeatedMeasuresNodeList repeatedMeasuresTree);
     /**
      * Update the specified object. If there is no
      * object set for specified UUID ,  then this object
@@ -71,24 +69,23 @@ public interface RepeatedMeasuresResource {
      * @return Object
      */
     @Put
-    List<RepeatedMeasuresNode> update(byte[] uuid ,
-            List<RepeatedMeasuresNode> repeatedMeasuresTree);
+    RepeatedMeasuresNodeList update(byte[] uuid ,
+            RepeatedMeasuresNodeList repeatedMeasuresTree);
 
     /**
-     * Delete the List<RepeatedMeasuresNode> object with the specified UUID.
+     * Delete the RepeatedMeasuresNodeList object with the specified UUID.
      *
      * @param uuid of the object to remove
      * @return the deleted object
      */
     @Delete
-    List<RepeatedMeasuresNode> remove(byte[] uuid);
+    RepeatedMeasuresNodeList remove(byte[] uuid);
 
     /**
-     * Delete the List<RepeatedMeasuresNode> object with a StudyDesign.
+     * Delete the RepeatedMeasuresNodeList object with a StudyDesign.
      *
      * @param studyDesign the study design
      * @return the deleted object
      */
-    @Delete
-    List<RepeatedMeasuresNode> removeFrom(StudyDesign studyDesign);
+    RepeatedMeasuresNodeList removeFrom(StudyDesign studyDesign);
 }

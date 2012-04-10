@@ -133,7 +133,6 @@ public interface MatrixResource {
       * @param studyDesign from which object is to be removed
       * @return the deleted object
       */
-     @Delete
      Set<NamedMatrix> removeFrom(StudyDesign studyDesign);
 
      /**
@@ -143,6 +142,5 @@ public interface MatrixResource {
       * @param name the name
       * @return the deleted object
       */
-     @Delete
      NamedMatrix removeFrom(StudyDesign studyDesign , String name);
 }

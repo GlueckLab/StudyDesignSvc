@@ -22,8 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -34,10 +32,9 @@ import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.studydesignsvc.manager.BetaScaleManager;
 import edu.ucdenver.bios.studydesignsvc.manager.ResponsesManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
+import edu.ucdenver.bios.webservice.common.domain.ResponseList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -59,12 +56,12 @@ implements ResponsesResource
      * Retrieve a ResponseNode object for specified UUID.
      * 
      * @param byte[]
-     * @return List<ResponseNode>
+     * @return ResponseList
      */
 	@Get("json")
-	public List<ResponseNode> retrieve(byte[] uuid) 
+	public ResponseList retrieve(byte[] uuid) 
 	{
-		List<ResponseNode> responseNodeList = null;
+		ResponseList responseNodeList = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -80,7 +77,7 @@ implements ResponsesResource
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						responseNodeList = studyDesign.getResponseList();					
+						responseNodeList = new ResponseList(studyDesign.getResponseList());					
             	}				
 			studyDesignManager.commit();					
 		}
@@ -115,10 +112,10 @@ implements ResponsesResource
      * Create a ResponseNode object for specified UUID.
      * 
      * @param byte[]
-     * @return List<ResponseNode>
+     * @return ResponseList
      */
 	@Post("json")
-	public List<ResponseNode> create(byte[] uuid,List<ResponseNode> responseNodeList) 
+	public ResponseList create(byte[] uuid,ResponseList responseNodeList) 
 	{		
 		StudyDesign studyDesign =null;
 		if(uuid==null)
@@ -191,10 +188,10 @@ implements ResponsesResource
      * Update a ResponseNode object for specified UUID.
      * 
      * @param byte[]
-     * @return List<ResponseNode>
+     * @return ResponseList
      */
 	@Put("json")
-	public List<ResponseNode> update(byte[] uuid,List<ResponseNode> responseNodeList) 
+	public ResponseList update(byte[] uuid,ResponseList responseNodeList) 
 	{				
 		return create(uuid,responseNodeList);			
 	}	
@@ -203,12 +200,12 @@ implements ResponsesResource
      * Delete a ResponseNode object for specified UUID.
      * 
      * @param byte[]
-     * @return List<ResponseNode>
+     * @return ResponseList
      */
 	@Delete("json")
-	public List<ResponseNode> remove(byte[] uuid) 
+	public ResponseList remove(byte[] uuid) 
 	{
-		List<ResponseNode> responseNodeList = null;
+		ResponseList responseNodeList = null;
 		StudyDesign studyDesign = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
@@ -225,7 +222,7 @@ implements ResponsesResource
             	{		
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						responseNodeList = studyDesign.getResponseList();									
+						responseNodeList = new ResponseList(studyDesign.getResponseList());									
             	}				
 			studyDesignManager.commit();
 			/* ----------------------------------------------------
@@ -235,7 +232,7 @@ implements ResponsesResource
 			{
 				responsesManager = new ResponsesManager();
 				responsesManager.beginTransaction();
-					responseNodeList = responsesManager.delete(uuid,responseNodeList);
+					responseNodeList = new ResponseList(responsesManager.delete(uuid,responseNodeList));
 				responsesManager.commit();
 			}
 		}
@@ -270,18 +267,17 @@ implements ResponsesResource
      * Update a ResponseNode object for specified studyDesign.
      * 
      * @param byte[]
-     * @return List<ResponseNode>
+     * @return ResponseList
      */
-	@Delete("json")
-	public List<ResponseNode> removeFrom(StudyDesign studyDesign) 
+	public ResponseList removeFrom(StudyDesign studyDesign) 
 	{
 		boolean flag;	
-		List<ResponseNode> responseNodeList = null;	
+		ResponseList responseNodeList = null;	
         try
         {                    			
         	responsesManager = new ResponsesManager();
         	responsesManager.beginTransaction();
-        		responseNodeList=responsesManager.delete(studyDesign.getUuid(),studyDesign.getResponseList());
+        		responseNodeList=new ResponseList(responsesManager.delete(studyDesign.getUuid(),studyDesign.getResponseList()));
         	responsesManager.commit();        	       
         }
         catch (BaseManagerException bme)

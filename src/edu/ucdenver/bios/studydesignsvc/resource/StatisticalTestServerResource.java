@@ -22,8 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -36,7 +34,7 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.StatisticalTestManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
+import edu.ucdenver.bios.webservice.common.domain.StatisticalTestList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -54,9 +52,9 @@ implements StatisticalTestResource
 	boolean uuidFlag;
 
 	@Get("json")
-	public List<StatisticalTest> retrieve(byte[] uuid) 
+	public StatisticalTestList retrieve(byte[] uuid) 
 	{
-		List<StatisticalTest> testList = null;
+		StatisticalTestList testList = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -72,7 +70,7 @@ implements StatisticalTestResource
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						testList = studyDesign.getStatisticalTestList();					
+						testList = new StatisticalTestList(studyDesign.getStatisticalTestList());					
             	}				
 			studyDesignManager.commit();					
 		}
@@ -104,7 +102,7 @@ implements StatisticalTestResource
 	}
 
 	@Post("json")
-	public List<StatisticalTest> create(byte[] uuid,List<StatisticalTest> testList) 
+	public StatisticalTestList create(byte[] uuid,StatisticalTestList testList) 
 	{		
 		StudyDesign studyDesign =null;
 		if(uuid==null)
@@ -174,14 +172,14 @@ implements StatisticalTestResource
 	}
 
 	@Put("json")
-	public List<StatisticalTest> update(byte[] uuid,List<StatisticalTest> testList) {
+	public StatisticalTestList update(byte[] uuid,StatisticalTestList testList) {
 		return create(uuid,testList);
 	}
 
 	@Delete("json")
-	public List<StatisticalTest> remove(byte[] uuid) 
+	public StatisticalTestList remove(byte[] uuid) 
 	{
-		List<StatisticalTest> testList = null;
+		StatisticalTestList testList = null;
 		StudyDesign studyDesign = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
@@ -198,7 +196,7 @@ implements StatisticalTestResource
             	{		
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						testList = studyDesign.getStatisticalTestList();
+						testList = new StatisticalTestList(studyDesign.getStatisticalTestList());
 					if(testList.isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 								"no StatisticalTest is specified");					
@@ -211,7 +209,7 @@ implements StatisticalTestResource
 			{
 				testManager = new StatisticalTestManager();
 				testManager.beginTransaction();
-					testList = testManager.delete(uuid,testList);
+					testList = new StatisticalTestList(testManager.delete(uuid,testList));
 				testManager.commit();
 			}
 		}
@@ -246,18 +244,16 @@ implements StatisticalTestResource
      * Delete a StatisticalTest object for specified Study Design.
      * 
      * @param StudyDesign
-     * @return List<StatisticalTest>
+     * @return StatisticalTestList
      */
-	@Override
-	@Delete("json")
-	public List<StatisticalTest> removeFrom(StudyDesign studyDesign) 
+	public StatisticalTestList removeFrom(StudyDesign studyDesign) 
 	{
-		List<StatisticalTest> testList = null;	
+		StatisticalTestList testList = null;	
         try
         {                    			
         	testManager = new StatisticalTestManager();
         	testManager.beginTransaction();
-        		testList=testManager.delete(studyDesign.getUuid(),studyDesign.getStatisticalTestList());
+        		testList=new StatisticalTestList(testManager.delete(studyDesign.getUuid(),studyDesign.getStatisticalTestList()));
         	testManager.commit();        	       
         }
         catch (BaseManagerException bme)

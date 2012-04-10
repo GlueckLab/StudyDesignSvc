@@ -24,7 +24,7 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
+import java.awt.PageAttributes.MediaType;
 
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -32,6 +32,7 @@ import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.BetaScale;
+import edu.ucdenver.bios.webservice.common.domain.BetaScaleList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 // to-do: Auto-generated Javadoc
@@ -50,20 +51,21 @@ public interface BetaScaleResource {
      *            the uuid
      * @return Object for specified UUID
      */
-    @Get
-    List<BetaScale> retrieve(byte[] uuid);
+    @Get("application/json")
+    BetaScaleList retrieve(byte[] uuid);
 
     /**
-     * Store List<BetaScale> object to the database.
+     * Store BetaScaleList object to the database.
      *
      * @param uuid
      *            the uuid
      * @param list
      *            the list
      * @return updated Object.
+     * @see BetaScale
      */
-    @Post
-    List<BetaScale> create(byte[] uuid, List<BetaScale> list);
+    @Post("application/json")    
+    BetaScaleList create(BetaScaleList list, byte[] uuid);
 
     /**
      * Update the specified object. If there is no object set for specified UUID
@@ -73,10 +75,10 @@ public interface BetaScaleResource {
      *            the uuid
      * @param list
      *            the list
-     * @return List<BetaScale>
+     * @return BetaScaleList
      */
-    @Put
-    List<BetaScale> update(byte[] uuid, List<BetaScale> list);
+    @Put("application/json")
+    BetaScaleList update(byte[] uuid, BetaScaleList list);
 
     /**
      * Delete the Beta Scale object with the specified UUID.
@@ -85,17 +87,16 @@ public interface BetaScaleResource {
      *            of the object to remove
      * @return the deleted object
      */
-    @Delete
-    List<BetaScale> remove(byte[] uuid);
+    @Delete("application/json")
+    BetaScaleList remove(byte[] uuid);
 
     /**
-     * Delete the List<BetaScale> object with the specified UUID.
+     * Delete the BetaScaleList object with the specified UUID.
      *
      * @param studyDesign
      *            from which object is to be removed
-     * @return List<BetaScale>
+     * @return BetaScaleList
      *            the deleted object
-     */
-    @Delete
-    List<BetaScale> removeFrom(StudyDesign studyDesign);
+     */    
+    BetaScaleList removeFrom(StudyDesign studyDesign);
 }

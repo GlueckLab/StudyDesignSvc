@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
+import edu.ucdenver.bios.webservice.common.domain.ClusterNodeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
@@ -50,7 +48,7 @@ public interface ClusterNodeResource {
      * @return Object for specified UUID
      */
      @Get
-    List<ClusterNode> retrieve(byte[] uuid);
+     ClusterNodeList retrieve(byte[] uuid);
 
     /**
      * Store the confidence interval to the database.
@@ -60,7 +58,7 @@ public interface ClusterNodeResource {
      * @return updated Object.
      */
     @Post
-    List<ClusterNode> create(byte[] uuid , List<ClusterNode> clusterNodeList);
+    ClusterNodeList create(byte[] uuid , ClusterNodeList clusterNodeList);
 
     /**
      * Update the specified object. If there is no
@@ -72,7 +70,7 @@ public interface ClusterNodeResource {
      * @return Object
      */
     @Put
-    List<ClusterNode> update(byte[] uuid , List<ClusterNode> clusterNode);
+    ClusterNodeList update(byte[] uuid , ClusterNodeList clusterNode);
 
     /**
      * Delete the study with the specified UUID.
@@ -81,7 +79,7 @@ public interface ClusterNodeResource {
      * @return the deleted object
      */
     @Delete
-    List<ClusterNode> remove(byte[] uuid);
+    ClusterNodeList remove(byte[] uuid);
 
     /**
      * Delete the study with the specified studyDesign.
@@ -89,6 +87,5 @@ public interface ClusterNodeResource {
      * @param studyDesign from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    List<ClusterNode> removeFrom(StudyDesign studyDesign);
+    ClusterNodeList removeFrom(StudyDesign studyDesign);
     }

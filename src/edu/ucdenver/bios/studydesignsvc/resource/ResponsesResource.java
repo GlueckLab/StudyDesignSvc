@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
+import edu.ucdenver.bios.webservice.common.domain.ResponseList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
@@ -52,7 +50,7 @@ public interface ResponsesResource {
      * @return Object for specified UUID
      */
     @Get
-    List<ResponseNode> retrieve(byte[] uuid);
+    ResponseList retrieve(byte[] uuid);
 
     /**
      * Store ResponseNode object to the database.
@@ -64,8 +62,8 @@ public interface ResponsesResource {
      * @return updated Object.
      */
     @Post
-    List<ResponseNode> create(byte[] uuid,
-            List<ResponseNode> responseNodeList);
+    ResponseList create(byte[] uuid,
+            ResponseList responseNodeList);
 
     /**
      * Update the specified object. If there is no object set for specified
@@ -78,8 +76,8 @@ public interface ResponsesResource {
      * @return Object
      */
     @Put
-    List<ResponseNode> update(byte[] uuid,
-            List<ResponseNode> responseNodeList);
+    ResponseList update(byte[] uuid,
+            ResponseList responseNodeList);
 
     /**
      * Delete the ResponseNode object with the specified UUID.
@@ -89,7 +87,7 @@ public interface ResponsesResource {
      * @return the deleted object
      */
     @Delete
-    List<ResponseNode> remove(byte[] uuid);
+    ResponseList remove(byte[] uuid);
 
     /**
      * Delete the ResponseNode object with the specified StudyDesign.
@@ -98,6 +96,5 @@ public interface ResponsesResource {
      *            from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    List<ResponseNode> removeFrom(StudyDesign studyDesign);
+    ResponseList removeFrom(StudyDesign studyDesign);
 }

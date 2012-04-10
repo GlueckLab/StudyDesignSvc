@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
+import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
@@ -51,7 +49,7 @@ public interface BetweenParticipantResource {
      * @return Object for specified UUID
      */
     @Get
-    List<BetweenParticipantFactor> retrieve(byte[] uuid);
+    BetweenParticipantFactorList retrieve(byte[] uuid);
 
     /**
      * Store BetweenParticipantFactor object to the database.
@@ -61,8 +59,8 @@ public interface BetweenParticipantResource {
      * @return updated Object.
      */
     @Post
-    List<BetweenParticipantFactor> create(byte[] uuid ,
-            List<BetweenParticipantFactor> betweenParticipantFactorList);
+    BetweenParticipantFactorList create(byte[] uuid ,
+            BetweenParticipantFactorList betweenParticipantFactorList);
 
     /**
      * Update the specified object. If there is no object set for specified
@@ -73,8 +71,8 @@ public interface BetweenParticipantResource {
      * @return Object
      */
     @Put
-    List<BetweenParticipantFactor> update(byte[] uuid,
-            List<BetweenParticipantFactor> betweenParticipantFactorList);
+    BetweenParticipantFactorList update(byte[] uuid,
+            BetweenParticipantFactorList betweenParticipantFactorList);
 
     /**
      * Delete the BetweenParticipantFactor object with the specified UUID.
@@ -83,7 +81,7 @@ public interface BetweenParticipantResource {
      * @return the deleted object
      */
     @Delete
-    List<BetweenParticipantFactor> remove(byte[] uuid);
+    BetweenParticipantFactorList remove(byte[] uuid);
 
     /**
      * Delete the BetweenParticipantFactor object with the specified UUID.
@@ -91,6 +89,5 @@ public interface BetweenParticipantResource {
      * @param studyDesign from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    List<BetweenParticipantFactor> removeFrom(StudyDesign studyDesign);
+   BetweenParticipantFactorList removeFrom(StudyDesign studyDesign);
 }

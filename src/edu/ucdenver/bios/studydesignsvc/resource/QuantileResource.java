@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.Quantile;
+import edu.ucdenver.bios.webservice.common.domain.QuantileList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
@@ -50,16 +48,16 @@ public interface QuantileResource {
      * @return Object for specified UUID
      */
      @Get
-    List<Quantile> retrieve(byte[] uuid);
+    QuantileList retrieve(byte[] uuid);
     /**
-     * Store List<Quantile> object to the database.
+     * Store QuantileList object to the database.
      *
      * @param uuid the uuid
      * @param quantileList the quantile list
      * @return updated Object.
      */
     @Post
-    List<Quantile> create(byte[] uuid , List<Quantile> quantileList);
+    QuantileList create(byte[] uuid , QuantileList quantileList);
     /**
      * Update the specified object. If there is no
      * object set for specified UUID, then this object
@@ -70,21 +68,20 @@ public interface QuantileResource {
      * @return Object
      */
     @Put
-    List<Quantile> update(byte[] uuid , List<Quantile> quantileList);
+    QuantileList update(byte[] uuid , QuantileList quantileList);
     /**
-     * Delete the List<Quantile> object with the specified UUID.
+     * Delete the QuantileList object with the specified UUID.
      *
      * @param uuid of the object to remove
      * @return the deleted object
      */
     @Delete
-    List<Quantile> remove(byte[] uuid);
+    QuantileList remove(byte[] uuid);
     /**
-     * Delete the List<Quantile> object with the specified UUID.
+     * Delete the QuantileList object with the specified UUID.
      *
      * @param studyDesign from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    List<Quantile> removeFrom(StudyDesign studyDesign);
+    QuantileList removeFrom(StudyDesign studyDesign);
 }

@@ -333,7 +333,6 @@ public class PowerCurveServerResource extends ServerResource implements
      *            the study design
      * @return PowerCurveDescription
      */
-    @Delete("json")
     public PowerCurveDescription removeFrom(StudyDesign studyDesign) {
         boolean flag;
         // byte

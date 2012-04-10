@@ -24,12 +24,16 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 
@@ -40,37 +44,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
  * @author Uttara Sakhadeo
  */
 public interface StudyDesignResource {
-
-    /**
-     * Retrieve the study design matching the specified UUID. Returns
-     * "not found" if no matching designs are available
-     *
-     * @param uuid
-     *            the uuid
-     * @return study designs with specified UUID
-     */
-    @Get
-    StudyDesign retrieve(byte[] uuid);
-
-    /**
-     * Gets a list of all study designs in the database.
-     *
-     * @return list of study designs
-     */
-    @Get
-    List<StudyDesign> retrieve();
-
-    /**
-     * Store the study design to the database. This routine will set the UUID of
-     * the study design
-     *
-     * @param studyDesign
-     *            study design object
-     * @return study design object with updated UUID.
-     */
-    @Post
-    StudyDesign create(StudyDesign studyDesign);
-
+      
     /**
      * Store the study design to the database. This routine will create a new
      * UUID for the study design. And will return back an empty StudyDesign
@@ -100,4 +74,5 @@ public interface StudyDesignResource {
      */
     @Delete
     StudyDesign remove(byte[] uuid);
+        
 }

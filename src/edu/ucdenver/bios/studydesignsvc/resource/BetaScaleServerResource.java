@@ -24,7 +24,9 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -39,8 +41,10 @@ import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.BetaScaleManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.BetaScale;
+import edu.ucdenver.bios.webservice.common.domain.BetaScaleList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
  * Server Resource class for handling requests for the Beta Scale object. See
@@ -62,14 +66,17 @@ public class BetaScaleServerResource extends ServerResource implements
 
     /**
      * Retrieve a BetaScale object for specified UUID.
-     *
+     * <br>
+     * Use {@link edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager#hasUUID(byte[])} to check existence of
+     * a Study Design with given UUID.
+     * 
      * @param uuid
      *            the uuid
-     * @return List<BetaScale>
+     * @return ArrayList<BetaScale>
      */
-    @Get
-    public final List<BetaScale> retrieve(final byte[] uuid) {
-        List<BetaScale> betaScaleList = null;
+    @Get("application/json")
+    public final BetaScaleList retrieve(final byte[] uuid) {
+        BetaScaleList betaScaleList = null;
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
@@ -86,7 +93,7 @@ public class BetaScaleServerResource extends ServerResource implements
             if (uuidFlag) {
                 StudyDesign studyDesign = studyDesignManager.get(uuid);
                 if (studyDesign != null) {
-                    betaScaleList = studyDesign.getBetaScaleList();
+                    betaScaleList = new BetaScaleList(studyDesign.getBetaScaleList());
                 }
             }
             studyDesignManager.commit();
@@ -123,12 +130,15 @@ public class BetaScaleServerResource extends ServerResource implements
      *            the uuid
      * @param betaScaleList
      *            the beta scale list
-     * @return List<BetaScale>
+     * @return ArrayList<BetaScale>
      */
-    @Post
-    public final List<BetaScale> create(final byte[] uuid ,
-            List<BetaScale> betaScaleList) {
+    @Post("application/json")
+    /*public final BetaScaleList create(final byte[] uuid ,
+            BetaScaleList betaScaleList) {*/
+    public final BetaScaleList create(
+            BetaScaleList betaScaleList, final byte[] uuid ) {
         StudyDesign studyDesign = null;
+        /*byte[] uuid = UUIDUtils.asByteArray(UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a"));*/
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
@@ -153,8 +163,8 @@ public class BetaScaleServerResource extends ServerResource implements
              * ---------------------------------------------------- Remove
              * existing Beta Scale for this object
              * ----------------------------------------------------
-             */
-            if (uuidFlag && studyDesign.getBetaScaleList() != null) {
+             */            
+            if (uuidFlag && !studyDesign.getBetaScaleList().isEmpty()) {
                 removeFrom(studyDesign);
             }
             /*
@@ -224,12 +234,13 @@ public class BetaScaleServerResource extends ServerResource implements
      *            the uuid
      * @param betaScaleList
      *            the beta scale list
-     * @return List<BetaScale>
+     * @return ArrayList<BetaScale>
      */
-    @Put
-    public final List<BetaScale> update(final byte[] uuid ,
-            final List<BetaScale> betaScaleList) {
-        return create(uuid, betaScaleList);
+    @Put("application/json")
+    public final BetaScaleList update(final byte[] uuid ,
+            final BetaScaleList betaScaleList) {
+        /*return create(uuid, betaScaleList);*/
+        return create(betaScaleList, uuid);
     }
 
     /**
@@ -237,11 +248,11 @@ public class BetaScaleServerResource extends ServerResource implements
      *
      * @param uuid
      *            the uuid
-     * @return List<BetaScale>
+     * @return ArrayList<BetaScale>
      */
-    @Delete
-    public final List<BetaScale> remove(final byte[] uuid) {
-        List<BetaScale> betaScaleList = null;
+    @Delete("application/json")
+    public final BetaScaleList remove(final byte[] uuid) {
+        BetaScaleList betaScaleList = null;
         StudyDesign studyDesign = null;
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
@@ -259,7 +270,7 @@ public class BetaScaleServerResource extends ServerResource implements
             if (uuidFlag) {
                 studyDesign = studyDesignManager.get(uuid);
                 if (studyDesign != null) {
-                    betaScaleList = studyDesign.getBetaScaleList();
+                    betaScaleList = new BetaScaleList(studyDesign.getBetaScaleList());
                 }
             }
             studyDesignManager.commit();
@@ -268,10 +279,10 @@ public class BetaScaleServerResource extends ServerResource implements
              * existing Beta Scale objects for this object
              * ----------------------------------------------------
              */
-            if (betaScaleList != null) {
+            if (!betaScaleList.isEmpty()) {
                 betaScaleManager = new BetaScaleManager();
                 betaScaleManager.beginTransaction();
-                betaScaleList = betaScaleManager.delete(uuid, betaScaleList);
+                betaScaleList = new BetaScaleList(betaScaleManager.delete(uuid, betaScaleList));
                 betaScaleManager.commit();
                 /*
                  * ---------------------------------------------------- Set
@@ -317,16 +328,15 @@ public class BetaScaleServerResource extends ServerResource implements
      *
      * @param studyDesign
      *            the study design
-     * @return List<BetaScale>
-     */
-    @Delete
-    public final List<BetaScale> removeFrom(final StudyDesign studyDesign) {
-        List<BetaScale> betaScaleList = null;
+     * @return ArrayList<BetaScale>
+     */    
+    public final BetaScaleList removeFrom(final StudyDesign studyDesign) {
+        BetaScaleList betaScaleList = null;
         try {
             betaScaleManager = new BetaScaleManager();
             betaScaleManager.beginTransaction();
-            betaScaleList = betaScaleManager.delete(studyDesign.getUuid(),
-                    studyDesign.getBetaScaleList());
+            betaScaleList = new BetaScaleList(betaScaleManager.delete(studyDesign.getUuid(),
+                    studyDesign.getBetaScaleList()));
             betaScaleManager.commit();
             /*
              * ----------------------------------------------------

@@ -38,6 +38,7 @@ import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.studydesignsvc.manager.TypeIErrorManager;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.TypeIError;
+import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 /**
  * Server Resource class for handling requests for the Type I Error object. 
@@ -59,9 +60,9 @@ implements TypeIErrorResource
      * @return List<TypeIError>
      */
 	@Get("json")
-	public List<TypeIError> retrieve(byte[] uuid) 
+	public TypeIErrorList retrieve(byte[] uuid) 
 	{
-		List<TypeIError> typeIErrorList = null;
+	    TypeIErrorList typeIErrorList = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -77,7 +78,7 @@ implements TypeIErrorResource
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						typeIErrorList = studyDesign.getAlphaList();					
+						typeIErrorList = new TypeIErrorList(studyDesign.getAlphaList());					
             	}				
 			studyDesignManager.commit();					
 		}
@@ -116,7 +117,7 @@ implements TypeIErrorResource
      * @return List<TypeIError>
      */
 	@Post("json")
-	public List<TypeIError> create(byte[] uuid,List<TypeIError> typeIErrorList) 
+	public TypeIErrorList create(byte[] uuid,TypeIErrorList typeIErrorList) 
 	{		
 		StudyDesign studyDesign =null;
 		if(uuid==null)
@@ -190,7 +191,7 @@ implements TypeIErrorResource
      * @return List<TypeIError>
      */
 	@Put("json")
-	public List<TypeIError> update(byte[] uuid,List<TypeIError> typeIErrorList) 
+	public TypeIErrorList update(byte[] uuid,TypeIErrorList typeIErrorList) 
 	{
 		return create(uuid,typeIErrorList);
 	}
@@ -202,9 +203,9 @@ implements TypeIErrorResource
      * @return List<TypeIError>
      */
 	@Delete("json")
-	public List<TypeIError> remove(byte[] uuid) 
+	public TypeIErrorList remove(byte[] uuid) 
 	{
-		List<TypeIError> typeIErrorList = null;
+	    TypeIErrorList typeIErrorList = null;
 		StudyDesign studyDesign = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
@@ -221,7 +222,7 @@ implements TypeIErrorResource
             	{		
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						typeIErrorList = studyDesign.getAlphaList();
+						typeIErrorList = new TypeIErrorList(studyDesign.getAlphaList());
 					if(typeIErrorList.isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 								"no TypeIError is specified");					
@@ -234,7 +235,7 @@ implements TypeIErrorResource
 			{
 				typeIErrorManager = new TypeIErrorManager();
 				typeIErrorManager.beginTransaction();
-					typeIErrorList = typeIErrorManager.delete(uuid,typeIErrorList);
+					typeIErrorList = new TypeIErrorList(typeIErrorManager.delete(uuid,typeIErrorList));
 				typeIErrorManager.commit();
 			}
 		}
@@ -271,16 +272,14 @@ implements TypeIErrorResource
      * @param StudyDesign
      * @return List<TypeIError>
      */
-	@Override
-	@Delete("json")
-	public List<TypeIError> removeFrom(StudyDesign studyDesign) 
+	public TypeIErrorList removeFrom(StudyDesign studyDesign) 
 	{
-		List<TypeIError> typeIErrorList = null;	
+	    TypeIErrorList typeIErrorList = null;	
         try
         {                    			
         	typeIErrorManager = new TypeIErrorManager();
         	typeIErrorManager.beginTransaction();
-        		typeIErrorList=typeIErrorManager.delete(studyDesign.getUuid(),studyDesign.getAlphaList());
+        		typeIErrorList=new TypeIErrorList(typeIErrorManager.delete(studyDesign.getUuid(),studyDesign.getAlphaList()));
         	typeIErrorManager.commit();        	       
         }
         catch (BaseManagerException bme)

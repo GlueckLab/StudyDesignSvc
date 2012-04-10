@@ -22,8 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -36,7 +34,7 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.SampleSizeManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.webservice.common.domain.SampleSize;
+import edu.ucdenver.bios.webservice.common.domain.SampleSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -57,12 +55,12 @@ implements SampleSizeResource
      * Retrieve a SampleSize object for specified UUID.
      * 
      * @param byte[]
-     * @return List<SampleSize>
+     * @return SampleSizeList
      */
     @Get("json")
-    public List<SampleSize> retrieve(byte[] uuid) 
+    public SampleSizeList retrieve(byte[] uuid) 
     {
-        List<SampleSize> sampleSizeList = null;
+        SampleSizeList sampleSizeList = null;
         if(uuid==null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
                     "no study design UUID specified");      
@@ -78,7 +76,7 @@ implements SampleSizeResource
                 {       
                     StudyDesign studyDesign = studyDesignManager.get(uuid);
                     if(studyDesign!=null)
-                        sampleSizeList = studyDesign.getSampleSizeList();                   
+                        sampleSizeList = new SampleSizeList(studyDesign.getSampleSizeList());                   
                 }               
             studyDesignManager.commit();                    
         }
@@ -113,11 +111,11 @@ implements SampleSizeResource
      * Create a SampleSize object for specified UUID.
      * 
      * @param byte[]
-     * @param List<SampleSize>
-     * @return List<SampleSize>
+     * @param SampleSizeList
+     * @return SampleSizeList
      */
     @Post("json")
-    public List<SampleSize> create(byte[] uuid,List<SampleSize> sampleSizeList) 
+    public SampleSizeList create(byte[] uuid,SampleSizeList sampleSizeList) 
     {       
         StudyDesign studyDesign =null;
         if(uuid==null)
@@ -187,11 +185,11 @@ implements SampleSizeResource
      * Update a SampleSize object for specified UUID.
      * 
      * @param byte[]
-     * @param List<SampleSize>
-     * @return List<SampleSize>
+     * @param SampleSizeList
+     * @return SampleSizeList
      */
     @Put("json")
-    public List<SampleSize> update(byte[] uuid,List<SampleSize> sampleSizeList) 
+    public SampleSizeList update(byte[] uuid,SampleSizeList sampleSizeList) 
     {
         return create(uuid,sampleSizeList);
     }
@@ -200,12 +198,12 @@ implements SampleSizeResource
      * Delete a SampleSize object for specified UUID.
      * 
      * @param byte[]
-     * @return List<SampleSize>
+     * @return SampleSizeList
      */
     @Delete("json")
-    public List<SampleSize> remove(byte[] uuid) 
+    public SampleSizeList remove(byte[] uuid) 
     {
-        List<SampleSize> sampleSizeList = null;
+        SampleSizeList sampleSizeList = null;
         StudyDesign studyDesign = null;
         if(uuid==null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
@@ -222,7 +220,7 @@ implements SampleSizeResource
                 {       
                     studyDesign = studyDesignManager.get(uuid);
                     if(studyDesign!=null)
-                        sampleSizeList = studyDesign.getSampleSizeList();
+                        sampleSizeList = new SampleSizeList(studyDesign.getSampleSizeList());
                     if(sampleSizeList.isEmpty())
                         throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
                                 "no SampleSize is specified");                    
@@ -235,7 +233,7 @@ implements SampleSizeResource
             {
                 sampleSizeManager = new SampleSizeManager();
                 sampleSizeManager.beginTransaction();
-                    sampleSizeList = sampleSizeManager.delete(uuid,sampleSizeList);
+                    sampleSizeList = new SampleSizeList(sampleSizeManager.delete(uuid,sampleSizeList));
                 sampleSizeManager.commit();
             }
         }
@@ -270,18 +268,16 @@ implements SampleSizeResource
      * Delete a SampleSize object for specified Study Design.
      * 
      * @param StudyDesign
-     * @return List<SampleSize>
+     * @return SampleSizeList
      */
-    @Override
-    @Delete("json")
-    public List<SampleSize> removeFrom(StudyDesign studyDesign) 
+    public SampleSizeList removeFrom(StudyDesign studyDesign) 
     {
-        List<SampleSize> sampleSizeList = null; 
+        SampleSizeList sampleSizeList = null; 
         try
         {                               
             sampleSizeManager = new SampleSizeManager();
             sampleSizeManager.beginTransaction();
-                sampleSizeList=sampleSizeManager.delete(studyDesign.getUuid(),studyDesign.getSampleSizeList());
+                sampleSizeList=new SampleSizeList(sampleSizeManager.delete(studyDesign.getUuid(),studyDesign.getSampleSizeList()));
             sampleSizeManager.commit();                  
         }
         catch (BaseManagerException bme)

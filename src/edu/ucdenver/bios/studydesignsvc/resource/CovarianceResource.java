@@ -24,14 +24,12 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.Set;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.Covariance;
+import edu.ucdenver.bios.webservice.common.domain.CovarianceSet;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 /**
@@ -50,7 +48,7 @@ public interface CovarianceResource {
      * @return Object for specified UUID
      */
      @Get
-    Set<Covariance> retrieve(byte[] uuid);
+    CovarianceSet retrieve(byte[] uuid);
 
     /**
      * Store Covariance object to the database.
@@ -60,7 +58,7 @@ public interface CovarianceResource {
      * @return updated Object.
      */
     @Post
-    Set<Covariance> create(byte[] uuid , Set<Covariance> covarianceSet);
+    CovarianceSet create(byte[] uuid , CovarianceSet covarianceSet);
 
     /**
      * Update the specified object. If there is no
@@ -72,7 +70,7 @@ public interface CovarianceResource {
      * @return Object
      */
     @Put
-    Set<Covariance> update(byte[] uuid , Set<Covariance> covarianceSet);
+    CovarianceSet update(byte[] uuid , CovarianceSet covarianceSet);
 
     /**
      * Delete the Covariance object with the specified UUID.
@@ -81,7 +79,7 @@ public interface CovarianceResource {
      * @return the deleted object
      */
     @Delete
-    Set<Covariance> remove(byte[] uuid);
+    CovarianceSet remove(byte[] uuid);
 
     /**
      * Delete the Covariance object with the specified UUID.
@@ -89,6 +87,5 @@ public interface CovarianceResource {
      * @param studyDesign from which object is to be removed
      * @return the deleted object
      */
-    @Delete
-    Set<Covariance> removeFrom(StudyDesign studyDesign);
+    CovarianceSet removeFrom(StudyDesign studyDesign);
 }

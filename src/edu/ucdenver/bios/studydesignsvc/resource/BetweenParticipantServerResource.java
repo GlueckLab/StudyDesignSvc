@@ -25,6 +25,7 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import java.util.List;
+import java.util.Set;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -37,8 +38,11 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.BetweenParticipantFactorManager;
 import edu.ucdenver.bios.studydesignsvc.manager.CategoryManager;
+import edu.ucdenver.bios.studydesignsvc.manager.HypothesisManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
+import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
+import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
@@ -69,8 +73,8 @@ public class BetweenParticipantServerResource implements
      * @return List<BetweenParticipantFactor>
      */
     @Get("json")
-    public final List<BetweenParticipantFactor> retrieve(final byte[] uuid) {
-        List<BetweenParticipantFactor> betweenParticipantFactorList = null;
+    public final BetweenParticipantFactorList retrieve(final byte[] uuid) {
+        BetweenParticipantFactorList betweenParticipantFactorList = null;
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
@@ -87,8 +91,8 @@ public class BetweenParticipantServerResource implements
             if (uuidFlag) {
                 StudyDesign studyDesign = studyDesignManager.get(uuid);
                 if (studyDesign != null) {
-                    betweenParticipantFactorList = studyDesign
-                            .getBetweenParticipantFactorList();
+                    betweenParticipantFactorList = new BetweenParticipantFactorList(studyDesign
+                            .getBetweenParticipantFactorList());
                 }
             }
             studyDesignManager.commit();
@@ -128,8 +132,8 @@ public class BetweenParticipantServerResource implements
      * @return List<BetweenParticipantFactor>
      */
     @Post("json")
-    public final List<BetweenParticipantFactor> create(final byte[] uuid,
-            List<BetweenParticipantFactor> betweenParticipantFactorList) {
+    public final BetweenParticipantFactorList create(final byte[] uuid,
+            BetweenParticipantFactorList betweenParticipantFactorList) {
         StudyDesign studyDesign = null;
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
@@ -157,7 +161,7 @@ public class BetweenParticipantServerResource implements
              * ----------------------------------------------------
              */
             if (uuidFlag
-                    && studyDesign.getBetweenParticipantFactorList() != null) {
+                    && !studyDesign.getBetweenParticipantFactorList().isEmpty()) {
                 removeFrom(studyDesign);
             }
             /*
@@ -199,8 +203,8 @@ public class BetweenParticipantServerResource implements
                 studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
                         false);
                 studyDesignManager.commit();
-                betweenParticipantFactorList = studyDesign
-                        .getBetweenParticipantFactorList();
+                betweenParticipantFactorList = new BetweenParticipantFactorList(studyDesign
+                        .getBetweenParticipantFactorList());
             }
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
@@ -238,8 +242,8 @@ public class BetweenParticipantServerResource implements
      * @return List<BetweenParticipantFactor>
      */
     @Put("json")
-    public final List<BetweenParticipantFactor> update(final byte[] uuid,
-            final List<BetweenParticipantFactor> betweenParticipantFactorList) {
+    public final BetweenParticipantFactorList update(final byte[] uuid,
+            final BetweenParticipantFactorList betweenParticipantFactorList) {
         return create(uuid, betweenParticipantFactorList);
     }
 
@@ -251,8 +255,8 @@ public class BetweenParticipantServerResource implements
      * @return List<BetweenParticipantFactor>
      */
     @Delete("json")
-    public final List<BetweenParticipantFactor> remove(final byte[] uuid) {
-        List<BetweenParticipantFactor> betweenParticipantFactorList = null;
+    public final BetweenParticipantFactorList remove(final byte[] uuid) {
+        BetweenParticipantFactorList betweenParticipantFactorList = null;
         StudyDesign studyDesign = null;
         try {
             /*
@@ -270,8 +274,8 @@ public class BetweenParticipantServerResource implements
             if (uuidFlag) {
                 studyDesign = studyDesignManager.get(uuid);
                 if (studyDesign != null) {
-                    betweenParticipantFactorList = studyDesign
-                            .getBetweenParticipantFactorList();
+                    betweenParticipantFactorList = new BetweenParticipantFactorList(studyDesign
+                            .getBetweenParticipantFactorList());
                 }
                 /*
                  * if(betweenParticipantFactorList.isEmpty()) throw new
@@ -285,12 +289,20 @@ public class BetweenParticipantServerResource implements
              * existing Between Participant objects for this object
              * ----------------------------------------------------
              */
-            if (studyDesign.getBetweenParticipantFactorList() != null) {
+            if (!studyDesign.getHypothesis().isEmpty()) {
+                HypothesisManager hypothesisManager =
+                    new HypothesisManager();
+                hypothesisManager.beginTransaction();
+                   hypothesisManager
+                        .delete(uuid, studyDesign.getHypothesis());
+                hypothesisManager.commit();
+            }
+            if (!studyDesign.getBetweenParticipantFactorList().isEmpty()) {
                 betweenParticipantFactorManager =
                     new BetweenParticipantFactorManager();
                 betweenParticipantFactorManager.beginTransaction();
-                betweenParticipantFactorList = betweenParticipantFactorManager
-                        .delete(uuid, betweenParticipantFactorList);
+                betweenParticipantFactorList = new BetweenParticipantFactorList(betweenParticipantFactorManager
+                        .delete(uuid, betweenParticipantFactorList));
                 betweenParticipantFactorManager.commit();
             }
         } catch (BaseManagerException bme) {
@@ -325,18 +337,25 @@ public class BetweenParticipantServerResource implements
      * @param studyDesign
      *            the study design
      * @return List<BetweenParticipantFactor>
-     */
-    @Delete("json")
-    public final List<BetweenParticipantFactor> removeFrom(
+     */    
+    public final BetweenParticipantFactorList removeFrom(
             final StudyDesign studyDesign) {
-        List<BetweenParticipantFactor> betweenParticipantFactorList = null;
+        BetweenParticipantFactorList betweenParticipantFactorList = null;
         try {
+            if (!studyDesign.getHypothesis().isEmpty()) {
+                HypothesisManager hypothesisManager =
+                    new HypothesisManager();
+                hypothesisManager.beginTransaction();
+                   hypothesisManager
+                        .delete(studyDesign.getUuid(), studyDesign.getHypothesis());
+                hypothesisManager.commit();
+            }
             betweenParticipantFactorManager =
                 new BetweenParticipantFactorManager();
             betweenParticipantFactorManager.beginTransaction();
-            betweenParticipantFactorList = betweenParticipantFactorManager
+            betweenParticipantFactorList = new BetweenParticipantFactorList(betweenParticipantFactorManager
                     .delete(studyDesign.getUuid(),
-                            studyDesign.getBetweenParticipantFactorList());
+                            studyDesign.getBetweenParticipantFactorList()));
             betweenParticipantFactorManager.commit();
             /*
              * ---------------------------------------------------- Set

@@ -22,8 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.List;
-
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -36,7 +34,7 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.RepeatedMeasuresManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
+import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNodeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 // TODO: Auto-generated Javadoc
@@ -60,15 +58,15 @@ implements RepeatedMeasuresResource
 	boolean uuidFlag;
 	
 	/**
-	 * Retrieve a List<RepeatedMeasuresNode> object for specified UUID.
+	 * Retrieve a RepeatedMeasuresNodeList object for specified UUID.
 	 *
 	 * @param uuid the uuid
-	 * @return List<RepeatedMeasuresNode>
+	 * @return RepeatedMeasuresNodeList
 	 */
 	@Get("json")
-	public List<RepeatedMeasuresNode> retrieve(byte[] uuid) 
+	public RepeatedMeasuresNodeList retrieve(byte[] uuid) 
 	{
-		List<RepeatedMeasuresNode> repeatedMeasuresTree = null;
+		RepeatedMeasuresNodeList repeatedMeasuresTree = null;
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -84,7 +82,7 @@ implements RepeatedMeasuresResource
             	{		
 					StudyDesign studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						repeatedMeasuresTree = studyDesign.getRepeatedMeasuresTree();										
+						repeatedMeasuresTree = new RepeatedMeasuresNodeList(studyDesign.getRepeatedMeasuresTree());										
             	}				
 			studyDesignManager.commit();					
 		}
@@ -117,14 +115,14 @@ implements RepeatedMeasuresResource
 
 
 	/**
-	 * Create a List<RepeatedMeasuresNode> object for specified UUID.
+	 * Create a RepeatedMeasuresNodeList object for specified UUID.
 	 *
 	 * @param uuid the uuid
 	 * @param repeatedMeasuresTree the repeated measures tree
-	 * @return List<RepeatedMeasuresNode>
+	 * @return RepeatedMeasuresNodeList
 	 */
 	@Post("json")
-	public List<RepeatedMeasuresNode> create(byte[] uuid,List<RepeatedMeasuresNode> repeatedMeasuresTree) 
+	public RepeatedMeasuresNodeList create(byte[] uuid,RepeatedMeasuresNodeList repeatedMeasuresTree) 
 	{		
 		StudyDesign studyDesign =null;
 		if(uuid==null)
@@ -191,28 +189,28 @@ implements RepeatedMeasuresResource
 	}
 
 	/**
-	 * Update a List<RepeatedMeasuresNode> object for specified UUID.
+	 * Update a RepeatedMeasuresNodeList object for specified UUID.
 	 *
 	 * @param uuid the uuid
 	 * @param repeatedMeasuresTree the repeated measures tree
-	 * @return List<RepeatedMeasuresNode>
+	 * @return RepeatedMeasuresNodeList
 	 */
 	@Put("json")
-	public List<RepeatedMeasuresNode> update(byte[] uuid,List<RepeatedMeasuresNode> repeatedMeasuresTree) 
+	public RepeatedMeasuresNodeList update(byte[] uuid,RepeatedMeasuresNodeList repeatedMeasuresTree) 
 	{				
 		return create(uuid,repeatedMeasuresTree);			
 	}	
 
 	/**
-	 * Delete a List<RepeatedMeasuresNode> object for specified UUID.
+	 * Delete a RepeatedMeasuresNodeList object for specified UUID.
 	 *
 	 * @param uuid the uuid
-	 * @return List<RepeatedMeasuresNode>
+	 * @return RepeatedMeasuresNodeList
 	 */
 	@Delete("json")
-	public List<RepeatedMeasuresNode> remove(byte[] uuid) 
+	public RepeatedMeasuresNodeList remove(byte[] uuid) 
 	{
-		List<RepeatedMeasuresNode> repeatedMeasuresTree = null;
+		RepeatedMeasuresNodeList repeatedMeasuresTree = null;
 		StudyDesign studyDesign = null;
 		try
 		{
@@ -229,7 +227,7 @@ implements RepeatedMeasuresResource
             	{		
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
-						repeatedMeasuresTree = studyDesign.getRepeatedMeasuresTree();									
+						repeatedMeasuresTree = new RepeatedMeasuresNodeList(studyDesign.getRepeatedMeasuresTree());									
             	}				
 			studyDesignManager.commit();
 			/* ----------------------------------------------------
@@ -239,7 +237,7 @@ implements RepeatedMeasuresResource
 			{
 				repeatedMeasuresManager = new RepeatedMeasuresManager();
 				repeatedMeasuresManager.beginTransaction();
-					repeatedMeasuresTree = repeatedMeasuresManager.delete(uuid,repeatedMeasuresTree);
+					repeatedMeasuresTree = new RepeatedMeasuresNodeList(repeatedMeasuresManager.delete(uuid,repeatedMeasuresTree));
 				repeatedMeasuresManager.commit();
 			}
 		}
@@ -271,21 +269,19 @@ implements RepeatedMeasuresResource
 	}
 
 	/**
-	 * Delete a List<RepeatedMeasuresNode> object for specified Study Design.
+	 * Delete a RepeatedMeasuresNodeList object for specified Study Design.
 	 *
 	 * @param studyDesign the study design
-	 * @return List<RepeatedMeasuresNode>
+	 * @return RepeatedMeasuresNodeList
 	 */
-	@Override
-	@Delete("json")
-	public List<RepeatedMeasuresNode> removeFrom(StudyDesign studyDesign) 
+	public RepeatedMeasuresNodeList removeFrom(StudyDesign studyDesign) 
 	{
-		List<RepeatedMeasuresNode> repeatedMeasuresTree = null;	
+		RepeatedMeasuresNodeList repeatedMeasuresTree = null;	
         try
         {                    			
         	repeatedMeasuresManager = new RepeatedMeasuresManager();
         	repeatedMeasuresManager.beginTransaction();
-        		repeatedMeasuresTree=repeatedMeasuresManager.delete(studyDesign.getUuid(),studyDesign.getRepeatedMeasuresTree());
+        		repeatedMeasuresTree=new RepeatedMeasuresNodeList(repeatedMeasuresManager.delete(studyDesign.getUuid(),studyDesign.getRepeatedMeasuresTree()));
         	repeatedMeasuresManager.commit();        	       
         }
         catch (BaseManagerException bme)
