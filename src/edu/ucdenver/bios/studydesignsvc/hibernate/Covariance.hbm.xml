@@ -30,7 +30,7 @@
 		<id name="id" column="id"><generator class="native"/></id>
 		<property name="name" column="name" type="java.lang.String"/>
 		<property name="sd" column="sd"/>							
-		<property name="roh" column="roh"/>
+		<property name="rho" column="rho"/>
 		<property name="delta" column="delta"/>
 		<property name="rows" column="rows"/>
 		<property name="columns" column="columns"/>
