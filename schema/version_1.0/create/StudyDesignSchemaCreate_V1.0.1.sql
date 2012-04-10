@@ -304,7 +304,7 @@ CREATE  TABLE IF NOT EXISTS `studydesigndb`.`COVARIANCE` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) ,
   `sd` DOUBLE,
-  `roh` DOUBLE,
+  `rho` DOUBLE,
   `delta` DOUBLE,
   `rows` INT,
   `columns` INT,
