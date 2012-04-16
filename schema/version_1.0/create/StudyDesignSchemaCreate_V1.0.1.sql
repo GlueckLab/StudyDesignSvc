@@ -303,13 +303,41 @@ drop table if exists COVARIANCE;
 CREATE  TABLE IF NOT EXISTS `studydesigndb`.`COVARIANCE` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) ,
-  `sd` DOUBLE,
   `rho` DOUBLE,
   `delta` DOUBLE,
   `rows` INT,
   `columns` INT,
   `data` MEDIUMBLOB,
   PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`STANDARD_DEVIATION`
+-- -----------------------------------------------------
+drop table if exists STANDARD_DEVIATION;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`STANDARD_DEVIATION` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `standard_deviation` DOUBLE ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `studydesigndb`.`COVARIANCE_SD_MAP`
+-- -----------------------------------------------------
+drop table if exists COVARIANCE_SD_MAP;
+CREATE  TABLE IF NOT EXISTS `studydesigndb`.`COVARIANCE_SD_MAP` (
+  `cid` BINARY(16) NOT NULL,
+  `sid` INT NOT NULL UNIQUE, 
+  `listorder` INT,  
+  FOREIGN KEY (`sid`)
+  REFERENCES `studydesigndb`.`STANDARD_DEVIATION`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (`cid`)
+  REFERENCES `studydesigndb`.`COVARIANCE`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
