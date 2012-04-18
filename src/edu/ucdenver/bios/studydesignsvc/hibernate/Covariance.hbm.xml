@@ -26,10 +26,19 @@
     "-//Hibernate/Hibernate Mapping DTD//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>		
+	<class name="edu.ucdenver.bios.webservice.common.domain.StandardDeviation" table="STANDARD_DEVIATION" lazy="false">				
+		<id name="id" column="id"><generator class="native"/></id>				
+		<property name="value" column="standard_deviation"/>									 				
+	</class>
 	<class name="edu.ucdenver.bios.webservice.common.domain.Covariance" table="COVARIANCE" lazy="false">
 		<id name="id" column="id"><generator class="native"/></id>
 		<property name="name" column="name" type="java.lang.String"/>
-		<property name="sd" column="sd"/>							
+		<list name="standardDeviationList" table="COVARIANCE_SD_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
+		  <key column="cid" unique="true"/> 
+		  <list-index column="listorder"/>
+		  <many-to-many class="edu.ucdenver.bios.webservice.common.domain.StandardDeviation" 
+			  	column="sid"/>		 			  		  
+		</list>							
 		<property name="rho" column="rho"/>
 		<property name="delta" column="delta"/>
 		<property name="rows" column="rows"/>
