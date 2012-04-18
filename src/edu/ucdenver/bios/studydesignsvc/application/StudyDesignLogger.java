@@ -25,32 +25,33 @@ package edu.ucdenver.bios.studydesignsvc.application;
 import org.apache.log4j.Logger;
 
 /**
- * Singleton Log4J wrapper class
- * 
+ * Singleton Log4J wrapper class.
+ *
  * @author Uttara Sakhadeo
  */
-public class StudyDesignLogger {
+public final class StudyDesignLogger {
 
-	private static Logger instance = null;
+    /** The instance. */
+    private static Logger instance = null;
 
-	/**
-	 * Create a new logging object
-	 */
-	private StudyDesignLogger() {
-	}
+    /**
+     * Create a new logging object.
+     */
+    private StudyDesignLogger() {
+    }
 
-	/**
-	 * Create a single instance of a logging class
-	 * 
-	 * @return Logger object
-	 */
-	public static Logger getInstance() {
-		if (instance == null) {
-			instance = Logger
-					.getLogger("edu.cudenver.bios.studydesignsvc.Study");
-		}
+    /**
+     * Create a single instance of a logging class.
+     *
+     * @return Logger object
+     */
+    public static Logger getInstance() {
+        if (instance == null) {
+            instance = Logger
+                    .getLogger("edu.cudenver.bios.studydesignsvc.Study");
+        }
 
-		return instance;
-	}
+        return instance;
+    }
 
 }
