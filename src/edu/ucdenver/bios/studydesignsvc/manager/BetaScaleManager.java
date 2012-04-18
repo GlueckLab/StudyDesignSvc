@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
-
+import edu.ucdenver.bios.webservice.common.domain.BetaScaleList;
 import edu.ucdenver.bios.webservice.common.domain.BetaScale;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;

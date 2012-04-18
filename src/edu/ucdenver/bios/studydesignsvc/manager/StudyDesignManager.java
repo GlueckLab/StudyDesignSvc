@@ -93,7 +93,7 @@ public class StudyDesignManager extends BaseManager
         {
         	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
         	StudyDesign studyDesign = (StudyDesign) session.get(StudyDesign.class, uuidBytes);
-            return studyDesign;
+        	return studyDesign;
         }
         catch (Exception e)
         {

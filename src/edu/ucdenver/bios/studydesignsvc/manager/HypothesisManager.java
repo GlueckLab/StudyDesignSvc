@@ -33,82 +33,132 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality 
- * for MySQL table Hypothesis object.
+ * Manager class which provides CRUD functionality for MySQL table Hypothesis
+ * object.
  * 
  * @author Uttara Sakhadeo
  */
-public class HypothesisManager extends BaseManager
-{
+public class HypothesisManager extends BaseManager {
 
     /**
      * Instantiates a new hypothesis manager.
-     *
-     * @throws BaseManagerException the base manager exception
+     * 
+     * @throws BaseManagerException
+     *             the base manager exception
      */
-    public HypothesisManager() throws BaseManagerException 
-    {
+    public HypothesisManager() throws BaseManagerException {
         super();
     }
 
     /**
      * Delete a Hypothesis object by the specified UUID.
-     *
-     * @param uuidBytes the uuid bytes
-     * @param hypothesisSet the hypothesis set
+     * 
+     * @param uuidBytes
+     *            the uuid bytes
+     * @param hypothesisSet
+     *            the hypothesis set
      * @return Set<Hypothesis>
      */
-    public Set<Hypothesis> delete(byte[] uuidBytes,Set<Hypothesis> hypothesisSet)
-    {
-        if(!transactionStarted) 
-            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-        try
-        {
-            //hypothesisSet = get(uuidBytes);
-            for(Hypothesis hypothesis : hypothesisSet)
+    public Set<Hypothesis> delete(byte[] uuidBytes,
+            Set<Hypothesis> hypothesisSet) {
+        if (!transactionStarted)
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        try {
+            // hypothesisSet = get(uuidBytes);
+            for (Hypothesis hypothesis : hypothesisSet)
                 session.delete(hypothesis);
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Hypothesis object for UUID '" + uuidBytes + "': " + e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete HypothesisSet object for UUID '"
+                            + uuidBytes + "': " + e.getMessage());
         }
         return hypothesisSet;
     }
-    
+
     /**
-     * Retrieve a Hypothesis object by the specified UUID.
+     * Delete Specified Hypothesis object.
      * 
-     * @param hypothesisSet : Set<Hypothesis>
-     * @param isCreation : boolean
+     * @param uuidBytes
+     *            the uuid bytes
+     * @param hypothesis
+     *            the hypothesis
+     * @return the hypothesis
+     */
+    public Hypothesis delete(byte[] uuidBytes, Hypothesis hypothesis) {
+        if (!transactionStarted)
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        try {
+            session.delete(hypothesis);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete Hypothesis object for UUID '" + uuidBytes
+                            + "': " + e.getMessage());
+        }
+        return hypothesis;
+    }
+
+    /**
+     * Save or Upadte Set<Hypothesis> object by the specified UUID.
+     * 
+     * @param hypothesisSet
+     *            : Set<Hypothesis>
+     * @param isCreation
+     *            : boolean
      * @return hypothesisSet : Set<Hypothesis>
      */
-    public Set<Hypothesis> saveOrUpdate(Set<Hypothesis> hypothesisSet,boolean isCreation)
-    {
-        if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");     
-        try
-        {           
-            if(isCreation==true)
-            {
-                for(Hypothesis hypothesis : hypothesisSet)              
-                {
+    public Set<Hypothesis> saveOrUpdate(Set<Hypothesis> hypothesisSet,
+            boolean isCreation) {
+        if (!transactionStarted)
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        try {
+            if (isCreation == true) {
+                for (Hypothesis hypothesis : hypothesisSet) {
                     session.save(hypothesis);
-                    //System.out.println("in save id: "+hypothesis.getId());
-                }               
-            }
-            else
-            {
-                for(Hypothesis hypothesis : hypothesisSet)
+                    // System.out.println("in save id: "+hypothesis.getId());
+                }
+            } else {
+                for (Hypothesis hypothesis : hypothesisSet)
                     session.update(hypothesis);
             }
-        }
-        catch(Exception e)
-        {
-            hypothesisSet=null;
+        } catch (Exception e) {
+            hypothesisSet = null;
             System.out.println(e.getMessage());
-            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save Hypothesis object : " + e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to save HypothesisSet object : " + e.getMessage());
         }
         return hypothesisSet;
     }
-}
 
+    /**
+     * Save or update Specified Hypothesis object.
+     * 
+     * @param hypothesis
+     *            the hypothesis
+     * @param isCreation
+     *            the is creation
+     * @return the hypothesis
+     */
+    public Hypothesis saveOrUpdate(Hypothesis hypothesis, boolean isCreation) {
+        if (!transactionStarted)
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        try {
+            if (isCreation == true) {
+                session.save(hypothesis);
+            } else {
+                session.update(hypothesis);
+            }
+        } catch (Exception e) {
+            hypothesis = null;
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to save Hypothesis object : " + e.getMessage());
+        }
+        return hypothesis;
+    }
+}
