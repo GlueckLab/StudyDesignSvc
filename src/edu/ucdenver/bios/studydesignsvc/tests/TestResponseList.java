@@ -22,16 +22,19 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.ResponsesServerResource;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.ResponsesResource;
 import edu.ucdenver.bios.webservice.common.domain.ResponseList;
 import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -51,7 +54,7 @@ public class TestResponseList extends TestCase
 	private static String STUDY_NAME = "Junit Test Study Design";
 	
 	/** The resource. */
-	ResponsesServerResource resource = new ResponsesServerResource();
+	ResponsesResource resource = null;
 	
 	/** The uuid. */
 	byte[] uuid = null;		
@@ -59,10 +62,20 @@ public class TestResponseList extends TestCase
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);
-	}
+	public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_RESPONSE_LIST);
+            resource = clientResource.wrap(ResponsesResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
+    }
 	
 	/**
 	 * Test to create a Response List.
@@ -70,17 +83,17 @@ public class TestResponseList extends TestCase
 	@Test
 	public void testCreate()
 	{			
-		ResponseList responseList = new ResponseList();		
+	    List<ResponseNode> list = new ArrayList<ResponseNode>();	
 		ResponseNode ResponseNode = new ResponseNode();		
 			ResponseNode.setName("node1");	
-		responseList.add(ResponseNode);	
+		list.add(ResponseNode);	
 		ResponseNode = new ResponseNode();		
 			ResponseNode.setName("node2");			
-		responseList.add(ResponseNode);		
-				
+		list.add(ResponseNode);		
+		ResponseList responseList = new ResponseList(uuid,list);   		
 		try
 		{
-			responseList = resource.create(uuid,responseList);			
+			responseList = resource.create(responseList);			
 		}		
 		catch(Exception e)
 		{
@@ -105,17 +118,17 @@ public class TestResponseList extends TestCase
 	@Test
 	private void testUpdate()
 	{
-	    ResponseList responseList = new ResponseList();		
+	    List<ResponseNode> list = new ArrayList<ResponseNode>();	
 		ResponseNode responseNode = new ResponseNode();		
 			responseNode.setName("node_11");	
-		responseList.add(responseNode);	
+		list.add(responseNode);	
 		responseNode = new ResponseNode();		
 			responseNode.setName("node_22");			
-		responseList.add(responseNode);		
-				
+		list.add(responseNode);		
+		ResponseList responseList = new ResponseList(uuid,list);   		
 		try
 		{
-			responseList = resource.update(uuid,responseList);			
+			responseList = resource.update(responseList);			
 		}		
 		catch(Exception e)
 		{
@@ -140,7 +153,7 @@ public class TestResponseList extends TestCase
 	@Test
 	private void testDelete()
 	{
-		List<ResponseNode> responseList = null;			
+	    ResponseList responseList = null;			
 		
 		try
 		{
@@ -171,7 +184,7 @@ public class TestResponseList extends TestCase
 	@Test
 	public void testRetrieve()
 	{
-		List<ResponseNode> responseList = null;			
+		ResponseList responseList = null;			
 		
 		try
 		{

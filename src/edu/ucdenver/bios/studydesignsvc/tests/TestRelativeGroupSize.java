@@ -22,16 +22,19 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.RelativeGroupSizeServerResource;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.RelativeGroupSizeResource;
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
@@ -49,7 +52,7 @@ public class TestRelativeGroupSize extends TestCase
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 	
 	/** The resource. */
-	RelativeGroupSizeServerResource resource = new RelativeGroupSizeServerResource();
+	RelativeGroupSizeResource resource = null;
 	
 	/** The uuid. */
 	byte[] uuid = null;		
@@ -57,10 +60,20 @@ public class TestRelativeGroupSize extends TestCase
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);
-	}
+	public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_RELATIVE_GROUP_SIZE_LIST);
+            resource = clientResource.wrap(RelativeGroupSizeResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
+    }
 	
 	/**
 	 * Test to create a RelativeGroupSize List.
@@ -68,18 +81,17 @@ public class TestRelativeGroupSize extends TestCase
 	@Test
 	public void testCreate()
 	{	
-		
-		RelativeGroupSizeList relativeGroupSizeList = new RelativeGroupSizeList();		
+	    List<RelativeGroupSize> list = new ArrayList<RelativeGroupSize>();    				
 		RelativeGroupSize relativeGroupSize = new RelativeGroupSize();		
 			relativeGroupSize.setValue(5);	
-		relativeGroupSizeList.add(relativeGroupSize);	
+		list.add(relativeGroupSize);	
 		relativeGroupSize = new RelativeGroupSize();		
 			relativeGroupSize.setValue(1);			
-		relativeGroupSizeList.add(relativeGroupSize);		
-				
+		list.add(relativeGroupSize);		
+		RelativeGroupSizeList relativeGroupSizeList = new RelativeGroupSizeList(uuid,list);
 		try
 		{
-			relativeGroupSizeList = resource.create(uuid,relativeGroupSizeList);			
+			relativeGroupSizeList = resource.create(relativeGroupSizeList);			
 		}		
 		catch(Exception e)
 		{
@@ -110,17 +122,17 @@ public class TestRelativeGroupSize extends TestCase
 		StudyDesign studyDesign = new StudyDesign();		
 		studyDesign.setUuid(uuid);				
 				
-		RelativeGroupSizeList relativeGroupSizeList = new RelativeGroupSizeList();		
+		List<RelativeGroupSize> list = new ArrayList<RelativeGroupSize>(); 		
 		RelativeGroupSize relativeGroupSize = new RelativeGroupSize();		
 			relativeGroupSize.setValue(11);	
-		relativeGroupSizeList.add(relativeGroupSize);	
+		list.add(relativeGroupSize);	
 		relativeGroupSize = new RelativeGroupSize();		
 			relativeGroupSize.setValue(22);			
-		relativeGroupSizeList.add(relativeGroupSize);		
-				
+		list.add(relativeGroupSize);		
+		RelativeGroupSizeList relativeGroupSizeList = new RelativeGroupSizeList(uuid,list);		
 		try
 		{
-			relativeGroupSizeList = resource.update(uuid,relativeGroupSizeList);			
+			relativeGroupSizeList = resource.update(relativeGroupSizeList);			
 		}		
 		catch(Exception e)
 		{
@@ -148,7 +160,7 @@ public class TestRelativeGroupSize extends TestCase
 	@Test
 	public void testRetrieve()
 	{
-		List<RelativeGroupSize> relativeGroupSizeList = null;			
+		RelativeGroupSizeList relativeGroupSizeList = null;			
 		
 		try
 		{
@@ -181,7 +193,7 @@ public class TestRelativeGroupSize extends TestCase
 	@Test
 	private void testDelete()
 	{
-		List<RelativeGroupSize> relativeGroupSizeList = null;			
+		RelativeGroupSizeList relativeGroupSizeList = null;			
 		
 		try
 		{

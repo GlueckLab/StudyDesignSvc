@@ -27,12 +27,13 @@ import java.util.UUID;
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.studydesignsvc.resource.PowerCurveServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource;
 import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.enums.HorizontalAxisLabelEnum;
@@ -55,17 +56,27 @@ public class TestPowerCurveDescription extends TestCase
 	//private static int SAMPLE_SIZE = 100;
 	/** The study design manager. */
 	StudyDesignManager studyDesignManager = null;
-	
-	/** The confidence interval manager. */
-	ConfidenceIntervalManager confidenceIntervalManager = null;
+	PowerCurveResource resource = null;       
+    
 		
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);
-	}
+	public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/"+StudyDesignConstants.TAG_POWER_CURVE_DESCRIPTION);
+            resource = clientResource.wrap(PowerCurveResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
+    }
 	
 	/**
 	 * Test to create a PowerCurveDescription.
@@ -85,12 +96,11 @@ public class TestPowerCurveDescription extends TestCase
 		powerCurveDescription.setTypeIError(0.8f);				
 		powerCurveDescription.setHorizontalAxisLabelEnum(HorizontalAxisLabelEnum.TOTAL_SAMPLE_SIZE);
 		powerCurveDescription.setStratificationVarEnum(StratificationVariableEnum.TYPE_I_ERROR);
-		
-		PowerCurveServerResource resource = new  PowerCurveServerResource();		
+		powerCurveDescription.setUuid(uuid);
 		
 		try
 		{
-			powerCurveDescription=resource.create(uuid,powerCurveDescription);			
+			powerCurveDescription=resource.create(powerCurveDescription);			
 		}		
 		catch(Exception e)
 		{
@@ -120,17 +130,17 @@ public class TestPowerCurveDescription extends TestCase
 		studyDesign.setUuid(uuid);
 		
 		PowerCurveDescription powerCurveDescription = new PowerCurveDescription();
+		powerCurveDescription.setUuid(uuid);
 		powerCurveDescription.setPowerCurveDescription("changed");
 		powerCurveDescription.setSampleSize(100);
 		powerCurveDescription.setRegressionCoeeficientScaleFactor(0.2f);
 		powerCurveDescription.setTypeIError(0.8f);		
 		powerCurveDescription.setStudyDesign(studyDesign);
 		
-		PowerCurveServerResource resource = new  PowerCurveServerResource();		
 		
 		try
 		{
-			powerCurveDescription=resource.update(uuid,powerCurveDescription);			
+			powerCurveDescription=resource.update(powerCurveDescription);			
 		}		
 		catch(Exception e)
 		{
@@ -157,7 +167,6 @@ public class TestPowerCurveDescription extends TestCase
 	{		
 		PowerCurveDescription powerCurveDescription = null;		
 		
-		PowerCurveServerResource resource = new  PowerCurveServerResource();		
 		
 		try
 		{
@@ -192,7 +201,6 @@ public class TestPowerCurveDescription extends TestCase
 	private void testDelete()
 	{		
 		PowerCurveDescription powerCurveDescription = null;
-		PowerCurveServerResource resource = new  PowerCurveServerResource();		
 		
 		try
 		{

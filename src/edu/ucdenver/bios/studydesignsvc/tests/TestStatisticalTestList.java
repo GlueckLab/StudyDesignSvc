@@ -22,16 +22,19 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.StatisticalTestServerResource;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.StatisticalTestResource;
 import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
 import edu.ucdenver.bios.webservice.common.domain.StatisticalTestList;
 import edu.ucdenver.bios.webservice.common.enums.StatisticalTestTypeEnum;
@@ -53,7 +56,7 @@ public class TestStatisticalTestList extends TestCase
 	private static String STUDY_NAME = "Junit StatisticalTest Study Design";
 	
 	/** The resource. */
-	StatisticalTestServerResource resource = new StatisticalTestServerResource();
+	StatisticalTestResource resource = null;
 	
 	/** The uuid. */
 	byte[] uuid = null;		
@@ -61,10 +64,20 @@ public class TestStatisticalTestList extends TestCase
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);
-	}
+	public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_TEST_LIST);
+            resource = clientResource.wrap(StatisticalTestResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
+    }
 	
 	/**
 	 * Test to create a BetaScale List.
@@ -72,18 +85,17 @@ public class TestStatisticalTestList extends TestCase
 	@Test
 	public void testCreate()
 	{	
-		
-		StatisticalTestList testList = new StatisticalTestList();		
+	    List<StatisticalTest> list = new ArrayList<StatisticalTest>();    			
 		StatisticalTest test = new StatisticalTest();		
 			test.setType(StatisticalTestTypeEnum.UNIREP);	
-		testList.add(test);	
+		list.add(test);	
 		test = new StatisticalTest();		
 			test.setType(StatisticalTestTypeEnum.UNIREPBOX);		
-		testList.add(test);		
-				
+		list.add(test);		
+		StatisticalTestList testList = new StatisticalTestList(uuid,list);		
 		try
 		{
-			testList = resource.create(uuid,testList);			
+			testList = resource.create(testList);			
 		}		
 		catch(Exception e)
 		{
@@ -109,17 +121,17 @@ public class TestStatisticalTestList extends TestCase
 	@Test
 	private void testUpdate()
 	{
-	    StatisticalTestList testList = new StatisticalTestList();		
+	    List<StatisticalTest> list = new ArrayList<StatisticalTest>(); 	    	
 		StatisticalTest test = new StatisticalTest();		
 			test.setType(StatisticalTestTypeEnum.UNIREPGG);
-		testList.add(test);	
+		list.add(test);	
 		test = new StatisticalTest();		
 			test.setType(StatisticalTestTypeEnum.UNIREP);			
-		testList.add(test);		
-				
+		list.add(test);       
+        StatisticalTestList testList = new StatisticalTestList(uuid,list);		
 		try
 		{
-			testList = resource.update(uuid,testList);			
+			testList = resource.update(testList);			
 		}		
 		catch(Exception e)
 		{
@@ -145,7 +157,7 @@ public class TestStatisticalTestList extends TestCase
 	@Test
 	private void testDelete()
 	{
-		List<StatisticalTest> testList = null;			
+		StatisticalTestList testList = null;			
 		
 		try
 		{
@@ -176,7 +188,7 @@ public class TestStatisticalTestList extends TestCase
 	@Test
 	public void testRetrieve()
 	{
-		List<StatisticalTest> testList = null;			
+		StatisticalTestList testList = null;			
 		
 		try
 		{

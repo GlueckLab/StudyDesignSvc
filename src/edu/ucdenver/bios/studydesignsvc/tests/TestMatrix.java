@@ -29,11 +29,17 @@ import java.util.UUID;
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.MatrixServerResource;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.MatrixResource;
+import edu.ucdenver.bios.studydesignsvc.resource.MatrixSetResource;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
+import edu.ucdenver.bios.webservice.common.domain.NamedMatrixSet;
+import edu.ucdenver.bios.webservice.common.domain.UuidMatrix;
+import edu.ucdenver.bios.webservice.common.domain.UuidMatrixName;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 // TODO: Auto-generated Javadoc
@@ -55,7 +61,9 @@ public class TestMatrix extends TestCase
 	private static String BETA_MATRIX_NAME = "Beta Matrix";
 	
 	/** The resource. */
-	MatrixServerResource resource = new MatrixServerResource();
+	MatrixResource resource = null;
+	
+	MatrixSetResource setResource = null;
 	
 	/** The uuid. */
 	byte[] uuid = null;		
@@ -66,10 +74,21 @@ public class TestMatrix extends TestCase
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);
-	}
+	public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/"+StudyDesignConstants.TAG_MATRIX);
+            resource = clientResource.wrap(MatrixResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
+    }
 	
 	/**
 	 * Test to create a Set<NamedMatrix>.
@@ -97,10 +116,10 @@ public class TestMatrix extends TestCase
 				data[0][1]=50;
 			matrix.setDataFromArray(data);	
 		matrixSet.add(matrix);	
-				
+		NamedMatrixSet set = new NamedMatrixSet(uuid,matrixSet);		
 		try
 		{
-			matrixSet = resource.create(uuid,matrixSet);			
+			set = setResource.create(set);			
 		}		
 		catch(Exception e)
 		{
@@ -136,11 +155,10 @@ public class TestMatrix extends TestCase
 				double[][] data = new double[rows][columns];
 				data[0][0]=5.0;
 				data[0][1]=5.0;
-			matrix.setDataFromArray(data);	
-				
+			matrix.setDataFromArray(data);			
 		try
 		{
-			matrix = resource.create(uuid,matrix);			
+			matrix = resource.create(new UuidMatrix(uuid,matrix));			
 		}		
 		catch(Exception e)
 		{
@@ -168,11 +186,11 @@ public class TestMatrix extends TestCase
 	@Test
 	public void testRetrieveMatrixSet()
 	{
-		Set<NamedMatrix> matrixSet = null;			
+		NamedMatrixSet matrixSet = null;			
 		
 		try
 		{
-			matrixSet = resource.retrieve(uuid);			
+			matrixSet = setResource.retrieve(uuid);			
 		}		
 		catch(Exception e)
 		{
@@ -187,7 +205,7 @@ public class TestMatrix extends TestCase
         }
         else
         {     
-        	System.out.println("testRetrieveMatrixSet() : "+matrixSet.size());
+        	System.out.println("testRetrieveMatrixSet() : ");
         	 Gson gson = new Gson();
              String json = gson.toJson(matrixSet);  
              System.out.println(json);
@@ -204,8 +222,8 @@ public class TestMatrix extends TestCase
 		NamedMatrix matrix = null;				
 		
 		try
-		{
-			matrix = resource.retrieve(uuid,THETA_MATRIX_NAME);			
+		{		    
+			matrix = resource.retrieve(new UuidMatrixName(uuid,THETA_MATRIX_NAME));			
 		}		
 		catch(Exception e)
 		{
@@ -251,7 +269,7 @@ public class TestMatrix extends TestCase
 		
 		try
 		{
-			matrix = resource.update(uuid,matrix);			
+			matrix = resource.update(new UuidMatrix(matrix));			
 		}		
 		catch(Exception e)
 		{
@@ -311,10 +329,10 @@ public class TestMatrix extends TestCase
 			}	
 		matrix.setDataFromArray(data);
 		matrixSet.add(matrix);	
-		
+		NamedMatrixSet set = new NamedMatrixSet(uuid,matrixSet);
 		try
 		{
-			matrixSet = resource.update(uuid,matrixSet);			
+			set = setResource.update(set);			
 		}		
 		catch(Exception e)
 		{
@@ -346,7 +364,7 @@ public class TestMatrix extends TestCase
 		
 		try
 		{
-			matrix = resource.remove(uuid,THETA_MATRIX_NAME);			
+			matrix = resource.remove(new UuidMatrixName(uuid,THETA_MATRIX_NAME));			
 		}		
 		catch(Exception e)
 		{
@@ -376,11 +394,11 @@ public class TestMatrix extends TestCase
 	@Test
 	private void testDeleteMatrixSet()
 	{
-		Set<NamedMatrix> matrixSet = null;			
+		NamedMatrixSet matrixSet = null;			
 		
 		try
 		{
-			matrixSet = resource.remove(uuid);			
+			matrixSet = setResource.remove(uuid);			
 		}		
 		catch(Exception e)
 		{
@@ -395,7 +413,7 @@ public class TestMatrix extends TestCase
         }
         else
         {     
-        	System.out.println("testDeleteMatrixSet() : "+matrixSet.size());
+        	System.out.println("testDeleteMatrixSet() : ");
         	Gson gson = new Gson();
             String json = gson.toJson(matrixSet);  
             System.out.println(json);

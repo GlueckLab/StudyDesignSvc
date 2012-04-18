@@ -29,10 +29,12 @@ import java.util.UUID;
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.RepeatedMeasuresServerResource;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.RepeatedMeasuresResource;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNodeList;
 import edu.ucdenver.bios.webservice.common.domain.Spacing;
@@ -55,7 +57,7 @@ public class TestRepeatedMeasures extends TestCase
 	private static String STUDY_NAME = "Junit Test Study Design";
 	
 	/** The resource. */
-	RepeatedMeasuresServerResource resource = new RepeatedMeasuresServerResource();
+	RepeatedMeasuresResource resource = null;
 	
 	/** The uuid. */
 	byte[] uuid = null;		
@@ -63,10 +65,20 @@ public class TestRepeatedMeasures extends TestCase
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);
-	}
+	public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_REPEATEDMEASURES);
+            resource = clientResource.wrap(RepeatedMeasuresResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
+    }
 	
 	/**
 	 * Test to create a RepeatedMeasuresNode List.
@@ -74,7 +86,7 @@ public class TestRepeatedMeasures extends TestCase
 	@Test
 	public void testCreate()
 	{			
-		RepeatedMeasuresNodeList repeatedMeasuresTree = new RepeatedMeasuresNodeList();		
+	    List<RepeatedMeasuresNode> list = new ArrayList<RepeatedMeasuresNode>();		
 		RepeatedMeasuresNode repeatedMeasuresNode = new RepeatedMeasuresNode();		
 			repeatedMeasuresNode.setDimension("Week");
 			repeatedMeasuresNode.setNode(0);
@@ -92,7 +104,7 @@ public class TestRepeatedMeasures extends TestCase
 					spacing.setValue(20);
 					spacingList.add(spacing);
 					repeatedMeasuresNode.setSpacingList(spacingList);
-			repeatedMeasuresTree.add(repeatedMeasuresNode);	
+					list.add(repeatedMeasuresNode);	
 			
 			repeatedMeasuresNode = new RepeatedMeasuresNode();	
 			repeatedMeasuresNode.setNode(1);
@@ -110,11 +122,11 @@ public class TestRepeatedMeasures extends TestCase
 				spacing.setValue(20);
 				spacingList.add(spacing);
 				repeatedMeasuresNode.setSpacingList(spacingList);
-			repeatedMeasuresTree.add(repeatedMeasuresNode);			
-				
+				list.add(repeatedMeasuresNode);			
+		RepeatedMeasuresNodeList repeatedMeasuresTree = new RepeatedMeasuresNodeList(uuid,list);	
 		try
 		{
-			repeatedMeasuresTree = resource.create(uuid,repeatedMeasuresTree);			
+		    repeatedMeasuresTree = resource.create(repeatedMeasuresTree);			
 		}		
 		catch(Exception e)
 		{
@@ -142,8 +154,8 @@ public class TestRepeatedMeasures extends TestCase
 	@Test
 	private void testUpdate()
 	{
-	    RepeatedMeasuresNodeList repeatedMeasuresTree = new RepeatedMeasuresNodeList();		
-		RepeatedMeasuresNode repeatedMeasuresNode = new RepeatedMeasuresNode();		
+	    List<RepeatedMeasuresNode> list = new ArrayList<RepeatedMeasuresNode>();               
+	    RepeatedMeasuresNode repeatedMeasuresNode = new RepeatedMeasuresNode();		
 			repeatedMeasuresNode.setDimension("Week");
 			repeatedMeasuresNode.setNode(0);
 			repeatedMeasuresNode.setParent(null);	
@@ -160,7 +172,7 @@ public class TestRepeatedMeasures extends TestCase
 					spacing.setValue(20);
 					spacingList.add(spacing);
 					repeatedMeasuresNode.setSpacingList(spacingList);
-			repeatedMeasuresTree.add(repeatedMeasuresNode);	
+			list.add(repeatedMeasuresNode);	
 			
 			repeatedMeasuresNode = new RepeatedMeasuresNode();	
 			repeatedMeasuresNode.setDimension("Day");
@@ -179,7 +191,7 @@ public class TestRepeatedMeasures extends TestCase
 				spacing.setValue(20);
 				spacingList.add(spacing);
 				repeatedMeasuresNode.setSpacingList(spacingList);
-			repeatedMeasuresTree.add(repeatedMeasuresNode);	
+			list.add(repeatedMeasuresNode);	
 			
 			repeatedMeasuresNode = new RepeatedMeasuresNode();	
 			repeatedMeasuresNode.setDimension("Time");
@@ -193,11 +205,11 @@ public class TestRepeatedMeasures extends TestCase
 				spacing.setValue(10);
 				spacingList.add(spacing);
 				repeatedMeasuresNode.setSpacingList(spacingList);
-			repeatedMeasuresTree.add(repeatedMeasuresNode);	
-				
+			list.add(repeatedMeasuresNode);	
+		RepeatedMeasuresNodeList repeatedMeasuresTree = new RepeatedMeasuresNodeList(uuid,list);	
 		try
 		{
-			repeatedMeasuresTree = resource.update(uuid,repeatedMeasuresTree);			
+			repeatedMeasuresTree = resource.update(repeatedMeasuresTree);			
 		}		
 		catch(Exception e)
 		{
@@ -225,7 +237,7 @@ public class TestRepeatedMeasures extends TestCase
 	@Test
 	public void testRetrieve()
 	{
-		List<RepeatedMeasuresNode> repeatedMeasuresTree = null;			
+		RepeatedMeasuresNodeList repeatedMeasuresTree = null;			
 		
 		try
 		{
@@ -260,7 +272,7 @@ public class TestRepeatedMeasures extends TestCase
 	@Test
 	private void testDelete()
 	{
-		List<RepeatedMeasuresNode> repeatedMeasuresTree = null;			
+	    RepeatedMeasuresNodeList repeatedMeasuresTree = null;			
 		
 		try
 		{

@@ -31,10 +31,12 @@ import java.util.UUID;
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.QuantileServerResource;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.QuantileResource;
 import edu.ucdenver.bios.webservice.common.domain.Quantile;
 import edu.ucdenver.bios.webservice.common.domain.QuantileList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
@@ -52,7 +54,7 @@ public class TestQuantileList extends TestCase {
             .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 
     /** The resource. */
-    private QuantileServerResource resource = new QuantileServerResource();
+    private QuantileResource resource = null;
 
     /** The uuid. */
     private byte[] uuid = null;
@@ -64,6 +66,17 @@ public class TestQuantileList extends TestCase {
      */
     public void setUp() {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_QUANTILE_LIST);
+            resource = clientResource.wrap(QuantileResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
     }
 
     /**
@@ -71,17 +84,17 @@ public class TestQuantileList extends TestCase {
      */
     @Test
     public final void testCreate() {
-
-        QuantileList quantileList = new QuantileList();
+        
+        List<Quantile> list = new ArrayList<Quantile>();  
         Quantile quantile = new Quantile();
         quantile.setValue(0.5);
-        quantileList.add(quantile);
+        list.add(quantile);
         quantile = new Quantile();
         quantile.setValue(1);
-        quantileList.add(quantile);
-
+        list.add(quantile);
+        QuantileList quantileList = new QuantileList(uuid,list);   
         try {
-            quantileList = resource.create(uuid, quantileList);
+            quantileList = resource.create(quantileList);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             quantileList = null;
@@ -106,16 +119,16 @@ public class TestQuantileList extends TestCase {
         StudyDesign studyDesign = new StudyDesign();
         studyDesign.setUuid(uuid);
 
-        QuantileList quantileList = new QuantileList();
+        List<Quantile> list = new ArrayList<Quantile>();  
         Quantile quantile = new Quantile();
         quantile.setValue(0.11);
-        quantileList.add(quantile);
+        list.add(quantile);
         quantile = new Quantile();
         quantile.setValue(0.22);
-        quantileList.add(quantile);
-
+        list.add(quantile);
+        QuantileList quantileList = new QuantileList(uuid,list);
         try {
-            quantileList = resource.update(uuid, quantileList);
+            quantileList = resource.update(quantileList);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             quantileList = null;
@@ -137,7 +150,7 @@ public class TestQuantileList extends TestCase {
      */
     @Test
     public final void testRetrieve() {
-        List<Quantile> quantileList = null;
+        QuantileList quantileList = null;
 
         try {
             quantileList = resource.retrieve(uuid);
@@ -163,7 +176,7 @@ public class TestQuantileList extends TestCase {
      */
     @Test
     private final void testDelete() {
-        List<Quantile> quantileList = null;
+        QuantileList quantileList = null;
 
         try {
             quantileList = resource.remove(uuid);

@@ -22,16 +22,19 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.SigmaScaleServerResource;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.SigmaScaleResource;
 import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
 import edu.ucdenver.bios.webservice.common.domain.SigmaScaleList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -48,7 +51,7 @@ public class TestSigmaScaleList extends TestCase
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 	
 	/** The resource. */
-	SigmaScaleServerResource resource = new SigmaScaleServerResource();
+	SigmaScaleResource resource = null;
 	
 	/** The uuid. */
 	byte[] uuid = null;		
@@ -56,29 +59,38 @@ public class TestSigmaScaleList extends TestCase
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);
-	}
+	public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_SIGMA_SCALE_LIST);
+            resource = clientResource.wrap(SigmaScaleResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
+    }
 	
 	/**
 	 * Test to create a SigmaScale List.
 	 */
 	@Test
 	public void testCreate()
-	{	
-		
-		SigmaScaleList sigmaScaleList = new SigmaScaleList();		
+	{			
+	    List<SigmaScale> list = new ArrayList<SigmaScale>(); 		
 		SigmaScale sigmaScale = new SigmaScale();		
 			sigmaScale.setValue(0.5);	
-		sigmaScaleList.add(sigmaScale);	
+		list.add(sigmaScale);	
 		sigmaScale = new SigmaScale();		
 			sigmaScale.setValue(1);			
-		sigmaScaleList.add(sigmaScale);		
-				
+		list.add(sigmaScale);		
+		SigmaScaleList sigmaScaleList = new SigmaScaleList(uuid,list);    		
 		try
 		{
-			sigmaScaleList = resource.create(uuid,sigmaScaleList);			
+			sigmaScaleList = resource.create(sigmaScaleList);			
 		}		
 		catch(Exception e)
 		{
@@ -106,17 +118,17 @@ public class TestSigmaScaleList extends TestCase
 	@Test
 	private void testUpdate()
 	{
-	    SigmaScaleList sigmaScaleList = new SigmaScaleList();		
+	    List<SigmaScale> list = new ArrayList<SigmaScale>(); 		
 		SigmaScale sigmaScale = new SigmaScale();		
 			sigmaScale.setValue(0.11);	
-		sigmaScaleList.add(sigmaScale);	
+		list.add(sigmaScale);	
 		sigmaScale = new SigmaScale();		
 			sigmaScale.setValue(0.22);			
-		sigmaScaleList.add(sigmaScale);		
-				
+		list.add(sigmaScale);		
+		SigmaScaleList sigmaScaleList = new SigmaScaleList(uuid,list);		
 		try
 		{
-			sigmaScaleList = resource.update(uuid,sigmaScaleList);			
+			sigmaScaleList = resource.update(sigmaScaleList);			
 		}		
 		catch(Exception e)
 		{
@@ -144,7 +156,7 @@ public class TestSigmaScaleList extends TestCase
 	@Test
 	public void testRetrieve()
 	{
-		List<SigmaScale> sigmaScaleList = null;			
+		SigmaScaleList sigmaScaleList = null;			
 		
 		try
 		{
@@ -177,7 +189,7 @@ public class TestSigmaScaleList extends TestCase
 	@Test
 	private void testDelete()
 	{
-		List<SigmaScale> sigmaScaleList = null;			
+		SigmaScaleList sigmaScaleList = null;			
 		
 		try
 		{

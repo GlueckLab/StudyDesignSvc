@@ -22,16 +22,19 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.TypeIErrorServerResource;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.TypeIErrorResource;
 import edu.ucdenver.bios.webservice.common.domain.TypeIError;
 import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -49,7 +52,7 @@ public class TestTypeIError extends TestCase
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 	
 	/** The resource. */
-	TypeIErrorServerResource resource = new TypeIErrorServerResource();
+	TypeIErrorResource resource = null;
 	
 	/** The uuid. */
 	byte[] uuid = null;		
@@ -57,10 +60,20 @@ public class TestTypeIError extends TestCase
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);
-	}
+	public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_ALPHA_LIST);
+            resource = clientResource.wrap(TypeIErrorResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
+    }
 	
 	/**
 	 * Test to create a TypeIError List.
@@ -68,17 +81,20 @@ public class TestTypeIError extends TestCase
 	@Test
 	public void testCreate()
 	{			
-	    TypeIErrorList typeIErrorList = new TypeIErrorList();		
+	    TypeIErrorList typeIErrorList = new TypeIErrorList();
+	    typeIErrorList.setUuid(uuid);
+	    List<TypeIError> list = new ArrayList<TypeIError>();
 		TypeIError typeIError = new TypeIError();		
 			typeIError.setAlphaValue(0.5);	
-		typeIErrorList.add(typeIError);	
+		list.add(typeIError);	
 		typeIError = new TypeIError();		
 			typeIError.setAlphaValue(1);			
-		typeIErrorList.add(typeIError);		
+		list.add(typeIError);
+		typeIErrorList.setTypeIErrorList(list);
 				
 		try
 		{
-			typeIErrorList = resource.create(uuid,typeIErrorList);			
+			typeIErrorList = resource.create(typeIErrorList);			
 		}		
 		catch(Exception e)
 		{
@@ -106,17 +122,20 @@ public class TestTypeIError extends TestCase
 	@Test
 	private void testUpdate()
 	{
-	    TypeIErrorList typeIErrorList = new TypeIErrorList();		
+	    TypeIErrorList typeIErrorList = new TypeIErrorList();
+	    typeIErrorList.setUuid(uuid);
+        List<TypeIError> list = new ArrayList<TypeIError>();
 		TypeIError typeIError = new TypeIError();		
 			typeIError.setAlphaValue(0.11);	
-		typeIErrorList.add(typeIError);	
+		list.add(typeIError);	
 		typeIError = new TypeIError();		
 			typeIError.setAlphaValue(0.22);			
-		typeIErrorList.add(typeIError);		
+		list.add(typeIError);	
+		typeIErrorList.setTypeIErrorList(list);
 				
 		try
 		{
-			typeIErrorList = resource.update(uuid,typeIErrorList);			
+			typeIErrorList = resource.update(typeIErrorList);			
 		}		
 		catch(Exception e)
 		{
@@ -148,7 +167,7 @@ public class TestTypeIError extends TestCase
 		
 		try
 		{
-			typeIErrorList = resource.retrieve(uuid);			
+			typeIErrorList = resource.retrieve(uuid).getTypeIErrorList();			
 		}		
 		catch(Exception e)
 		{
@@ -181,7 +200,7 @@ public class TestTypeIError extends TestCase
 		
 		try
 		{
-			typeIErrorList = resource.remove(uuid);			
+			typeIErrorList = resource.remove(uuid).getTypeIErrorList();			
 		}		
 		catch(Exception e)
 		{

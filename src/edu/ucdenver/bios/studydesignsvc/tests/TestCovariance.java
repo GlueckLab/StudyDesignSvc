@@ -23,6 +23,7 @@
 package edu.ucdenver.bios.studydesignsvc.tests;
 
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,7 +34,11 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.ConfidenceIntervalResource;
+import edu.ucdenver.bios.studydesignsvc.resource.CovarianceResource;
 import edu.ucdenver.bios.studydesignsvc.resource.CovarianceServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.CovarianceSetResource;
 import edu.ucdenver.bios.webservice.common.domain.Covariance;
 import edu.ucdenver.bios.webservice.common.domain.CovarianceSet;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -57,7 +62,9 @@ public class TestCovariance extends TestCase
 	private static final String COVARIANCE_NAME_2 = "Covariance 2";
 	
 	/** The resource. */
-	CovarianceServerResource resource = new CovarianceServerResource();
+	CovarianceResource resource = null;
+	
+	CovarianceSetResource setResource = null;
 	
 	/** The uuid. */
 	byte[] uuid = null;	
@@ -71,21 +78,9 @@ public class TestCovariance extends TestCase
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);
-		/*try
-        {
-            clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_BETA_SCALE_LIST); 
-            //betaScaleResource = clientResource.wrap(BetaScaleResource.class);            
-            betaScaleResource = clientResource.wrap(BetaScaleResource.class);
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
-            fail();
-        }*/
-	}
+	public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);        
+    }
 
 	/**
 	 * Test to create a Covariance.
@@ -93,7 +88,7 @@ public class TestCovariance extends TestCase
 	@Test
 	public void testCreate()
 	{			
-		CovarianceSet covarianceSet = new CovarianceSet();		
+		Set<Covariance> covarianceSet = new HashSet<Covariance>();		
 		Covariance covariance = new Covariance();						
 			covariance.setName(COVARIANCE_NAME_1);
 			rows=2;
@@ -102,7 +97,9 @@ public class TestCovariance extends TestCase
 			covariance.setRows(rows);
 			covariance.setRho(1.2);
 			covariance.setDelta(2.5);
-			covariance.setSd(5);			
+			double[] value = new double[1];
+            value[0]= 10;
+            covariance.setStandardDeviationListFromArray(value);			
 				double[][] data = new double[rows][columns];
 				for(int i=0; i<columns ; i++)
 				{
@@ -121,7 +118,9 @@ public class TestCovariance extends TestCase
 			covariance.setRows(rows);
 			covariance.setRho(1.1);
 			covariance.setDelta(0.5);
-			covariance.setSd(0.1);			
+			value = new double[1];
+            value[0]= 0.5;
+            covariance.setStandardDeviationListFromArray(value);			
 				data = new double[rows][columns];
 				for(int i=0; i<columns ; i++)
 				{
@@ -132,10 +131,14 @@ public class TestCovariance extends TestCase
 				}
 			covariance.setBlobFromArray(data);
 		covarianceSet.add(covariance);		
-				
+		CovarianceSet set = new CovarianceSet(uuid,covarianceSet);		
 		try
 		{
-			covarianceSet = resource.create(uuid,covarianceSet);			
+		    System.clearProperty("http.proxyHost");
+            clientResource = new ClientResource("http://localhost:8080/study/covarianceSet");
+            setResource = clientResource.wrap(CovarianceSetResource.class);
+            
+		    set = setResource.create(set);			
 		}		
 		catch(Exception e)
 		{
@@ -163,11 +166,15 @@ public class TestCovariance extends TestCase
 	@Test
 	public void testRetrieve()
 	{
-		Set<Covariance> covarianceSet = null;			
+		CovarianceSet covarianceSet = null;			
 		
 		try
 		{
-			covarianceSet = resource.retrieve(uuid);			
+		    System.clearProperty("http.proxyHost");
+            clientResource = new ClientResource("http://localhost:8080/study/covarianceSet");
+            setResource = clientResource.wrap(CovarianceSetResource.class);
+            
+			covarianceSet = setResource.retrieve(uuid);			
 		}		
 		catch(Exception e)
 		{
@@ -182,7 +189,7 @@ public class TestCovariance extends TestCase
         }
         else
         {     
-        	System.out.println("testRetrieve() : "+covarianceSet.size());
+        	System.out.println("testRetrieve() : ");
         	 Gson gson = new Gson();
              String json = gson.toJson(covarianceSet);  
              System.out.println(json);
@@ -196,8 +203,8 @@ public class TestCovariance extends TestCase
 	@Test
 	public void testUpdate()
 	{
-	    CovarianceSet covarianceSet = new CovarianceSet();		
-		Covariance covariance = new Covariance();						
+	    Set<Covariance> covarianceSet = new HashSet<Covariance>();     
+        Covariance covariance = new Covariance();						
 			covariance.setName(COVARIANCE_NAME_1+" Updated");
 			rows=10;
 			columns=10;
@@ -205,7 +212,9 @@ public class TestCovariance extends TestCase
 			covariance.setRows(rows);
 			covariance.setRho(1.2);
 			covariance.setDelta(2.5);
-			covariance.setSd(5);			
+			double[] value = new double[1];
+			value[0]= 5;
+			covariance.setStandardDeviationListFromArray(value);			
 				double[][] data = new double[rows][columns];
 				for(int i=0; i<columns ; i++)
 				{
@@ -216,10 +225,14 @@ public class TestCovariance extends TestCase
 				}				
 			covariance.setBlobFromArray(data);			
 		covarianceSet.add(covariance);	
-						
+		CovarianceSet set = new CovarianceSet(uuid,covarianceSet);    				
 		try
 		{
-			covarianceSet = resource.update(uuid,covarianceSet);			
+		    System.clearProperty("http.proxyHost");
+            clientResource = new ClientResource("http://localhost:8080/study/covarianceSet");
+            setResource = clientResource.wrap(CovarianceSetResource.class);
+            
+			set = setResource.update(set);			
 		}		
 		catch(Exception e)
 		{
@@ -247,11 +260,15 @@ public class TestCovariance extends TestCase
 	@Test
 	public void testDelete()
 	{
-		Set<Covariance> covarianceSet = null;			
+		CovarianceSet covarianceSet = null;			
 		
 		try
 		{
-			covarianceSet = resource.remove(uuid);			
+		    System.clearProperty("http.proxyHost");
+            clientResource = new ClientResource("http://localhost:8080/study/covarianceSet");
+            setResource = clientResource.wrap(CovarianceSetResource.class);
+            
+			covarianceSet = setResource.remove(uuid);			
 		}		
 		catch(Exception e)
 		{
@@ -266,7 +283,7 @@ public class TestCovariance extends TestCase
         }
         else
         {     
-        	System.out.println("testDelete() : "+covarianceSet.size());
+        	System.out.println("testDelete() : ");
         	Gson gson = new Gson();
             String json = gson.toJson(covarianceSet);  
             System.out.println(json);

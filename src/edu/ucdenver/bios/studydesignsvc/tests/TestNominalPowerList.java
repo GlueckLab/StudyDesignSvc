@@ -24,16 +24,19 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.NominalPowerServerResource;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.NominalPowerResource;
 import edu.ucdenver.bios.webservice.common.domain.NominalPower;
 import edu.ucdenver.bios.webservice.common.domain.NominalPowerList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -50,8 +53,7 @@ public class TestNominalPowerList extends TestCase {
             .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 
     /** The resource. */
-    private NominalPowerServerResource resource =
-            new NominalPowerServerResource();
+    private NominalPowerResource resource = null;
 
     /** The uuid. */
     private byte[] uuid = null;
@@ -63,6 +65,18 @@ public class TestNominalPowerList extends TestCase {
      */
     public void setUp() {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/"+StudyDesignConstants.TAG_NOMINAL_POWER_LIST);
+            resource = clientResource.wrap(NominalPowerResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
     }
 
     /**
@@ -70,16 +84,16 @@ public class TestNominalPowerList extends TestCase {
      */
     @Test
     public final void testCreate() {
-        NominalPowerList nominalPowerList = new NominalPowerList();
+        List<NominalPower> list = new ArrayList<NominalPower>();          
         NominalPower nominalPower = new NominalPower();
         nominalPower.setValue(0.5);
-        nominalPowerList.add(nominalPower);
+        list.add(nominalPower);
         nominalPower = new NominalPower();
         nominalPower.setValue(0.1);
-        nominalPowerList.add(nominalPower);
-
+        list.add(nominalPower);
+        NominalPowerList nominalPowerList = new NominalPowerList(uuid,list);
         try {
-            nominalPowerList = resource.create(uuid, nominalPowerList);
+            nominalPowerList = resource.create(nominalPowerList);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             nominalPowerList = null;
@@ -98,16 +112,16 @@ public class TestNominalPowerList extends TestCase {
      */
     @Test
     private final void testUpdate() {
-        NominalPowerList nominalPowerList = new NominalPowerList();
+        List<NominalPower> list = new ArrayList<NominalPower>();
         NominalPower nominalPower = new NominalPower();
         nominalPower.setValue(0.11);
-        nominalPowerList.add(nominalPower);
+        list.add(nominalPower);
         nominalPower = new NominalPower();
         nominalPower.setValue(0.22);
-        nominalPowerList.add(nominalPower);
-
+        list.add(nominalPower);
+        NominalPowerList nominalPowerList = new NominalPowerList(uuid,list);
         try {
-            nominalPowerList = resource.update(uuid, nominalPowerList);
+            nominalPowerList = resource.update(nominalPowerList);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             nominalPowerList = null;
@@ -126,7 +140,7 @@ public class TestNominalPowerList extends TestCase {
      */
     @Test
     private final void testDelete() {
-        List<NominalPower> nominalPowerList = null;
+        NominalPowerList nominalPowerList = null;
 
         try {
             nominalPowerList = resource.remove(uuid);
@@ -150,7 +164,7 @@ public class TestNominalPowerList extends TestCase {
      */
     @Test
     public final void testRetrieve() {
-        List<NominalPower> nominalPowerList = null;
+        NominalPowerList nominalPowerList = null;
 
         try {
             nominalPowerList = resource.retrieve(uuid);

@@ -29,6 +29,7 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 
+import org.hibernate.mapping.Array;
 import org.junit.Test;
 import org.restlet.resource.ClientResource;
 
@@ -54,7 +55,8 @@ public class TestBetaScaleList extends TestCase {
     private BetaScaleServerResource resource = new BetaScaleServerResource();
     /** The uuid. */
     private byte[] uuid = null;
-    
+    /** The client resource. */
+    ClientResource clientResource = null;
    
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
@@ -101,21 +103,23 @@ public class TestBetaScaleList extends TestCase {
      */
     @Test
     public final void testCreate() {
-        BetaScaleList betaScaleList = new BetaScaleList();
+                
+        List<BetaScale> list = new ArrayList<BetaScale>();
         BetaScale betaScale = new BetaScale();
-        betaScale.setValue(0.5);
-        betaScaleList.add(betaScale);
+        betaScale.setValue(0.5);        
+        list.add(betaScale);
         betaScale = new BetaScale();
         betaScale.setValue(1);
-        betaScaleList.add(betaScale);
-
+        list.add(betaScale);       
+        BetaScaleList betaScaleList = new BetaScaleList(uuid,list);
+        
         try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource("http://localhost:8080/study/betaScaleList");
             //betaScaleResource = clientResource.wrap(BetaScaleResource.class);
             BetaScaleResource betaScaleResource = clientResource.wrap(BetaScaleResource.class);
             /*betaScaleList = resource.create(uuid, betaScaleList);*/
-            betaScaleList = betaScaleResource.create(betaScaleList,uuid);
+            betaScaleList = betaScaleResource.create(betaScaleList);
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -140,18 +144,23 @@ public class TestBetaScaleList extends TestCase {
     @Test
     private final void testUpdate() {
         BetaScaleList betaScaleList = new BetaScaleList();
+        List<BetaScale> list = new ArrayList<BetaScale>();
+        betaScaleList.setUuid(uuid);
         BetaScale betaScale = new BetaScale();
         betaScale.setValue(0.11);
-        betaScaleList.add(betaScale);
+        list.add(betaScale);
         betaScale = new BetaScale();
         betaScale.setValue(0.22);
-        betaScaleList.add(betaScale);
+        list.add(betaScale);
         betaScale = new BetaScale();
         betaScale.setValue(0.33);
-        betaScaleList.add(betaScale);
-
+        list.add(betaScale);
+        betaScaleList.setBetaScaleList(list);
         try {
-            betaScaleList = resource.update(uuid, betaScaleList); }
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betaScaleList");          
+            BetaScaleResource betaScaleResource = clientResource.wrap(BetaScaleResource.class);
+            betaScaleList = betaScaleResource.update(betaScaleList); }
         catch (Exception e) {
             System.out.println(e.getMessage());
             betaScaleList = null;
@@ -168,14 +177,44 @@ public class TestBetaScaleList extends TestCase {
         }
     }
 
-    
+    /**
+     * Test to retrieve a BetaScale List.
+     */
+    @Test
+    public final void testRetrieve() {
+        BetaScaleList betaScaleList = null;
+
+        try {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betaScaleList");
+            BetaScaleResource betaScaleResource = clientResource.wrap(BetaScaleResource.class);
+            /*betaScaleList = resource.retrieve(uuid);*/
+            betaScaleList = betaScaleResource.retrieve(uuid);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            betaScaleList = null;
+            fail();
+        }
+        if (betaScaleList == null) {
+            System.err.println("No matching Beta Scale found");
+            fail();
+        }
+        else {
+            System.out.println("testRetrieve() : ");
+            Gson gson = new Gson();
+            String json = gson.toJson(betaScaleList);
+            System.out.println(json);
+            assertTrue(betaScaleList != null);
+        }
+    }
 
     /**
      * Test to delete a BetaScale List.
      */
     @Test
     private final void testDelete() {
-        List<BetaScale> betaScaleList = null;
+        BetaScaleList betaScaleList = null;
 
         try {
             System.clearProperty("http.proxyHost");
@@ -199,37 +238,5 @@ public class TestBetaScaleList extends TestCase {
             System.out.println(json);
             assertTrue(betaScaleList != null);
         }
-    }
-
-    /**
-     * Test to retrieve a BetaScale List.
-     */
-    @Test
-    private final void testRetrieve() {
-        List<BetaScale> betaScaleList = null;
-
-        try {
-            System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betaScaleList");
-            BetaScaleResource betaScaleResource = clientResource.wrap(BetaScaleResource.class);
-            /*betaScaleList = resource.retrieve(uuid);*/
-            betaScaleList = betaScaleResource.retrieve(uuid);
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            betaScaleList = null;
-            fail();
-        }
-        if (betaScaleList == null) {
-            System.err.println("No matching Beta Scale found");
-            fail();
-        }
-        else {
-            System.out.println("testRetrieve() : " + betaScaleList.size());
-            Gson gson = new Gson();
-            String json = gson.toJson(betaScaleList);
-            System.out.println(json);
-            assertTrue(betaScaleList != null);
-        }
-    }
+    }    
 }

@@ -23,7 +23,7 @@
 package edu.ucdenver.bios.studydesignsvc.tests;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,11 +35,14 @@ import org.restlet.resource.ClientResource;
 import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.BetweenParticipantServerResource;
-import edu.ucdenver.bios.studydesignsvc.resource.HypothesisServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.HypothesisResource;
+import edu.ucdenver.bios.studydesignsvc.resource.HypothesisSetResource;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
+import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
 import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
 import edu.ucdenver.bios.webservice.common.domain.HypothesisBetweenParticipantMapping;
 import edu.ucdenver.bios.webservice.common.domain.HypothesisSet;
+import edu.ucdenver.bios.webservice.common.enums.HypothesisTrendTypeEnum;
 import edu.ucdenver.bios.webservice.common.enums.HypothesisTypeEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 // TODO: Auto-generated Javadoc
@@ -61,7 +64,9 @@ public class TestHypothesis extends TestCase
     private static final String COVARIANCE_NAME_2 = "Hypothesis 2";
     
     /** The resource. */
-    HypothesisServerResource resource = new HypothesisServerResource();
+    HypothesisResource resource = null;
+    
+    HypothesisSetResource setResource = null;
     
     /** The uuid. */
     byte[] uuid = null; 
@@ -75,20 +80,8 @@ public class TestHypothesis extends TestCase
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    public void setUp()
-    {
-        uuid = UUIDUtils.asByteArray(STUDY_UUID);
-        /*try
-        {
-            clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_BETA_SCALE_LIST); 
-            //betaScaleResource = clientResource.wrap(BetaScaleResource.class);            
-            betaScaleResource = clientResource.wrap(BetaScaleResource.class);
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
-            fail();
-        }*/
+    public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);        
     }
 
     /**
@@ -97,7 +90,7 @@ public class TestHypothesis extends TestCase
     @Test
     public void testCreate()
     {           
-        HypothesisSet hypothesisSet = new HypothesisSet();      
+        Set<Hypothesis> hypothesisSet = new HashSet<Hypothesis>();
         Hypothesis hypothesis = new Hypothesis();                       
             hypothesis.setType(HypothesisTypeEnum.INTERACTION);
             
@@ -105,12 +98,12 @@ public class TestHypothesis extends TestCase
             HypothesisBetweenParticipantMapping map = null;
             
             BetweenParticipantServerResource betResource = new BetweenParticipantServerResource();
-            List<BetweenParticipantFactor> betweenParticipantFactorList = betResource.retrieve(uuid);
+            BetweenParticipantFactorList betweenParticipantFactorList = betResource.retrieve(uuid);
             
-            for(BetweenParticipantFactor factor : betweenParticipantFactorList) {
+            for(BetweenParticipantFactor factor : betweenParticipantFactorList.getBetweenParticipantFactorList()) {
                 map = new HypothesisBetweenParticipantMapping();
                 map.setBetweenParticipantFactor(factor);
-                map.setType(HypothesisTypeEnum.INTERACTION);
+                map.setType(HypothesisTrendTypeEnum.LINEAR);
                 betweenParticipantList.add(map);
             }
                              
@@ -134,10 +127,13 @@ public class TestHypothesis extends TestCase
                hypothesis.setRepeatedMeasuresMapTree(repeatedMeasuresTree);*/
                
       hypothesisSet.add(hypothesis);  
-                        
+      HypothesisSet set = new HypothesisSet(uuid,hypothesisSet);                        
         try
         {
-            hypothesisSet = resource.create(uuid,hypothesisSet);            
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/hypothesisSet");
+            setResource = clientResource.wrap(HypothesisSetResource.class);  
+            set = setResource.create(set);            
         }       
         catch(Exception e)
         {
@@ -172,11 +168,14 @@ public class TestHypothesis extends TestCase
     @Test
     private void testRetrieve()
     {
-        Set<Hypothesis> hypothesisSet = null;           
+        HypothesisSet hypothesisSet = null;           
         
         try
         {
-            hypothesisSet = resource.retrieve(uuid);            
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/hypothesisSet");
+            setResource = clientResource.wrap(HypothesisSetResource.class);  
+            hypothesisSet = setResource.retrieve(uuid);            
         }       
         catch(Exception e)
         {
@@ -191,7 +190,7 @@ public class TestHypothesis extends TestCase
         }
         else
         {     
-            System.out.println("testRetrieve() : "+hypothesisSet.size());
+            System.out.println("testRetrieve() : ");
             try
             {
              Gson gson = new Gson();
@@ -212,14 +211,18 @@ public class TestHypothesis extends TestCase
     @Test
     private void testUpdate()
     {
-        HypothesisSet hypothesisSet = new HypothesisSet();      
+        Set<Hypothesis> hypothesisSet = new HashSet<Hypothesis>();
         Hypothesis hypothesis = new Hypothesis();                       
             hypothesis.setType(HypothesisTypeEnum.INTERACTION);
         hypothesisSet.add(hypothesis);  
+        HypothesisSet set = new HypothesisSet(uuid,hypothesisSet);
                         
         try
         {
-            hypothesisSet = resource.update(uuid,hypothesisSet);            
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/hypothesisSet");
+            setResource = clientResource.wrap(HypothesisSetResource.class);  
+            set = setResource.update(set);            
         }       
         catch(Exception e)
         {
@@ -247,11 +250,14 @@ public class TestHypothesis extends TestCase
     @Test
     private void testDelete()
     {
-        Set<Hypothesis> hypothesisSet = null;           
+        HypothesisSet hypothesisSet = null;           
         
         try
         {
-            hypothesisSet = resource.remove(uuid);          
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/hypothesisSet");
+            setResource = clientResource.wrap(HypothesisSetResource.class);  
+            hypothesisSet = setResource.remove(uuid);          
         }       
         catch(Exception e)
         {
@@ -266,7 +272,7 @@ public class TestHypothesis extends TestCase
         }
         else
         {     
-            System.out.println("testDelete() : "+hypothesisSet.size());
+            System.out.println("testDelete() : ");
             Gson gson = new Gson();
             String json = gson.toJson(hypothesisSet);  
             System.out.println(json);

@@ -22,16 +22,19 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.SampleSizeServerResource;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.SampleSizeResource;
 import edu.ucdenver.bios.webservice.common.domain.SampleSize;
 import edu.ucdenver.bios.webservice.common.domain.SampleSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
@@ -50,7 +53,7 @@ public class TestSampleSizeList extends TestCase
     private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
     
     /** The resource. */
-    SampleSizeServerResource resource = new SampleSizeServerResource();
+    SampleSizeResource resource = null;
     
     /** The uuid. */
     byte[] uuid = null;     
@@ -59,9 +62,19 @@ public class TestSampleSizeList extends TestCase
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    public void setUp()
-    {
+    public void setUp() {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_SAMPLE_SIZE_LIST);
+            resource = clientResource.wrap(SampleSizeResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
     }
     
     /**
@@ -71,17 +84,17 @@ public class TestSampleSizeList extends TestCase
     public void testCreate()
     {   
         
-        SampleSizeList sampleSizeList = new SampleSizeList();        
+        List<SampleSize> list = new ArrayList<SampleSize>();     
         SampleSize sampleSize = new SampleSize();     
             sampleSize.setValue(5); 
-        sampleSizeList.add(sampleSize); 
+        list.add(sampleSize); 
         sampleSize = new SampleSize();      
             sampleSize.setValue(1);           
-        sampleSizeList.add(sampleSize);     
-                
+        list.add(sampleSize);     
+        SampleSizeList sampleSizeList = new SampleSizeList(uuid,list);          
         try
         {
-            sampleSizeList = resource.create(uuid,sampleSizeList);          
+            sampleSizeList = resource.create(sampleSizeList);          
         }       
         catch(Exception e)
         {
@@ -112,17 +125,17 @@ public class TestSampleSizeList extends TestCase
         StudyDesign studyDesign = new StudyDesign();        
         studyDesign.setUuid(uuid);              
                 
-        SampleSizeList sampleSizeList = new SampleSizeList();        
+        List<SampleSize> list = new ArrayList<SampleSize>();          
         SampleSize sampleSize = new SampleSize();     
             sampleSize.setValue(11);    
-        sampleSizeList.add(sampleSize); 
+        list.add(sampleSize); 
         sampleSize = new SampleSize();      
             sampleSize.setValue(22);            
-        sampleSizeList.add(sampleSize);     
-                
+        list.add(sampleSize);     
+        SampleSizeList sampleSizeList = new SampleSizeList(uuid,list);        
         try
         {
-            sampleSizeList = resource.update(uuid,sampleSizeList);          
+            sampleSizeList = resource.update(sampleSizeList);          
         }       
         catch(Exception e)
         {
@@ -150,7 +163,7 @@ public class TestSampleSizeList extends TestCase
     @Test
     public void testRetrieve()
     {
-        List<SampleSize> sampleSizeList = null;         
+        SampleSizeList sampleSizeList = null;         
         
         try
         {
@@ -183,7 +196,7 @@ public class TestSampleSizeList extends TestCase
     @Test
     private void testDelete()
     {
-        List<SampleSize> sampleSizeList = null;         
+        SampleSizeList sampleSizeList = null;         
         
         try
         {

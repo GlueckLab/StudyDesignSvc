@@ -35,6 +35,8 @@ import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.studydesignsvc.resource.BetaScaleResource;
+import edu.ucdenver.bios.studydesignsvc.resource.ClusterNodeResource;
+import edu.ucdenver.bios.studydesignsvc.resource.ConfidenceIntervalResource;
 import edu.ucdenver.bios.studydesignsvc.resource.ConfidenceIntervalServerResource;
 import edu.ucdenver.bios.webservice.common.domain.BetaScale;
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
@@ -59,15 +61,26 @@ public class TestConfidenceInterval extends TestCase
 	byte[] uuid = null;
 	
 	/** The resource. */
-	ConfidenceIntervalServerResource resource = new ConfidenceIntervalServerResource();
+	ConfidenceIntervalResource resource = null;
 	
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);		
-	}
+	public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/"+StudyDesignConstants.TAG_CONFIDENCE_INTERVAL_DESCRIPTION);
+            resource = clientResource.wrap(ConfidenceIntervalResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
+    }
 		
 	/**
 	 * Test to create a ConfidenceIntervalDescription.
@@ -83,10 +96,11 @@ public class TestConfidenceInterval extends TestCase
 		confidenceInterval.setSigmaFixed(true);
 		confidenceInterval.setLowerTrailProbability(0.5f);
 		confidenceInterval.setUpperTrailProbability(0.5f);
+		confidenceInterval.setUuid(uuid);
 				
 		try
 		{
-			confidenceInterval=resource.create(uuid,confidenceInterval);
+			confidenceInterval=resource.create(confidenceInterval);
 		}
 		catch(Exception e)
 		{
@@ -109,7 +123,7 @@ public class TestConfidenceInterval extends TestCase
 	 * Test to update a ConfidenceIntervalDescription.
 	 */
 	@Test
-	public void testUpdate()
+	private void testUpdate()
 	{	
 		ConfidenceIntervalDescription confidenceInterval = new ConfidenceIntervalDescription();
 		confidenceInterval.setSigmaFixed(true);		
@@ -119,10 +133,10 @@ public class TestConfidenceInterval extends TestCase
 		confidenceInterval.setSigmaFixed(true);
 		confidenceInterval.setLowerTrailProbability(0.5f);
 		confidenceInterval.setUpperTrailProbability(0.5f);
-				
+		confidenceInterval.setUuid(uuid);		
 		try
 		{
-			confidenceInterval=resource.update(uuid,confidenceInterval);
+			confidenceInterval=resource.update(confidenceInterval);
 		}
 		catch(Exception e)
 		{
@@ -174,7 +188,7 @@ public class TestConfidenceInterval extends TestCase
 	 * Test to delete a ConfidenceIntervalDescription.
 	 */
 	@Test
-	public void testDelete()
+	private void testDelete()
 	{
 		ConfidenceIntervalDescription confidenceInterval = null;
 		try

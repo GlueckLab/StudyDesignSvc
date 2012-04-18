@@ -22,16 +22,19 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.PowerMethodServerResource;
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
+import edu.ucdenver.bios.studydesignsvc.resource.PowerMethodResource;
 import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
 import edu.ucdenver.bios.webservice.common.domain.PowerMethodList;
 import edu.ucdenver.bios.webservice.common.enums.PowerMethodEnum;
@@ -49,7 +52,7 @@ public class TestPowerMethodList extends TestCase
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 	
 	/** The resource. */
-	PowerMethodServerResource resource = new PowerMethodServerResource();
+	PowerMethodResource resource = null;
 	
 	/** The uuid. */
 	byte[] uuid = null;		
@@ -57,10 +60,20 @@ public class TestPowerMethodList extends TestCase
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);
-	}
+    public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_POWER_METHOD_LIST);
+            resource = clientResource.wrap(PowerMethodResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
+    }
 	
 	/**
 	 * Test to create a PowerMethod List.
@@ -69,17 +82,17 @@ public class TestPowerMethodList extends TestCase
 	public void testCreate()
 	{	
 		
-		PowerMethodList powerMethodList = new PowerMethodList();		
+	    List<PowerMethod> list = new ArrayList<PowerMethod>();		
 		PowerMethod powerMethod = new PowerMethod();		
 			powerMethod.setPowerMethodEnum(PowerMethodEnum.UNCONDITIONAL);	
-		powerMethodList.add(powerMethod);	
+		list.add(powerMethod);	
 		powerMethod = new PowerMethod();		
 			powerMethod.setPowerMethodEnum(PowerMethodEnum.QUANTILE);			
-		powerMethodList.add(powerMethod);		
-				
+		list.add(powerMethod);		
+		PowerMethodList powerMethodList = new PowerMethodList(uuid,list);		
 		try
 		{
-			powerMethodList = resource.create(uuid,powerMethodList);			
+			powerMethodList = resource.create(powerMethodList);			
 		}		
 		catch(Exception e)
 		{
@@ -107,15 +120,15 @@ public class TestPowerMethodList extends TestCase
 	@Test
 	public void testUpdate()
 	{
-	    PowerMethodList powerMethodList = new PowerMethodList();		
+	    List<PowerMethod> list = new ArrayList<PowerMethod>();		
 		PowerMethod powerMethod = new PowerMethod();		
 			powerMethod.setPowerMethodEnum(PowerMethodEnum.QUANTILE);	
-		powerMethodList.add(powerMethod);	
-		
+		list.add(powerMethod);	
+		PowerMethodList powerMethodList = new PowerMethodList(uuid,list); 
 				
 		try
 		{
-			powerMethodList = resource.update(uuid,powerMethodList);			
+			powerMethodList = resource.update(powerMethodList);			
 		}		
 		catch(Exception e)
 		{
@@ -143,7 +156,7 @@ public class TestPowerMethodList extends TestCase
 	@Test
 	public void testRetrieve()
 	{
-		List<PowerMethod> powerMethodList = null;			
+		PowerMethodList powerMethodList = null;			
 		
 		try
 		{
@@ -176,7 +189,7 @@ public class TestPowerMethodList extends TestCase
 	@Test
 	public void testDelete()
 	{
-		List<PowerMethod> powerMethodList = null;			
+		PowerMethodList powerMethodList = null;			
 		
 		try
 		{

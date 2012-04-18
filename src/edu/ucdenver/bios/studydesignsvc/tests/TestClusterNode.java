@@ -29,11 +29,15 @@ import java.util.UUID;
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
+import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.manager.ClusterNodeManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.studydesignsvc.resource.BetweenParticipantResource;
+import edu.ucdenver.bios.studydesignsvc.resource.ClusterNodeResource;
 import edu.ucdenver.bios.studydesignsvc.resource.ClusterNodeServerResource;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNodeList;
@@ -51,11 +55,22 @@ public class TestClusterNode extends TestCase
 	byte[] uuid = null;	
 	StudyDesignManager studyDesignManager = null;
 	ClusterNodeManager clusterNodeManager = null;
+	ClusterNodeResource resource = null;
 		
-	public void setUp()
-	{
-		uuid = UUIDUtils.asByteArray(STUDY_UUID);
-	}
+	public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_CLUSTERING);
+            resource = clientResource.wrap(ClusterNodeResource.class);            
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
+    }
 	
 	/**
 	 * Test to create a ClusterNode List
@@ -64,25 +79,25 @@ public class TestClusterNode extends TestCase
 	public void testCreate()
 	{	
 		
-		ClusterNodeList clusterNodeList = new ClusterNodeList();		
+	    List<ClusterNode> list = new ArrayList<ClusterNode>();		
 			ClusterNode clusterNode = new ClusterNode();		
 			clusterNode.setGroupName("group1");
 			clusterNode.setGroupSize(new Integer(10));			
 			clusterNode.setNode(0);
 			clusterNode.setParent(null);
-		clusterNodeList.add(clusterNode);		
+		list.add(clusterNode);		
 			clusterNode = new ClusterNode();		
 			clusterNode.setGroupName("group2");	
 			clusterNode.setGroupSize(new Integer(20));
 			clusterNode.setNode(1);
 			clusterNode.setParent(0);			
-		clusterNodeList.add(clusterNode);		
+		list.add(clusterNode);		
+		ClusterNodeList clusterNodeList = new ClusterNodeList(uuid,list);
 		
-		ClusterNodeServerResource resource = new ClusterNodeServerResource();
 		
 		try
 		{
-			clusterNodeList = resource.create(uuid,clusterNodeList);			
+			clusterNodeList = resource.create(clusterNodeList);			
 		}		
 		catch(Exception e)
 		{
@@ -96,7 +111,7 @@ public class TestClusterNode extends TestCase
 		}
 		else
 		{
-			System.out.println("testCreate() : "+clusterNodeList.size());
+			System.out.println("testCreate() : ");
 			Gson gson = new Gson();
             String json = gson.toJson(clusterNodeList);  
             System.out.println(json);
@@ -110,8 +125,7 @@ public class TestClusterNode extends TestCase
 	@Test
 	public void testRetrieve()
 	{		
-		List<ClusterNode> clusterNodeList = null;		
-		ClusterNodeServerResource resource = new ClusterNodeServerResource();		
+		ClusterNodeList clusterNodeList = null;		
 		
 		try
 		{
@@ -130,7 +144,7 @@ public class TestClusterNode extends TestCase
         }
         else
         {              	                    
-        	System.out.println("testRead() : "+clusterNodeList.size());
+        	System.out.println("testRead() : ");
 			Gson gson = new Gson();
             String json = gson.toJson(clusterNodeList);  
             System.out.println(json);
@@ -144,8 +158,7 @@ public class TestClusterNode extends TestCase
 	@Test
 	public void testDelete()
 	{		
-		List<ClusterNode> clusterNodeList = new ArrayList<ClusterNode>();		
-		ClusterNodeServerResource resource = new ClusterNodeServerResource();	
+	    ClusterNodeList clusterNodeList = null;		
 		try
 		{
 			clusterNodeList = resource.remove(uuid);			
@@ -176,25 +189,24 @@ public class TestClusterNode extends TestCase
 	public void testUpdate()
 	{			
 		boolean flag;
-		ClusterNodeList clusterNodeList = new ClusterNodeList();		
+		List<ClusterNode> list = new ArrayList<ClusterNode>();        		
 			ClusterNode clusterNode = new ClusterNode();		
 			clusterNode.setGroupName("group1");
 			clusterNode.setGroupSize(new Integer(100));			
 			clusterNode.setNode(0);
 			clusterNode.setParent(null);
-		clusterNodeList.add(clusterNode);		
+		list.add(clusterNode);		
 			clusterNode = new ClusterNode();		
 			clusterNode.setGroupName("group2");	
 			clusterNode.setGroupSize(new Integer(200));
 			clusterNode.setNode(1);
 			clusterNode.setParent(0);			
-		clusterNodeList.add(clusterNode);		
-			
-		ClusterNodeServerResource resource = new ClusterNodeServerResource();	
+		list.add(clusterNode);		
+		ClusterNodeList clusterNodeList = new ClusterNodeList(uuid,list);	
 		
 		try
 		{
-			clusterNodeList = resource.update(uuid,clusterNodeList);			
+			clusterNodeList = resource.update(clusterNodeList);			
 		}		
 		catch(Exception e)
 		{
