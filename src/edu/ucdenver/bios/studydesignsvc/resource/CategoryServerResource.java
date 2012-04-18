@@ -37,7 +37,7 @@ public class CategoryServerResource extends ServerResource implements
     private boolean uuidFlag;
 
     
-    @Get
+    @Get("application/json")
     public CategoryList retrieve(final byte[] uuid) {
         CategoryList categoryList = null;
         if (uuid == null) {
@@ -92,9 +92,10 @@ public class CategoryServerResource extends ServerResource implements
      * edu.ucdenver.bios.studydesignsvc.resource.CategoryResource#create(byte[],
      * java.util.List)
      */
-    @Post("json")
-    public CategoryList create(byte[] uuid, CategoryList categoryList) {
+    @Post("application/json")
+    public CategoryList create(CategoryList categoryList) {
         StudyDesign studyDesign = null;
+        byte[] uuid = categoryList.getUuid();
         if (uuid == null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
@@ -134,14 +135,14 @@ public class CategoryServerResource extends ServerResource implements
             if (uuidFlag) {
                 categoryManager = new CategoryManager();
                 categoryManager.beginTransaction();
-                categoryList = new CategoryList(categoryManager.saveOrUpdate(categoryList, true));
+                categoryList = new CategoryList(categoryManager.saveOrUpdate(categoryList.getCategoryList(), true));
                 categoryManager.commit();
                 /*
                  * ---------------------------------------------------- Set
                  * reference of Confidence Interval Object to Study Design
                  * object ----------------------------------------------------
                  */
-                for (Category Category : categoryList) {
+                for (Category Category : categoryList.getCategoryList()) {
                     System.out.println("in ServerResource id: "
                             + Category.getId());
                 }
@@ -185,9 +186,9 @@ public class CategoryServerResource extends ServerResource implements
      * edu.ucdenver.bios.studydesignsvc.resource.CategoryResource#update(byte[],
      * java.util.List)
      */
-    @Put
-    public CategoryList update(byte[] uuid, CategoryList categoryList) {
-        return create(uuid, categoryList);
+    @Put("application/json")
+    public CategoryList update(CategoryList categoryList) {
+        return create(categoryList);
     }
 
     /*
@@ -196,7 +197,7 @@ public class CategoryServerResource extends ServerResource implements
      * @see
      * edu.ucdenver.bios.studydesignsvc.resource.CategoryResource#remove(byte[])
      */
-    @Delete
+    @Delete("application/json")
     public CategoryList remove(final byte[] uuid) {
         CategoryList categoryList = null;
         StudyDesign studyDesign = null;
@@ -227,10 +228,10 @@ public class CategoryServerResource extends ServerResource implements
              * existing Beta Scale objects for this object
              * ----------------------------------------------------
              */
-            if (!categoryList.isEmpty()) {
+            if (!categoryList.getCategoryList().isEmpty()) {
                 categoryManager = new CategoryManager();
                 categoryManager.beginTransaction();
-                categoryList = new CategoryList(categoryManager.delete(uuid, categoryList));
+                categoryList = new CategoryList(categoryManager.delete(uuid, categoryList.getCategoryList()));
                 categoryManager.commit();
                 /*
                  * ---------------------------------------------------- Set

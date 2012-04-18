@@ -29,9 +29,13 @@ import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.HypothesisSet;
+import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.UuidHypothesis;
+import edu.ucdenver.bios.webservice.common.domain.UuidHypothesisType;
+import edu.ucdenver.bios.webservice.common.enums.HypothesisTypeEnum;
 
+// TODO: Auto-generated Javadoc
 /**
  * Generic Resource class for handling requests for the
  * domain hypothesisList object of a Hypothesis.
@@ -45,48 +49,47 @@ public interface HypothesisResource {
      * Retrieve the object for the specified UUID.
      * Returns "not found" if no matching Object is available.
      *
-     * @param uuid the uuid
+     * @param uuidType the uuid type
      * @return Object for specified UUID
      */
-     @Get
-    HypothesisSet retrieve(byte[] uuid);
+     @Get("application/json")
+    Hypothesis retrieve(UuidHypothesisType uuidType);
 
     /**
      * Store HypothesisSet object to the database.
      *
-     * @param uuid the uuid
-     * @param hypothesisList the hypothesis list
+     * @param uuidHypothesis the uuid hypothesis
      * @return updated Object.
      */
-    @Post
-    HypothesisSet create(byte[] uuid , HypothesisSet hypothesisList);
+    @Post("application/json")
+    Hypothesis create(UuidHypothesis uuidHypothesis);
 
     /**
      * Update the specified object. If there is no
      * object set for specified UUID, then this object
      * will be treated as new and a UUID assigned.
      *
-     * @param uuid the uuid
-     * @param hypothesisList the hypothesis list
+     * @param uuidHypothesis the uuid hypothesis
      * @return HypothesisSet
      */
-    @Put
-    HypothesisSet update(byte[] uuid , HypothesisSet hypothesisList);
+    @Put("application/json")
+    Hypothesis update(UuidHypothesis uuidHypothesis);
 
     /**
      * Delete the Hypothesis object with the specified UUID.
      *
-     * @param uuid of the object to remove
+     * @param uuidType the uuid type
      * @return the deleted object
      */
-    @Delete
-    HypothesisSet remove(byte[] uuid);
+    @Delete("application/json")
+    Hypothesis remove(UuidHypothesisType uuidType);
 
     /**
      * Delete the HypothesisSet object with the specified UUID.
      *
      * @param studyDesign from which object is to be removed
+     * @param type the type
      * @return the deleted object
      */
-    HypothesisSet removeFrom(StudyDesign studyDesign);
+    Hypothesis removeFrom(StudyDesign studyDesign, HypothesisTypeEnum type);
 }

@@ -60,7 +60,7 @@ public interface SampleSizeResource {
      * @return updated Object.
      */
     @Post
-    SampleSizeList create(byte[] uuid , SampleSizeList list);
+    SampleSizeList create(SampleSizeList list);
 
     /**
      * Update the specified object. If there is no object set for specified
@@ -73,7 +73,7 @@ public interface SampleSizeResource {
      * @return SampleSizeList
      */
     @Put
-    SampleSizeList update(byte[] uuid , SampleSizeList list);
+    SampleSizeList update(SampleSizeList list);
 
     /**
      * Delete the SampleSize object with the specified UUID.

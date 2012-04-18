@@ -72,7 +72,7 @@ public class BetweenParticipantServerResource implements
      *            the uuid
      * @return List<BetweenParticipantFactor>
      */
-    @Get("json")
+    @Get("application/json")
     public final BetweenParticipantFactorList retrieve(final byte[] uuid) {
         BetweenParticipantFactorList betweenParticipantFactorList = null;
         if (uuid == null) {
@@ -131,10 +131,11 @@ public class BetweenParticipantServerResource implements
      *            the between participant factor list
      * @return List<BetweenParticipantFactor>
      */
-    @Post("json")
-    public final BetweenParticipantFactorList create(final byte[] uuid,
+    @Post("application/json")
+    public final BetweenParticipantFactorList create(
             BetweenParticipantFactorList betweenParticipantFactorList) {
         StudyDesign studyDesign = null;
+        byte[] uuid = betweenParticipantFactorList.getUuid();
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
@@ -197,7 +198,7 @@ public class BetweenParticipantServerResource implements
                  * ----------------------------------------------------
                  */
                 studyDesign
-                .setBetweenParticipantFactorList(betweenParticipantFactorList);
+                .setBetweenParticipantFactorList(betweenParticipantFactorList.getBetweenParticipantFactorList());
                 studyDesignManager = new StudyDesignManager();
                 studyDesignManager.beginTransaction();
                 studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
@@ -241,10 +242,10 @@ public class BetweenParticipantServerResource implements
      *            the between participant factor list
      * @return List<BetweenParticipantFactor>
      */
-    @Put("json")
-    public final BetweenParticipantFactorList update(final byte[] uuid,
+    @Put("application/json")
+    public final BetweenParticipantFactorList update(
             final BetweenParticipantFactorList betweenParticipantFactorList) {
-        return create(uuid, betweenParticipantFactorList);
+        return create(betweenParticipantFactorList);
     }
 
     /**
@@ -254,7 +255,7 @@ public class BetweenParticipantServerResource implements
      *            the uuid
      * @return List<BetweenParticipantFactor>
      */
-    @Delete("json")
+    @Delete("application/json")
     public final BetweenParticipantFactorList remove(final byte[] uuid) {
         BetweenParticipantFactorList betweenParticipantFactorList = null;
         StudyDesign studyDesign = null;
@@ -274,7 +275,7 @@ public class BetweenParticipantServerResource implements
             if (uuidFlag) {
                 studyDesign = studyDesignManager.get(uuid);
                 if (studyDesign != null) {
-                    betweenParticipantFactorList = new BetweenParticipantFactorList(studyDesign
+                    betweenParticipantFactorList = new BetweenParticipantFactorList(uuid,studyDesign
                             .getBetweenParticipantFactorList());
                 }
                 /*
@@ -302,7 +303,7 @@ public class BetweenParticipantServerResource implements
                     new BetweenParticipantFactorManager();
                 betweenParticipantFactorManager.beginTransaction();
                 betweenParticipantFactorList = new BetweenParticipantFactorList(betweenParticipantFactorManager
-                        .delete(uuid, betweenParticipantFactorList));
+                        .delete(uuid, betweenParticipantFactorList.getBetweenParticipantFactorList()));
                 betweenParticipantFactorManager.commit();
             }
         } catch (BaseManagerException bme) {

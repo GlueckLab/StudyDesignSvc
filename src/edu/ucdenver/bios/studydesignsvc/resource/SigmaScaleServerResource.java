@@ -115,9 +115,10 @@ implements SigmaScaleResource
      * @return SigmaScaleList
      */
 	@Post("json")
-	public SigmaScaleList create(byte[] uuid,SigmaScaleList sigmaScaleList) 
+	public SigmaScaleList create(SigmaScaleList sigmaScaleList) 
 	{		
 		StudyDesign studyDesign =null;
+		byte[] uuid = sigmaScaleList.getUuid();
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -147,7 +148,7 @@ implements SigmaScaleResource
 			 * ----------------------------------------------------*/
 			if(uuidFlag)
 			{
-				studyDesign.setSigmaScaleList(sigmaScaleList);
+				studyDesign.setSigmaScaleList(sigmaScaleList.getSigmaScaleList());
 				studyDesignManager = new StudyDesignManager();
 				studyDesignManager.beginTransaction();
 					studyDesignManager.saveOrUpdate(studyDesign, false);
@@ -189,9 +190,9 @@ implements SigmaScaleResource
      * @return SigmaScaleList
      */
 	@Put("json")
-	public SigmaScaleList update(byte[] uuid,SigmaScaleList sigmaScaleList) 
+	public SigmaScaleList update(SigmaScaleList sigmaScaleList) 
 	{
-		return create(uuid,sigmaScaleList);
+		return create(sigmaScaleList);
 	}
 
 	/**
@@ -221,7 +222,7 @@ implements SigmaScaleResource
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
 						sigmaScaleList = new SigmaScaleList(studyDesign.getSigmaScaleList());
-					if(sigmaScaleList.isEmpty())
+					if(sigmaScaleList.getSigmaScaleList().isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 								"no SigmaScale is specified");					
             	}				
@@ -233,7 +234,7 @@ implements SigmaScaleResource
 			{
 				sigmaScaleManager = new SigmaScaleManager();
 				sigmaScaleManager.beginTransaction();
-					sigmaScaleList = new SigmaScaleList(sigmaScaleManager.delete(uuid,sigmaScaleList));
+					sigmaScaleList = new SigmaScaleList(sigmaScaleManager.delete(uuid,sigmaScaleList.getSigmaScaleList()));
 				sigmaScaleManager.commit();
 			}
 		}

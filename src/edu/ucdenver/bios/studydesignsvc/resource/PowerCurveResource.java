@@ -48,7 +48,7 @@ public interface PowerCurveResource {
      * @param uuid the uuid
      * @return PowerCurveDescription with specified UUID
      */
-     @Get
+     @Get("application/json")
     PowerCurveDescription retrieve(byte[] uuid);
     /**
      * Store the PowerCurveDescription to the database.
@@ -57,8 +57,8 @@ public interface PowerCurveResource {
      * @param powerCurveDescription the power curve description
      * @return PowerCurveDescription object with updated UUID.
      */
-    @Post
-    PowerCurveDescription create(byte[] uuid ,
+    @Post("application/json")
+    PowerCurveDescription create(
             PowerCurveDescription powerCurveDescription);
     /**
      * Update the specified PowerCurveDescription object. If there is no
@@ -69,8 +69,8 @@ public interface PowerCurveResource {
      * @param powerCurveDescription the power curve description
      * @return the PowerCurveDescription object
      */
-    @Put
-    PowerCurveDescription update(byte[] uuid ,
+    @Put("application/json")
+    PowerCurveDescription update(
             PowerCurveDescription powerCurveDescription);
     /**
      * Delete the object with the specified UUID.
@@ -78,7 +78,7 @@ public interface PowerCurveResource {
      * @param uuid the uuid of the object to remove
      * @return the deleted study design object
      */
-    @Delete
+    @Delete("application/json")
     PowerCurveDescription remove(byte[] uuid);
     /**
      * Delete the object with the specified UUID.

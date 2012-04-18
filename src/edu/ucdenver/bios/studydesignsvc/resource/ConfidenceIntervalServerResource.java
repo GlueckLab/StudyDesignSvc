@@ -69,7 +69,7 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
      *            : byte[]
      * @return ConfidenceIntervalDescription
      */
-    @Get("json")
+    @Get("application/json")
     public final ConfidenceIntervalDescription retrieve(final byte[] uuid) {
         if (uuid == null)  {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
@@ -129,10 +129,11 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
      *            : ConfidenceIntervalDescription
      * @return ConfidenceIntervalDescription
      */
-    @Post("json")
-    public final ConfidenceIntervalDescription create(final byte[] uuid,
+    @Post("application/json")
+    public final ConfidenceIntervalDescription create(
             ConfidenceIntervalDescription confidenceInterval) {
         boolean uuidFlag;
+        byte[] uuid = confidenceInterval.getUuid();
         StudyDesign studyDesign = null;
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
@@ -223,10 +224,11 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
      *            : ConfidenceIntervalDescription
      * @return ConfidenceIntervalDescription
      */
-    @Put("json")
-    public final ConfidenceIntervalDescription update(final byte[] uuid,
+    @Put("application/json")
+    public final ConfidenceIntervalDescription update(
             ConfidenceIntervalDescription confidenceInterval) {
         boolean uuidFlag;
+        byte[] uuid = confidenceInterval.getUuid();
         StudyDesign studyDesign = null;
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
@@ -284,7 +286,7 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
                  * studyDesignManager.commit();
                  */
             } else {
-                create(uuid, confidenceInterval);
+                create(confidenceInterval);
             }
         } catch (BaseManagerException bme) {
             StudyDesignLogger.getInstance().error(
@@ -341,7 +343,7 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
      *            : byte[]
      * @return ConfidenceIntervalDescription
      */
-    @Delete("json")
+    @Delete("application/json")
     public final ConfidenceIntervalDescription remove(final byte[] uuid) {
         boolean flag;
         ConfidenceIntervalDescription confidenceInterval = null;

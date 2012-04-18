@@ -62,7 +62,7 @@ public class ClusterNodeServerResource implements ClusterNodeResource {
      *            the uuid
      * @return ClusterNodeList
      */
-    @Get("json")
+    @Get("application/json")
     public final ClusterNodeList retrieve(final byte[] uuid) {
         ClusterNodeList clusterNodeList = null;
         if (uuid == null) {
@@ -81,7 +81,7 @@ public class ClusterNodeServerResource implements ClusterNodeResource {
             if (uuidFlag) {
                 StudyDesign studyDesign = studyDesignManager.get(uuid);
                 if (studyDesign != null) {
-                    clusterNodeList = new ClusterNodeList(studyDesign.getClusteringTree());
+                    clusterNodeList = new ClusterNodeList(uuid,studyDesign.getClusteringTree());
                 }
             }
             studyDesignManager.commit();
@@ -120,10 +120,11 @@ public class ClusterNodeServerResource implements ClusterNodeResource {
      *            the cluster node list
      * @return ClusterNodeList
      */
-    @Post("json")
-    public final ClusterNodeList create(final byte[] uuid,
+    @Post("application/json")
+    public final ClusterNodeList create(
             ClusterNodeList clusterNodeList) {
         StudyDesign studyDesign = null;
+        byte[] uuid = clusterNodeList.getUuid();
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
@@ -169,7 +170,7 @@ public class ClusterNodeServerResource implements ClusterNodeResource {
                  * reference of ClusterNode Object to Study Design object
                  * ----------------------------------------------------
                  */
-                studyDesign.setClusteringTree(clusterNodeList);
+                studyDesign.setClusteringTree(clusterNodeList.getClusterNodeList());
                 studyDesignManager = new StudyDesignManager();
                 studyDesignManager.beginTransaction();
                 studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
@@ -211,10 +212,10 @@ public class ClusterNodeServerResource implements ClusterNodeResource {
      *            the cluster node list
      * @return ClusterNodeList
      */
-    @Put("json")
-    public final ClusterNodeList update(final byte[] uuid,
+    @Put("application/json")
+    public final ClusterNodeList update(
             final ClusterNodeList clusterNodeList) {
-        return create(uuid, clusterNodeList);
+        return create(clusterNodeList);
     }
 
     /**
@@ -224,7 +225,7 @@ public class ClusterNodeServerResource implements ClusterNodeResource {
      *            the uuid
      * @return ClusterNodeList
      */
-    @Delete("json")
+    @Delete("application/json")
     public final ClusterNodeList remove(final byte[] uuid) {
         ClusterNodeList clusterNodeList = null;
         StudyDesign studyDesign = null;
@@ -244,7 +245,7 @@ public class ClusterNodeServerResource implements ClusterNodeResource {
             if (uuidFlag) {
                 studyDesign = studyDesignManager.get(uuid);
                 if (studyDesign != null) {
-                    clusterNodeList = new ClusterNodeList(studyDesign.getClusteringTree());
+                    clusterNodeList = new ClusterNodeList(uuid,studyDesign.getClusteringTree());
                 }
             }
             studyDesignManager.commit();
@@ -253,11 +254,11 @@ public class ClusterNodeServerResource implements ClusterNodeResource {
              * existing ClusterNode objects for this object
              * ----------------------------------------------------
              */
-            if (!clusterNodeList.isEmpty()) {
+            if (!clusterNodeList.getClusterNodeList().isEmpty()) {
                 clusterNodeManager = new ClusterNodeManager();
                 clusterNodeManager.beginTransaction();
                 clusterNodeList = new ClusterNodeList(clusterNodeManager.delete(uuid,
-                        clusterNodeList));
+                        clusterNodeList.getClusterNodeList()));
                 clusterNodeManager.commit();
             }
         } catch (BaseManagerException bme) {
@@ -298,7 +299,8 @@ public class ClusterNodeServerResource implements ClusterNodeResource {
         try {
             clusterNodeManager = new ClusterNodeManager();
             clusterNodeManager.beginTransaction();
-            clusteringTree = new ClusterNodeList(clusterNodeManager.delete(studyDesign.getUuid(),
+            clusteringTree = new ClusterNodeList(studyDesign.getUuid(),
+                    clusterNodeManager.delete(studyDesign.getUuid(),
                     studyDesign.getClusteringTree()));
             clusterNodeManager.commit();
         } catch (BaseManagerException bme) {

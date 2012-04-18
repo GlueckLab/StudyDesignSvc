@@ -57,7 +57,7 @@ implements NominalPowerResource
      * @param byte[]
      * @return NominalPowerList
      */
-	@Get("json")
+	@Get("application/json")
 	public NominalPowerList retrieve(byte[] uuid) 
 	{
 		NominalPowerList nominalPowerList = null;
@@ -114,10 +114,11 @@ implements NominalPowerResource
      * @param NominalPowerList
      * @return NominalPowerList
      */
-	@Post("json")
-	public NominalPowerList create(byte[] uuid,NominalPowerList nominalPowerList) 
+	@Post("application/json")
+	public NominalPowerList create(NominalPowerList nominalPowerList) 
 	{		
 		StudyDesign studyDesign =null;
+		byte[] uuid = nominalPowerList.getUuid();
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -147,7 +148,7 @@ implements NominalPowerResource
 			 * ----------------------------------------------------*/
 			if(uuidFlag)
 			{
-				studyDesign.setNominalPowerList(nominalPowerList);
+				studyDesign.setNominalPowerList(nominalPowerList.getNominalPowerList());
 				studyDesignManager = new StudyDesignManager();
 				studyDesignManager.beginTransaction();
 					studyDesignManager.saveOrUpdate(studyDesign, false);
@@ -188,10 +189,10 @@ implements NominalPowerResource
      * @param NominalPowerList
      * @return NominalPowerList
      */
-	@Put("json")
-	public NominalPowerList update(byte[] uuid,NominalPowerList nominalPowerList) 
+	@Put("application/json")
+	public NominalPowerList update(NominalPowerList nominalPowerList) 
 	{
-		return create(uuid,nominalPowerList);
+		return create(nominalPowerList);
 	}
 
 	/**
@@ -200,7 +201,7 @@ implements NominalPowerResource
      * @param byte[]
      * @return NominalPowerList
      */
-	@Delete("json")
+	@Delete("application/json")
 	public NominalPowerList remove(byte[] uuid) 
 	{
 		NominalPowerList nominalPowerList = null;
@@ -221,7 +222,7 @@ implements NominalPowerResource
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
 						nominalPowerList = new NominalPowerList(studyDesign.getNominalPowerList());
-					if(nominalPowerList.isEmpty())
+					if(nominalPowerList.getNominalPowerList().isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 								"no TypeIError is specified");					
             	}				
@@ -233,7 +234,7 @@ implements NominalPowerResource
 			{
 				nominalPowerManager = new NominalPowerManager();
 				nominalPowerManager.beginTransaction();
-					nominalPowerList = new NominalPowerList(nominalPowerManager.delete(uuid,nominalPowerList));
+					nominalPowerList = new NominalPowerList(nominalPowerManager.delete(uuid,nominalPowerList.getNominalPowerList()));
 				nominalPowerManager.commit();
 			}
 		}

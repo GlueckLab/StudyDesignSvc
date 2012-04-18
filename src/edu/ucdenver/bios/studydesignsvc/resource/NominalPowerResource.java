@@ -48,7 +48,7 @@ public interface NominalPowerResource {
      * @param uuid the uuid
      * @return Object for specified UUID
      */
-     @Get
+     @Get("application/json")
      NominalPowerList retrieve(byte[] uuid);
 
     /**
@@ -58,8 +58,8 @@ public interface NominalPowerResource {
      * @param nominalPowerList the nominal power list
      * @return updated Object.
      */
-    @Post
-     NominalPowerList create(byte[] uuid ,
+    @Post("application/json")
+     NominalPowerList create(
              NominalPowerList nominalPowerList);
 
     /**
@@ -71,8 +71,8 @@ public interface NominalPowerResource {
      * @param nominalPowerList the nominal power list
      * @return NominalPowerList
      */
-    @Put
-     NominalPowerList update(byte[] uuid ,
+    @Put("application/json")
+     NominalPowerList update(
              NominalPowerList nominalPowerList);
 
     /**
@@ -81,7 +81,7 @@ public interface NominalPowerResource {
      * @param uuid of the object to remove
      * @return the deleted object
      */
-    @Delete
+    @Delete("application/json")
      NominalPowerList remove(byte[] uuid);
 
     /**

@@ -65,7 +65,8 @@ public interface BetaScaleResource {
      * @see BetaScale
      */
     @Post("application/json")    
-    BetaScaleList create(BetaScaleList list, byte[] uuid);
+    BetaScaleList create(BetaScaleList list);
+    /*BetaScaleList create(BetaScaleList list, byte[] uuid);*/
 
     /**
      * Update the specified object. If there is no object set for specified UUID
@@ -78,7 +79,7 @@ public interface BetaScaleResource {
      * @return BetaScaleList
      */
     @Put("application/json")
-    BetaScaleList update(byte[] uuid, BetaScaleList list);
+    BetaScaleList update(BetaScaleList list);
 
     /**
      * Delete the Beta Scale object with the specified UUID.

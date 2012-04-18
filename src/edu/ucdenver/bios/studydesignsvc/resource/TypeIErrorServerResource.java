@@ -117,9 +117,10 @@ implements TypeIErrorResource
      * @return List<TypeIError>
      */
 	@Post("json")
-	public TypeIErrorList create(byte[] uuid,TypeIErrorList typeIErrorList) 
+	public TypeIErrorList create(TypeIErrorList typeIErrorList) 
 	{		
 		StudyDesign studyDesign =null;
+		byte[] uuid = typeIErrorList.getUuid();
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -149,7 +150,7 @@ implements TypeIErrorResource
 			 * ----------------------------------------------------*/
 			if(uuidFlag)
 			{
-				studyDesign.setAlphaList(typeIErrorList);
+				studyDesign.setAlphaList(typeIErrorList.getTypeIErrorList());
 				studyDesignManager = new StudyDesignManager();
 				studyDesignManager.beginTransaction();
 					studyDesignManager.saveOrUpdate(studyDesign, false);
@@ -191,9 +192,9 @@ implements TypeIErrorResource
      * @return List<TypeIError>
      */
 	@Put("json")
-	public TypeIErrorList update(byte[] uuid,TypeIErrorList typeIErrorList) 
+	public TypeIErrorList update(TypeIErrorList typeIErrorList) 
 	{
-		return create(uuid,typeIErrorList);
+		return create(typeIErrorList);
 	}
 
 	/**
@@ -223,7 +224,7 @@ implements TypeIErrorResource
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
 						typeIErrorList = new TypeIErrorList(studyDesign.getAlphaList());
-					if(typeIErrorList.isEmpty())
+					if(typeIErrorList.getTypeIErrorList().isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 								"no TypeIError is specified");					
             	}				
@@ -235,7 +236,7 @@ implements TypeIErrorResource
 			{
 				typeIErrorManager = new TypeIErrorManager();
 				typeIErrorManager.beginTransaction();
-					typeIErrorList = new TypeIErrorList(typeIErrorManager.delete(uuid,typeIErrorList));
+					typeIErrorList = new TypeIErrorList(typeIErrorManager.delete(uuid,typeIErrorList.getTypeIErrorList()));
 				typeIErrorManager.commit();
 			}
 		}

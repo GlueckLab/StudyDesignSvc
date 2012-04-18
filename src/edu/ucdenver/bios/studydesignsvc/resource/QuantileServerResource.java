@@ -57,7 +57,7 @@ implements QuantileResource
      * @param byte[]
      * @return QuantileList
      */
-	@Get("json")
+	@Get("application/json")
 	public QuantileList retrieve(byte[] uuid) 
 	{
 		QuantileList quantileList = null;
@@ -114,10 +114,11 @@ implements QuantileResource
      * @param QuantileList
      * @return QuantileList
      */
-	@Post("json")
-	public QuantileList create(byte[] uuid,QuantileList quantileList) 
+	@Post("application/json")
+	public QuantileList create(QuantileList quantileList) 
 	{		
 		StudyDesign studyDesign =null;
+		byte[] uuid = quantileList.getUuid();
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -147,7 +148,7 @@ implements QuantileResource
 			 * ----------------------------------------------------*/
 			if(uuidFlag)
 			{
-				studyDesign.setQuantileList(quantileList);
+				studyDesign.setQuantileList(quantileList.getQuantileList());
 				studyDesignManager = new StudyDesignManager();
 				studyDesignManager.beginTransaction();
 					studyDesignManager.saveOrUpdate(studyDesign, false);
@@ -188,10 +189,10 @@ implements QuantileResource
      * @param QuantileList
      * @return QuantileList
      */
-	@Put("json")
-	public QuantileList update(byte[] uuid,QuantileList quantileList) 
+	@Put("application/json")
+	public QuantileList update(QuantileList quantileList) 
 	{
-		return create(uuid,quantileList);
+		return create(quantileList);
 	}
 
 	/**
@@ -200,7 +201,7 @@ implements QuantileResource
      * @param byte[]
      * @return QuantileList
      */
-	@Delete("json")
+	@Delete("application/json")
 	public QuantileList remove(byte[] uuid) 
 	{
 		QuantileList quantileList = null;
@@ -221,7 +222,7 @@ implements QuantileResource
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
 						quantileList = new QuantileList(studyDesign.getQuantileList());
-					if(quantileList.isEmpty())
+					if(quantileList.getQuantileList().isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 								"no Quantile is specified");					
             	}				
@@ -233,7 +234,7 @@ implements QuantileResource
 			{
 				quantileManager = new QuantileManager();
 				quantileManager.beginTransaction();
-					quantileList = new QuantileList(quantileManager.delete(uuid,quantileList));
+					quantileList = new QuantileList(quantileManager.delete(uuid,quantileList.getQuantileList()));
 				quantileManager.commit();
 			}
 		}

@@ -63,7 +63,7 @@ implements RepeatedMeasuresResource
 	 * @param uuid the uuid
 	 * @return RepeatedMeasuresNodeList
 	 */
-	@Get("json")
+	@Get("application/json")
 	public RepeatedMeasuresNodeList retrieve(byte[] uuid) 
 	{
 		RepeatedMeasuresNodeList repeatedMeasuresTree = null;
@@ -121,10 +121,11 @@ implements RepeatedMeasuresResource
 	 * @param repeatedMeasuresTree the repeated measures tree
 	 * @return RepeatedMeasuresNodeList
 	 */
-	@Post("json")
-	public RepeatedMeasuresNodeList create(byte[] uuid,RepeatedMeasuresNodeList repeatedMeasuresTree) 
+	@Post("application/json")
+	public RepeatedMeasuresNodeList create(RepeatedMeasuresNodeList repeatedMeasuresTree) 
 	{		
 		StudyDesign studyDesign =null;
+		byte[] uuid = repeatedMeasuresTree.getUuid();
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -154,7 +155,7 @@ implements RepeatedMeasuresResource
 			 * ----------------------------------------------------*/
 			if(uuidFlag)
 			{
-				studyDesign.setRepeatedMeasuresTree(repeatedMeasuresTree);
+				studyDesign.setRepeatedMeasuresTree(repeatedMeasuresTree.getRepeatedMeasuresList());
 				studyDesignManager = new StudyDesignManager();
 				studyDesignManager.beginTransaction();
 					studyDesignManager.saveOrUpdate(studyDesign, false);
@@ -195,10 +196,10 @@ implements RepeatedMeasuresResource
 	 * @param repeatedMeasuresTree the repeated measures tree
 	 * @return RepeatedMeasuresNodeList
 	 */
-	@Put("json")
-	public RepeatedMeasuresNodeList update(byte[] uuid,RepeatedMeasuresNodeList repeatedMeasuresTree) 
+	@Put("application/json")
+	public RepeatedMeasuresNodeList update(RepeatedMeasuresNodeList repeatedMeasuresTree) 
 	{				
-		return create(uuid,repeatedMeasuresTree);			
+		return create(repeatedMeasuresTree);			
 	}	
 
 	/**
@@ -207,7 +208,7 @@ implements RepeatedMeasuresResource
 	 * @param uuid the uuid
 	 * @return RepeatedMeasuresNodeList
 	 */
-	@Delete("json")
+	@Delete("application/json")
 	public RepeatedMeasuresNodeList remove(byte[] uuid) 
 	{
 		RepeatedMeasuresNodeList repeatedMeasuresTree = null;
@@ -237,7 +238,7 @@ implements RepeatedMeasuresResource
 			{
 				repeatedMeasuresManager = new RepeatedMeasuresManager();
 				repeatedMeasuresManager.beginTransaction();
-					repeatedMeasuresTree = new RepeatedMeasuresNodeList(repeatedMeasuresManager.delete(uuid,repeatedMeasuresTree));
+					repeatedMeasuresTree = new RepeatedMeasuresNodeList(repeatedMeasuresManager.delete(uuid,repeatedMeasuresTree.getRepeatedMeasuresList()));
 				repeatedMeasuresManager.commit();
 			}
 		}

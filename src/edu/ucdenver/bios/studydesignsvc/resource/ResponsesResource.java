@@ -49,7 +49,7 @@ public interface ResponsesResource {
      *            the uuid
      * @return Object for specified UUID
      */
-    @Get
+    @Get("application/json")
     ResponseList retrieve(byte[] uuid);
 
     /**
@@ -61,8 +61,8 @@ public interface ResponsesResource {
      *            the response node list
      * @return updated Object.
      */
-    @Post
-    ResponseList create(byte[] uuid,
+    @Post("application/json")
+    ResponseList create(
             ResponseList responseNodeList);
 
     /**
@@ -75,8 +75,8 @@ public interface ResponsesResource {
      *            the response node list
      * @return Object
      */
-    @Put
-    ResponseList update(byte[] uuid,
+    @Put("application/json")
+    ResponseList update(
             ResponseList responseNodeList);
 
     /**
@@ -86,7 +86,7 @@ public interface ResponsesResource {
      *            of the object to remove
      * @return the deleted object
      */
-    @Delete
+    @Delete("application/json")
     ResponseList remove(byte[] uuid);
 
     /**

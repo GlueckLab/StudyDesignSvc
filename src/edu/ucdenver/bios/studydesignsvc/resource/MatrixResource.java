@@ -24,8 +24,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.Set;
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
@@ -33,6 +31,8 @@ import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.UuidMatrix;
+import edu.ucdenver.bios.webservice.common.domain.UuidMatrixName;
 
 /**
  * Generic Resource class for handling requests for the
@@ -43,16 +43,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
  */
 public interface MatrixResource {
 
-    /**
-     * Retrieve the object for the specified UUID.
-     * Returns "not found" if no matching Object is available.
-     *
-     * @param uuid the uuid
-     * @return Object for specified UUID
-     */
-     @Get
-     Set<NamedMatrix> retrieve(byte[] uuid);
-
+    
      /**
      * Retrieve the object for the specified UUID.
      * Returns "not found" if no matching Object is available.
@@ -61,19 +52,10 @@ public interface MatrixResource {
      * @param name the name
      * @return Object for specified UUID
      */
-     @Get
-     NamedMatrix retrieve(byte[] uuid , String name);
+     @Get("application/json")
+     NamedMatrix retrieve(UuidMatrixName uuidName);
 
-    /**
-     * Store Matrix object to the database.
-     *
-     * @param uuid the uuid
-     * @param namedMatrixMap the named matrix map
-     * @return updated Object.
-     */
-     @Post
-     Set<NamedMatrix> create(byte[] uuid  ,  Set<NamedMatrix> namedMatrixMap);
-
+    
     /**
      * Store Matrix object to the database.
      *
@@ -81,8 +63,8 @@ public interface MatrixResource {
      * @param namedMatrix the named matrix
      * @return updated Object.
      */
-     @Post
-     NamedMatrix create(byte[] uuid , NamedMatrix namedMatrix);
+     @Post("application/json")
+     NamedMatrix create(UuidMatrix uuidMatrix);
 
     /**
      * Update the specified object. If there is no
@@ -93,29 +75,8 @@ public interface MatrixResource {
      * @param namedMatrix the named matrix
      * @return Object
      */
-    @Put
-    Set<NamedMatrix> update(byte[] uuid , Set<NamedMatrix> namedMatrix);
-
-    /**
-     * Update the specified object. If there is no
-     * object set for specified UUID ,  then this object
-     * will be treated as new and a UUID assigned.
-     *
-     * @param uuid the uuid
-     * @param namedMatrix the named matrix
-     * @return Object
-     */
-    @Put
-    NamedMatrix update(byte[] uuid , NamedMatrix namedMatrix);
-
-    /**
-     * Delete the NamedMatrix object with the specified UUID.
-     *
-     * @param uuid of the object to remove
-     * @return the deleted object
-     */
-    @Delete
-    Set<NamedMatrix> remove(byte[] uuid);
+    @Put("application/json")
+    NamedMatrix update(UuidMatrix uuidMatrix);
 
     /**
      * Delete the NamedMatrix object with the specified UUID.
@@ -124,17 +85,10 @@ public interface MatrixResource {
      * @param name the name
      * @return the deleted object
      */
-    @Delete
-    NamedMatrix remove(byte[] uuid , String name);
+    @Delete("application/json")
+    NamedMatrix remove(UuidMatrixName uuidName);
 
-     /**
-      * Delete the NamedMatrix object with the specified UUID.
-      *
-      * @param studyDesign from which object is to be removed
-      * @return the deleted object
-      */
-     Set<NamedMatrix> removeFrom(StudyDesign studyDesign);
-
+     
      /**
       * Delete the NamedMatrix object with the specified UUID.
       *

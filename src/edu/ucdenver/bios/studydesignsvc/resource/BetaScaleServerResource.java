@@ -93,7 +93,8 @@ public class BetaScaleServerResource extends ServerResource implements
             if (uuidFlag) {
                 StudyDesign studyDesign = studyDesignManager.get(uuid);
                 if (studyDesign != null) {
-                    betaScaleList = new BetaScaleList(studyDesign.getBetaScaleList());
+                    betaScaleList = new BetaScaleList(studyDesign.getUuid(),
+                            studyDesign.getBetaScaleList());
                 }
             }
             studyDesignManager.commit();
@@ -136,9 +137,10 @@ public class BetaScaleServerResource extends ServerResource implements
     /*public final BetaScaleList create(final byte[] uuid ,
             BetaScaleList betaScaleList) {*/
     public final BetaScaleList create(
-            BetaScaleList betaScaleList, final byte[] uuid ) {
+            /*BetaScaleList betaScaleList, final byte[] uuid ) {*/
+            BetaScaleList betaScaleList) {
         StudyDesign studyDesign = null;
-        /*byte[] uuid = UUIDUtils.asByteArray(UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a"));*/
+        byte[] uuid = betaScaleList.getUuid();
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
@@ -194,7 +196,7 @@ public class BetaScaleServerResource extends ServerResource implements
                  * System.out.println(
                  * "in ServerResource id: "+betaScale.getId()); }
                  */
-                studyDesign.setBetaScaleList(betaScaleList);
+                studyDesign.setBetaScaleList(betaScaleList.getBetaScaleList());
                 studyDesignManager = new StudyDesignManager();
                 studyDesignManager.beginTransaction();
                 studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
@@ -237,10 +239,10 @@ public class BetaScaleServerResource extends ServerResource implements
      * @return ArrayList<BetaScale>
      */
     @Put("application/json")
-    public final BetaScaleList update(final byte[] uuid ,
+    public final BetaScaleList update(
             final BetaScaleList betaScaleList) {
-        /*return create(uuid, betaScaleList);*/
-        return create(betaScaleList, uuid);
+        return create(betaScaleList);
+        /*return create(betaScaleList, uuid);*/
     }
 
     /**
@@ -270,7 +272,7 @@ public class BetaScaleServerResource extends ServerResource implements
             if (uuidFlag) {
                 studyDesign = studyDesignManager.get(uuid);
                 if (studyDesign != null) {
-                    betaScaleList = new BetaScaleList(studyDesign.getBetaScaleList());
+                    betaScaleList = new BetaScaleList(uuid,studyDesign.getBetaScaleList());
                 }
             }
             studyDesignManager.commit();
@@ -279,10 +281,10 @@ public class BetaScaleServerResource extends ServerResource implements
              * existing Beta Scale objects for this object
              * ----------------------------------------------------
              */
-            if (!betaScaleList.isEmpty()) {
+            if (!betaScaleList.getBetaScaleList().isEmpty()) {
                 betaScaleManager = new BetaScaleManager();
                 betaScaleManager.beginTransaction();
-                betaScaleList = new BetaScaleList(betaScaleManager.delete(uuid, betaScaleList));
+                betaScaleList = new BetaScaleList(uuid,betaScaleManager.delete(uuid, betaScaleList.getBetaScaleList()));
                 betaScaleManager.commit();
                 /*
                  * ---------------------------------------------------- Set
@@ -335,7 +337,7 @@ public class BetaScaleServerResource extends ServerResource implements
         try {
             betaScaleManager = new BetaScaleManager();
             betaScaleManager.beginTransaction();
-            betaScaleList = new BetaScaleList(betaScaleManager.delete(studyDesign.getUuid(),
+            betaScaleList = new BetaScaleList(studyDesign.getUuid(),betaScaleManager.delete(studyDesign.getUuid(),
                     studyDesign.getBetaScaleList()));
             betaScaleManager.commit();
             /*

@@ -29,63 +29,68 @@ import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.CovarianceSet;
+import edu.ucdenver.bios.webservice.common.domain.Covariance;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.UuidCovariance;
+import edu.ucdenver.bios.webservice.common.domain.UuidCovarianceName;
 
+// TODO: Auto-generated Javadoc
 /**
- * Generic Resource class for handling requests for the
- * domain list object of a Covariance.
- * See the StudyDesignApplication class for URI mappings
- *
+ * Generic Resource class for handling requests for the domain list object of a
+ * Covariance. See the StudyDesignApplication class for URI mappings
+ * 
  * @author Uttara Sakhadeo
  */
 public interface CovarianceResource {
-    /**
-     * Retrieve the object for the specified UUID.
-     * Returns "not found" if no matching Object is available.
-     *
-     * @param uuid the uuid
-     * @return Object for specified UUID
-     */
-     @Get
-    CovarianceSet retrieve(byte[] uuid);
 
     /**
-     * Store Covariance object to the database.
-     *
-     * @param uuid the uuid
-     * @param covarianceSet the covariance set
-     * @return updated Object.
+     * Retrieve Covariance.
+     * 
+     * @param uuidName
+     *            the uuid name
+     * @return the covariance
      */
-    @Post
-    CovarianceSet create(byte[] uuid , CovarianceSet covarianceSet);
+    @Get("application/json")
+    Covariance retrieve(UuidCovarianceName uuidName);
 
     /**
-     * Update the specified object. If there is no
-     * object set for specified UUID, then this object
-     * will be treated as new and a UUID assigned.
-     *
-     * @param uuid the uuid
-     * @param covarianceSet the covariance set
-     * @return Object
+     * Creates the Covariance.
+     * 
+     * @param uuidCovariance
+     *            the uuid covariance
+     * @return the covariance
      */
-    @Put
-    CovarianceSet update(byte[] uuid , CovarianceSet covarianceSet);
+    @Post("application/json")
+    Covariance create(UuidCovariance uuidCovariance);
 
     /**
-     * Delete the Covariance object with the specified UUID.
-     *
-     * @param uuid of the object to remove
-     * @return the deleted object
+     * Update Covariance.
+     * 
+     * @param uuidCovariance
+     *            the uuid covariance
+     * @return the covariance
      */
-    @Delete
-    CovarianceSet remove(byte[] uuid);
+    @Put("application/json")
+    Covariance update(UuidCovariance uuidCovariance);
 
     /**
-     * Delete the Covariance object with the specified UUID.
-     *
-     * @param studyDesign from which object is to be removed
-     * @return the deleted object
+     * Removes the Covariance.
+     * 
+     * @param uuidName
+     *            the uuid name
+     * @return the covariance
      */
-    CovarianceSet removeFrom(StudyDesign studyDesign);
+    @Delete("application/json")
+    Covariance remove(UuidCovarianceName uuidName);
+
+    /**
+     * Removes the from.
+     * 
+     * @param studyDesign
+     *            the study design
+     * @param name
+     *            the name
+     * @return the covariance
+     */
+    Covariance removeFrom(StudyDesign studyDesign, String name);
 }

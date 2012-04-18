@@ -57,7 +57,7 @@ implements PowerMethodResource
      * @param byte[]
      * @return PowerMethodList
      */
-	@Get("json")
+	@Get("application/json")
 	public PowerMethodList retrieve(byte[] uuid) 
 	{
 		PowerMethodList powerMethodList = null;
@@ -114,10 +114,11 @@ implements PowerMethodResource
      * @param PowerMethodList
      * @return PowerMethodList
      */
-	@Post("json")
-	public PowerMethodList create(byte[] uuid,PowerMethodList powerMethodList) 
+	@Post("application/json")
+	public PowerMethodList create(PowerMethodList powerMethodList) 
 	{		
 		StudyDesign studyDesign =null;
+		byte[] uuid = powerMethodList.getUuid();
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -147,7 +148,7 @@ implements PowerMethodResource
 			 * ----------------------------------------------------*/
 			if(uuidFlag)
 			{
-				studyDesign.setPowerMethodList(powerMethodList);
+				studyDesign.setPowerMethodList(powerMethodList.getPowerMethodList());
 				studyDesignManager = new StudyDesignManager();
 				studyDesignManager.beginTransaction();
 					studyDesignManager.saveOrUpdate(studyDesign, false);
@@ -188,10 +189,10 @@ implements PowerMethodResource
      * @param PowerMethodList
      * @return PowerMethodList
      */
-	@Put("json")
-	public PowerMethodList update(byte[] uuid,PowerMethodList powerMethodList) 
+	@Put("application/json")
+	public PowerMethodList update(PowerMethodList powerMethodList) 
 	{
-		return create(uuid,powerMethodList);
+		return create(powerMethodList);
 	}
 
 	/**
@@ -200,7 +201,7 @@ implements PowerMethodResource
      * @param byte[]
      * @return PowerMethodList
      */
-	@Delete("json")
+	@Delete("application/json")
 	public PowerMethodList remove(byte[] uuid) 
 	{
 		PowerMethodList powerMethodList = null;
@@ -230,7 +231,7 @@ implements PowerMethodResource
 			{
 				powerMethodManager = new PowerMethodManager();
 				powerMethodManager.beginTransaction();
-					powerMethodList = new PowerMethodList(powerMethodManager.delete(uuid,powerMethodList));
+					powerMethodList = new PowerMethodList(powerMethodManager.delete(uuid,powerMethodList.getPowerMethodList()));
 				powerMethodManager.commit();
 			}
 		}

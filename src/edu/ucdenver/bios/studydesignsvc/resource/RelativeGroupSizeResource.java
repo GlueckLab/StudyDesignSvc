@@ -39,7 +39,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
  *
  * @author Uttara Sakhadeo
  */
-interface RelativeGroupSizeResource {
+public interface RelativeGroupSizeResource {
     /**
      * Retrieve the object for the specified UUID.
      * Returns "not found" if no matching Object is available.
@@ -47,7 +47,7 @@ interface RelativeGroupSizeResource {
      * @param uuid the uuid
      * @return Object for specified UUID
      */
-     @Get
+     @Get("application/json")
     RelativeGroupSizeList retrieve(byte[] uuid);
     /**
      * Store Relative Group Size object to the database.
@@ -56,8 +56,8 @@ interface RelativeGroupSizeResource {
      * @param relativeGroupSizeList the relative group size list
      * @return updated Object.
      */
-    @Post
-    RelativeGroupSizeList create(byte[] uuid ,
+    @Post("application/json")
+    RelativeGroupSizeList create(
             RelativeGroupSizeList relativeGroupSizeList);
     /**
      * Update the specified object. If there is no
@@ -68,8 +68,8 @@ interface RelativeGroupSizeResource {
      * @param relativeGroupSizeList the relative group size list
      * @return Object
      */
-    @Put
-    RelativeGroupSizeList update(byte[] uuid ,
+    @Put("application/json")
+    RelativeGroupSizeList update(
             RelativeGroupSizeList relativeGroupSizeList);
     /**
      * Delete the Relative Group Size object with the specified UUID.
@@ -77,7 +77,7 @@ interface RelativeGroupSizeResource {
      * @param uuid of the object to remove
      * @return the deleted object
      */
-    @Delete
+    @Delete("application/json")
     RelativeGroupSizeList remove(byte[] uuid);
     /**
      * Delete the RelativeGroupSizeList object with the specified UUID.

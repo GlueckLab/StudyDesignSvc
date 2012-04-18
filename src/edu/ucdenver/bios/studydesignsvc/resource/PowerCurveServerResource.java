@@ -61,7 +61,7 @@ public class PowerCurveServerResource extends ServerResource implements
      * edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource#retrieve
      * (byte[])
      */
-    @Get("json")
+    @Get("application/json")
     public PowerCurveDescription retrieve(byte[] uuid) {
         boolean uuidFlag;
         PowerCurveDescription powerCurveDescription = null;
@@ -112,11 +112,12 @@ public class PowerCurveServerResource extends ServerResource implements
      * edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource#create(byte
      * [], edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription)
      */
-    @Post("json")
-    public PowerCurveDescription create(byte[] uuid,
+    @Post("application/json")
+    public PowerCurveDescription create(
             PowerCurveDescription powerCurveDescription) {
         boolean uuidFlag;
         StudyDesign studyDesign = null;
+        byte[] uuid = powerCurveDescription.getUuid();
         if (uuid == null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
@@ -193,11 +194,12 @@ public class PowerCurveServerResource extends ServerResource implements
      * edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource#update(byte
      * [], edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription)
      */
-    @Put("json")
-    public PowerCurveDescription update(byte[] uuid,
+    @Put("application/json")
+    public PowerCurveDescription update(
             PowerCurveDescription powerCurveDescription) {
         boolean uuidFlag;
         StudyDesign studyDesign = null;
+        byte[] uuid = powerCurveDescription.getUuid(); 
         if (uuid == null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
@@ -226,7 +228,7 @@ public class PowerCurveServerResource extends ServerResource implements
                 powerCurveManager.saveOrUpdate(powerCurveDescription, false);
                 powerCurveManager.commit();
             } else
-                create(uuid, powerCurveDescription);
+                create(powerCurveDescription);
         } catch (BaseManagerException bme) {
             StudyDesignLogger.getInstance().error(
                     "ConfidenceIntervalResource : " + bme.getMessage());
@@ -258,7 +260,7 @@ public class PowerCurveServerResource extends ServerResource implements
      * edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource#remove(byte
      * [])
      */
-    @Delete("json")
+    @Delete("application/json")
     public PowerCurveDescription remove(byte[] uuid) {
         boolean flag;
         PowerCurveDescription powerCurveDescription = null;

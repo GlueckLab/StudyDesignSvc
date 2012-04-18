@@ -48,7 +48,7 @@ public interface BetweenParticipantResource {
      * @param uuid the uuid
      * @return Object for specified UUID
      */
-    @Get
+    @Get("application/json")
     BetweenParticipantFactorList retrieve(byte[] uuid);
 
     /**
@@ -58,8 +58,8 @@ public interface BetweenParticipantResource {
      * @param betweenParticipantFactorList the between participant factor list
      * @return updated Object.
      */
-    @Post
-    BetweenParticipantFactorList create(byte[] uuid ,
+    @Post("application/json")
+    BetweenParticipantFactorList create(
             BetweenParticipantFactorList betweenParticipantFactorList);
 
     /**
@@ -70,8 +70,8 @@ public interface BetweenParticipantResource {
      * @param betweenParticipantFactorList the between participant factor list
      * @return Object
      */
-    @Put
-    BetweenParticipantFactorList update(byte[] uuid,
+    @Put("application/json")
+    BetweenParticipantFactorList update(
             BetweenParticipantFactorList betweenParticipantFactorList);
 
     /**
@@ -80,7 +80,7 @@ public interface BetweenParticipantResource {
      * @param uuid of the object to remove
      * @return the deleted object
      */
-    @Delete
+    @Delete("application/json")
     BetweenParticipantFactorList remove(byte[] uuid);
 
     /**

@@ -62,7 +62,7 @@ public interface SigmaScaleResource {
      * @return updated Object.
      */
     @Post
-    SigmaScaleList create(byte[] uuid, SigmaScaleList sigmaScaleList);
+    SigmaScaleList create(SigmaScaleList sigmaScaleList);
 
     /**
      * Update the specified object. If there is no object set for specified
@@ -75,7 +75,7 @@ public interface SigmaScaleResource {
      * @return SigmaScaleList
      */
     @Put
-    SigmaScaleList update(byte[] uuid, SigmaScaleList sigmaScaleList);
+    SigmaScaleList update(SigmaScaleList sigmaScaleList);
 
     /**
      * Delete the SigmaScaleList object with the specified UUID.

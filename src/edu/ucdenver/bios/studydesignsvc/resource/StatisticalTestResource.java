@@ -40,7 +40,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
  *
  * @author Uttara Sakhadeo
  */
-interface StatisticalTestResource {
+public interface StatisticalTestResource {
     /**
      * Retrieve the object for the specified UUID. Returns "not found" if no
      * matching Object is available.
@@ -59,7 +59,7 @@ interface StatisticalTestResource {
      * @return updated Object.
      */
     @Post
-    StatisticalTestList create(byte[] uuid ,
+    StatisticalTestList create(
             StatisticalTestList statisticalTestList);
 
     /**
@@ -71,7 +71,7 @@ interface StatisticalTestResource {
      * @return StatisticalTestList
      */
     @Put
-    StatisticalTestList update(byte[] uuid ,
+    StatisticalTestList update(
             StatisticalTestList statisticalTestList);
 
     /**

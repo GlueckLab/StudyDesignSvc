@@ -46,7 +46,7 @@ public interface ConfidenceIntervalResource {
      * @param uuid the uuid
      * @return confidence interval with specified UUID
      */
-     @Get
+     @Get("application/json")
     ConfidenceIntervalDescription retrieve(byte[] uuid);
 
     /**
@@ -56,8 +56,8 @@ public interface ConfidenceIntervalResource {
      * @param confidenceInterval the confidence interval
      * @return confidence interval object with updated UUID.
      */
-    @Post
-    ConfidenceIntervalDescription create(byte[] uuid ,
+    @Post("application/json")
+    ConfidenceIntervalDescription create(
             ConfidenceIntervalDescription confidenceInterval);
 
     /**
@@ -69,8 +69,8 @@ public interface ConfidenceIntervalResource {
      * @param confidenceInterval the confidence interval
      * @return the confidence interval object
      */
-    @Put
-    ConfidenceIntervalDescription update(byte[] uuid ,
+    @Put("application/json")
+    ConfidenceIntervalDescription update(
             ConfidenceIntervalDescription confidenceInterval);
 
     /**
@@ -79,7 +79,7 @@ public interface ConfidenceIntervalResource {
      * @param uuid the uuid of the study to remove
      * @return the deleted study design object
      */
-    @Delete
+    @Delete("application/json")
     ConfidenceIntervalDescription remove(byte[] uuid);
 
     /**

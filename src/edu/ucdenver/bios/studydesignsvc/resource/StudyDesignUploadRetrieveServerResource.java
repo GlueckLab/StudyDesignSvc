@@ -95,12 +95,7 @@ implements StudyDesignUploadRetrieveResource{
         {           
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();      
-            List<StudyDesign> list = studyDesignManager.getStudyDesigns();
-            studyDesignList = new StudyDesignList(list.size());
-            for(StudyDesign studyDesign : list)
-            {
-                studyDesignList.add(studyDesign);
-            }
+            studyDesignList = new StudyDesignList(studyDesignManager.getStudyDesigns());            
             
             studyDesignManager.commit();
         }

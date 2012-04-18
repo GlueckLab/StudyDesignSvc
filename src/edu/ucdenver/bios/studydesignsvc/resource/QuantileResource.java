@@ -47,7 +47,7 @@ public interface QuantileResource {
      * @param uuid the uuid
      * @return Object for specified UUID
      */
-     @Get
+     @Get("application/json")
     QuantileList retrieve(byte[] uuid);
     /**
      * Store QuantileList object to the database.
@@ -56,8 +56,8 @@ public interface QuantileResource {
      * @param quantileList the quantile list
      * @return updated Object.
      */
-    @Post
-    QuantileList create(byte[] uuid , QuantileList quantileList);
+    @Post("application/json")
+    QuantileList create(QuantileList quantileList);
     /**
      * Update the specified object. If there is no
      * object set for specified UUID, then this object
@@ -67,15 +67,15 @@ public interface QuantileResource {
      * @param quantileList the quantile list
      * @return Object
      */
-    @Put
-    QuantileList update(byte[] uuid , QuantileList quantileList);
+    @Put("application/json")
+    QuantileList update(QuantileList quantileList);
     /**
      * Delete the QuantileList object with the specified UUID.
      *
      * @param uuid of the object to remove
      * @return the deleted object
      */
-    @Delete
+    @Delete("application/json")
     QuantileList remove(byte[] uuid);
     /**
      * Delete the QuantileList object with the specified UUID.

@@ -115,9 +115,10 @@ implements SampleSizeResource
      * @return SampleSizeList
      */
     @Post("json")
-    public SampleSizeList create(byte[] uuid,SampleSizeList sampleSizeList) 
+    public SampleSizeList create(SampleSizeList sampleSizeList) 
     {       
         StudyDesign studyDesign =null;
+        byte[] uuid = sampleSizeList.getUuid();
         if(uuid==null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
                     "no study design UUID specified");      
@@ -147,7 +148,7 @@ implements SampleSizeResource
              * ----------------------------------------------------*/
             if(uuidFlag)
             {
-                studyDesign.setSampleSizeList(sampleSizeList);
+                studyDesign.setSampleSizeList(sampleSizeList.getSampleSizeList());
                 studyDesignManager = new StudyDesignManager();
                 studyDesignManager.beginTransaction();
                     studyDesignManager.saveOrUpdate(studyDesign, false);
@@ -189,9 +190,9 @@ implements SampleSizeResource
      * @return SampleSizeList
      */
     @Put("json")
-    public SampleSizeList update(byte[] uuid,SampleSizeList sampleSizeList) 
+    public SampleSizeList update(SampleSizeList sampleSizeList) 
     {
-        return create(uuid,sampleSizeList);
+        return create(sampleSizeList);
     }
 
     /**
@@ -221,7 +222,7 @@ implements SampleSizeResource
                     studyDesign = studyDesignManager.get(uuid);
                     if(studyDesign!=null)
                         sampleSizeList = new SampleSizeList(studyDesign.getSampleSizeList());
-                    if(sampleSizeList.isEmpty())
+                    if(sampleSizeList.getSampleSizeList().isEmpty())
                         throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
                                 "no SampleSize is specified");                    
                 }               
@@ -233,7 +234,7 @@ implements SampleSizeResource
             {
                 sampleSizeManager = new SampleSizeManager();
                 sampleSizeManager.beginTransaction();
-                    sampleSizeList = new SampleSizeList(sampleSizeManager.delete(uuid,sampleSizeList));
+                    sampleSizeList = new SampleSizeList(sampleSizeManager.delete(uuid,sampleSizeList.getSampleSizeList()));
                 sampleSizeManager.commit();
             }
         }

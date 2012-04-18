@@ -58,7 +58,7 @@ implements ResponsesResource
      * @param byte[]
      * @return ResponseList
      */
-	@Get("json")
+	@Get("application/json")
 	public ResponseList retrieve(byte[] uuid) 
 	{
 		ResponseList responseNodeList = null;
@@ -114,10 +114,11 @@ implements ResponsesResource
      * @param byte[]
      * @return ResponseList
      */
-	@Post("json")
-	public ResponseList create(byte[] uuid,ResponseList responseNodeList) 
+	@Post("application/json")
+	public ResponseList create(ResponseList responseNodeList) 
 	{		
 		StudyDesign studyDesign =null;
+		byte[] uuid = responseNodeList.getUuid();
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -150,7 +151,7 @@ implements ResponsesResource
 			 * ----------------------------------------------------*/
 			if(uuidFlag)
 			{
-				studyDesign.setResponseList(responseNodeList);
+				studyDesign.setResponseList(responseNodeList.getResponseNodeList());
 				studyDesignManager = new StudyDesignManager();
 				studyDesignManager.beginTransaction();
 					studyDesignManager.saveOrUpdate(studyDesign, false);
@@ -190,10 +191,10 @@ implements ResponsesResource
      * @param byte[]
      * @return ResponseList
      */
-	@Put("json")
-	public ResponseList update(byte[] uuid,ResponseList responseNodeList) 
+	@Put("application/json")
+	public ResponseList update(ResponseList responseNodeList) 
 	{				
-		return create(uuid,responseNodeList);			
+		return create(responseNodeList);			
 	}	
 
 	/**
@@ -202,7 +203,7 @@ implements ResponsesResource
      * @param byte[]
      * @return ResponseList
      */
-	@Delete("json")
+	@Delete("application/json")
 	public ResponseList remove(byte[] uuid) 
 	{
 		ResponseList responseNodeList = null;
@@ -232,7 +233,7 @@ implements ResponsesResource
 			{
 				responsesManager = new ResponsesManager();
 				responsesManager.beginTransaction();
-					responseNodeList = new ResponseList(responsesManager.delete(uuid,responseNodeList));
+					responseNodeList = new ResponseList(responsesManager.delete(uuid,responseNodeList.getResponseNodeList()));
 				responsesManager.commit();
 			}
 		}

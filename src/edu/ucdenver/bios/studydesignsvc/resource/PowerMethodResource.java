@@ -47,7 +47,7 @@ public interface PowerMethodResource {
      * @param uuid the uuid
      * @return Object for specified UUID
      */
-     @Get
+     @Get("application/json")
     PowerMethodList retrieve(byte[] uuid);
     /**
      * Store PowerMethodList object to the database.
@@ -56,8 +56,8 @@ public interface PowerMethodResource {
      * @param powerMethodList the power method list
      * @return updated Object.
      */
-    @Post
-    PowerMethodList create(byte[] uuid , PowerMethodList powerMethodList);
+    @Post("application/json")
+    PowerMethodList create(PowerMethodList powerMethodList);
     /**
      * Update the specified object. If there is no
      * object set for specified UUID ,  then this object
@@ -67,15 +67,15 @@ public interface PowerMethodResource {
      * @param powerMethodList the power method list
      * @return PowerMethodList
      */
-    @Put
-    PowerMethodList update(byte[] uuid , PowerMethodList powerMethodList);
+    @Put("application/json")
+    PowerMethodList update(PowerMethodList powerMethodList);
     /**
      * Delete the PowerMethodList object with the specified UUID.
      *
      * @param uuid of the object to remove
      * @return the deleted object
      */
-    @Delete
+    @Delete("application/json")
     PowerMethodList remove(byte[] uuid);
     /**
      * Delete the PowerMethodList object with the specified UUID.

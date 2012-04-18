@@ -102,9 +102,10 @@ implements StatisticalTestResource
 	}
 
 	@Post("json")
-	public StatisticalTestList create(byte[] uuid,StatisticalTestList testList) 
+	public StatisticalTestList create(StatisticalTestList testList) 
 	{		
 		StudyDesign studyDesign =null;
+		byte[] uuid = testList.getUuid();
 		if(uuid==null)
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 					"no study design UUID specified");		
@@ -137,7 +138,7 @@ implements StatisticalTestResource
 			 * ----------------------------------------------------*/
 			if(uuidFlag)
 			{
-				studyDesign.setStatisticalTestList(testList);
+				studyDesign.setStatisticalTestList(testList.getStatisticalTestList());
 				studyDesignManager = new StudyDesignManager();
 				studyDesignManager.beginTransaction();
 					studyDesignManager.saveOrUpdate(studyDesign, false);
@@ -172,8 +173,8 @@ implements StatisticalTestResource
 	}
 
 	@Put("json")
-	public StatisticalTestList update(byte[] uuid,StatisticalTestList testList) {
-		return create(uuid,testList);
+	public StatisticalTestList update(StatisticalTestList testList) {
+		return create(testList);
 	}
 
 	@Delete("json")
@@ -197,7 +198,7 @@ implements StatisticalTestResource
 					studyDesign = studyDesignManager.get(uuid);
 					if(studyDesign!=null)
 						testList = new StatisticalTestList(studyDesign.getStatisticalTestList());
-					if(testList.isEmpty())
+					if(testList.getStatisticalTestList().isEmpty())
 						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
 								"no StatisticalTest is specified");					
             	}				
@@ -209,7 +210,7 @@ implements StatisticalTestResource
 			{
 				testManager = new StatisticalTestManager();
 				testManager.beginTransaction();
-					testList = new StatisticalTestList(testManager.delete(uuid,testList));
+					testList = new StatisticalTestList(testManager.delete(uuid,testList.getStatisticalTestList()));
 				testManager.commit();
 			}
 		}

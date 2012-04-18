@@ -47,7 +47,7 @@ public interface RepeatedMeasuresResource {
      * @param uuid the uuid
      * @return Object for specified UUID
      */
-     @Get
+     @Get("application/json")
     RepeatedMeasuresNodeList retrieve(byte[] uuid);
     /**
      * Store RepeatedMeasuresNodeList object to the database.
@@ -56,8 +56,8 @@ public interface RepeatedMeasuresResource {
      * @param repeatedMeasuresTree the repeated measures tree
      * @return updated Object.
      */
-    @Post
-    RepeatedMeasuresNodeList create(byte[] uuid ,
+    @Post("application/json")
+    RepeatedMeasuresNodeList create(
             RepeatedMeasuresNodeList repeatedMeasuresTree);
     /**
      * Update the specified object. If there is no
@@ -68,8 +68,8 @@ public interface RepeatedMeasuresResource {
      * @param repeatedMeasuresTree the repeated measures tree
      * @return Object
      */
-    @Put
-    RepeatedMeasuresNodeList update(byte[] uuid ,
+    @Put("application/json")
+    RepeatedMeasuresNodeList update(
             RepeatedMeasuresNodeList repeatedMeasuresTree);
 
     /**
@@ -78,7 +78,7 @@ public interface RepeatedMeasuresResource {
      * @param uuid of the object to remove
      * @return the deleted object
      */
-    @Delete
+    @Delete("application/json")
     RepeatedMeasuresNodeList remove(byte[] uuid);
 
     /**

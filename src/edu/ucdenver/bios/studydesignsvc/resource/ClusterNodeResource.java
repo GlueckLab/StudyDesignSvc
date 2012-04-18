@@ -47,7 +47,7 @@ public interface ClusterNodeResource {
      * @param uuid the uuid
      * @return Object for specified UUID
      */
-     @Get
+     @Get("application/json")
      ClusterNodeList retrieve(byte[] uuid);
 
     /**
@@ -57,8 +57,8 @@ public interface ClusterNodeResource {
      * @param clusterNodeList the cluster node list
      * @return updated Object.
      */
-    @Post
-    ClusterNodeList create(byte[] uuid , ClusterNodeList clusterNodeList);
+    @Post("application/json")
+    ClusterNodeList create(ClusterNodeList clusterNodeList);
 
     /**
      * Update the specified object. If there is no
@@ -69,8 +69,8 @@ public interface ClusterNodeResource {
      * @param clusterNode the cluster node
      * @return Object
      */
-    @Put
-    ClusterNodeList update(byte[] uuid , ClusterNodeList clusterNode);
+    @Put("application/json")
+    ClusterNodeList update(ClusterNodeList clusterNode);
 
     /**
      * Delete the study with the specified UUID.
@@ -78,7 +78,7 @@ public interface ClusterNodeResource {
      * @param uuid of the object to remove
      * @return the deleted object
      */
-    @Delete
+    @Delete("application/json")
     ClusterNodeList remove(byte[] uuid);
 
     /**

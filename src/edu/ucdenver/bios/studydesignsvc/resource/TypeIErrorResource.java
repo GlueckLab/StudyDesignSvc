@@ -38,7 +38,7 @@ import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
  *
  * @author Uttara Sakhadeo
  */
-interface TypeIErrorResource {
+public interface TypeIErrorResource {
 
     /**
      * Retrieve the object for the specified UUID. Returns "not found" if no
@@ -61,7 +61,7 @@ interface TypeIErrorResource {
      * @return updated Object.
      */
     @Post
-    TypeIErrorList create(byte[] uuid ,  TypeIErrorList typeIErrorList);
+    TypeIErrorList create(TypeIErrorList typeIErrorList);
 
     /**
      * Update the specified object. If there is no object set for specified
@@ -74,7 +74,7 @@ interface TypeIErrorResource {
      * @return TypeIErrorList
      */
     @Put
-    TypeIErrorList update(byte[] uuid ,  TypeIErrorList typeIErrorList);
+    TypeIErrorList update(TypeIErrorList typeIErrorList);
 
     /**
      * Delete the TypeIErrorList object with the specified UUID.
