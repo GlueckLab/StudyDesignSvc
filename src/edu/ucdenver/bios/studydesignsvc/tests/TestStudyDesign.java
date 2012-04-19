@@ -22,31 +22,20 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
-import org.codehaus.jackson.map.JsonSerializer;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.junit.Test;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignResource;
-import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignRetrieveResource;
-import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignRetrieveServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignUploadRetrieveResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignUploadRetrieveServerResource;
-import edu.ucdenver.bios.webservice.common.domain.SampleSize;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesignList;
 import edu.ucdenver.bios.webservice.common.enums.SolutionTypeEnum;
@@ -87,7 +76,7 @@ public class TestStudyDesign extends TestCase
 	StudyDesignServerResource resource = new StudyDesignServerResource();
 	
 	/** The retrieve resource. */
-    StudyDesignRetrieveServerResource resourceRetrieve = new StudyDesignRetrieveServerResource();
+    //StudyDesignRetrieveServerResource resourceRetrieve = new StudyDesignRetrieveServerResource();
 	
 	/** The resource. */
     StudyDesignUploadRetrieveServerResource resourceUpload = new StudyDesignUploadRetrieveServerResource();
