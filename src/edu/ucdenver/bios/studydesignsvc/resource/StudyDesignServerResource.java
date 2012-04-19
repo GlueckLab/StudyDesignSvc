@@ -206,10 +206,10 @@ implements StudyDesignResource
 		 * Lists
 		 */
     		/** The alpha list. */
-    	    List<TypeIError> alphaList = null;
+    	    /*List<TypeIError> alphaList = null;*/
     
     	    /** The beta scale list. */
-    	    List<BetaScale> betaScaleList = null;
+    	    /*List<BetaScale> betaScaleList = null;*/
     
     	    /** The sigma scale list. */
     	    List<SigmaScale> sigmaScaleList = null;
@@ -423,10 +423,10 @@ implements StudyDesignResource
             /*
              * Set Lists to the study Design
              */
-                studyDesign.setBetaScaleList(betaScaleList);
+                //studyDesign.setBetaScaleList(betaScaleList);
                 studyDesign.setSampleSizeList(sampleSizeList);
                 studyDesign.setSigmaScaleList(sigmaScaleList);
-                studyDesign.setAlphaList(alphaList);
+                //studyDesign.setAlphaList(alphaList);
                 studyDesign.setNominalPowerList(nominalPowerList);
                 studyDesign.setPowerMethodList(powerMethodList);
                 studyDesign.setRelativeGroupSizeList(relativeGroupSizeList);

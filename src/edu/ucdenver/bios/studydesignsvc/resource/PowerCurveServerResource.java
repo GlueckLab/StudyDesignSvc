@@ -36,6 +36,7 @@ import edu.ucdenver.bios.studydesignsvc.manager.PowerCurveManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.UuidPowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 
@@ -63,7 +64,7 @@ public class PowerCurveServerResource extends ServerResource implements
      */
     @Get("application/json")
     public PowerCurveDescription retrieve(byte[] uuid) {
-        boolean uuidFlag;
+        boolean uuidFlag = false;
         PowerCurveDescription powerCurveDescription = null;
         StudyDesign studyDesign = null;
         try {
@@ -73,14 +74,13 @@ public class PowerCurveServerResource extends ServerResource implements
 
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
                 studyDesign = studyDesignManager.get(uuid);
-                if (studyDesign != null)
+                if(studyDesign!=null)
+                    uuidFlag = true;
+                if (uuidFlag)
                     powerCurveDescription = studyDesign
-                            .getPowerCurveDescriptions();
-            }
-            studyDesignManager.commit();
+                            .getPowerCurveDescriptions();            
+            studyDesignManager.commit();            
         } catch (BaseManagerException bme) {
             StudyDesignLogger.getInstance().error(
                     "ConfidenceIntervalResource : " + bme.getMessage());
@@ -114,13 +114,18 @@ public class PowerCurveServerResource extends ServerResource implements
      */
     @Post("application/json")
     public PowerCurveDescription create(
-            PowerCurveDescription powerCurveDescription) {
-        boolean uuidFlag;
+            UuidPowerCurveDescription uuidPowerCurveDescription) {
+        boolean uuidFlag = false;
         StudyDesign studyDesign = null;
-        byte[] uuid = powerCurveDescription.getUuid();
+        byte[] uuid = uuidPowerCurveDescription.getUuid();
+        PowerCurveDescription powerCurveDescription = 
+                uuidPowerCurveDescription.getPowerCurveDescription();
         if (uuid == null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
+        if (powerCurveDescription == null)
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no PowerCurveDescription specified");
         try {
             /*
              * ---------------------------------------------------- Check for
@@ -129,9 +134,9 @@ public class PowerCurveServerResource extends ServerResource implements
              */
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag)
                 studyDesign = studyDesignManager.get(uuid);
+                if(studyDesign != null)
+                    uuidFlag = true;
             studyDesignManager.commit();
             /*
              * ---------------------------------------------------- Remove
@@ -196,13 +201,18 @@ public class PowerCurveServerResource extends ServerResource implements
      */
     @Put("application/json")
     public PowerCurveDescription update(
-            PowerCurveDescription powerCurveDescription) {
-        boolean uuidFlag;
+            UuidPowerCurveDescription uuidPowerCurveDescription) {
+        boolean uuidFlag = false;
         StudyDesign studyDesign = null;
-        byte[] uuid = powerCurveDescription.getUuid(); 
+        byte[] uuid = uuidPowerCurveDescription.getUuid();
+        PowerCurveDescription powerCurveDescription =
+                uuidPowerCurveDescription.getPowerCurveDescription();
         if (uuid == null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
+        if (powerCurveDescription == null)
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no PowerCurveDescription specified");
         try {
             /*
              * ---------------------------------------------------- Check for
@@ -210,10 +220,10 @@ public class PowerCurveServerResource extends ServerResource implements
              * ----------------------------------------------------
              */
             studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag)
+            studyDesignManager.beginTransaction();            
                 studyDesign = studyDesignManager.get(uuid);
+                if(studyDesign!=null)
+                    uuidFlag = true;
             studyDesignManager.commit();
             /*
              * ---------------------------------------------------- Update Power
@@ -225,10 +235,10 @@ public class PowerCurveServerResource extends ServerResource implements
                 powerCurveDescription.setId(powerCurve.getId());
                 powerCurveManager = new PowerCurveManager();
                 powerCurveManager.beginTransaction();
-                powerCurveManager.saveOrUpdate(powerCurveDescription, false);
+                    powerCurveManager.saveOrUpdate(powerCurveDescription, false);
                 powerCurveManager.commit();
             } else
-                create(powerCurveDescription);
+                create(uuidPowerCurveDescription);
         } catch (BaseManagerException bme) {
             StudyDesignLogger.getInstance().error(
                     "ConfidenceIntervalResource : " + bme.getMessage());
@@ -262,15 +272,15 @@ public class PowerCurveServerResource extends ServerResource implements
      */
     @Delete("application/json")
     public PowerCurveDescription remove(byte[] uuid) {
-        boolean flag;
+        boolean flag = false;
         PowerCurveDescription powerCurveDescription = null;
         StudyDesign studyDesign = null;
         try {
             studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            flag = studyDesignManager.hasUUID(uuid);
-            if (flag)
+            studyDesignManager.beginTransaction();            
                 studyDesign = studyDesignManager.get(uuid);
+                if(studyDesign != null)
+                    flag = true;
             studyDesignManager.commit();
             if (flag) {
                 powerCurveManager = new PowerCurveManager();

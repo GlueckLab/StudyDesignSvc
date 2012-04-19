@@ -39,6 +39,7 @@ import edu.ucdenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.UuidConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
@@ -50,18 +51,9 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 public class ConfidenceIntervalServerResource extends ServerResource implements
         ConfidenceIntervalResource {
 
-    /** The study design manager. */
-    private StudyDesignManager studyDesignManager = null;
-
-    /** The confidence interval manager. */
-    private ConfidenceIntervalManager confidenceIntervalManager = null;
-
     /** The logger. */
     private Logger logger = StudyDesignLogger.getInstance();
-
-    /** The study uuid. */
-    private String studyUUID = null;
-
+    
     /**
      * Retrieve a Confidence Interval object by the specified UUID.
      *
@@ -75,16 +67,21 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
-        boolean uuidFlag;
+        boolean uuidFlag = false;
         StudyDesign studyDesign = null;
         ConfidenceIntervalDescription confidenceInterval = null;
+        ConfidenceIntervalManager confidenceIntervalManager = null;
+        StudyDesignManager studyDesignManager = null;
         try {
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
                 studyDesign = studyDesignManager.get(uuid);
-            }
+                if(studyDesign != null)                    
+                    uuidFlag = true;
+                 else {
+                     throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                         "no study design UUID specified");
+                 }
             studyDesignManager.commit();
 
             confidenceInterval = studyDesign
@@ -131,13 +128,21 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
      */
     @Post("application/json")
     public final ConfidenceIntervalDescription create(
-            ConfidenceIntervalDescription confidenceInterval) {
+            UuidConfidenceIntervalDescription uuidConfidenceInterval) {
         boolean uuidFlag;
-        byte[] uuid = confidenceInterval.getUuid();
+        byte[] uuid = uuidConfidenceInterval.getUuid();
+        ConfidenceIntervalDescription confidenceInterval =
+                uuidConfidenceInterval.getConfidenceInterval();
+        StudyDesignManager studyDesignManager = null;
+        ConfidenceIntervalManager confidenceIntervalManager = null;
         StudyDesign studyDesign = null;
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
+        }
+        if (confidenceInterval == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no ConfidenceInterval Description specified");
         }
         try {
             /*
@@ -147,14 +152,14 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
              */
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
+            uuidFlag = studyDesignManager.hasUUID(uuid);            
                 studyDesign = studyDesignManager.get(uuid);
-            }
-            else {
-                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                if(studyDesign != null)                    
+                   uuidFlag = true;
+                else {
+                    throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                         "no study design UUID specified");
-            }
+                }
             studyDesignManager.commit();
             /*
              * ---------------------------------------------------- Remove
@@ -226,13 +231,21 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
      */
     @Put("application/json")
     public final ConfidenceIntervalDescription update(
-            ConfidenceIntervalDescription confidenceInterval) {
-        boolean uuidFlag;
-        byte[] uuid = confidenceInterval.getUuid();
+            UuidConfidenceIntervalDescription uuidConfidenceInterval) {
+        boolean uuidFlag = false;
+        byte[] uuid = uuidConfidenceInterval.getUuid();
+        ConfidenceIntervalDescription confidenceInterval =
+            uuidConfidenceInterval.getConfidenceInterval();
         StudyDesign studyDesign = null;
+        StudyDesignManager studyDesignManager = null;
+        ConfidenceIntervalManager confidenceIntervalManager = null;
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
+        }
+        if (confidenceInterval == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Confidence Interval Description specified");
         }
         try {
             /*
@@ -243,9 +256,12 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
             uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
-                studyDesign = studyDesignManager.get(uuid);
-            }
+                if(studyDesign != null)                    
+                    uuidFlag = true;
+                 else {
+                     throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                         "no study design UUID specified");
+                 }
             studyDesignManager.commit();
             /*
              * ---------------------------------------------------- Remove
@@ -286,7 +302,7 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
                  * studyDesignManager.commit();
                  */
             } else {
-                create(confidenceInterval);
+                create(uuidConfidenceInterval);
             }
         } catch (BaseManagerException bme) {
             StudyDesignLogger.getInstance().error(
@@ -345,18 +361,23 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
      */
     @Delete("application/json")
     public final ConfidenceIntervalDescription remove(final byte[] uuid) {
-        boolean flag;
+        boolean uuidFlag = false;
         ConfidenceIntervalDescription confidenceInterval = null;
         StudyDesign studyDesign = null;
+        StudyDesignManager studyDesignManager = null;
+        ConfidenceIntervalManager confidenceIntervalManager = null;
         try {
             studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            flag = studyDesignManager.hasUUID(uuid);
-            if (flag) {
+            studyDesignManager.beginTransaction();                
                 studyDesign = studyDesignManager.get(uuid);
-            }
+                if(studyDesign != null)                    
+                    uuidFlag = true;
+                 else {
+                     throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                         "no study design UUID specified");
+                 }
             studyDesignManager.commit();
-            if (flag) {
+            if (uuidFlag) {
                 confidenceIntervalManager = new ConfidenceIntervalManager();
                 confidenceIntervalManager.beginTransaction();
                 confidenceInterval = confidenceIntervalManager.delete(uuid,
@@ -427,6 +448,8 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
     public final ConfidenceIntervalDescription removeFrom(
             final StudyDesign studyDesign) {
         ConfidenceIntervalDescription confidenceInterval = null;
+        StudyDesignManager studyDesignManager = null;
+        ConfidenceIntervalManager confidenceIntervalManager = null;
         try {
             confidenceIntervalManager = new ConfidenceIntervalManager();
             confidenceIntervalManager.beginTransaction();
@@ -435,8 +458,8 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
                     studyDesign.getConfidenceIntervalDescriptions());
             confidenceIntervalManager.commit();
             /*
-             * ---------------------------------------------------- Set
-             * reference of Confidence Interval Object to Study Design object
+             * ---------------------------------------------------- 
+             * Set reference of Confidence Interval Object to Study Design object
              * ----------------------------------------------------
              */
             /*

@@ -31,6 +31,7 @@ import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.UuidPowerCurveDescription;
 
 /**
  * Resource class for handling requests for the
@@ -59,7 +60,7 @@ public interface PowerCurveResource {
      */
     @Post("application/json")
     PowerCurveDescription create(
-            PowerCurveDescription powerCurveDescription);
+            UuidPowerCurveDescription uuidPowerCurveDescription);
     /**
      * Update the specified PowerCurveDescription object. If there is no
      * PowerCurveDescription set for specified UUID ,  then this object
@@ -71,7 +72,7 @@ public interface PowerCurveResource {
      */
     @Put("application/json")
     PowerCurveDescription update(
-            PowerCurveDescription powerCurveDescription);
+            UuidPowerCurveDescription uuidPowerCurveDescription);
     /**
      * Delete the object with the specified UUID.
      *

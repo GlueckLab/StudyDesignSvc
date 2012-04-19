@@ -80,6 +80,9 @@ public class HypothesisServerResource extends ServerResource implements
         if (uuid == null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
+        if (type == null)
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no type of Hypothesis specified");
         try {
             /*
              * ---------------------------------------------------- Check for
@@ -130,7 +133,7 @@ public class HypothesisServerResource extends ServerResource implements
      *            the id
      * @return true, if successful
      */
-    public boolean checkBetweenParticipantFactorId(
+    private boolean checkBetweenParticipantFactorId(
             List<BetweenParticipantFactor> studyBetweenParticipantList, int id) {
         for (BetweenParticipantFactor betweenParticipantFactor : studyBetweenParticipantList) {
             if (betweenParticipantFactor.getId() == id)
@@ -148,7 +151,7 @@ public class HypothesisServerResource extends ServerResource implements
      *            the hypothesis
      * @return true, if successful
      */
-    public boolean checkBetweenParticipantFactorEntry(
+    private boolean checkBetweenParticipantFactorEntry(
             List<BetweenParticipantFactor> studyBetweenParticipantList,
             Hypothesis hypothesis) {
         try {
@@ -181,7 +184,7 @@ public class HypothesisServerResource extends ServerResource implements
      *            the id
      * @return true, if successful
      */
-    public boolean checkRepeatedMeasuresNodeId(
+    private boolean checkRepeatedMeasuresNodeId(
             List<RepeatedMeasuresNode> studyRepeatedMeasuresTree, int id) {
         for (RepeatedMeasuresNode repeatedMeasuresNode : studyRepeatedMeasuresTree) {
             if (repeatedMeasuresNode.getId() == id)
@@ -199,7 +202,7 @@ public class HypothesisServerResource extends ServerResource implements
      *            the hypothesis
      * @return true, if successful
      */
-    public boolean checkRepeatedMeasuresNodeEntry(
+    private boolean checkRepeatedMeasuresNodeEntry(
             List<RepeatedMeasuresNode> studyRepeatedMeasuresTree,
             Hypothesis hypothesis) {
         try {
@@ -231,7 +234,7 @@ public class HypothesisServerResource extends ServerResource implements
      *            the id
      * @return the between participant factor
      */
-    public BetweenParticipantFactor getBetweenParticipantFactor(
+    private BetweenParticipantFactor getBetweenParticipantFactor(
             List<BetweenParticipantFactor> studyBetweenParticipantList, int id) {
         for (BetweenParticipantFactor betweenParticipantFactor : studyBetweenParticipantList) {
             if (betweenParticipantFactor.getId() == id)
@@ -249,7 +252,7 @@ public class HypothesisServerResource extends ServerResource implements
      *            the id
      * @return the repeated measures node
      */
-    public RepeatedMeasuresNode getRepeatedMeasuresNode(
+    private RepeatedMeasuresNode getRepeatedMeasuresNode(
             List<RepeatedMeasuresNode> studyRepeatedMeasuresTree, int id) {
         for (RepeatedMeasuresNode repeatedMeasuresNode : studyRepeatedMeasuresTree) {
             if (repeatedMeasuresNode.getId() == id)
@@ -269,7 +272,7 @@ public class HypothesisServerResource extends ServerResource implements
      *            the hypothesis
      * @return the hypothesis
      */
-    public Hypothesis setEntry(
+    private Hypothesis setEntry(
             List<BetweenParticipantFactor> studyBetweenParticipantList,
             List<RepeatedMeasuresNode> studyRepeatedMeasuresTree,
             Hypothesis hypothesis) {
@@ -329,7 +332,7 @@ public class HypothesisServerResource extends ServerResource implements
      * @see
      * edu.ucdenver.bios.studydesignsvc.resource.HypothesisResource#create(edu
      * .ucdenver.bios.webservice.common.domain.UuidHypothesis)
-     */
+     */    
     @Post("application/json")
     public Hypothesis create(UuidHypothesis uuidHypothesis) {
         HypothesisManager hypothesisManager = null;
@@ -342,6 +345,9 @@ public class HypothesisServerResource extends ServerResource implements
         if (uuid == null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
+        if (hypothesis == null)
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Hypothesis specified");
         try {
             /*
              * ---------------------------------------------------- Check for
@@ -491,6 +497,9 @@ public class HypothesisServerResource extends ServerResource implements
         if (uuid == null)
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
+        if (type == null)
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no type of Hypothesis specified");
         try {
             /*
              * ---------------------------------------------------- Check for

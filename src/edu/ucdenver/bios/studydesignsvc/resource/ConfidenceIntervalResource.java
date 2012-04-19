@@ -31,6 +31,8 @@ import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.UuidConfidenceIntervalDescription;
+// TODO: Auto-generated Javadoc
 /**
  * Resource class for handling requests for the
  * confidence interval object.
@@ -52,26 +54,24 @@ public interface ConfidenceIntervalResource {
     /**
      * Store the confidence interval to the database.
      *
-     * @param uuid the uuid
-     * @param confidenceInterval the confidence interval
+     * @param uuidConfidenceInterval the uuid confidence interval
      * @return confidence interval object with updated UUID.
      */
     @Post("application/json")
     ConfidenceIntervalDescription create(
-            ConfidenceIntervalDescription confidenceInterval);
+        UuidConfidenceIntervalDescription uuidConfidenceInterval);
 
     /**
      * Update the specified confidence interval object. If there is no
      * confidence interval set for specified UUID, then this object
      * will be treated as new and a UUID assigned.
      *
-     * @param uuid the uuid
-     * @param confidenceInterval the confidence interval
+     * @param uuidConfidenceInterval the uuid confidence interval
      * @return the confidence interval object
      */
     @Put("application/json")
     ConfidenceIntervalDescription update(
-            ConfidenceIntervalDescription confidenceInterval);
+        UuidConfidenceIntervalDescription uuidConfidenceInterval);
 
     /**
      * Delete the ConfidenceIntervalDescription with the specified UUID.

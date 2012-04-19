@@ -100,7 +100,7 @@ public class HypothesisSetServerResource extends ServerResource implements
      *            the id
      * @return the between participant factor
      */
-    public BetweenParticipantFactor getBetweenParticipantFactor(
+    private BetweenParticipantFactor getBetweenParticipantFactor(
             List<BetweenParticipantFactor> studyBetweenParticipantList, int id) {
         for (BetweenParticipantFactor betweenParticipantFactor : studyBetweenParticipantList) {
             if (betweenParticipantFactor.getId() == id)
@@ -119,7 +119,7 @@ public class HypothesisSetServerResource extends ServerResource implements
      *            the id
      * @return the repeated measures node
      */
-    public RepeatedMeasuresNode getRepeatedMeasuresNode(
+    private RepeatedMeasuresNode getRepeatedMeasuresNode(
             List<RepeatedMeasuresNode> studyRepeatedMeasuresTree, int id) {
         for (RepeatedMeasuresNode repeatedMeasuresNode : studyRepeatedMeasuresTree) {
             if (repeatedMeasuresNode.getId() == id)
@@ -138,7 +138,7 @@ public class HypothesisSetServerResource extends ServerResource implements
      *            the id
      * @return true, if successful
      */
-    public boolean checkBetweenParticipantFactorId(
+    private boolean checkBetweenParticipantFactorId(
             List<BetweenParticipantFactor> studyBetweenParticipantList, int id) {
         for (BetweenParticipantFactor betweenParticipantFactor : studyBetweenParticipantList) {
             if (betweenParticipantFactor.getId() == id)
@@ -157,7 +157,7 @@ public class HypothesisSetServerResource extends ServerResource implements
      *            the id
      * @return true, if successful
      */
-    public boolean checkRepeatedMeasuresNodeId(
+    private boolean checkRepeatedMeasuresNodeId(
             List<RepeatedMeasuresNode> studyRepeatedMeasuresTree, int id) {
         for (RepeatedMeasuresNode repeatedMeasuresNode : studyRepeatedMeasuresTree) {
             if (repeatedMeasuresNode.getId() == id)
@@ -176,7 +176,7 @@ public class HypothesisSetServerResource extends ServerResource implements
      *            the hypothesis set
      * @return true, if successful
      */
-    public boolean checkBetweenParticipantFactorEntry(
+    private boolean checkBetweenParticipantFactorEntry(
             List<BetweenParticipantFactor> studyBetweenParticipantList,
             HypothesisSet hypothesisSet) {
         try {
@@ -215,7 +215,7 @@ public class HypothesisSetServerResource extends ServerResource implements
      *            the hypothesis set
      * @return flag
      */
-    public boolean checkRepeatedMeasuresNodeEntry(
+    private boolean checkRepeatedMeasuresNodeEntry(
             List<RepeatedMeasuresNode> studyRepeatedMeasuresTree,
             HypothesisSet hypothesisSet) {
         try {
@@ -255,7 +255,7 @@ public class HypothesisSetServerResource extends ServerResource implements
      *            the hypothesis set
      * @return the hypothesis set
      */
-    public HypothesisSet setEntry(
+    private HypothesisSet setEntry(
             List<BetweenParticipantFactor> studyBetweenParticipantList,
             List<RepeatedMeasuresNode> studyRepeatedMeasuresTree,
             HypothesisSet hypothesisSet) {
