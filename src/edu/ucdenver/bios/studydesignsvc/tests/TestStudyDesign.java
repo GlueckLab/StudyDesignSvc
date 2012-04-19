@@ -154,7 +154,7 @@ public class TestStudyDesign extends TestCase
 	 * not found will be thrown.
 	 */
 	@Test
-	private void testCreate()	
+	public void testCreate()	
 	{	
 		StudyDesign studyDesign = new StudyDesign();
 		studyDesign.setUuid(uuid);
@@ -315,7 +315,7 @@ public class TestStudyDesign extends TestCase
 	 * Test deletion of record from the table.
 	 */
 	@Test
-	public void testDelete()
+	private void testDelete()
 	{
 	    StudyDesign studyDesign = null;                
         

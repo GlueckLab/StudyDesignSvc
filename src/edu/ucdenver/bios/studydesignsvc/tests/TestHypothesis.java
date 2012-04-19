@@ -42,6 +42,7 @@ import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
 import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
 import edu.ucdenver.bios.webservice.common.domain.HypothesisBetweenParticipantMapping;
 import edu.ucdenver.bios.webservice.common.domain.HypothesisSet;
+import edu.ucdenver.bios.webservice.common.domain.UuidHypothesis;
 import edu.ucdenver.bios.webservice.common.enums.HypothesisTrendTypeEnum;
 import edu.ucdenver.bios.webservice.common.enums.HypothesisTypeEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -85,10 +86,10 @@ public class TestHypothesis extends TestCase
     }
 
     /**
-     * Test to create a Hypothesis.
+     * Test to create a HypothesisSet.
      */
     @Test
-    public void testCreate()
+    private void testCreateHypothesisSet()
     {           
         Set<Hypothesis> hypothesisSet = new HashSet<Hypothesis>();
         Hypothesis hypothesis = new Hypothesis();                       
@@ -160,13 +161,88 @@ public class TestHypothesis extends TestCase
             }
            assertTrue(hypothesisSet!=null);
         }       
-    }   
+    } 
+    
+    /**
+     * Test to create a Hypothesis.
+     */
+    @Test
+    public void testCreateHypothesis()
+    {           
+        Hypothesis hypothesis = new Hypothesis();                       
+            hypothesis.setType(HypothesisTypeEnum.INTERACTION);
+            
+            ArrayList<HypothesisBetweenParticipantMapping> betweenParticipantList = new ArrayList<HypothesisBetweenParticipantMapping>(); 
+            HypothesisBetweenParticipantMapping map = null;
+            
+            BetweenParticipantServerResource betResource = new BetweenParticipantServerResource();
+            BetweenParticipantFactorList betweenParticipantFactorList = betResource.retrieve(uuid);
+            
+            for(BetweenParticipantFactor factor : betweenParticipantFactorList.getBetweenParticipantFactorList()) {
+                map = new HypothesisBetweenParticipantMapping();
+                map.setBetweenParticipantFactor(factor);
+                map.setType(HypothesisTrendTypeEnum.LINEAR);
+                betweenParticipantList.add(map);
+            }
+                             
+           hypothesis.setBetweenParticipantFactorMapList(betweenParticipantList);
+               
+           /*List<HypothesisRepeatedMeasuresMapping> repeatedMeasuresTree = new ArrayList<HypothesisRepeatedMeasuresMapping>(); 
+               HypothesisRepeatedMeasuresMapping repeatedMeasuresMap = new HypothesisRepeatedMeasuresMapping();
+                   RepeatedMeasuresNode r = new RepeatedMeasuresNode();
+                   r.setId(1);
+               repeatedMeasuresMap.setRepeatedMeasuresNode(r);
+               repeatedMeasuresMap.setType(HypothesisTypeEnum.TREND);
+               repeatedMeasuresTree.add(repeatedMeasuresMap);
+               
+               repeatedMeasuresMap = new HypothesisRepeatedMeasuresMapping();
+                   r = new RepeatedMeasuresNode();
+                   r.setId(2);
+               repeatedMeasuresMap.setRepeatedMeasuresNode(r);
+               repeatedMeasuresMap.setType(HypothesisTypeEnum.INTERACTION);
+               repeatedMeasuresTree.add(repeatedMeasuresMap);
+                
+               hypothesis.setRepeatedMeasuresMapTree(repeatedMeasuresTree);*/
+                                                     
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/hypothesis");
+            resource = clientResource.wrap(HypothesisResource.class);  
+            hypothesis = resource.create(new UuidHypothesis(uuid, hypothesis));            
+        }       
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            hypothesis=null;
+            fail();
+        }
+        if(hypothesis==null)
+        {
+            fail();
+        }
+        else
+        {
+            System.out.println("testCreate() :  ");
+            try
+            {
+             Gson gson = new Gson();
+             String json = gson.toJson(hypothesis);  
+             System.out.println(json);
+            }
+            catch(Exception e)
+            {
+                System.out.println(e.getMessage());
+            }
+           assertTrue(hypothesis!=null);
+        }       
+    }
     
     /**
      * Test to retrieve a Hypothesis.
      */
     @Test
-    private void testRetrieve()
+    public void testRetrieve()
     {
         HypothesisSet hypothesisSet = null;           
         

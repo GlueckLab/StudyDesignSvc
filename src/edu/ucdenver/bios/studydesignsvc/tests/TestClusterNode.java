@@ -33,12 +33,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.manager.ClusterNodeManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.studydesignsvc.resource.BetweenParticipantResource;
 import edu.ucdenver.bios.studydesignsvc.resource.ClusterNodeResource;
-import edu.ucdenver.bios.studydesignsvc.resource.ClusterNodeServerResource;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNodeList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -53,23 +49,11 @@ public class TestClusterNode extends TestCase
 	/** The STUDY_UUID. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");	
 	byte[] uuid = null;	
-	StudyDesignManager studyDesignManager = null;
 	ClusterNodeManager clusterNodeManager = null;
 	ClusterNodeResource resource = null;
 		
 	public void setUp() {
-        uuid = UUIDUtils.asByteArray(STUDY_UUID);
-        try
-        {
-            System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_CLUSTERING);
-            resource = clientResource.wrap(ClusterNodeResource.class);            
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
-            fail();
-        }
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);        
     }
 	
 	/**
@@ -97,6 +81,9 @@ public class TestClusterNode extends TestCase
 		
 		try
 		{
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/clustering");
+            resource = clientResource.wrap(ClusterNodeResource.class);    
 			clusterNodeList = resource.create(clusterNodeList);			
 		}		
 		catch(Exception e)
@@ -129,6 +116,9 @@ public class TestClusterNode extends TestCase
 		
 		try
 		{
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/clustering");
+            resource = clientResource.wrap(ClusterNodeResource.class);    
 			clusterNodeList = resource.retrieve(uuid);			
 		}		
 		catch(Exception e)
@@ -161,6 +151,9 @@ public class TestClusterNode extends TestCase
 	    ClusterNodeList clusterNodeList = null;		
 		try
 		{
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/clustering");
+            resource = clientResource.wrap(ClusterNodeResource.class);    
 			clusterNodeList = resource.remove(uuid);			
 		}		
 		catch(Exception e)
@@ -206,6 +199,9 @@ public class TestClusterNode extends TestCase
 		
 		try
 		{
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/clustering");
+            resource = clientResource.wrap(ClusterNodeResource.class);    
 			clusterNodeList = resource.update(clusterNodeList);			
 		}		
 		catch(Exception e)

@@ -36,6 +36,7 @@ import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource;
 import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.UuidPowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.enums.HorizontalAxisLabelEnum;
 import edu.ucdenver.bios.webservice.common.enums.StratificationVariableEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -85,10 +86,7 @@ public class TestPowerCurveDescription extends TestCase
 	public void testCreate()
 	{	
 		
-		boolean flag;
-		StudyDesign studyDesign = new StudyDesign();
-		studyDesign.setUuid(uuid);
-		
+		boolean flag;		
 		PowerCurveDescription powerCurveDescription = new PowerCurveDescription();
 		powerCurveDescription.setPowerCurveDescription("test1 description");
 		powerCurveDescription.setSampleSize(100);
@@ -96,11 +94,10 @@ public class TestPowerCurveDescription extends TestCase
 		powerCurveDescription.setTypeIError(0.8f);				
 		powerCurveDescription.setHorizontalAxisLabelEnum(HorizontalAxisLabelEnum.TOTAL_SAMPLE_SIZE);
 		powerCurveDescription.setStratificationVarEnum(StratificationVariableEnum.TYPE_I_ERROR);
-		powerCurveDescription.setUuid(uuid);
 		
 		try
 		{
-			powerCurveDescription=resource.create(powerCurveDescription);			
+			powerCurveDescription = resource.create(new UuidPowerCurveDescription(uuid, powerCurveDescription));			
 		}		
 		catch(Exception e)
 		{
@@ -130,17 +127,15 @@ public class TestPowerCurveDescription extends TestCase
 		studyDesign.setUuid(uuid);
 		
 		PowerCurveDescription powerCurveDescription = new PowerCurveDescription();
-		powerCurveDescription.setUuid(uuid);
 		powerCurveDescription.setPowerCurveDescription("changed");
 		powerCurveDescription.setSampleSize(100);
 		powerCurveDescription.setRegressionCoeeficientScaleFactor(0.2f);
 		powerCurveDescription.setTypeIError(0.8f);		
-		powerCurveDescription.setStudyDesign(studyDesign);
-		
+		powerCurveDescription.setStudyDesign(studyDesign);		
 		
 		try
 		{
-			powerCurveDescription=resource.update(powerCurveDescription);			
+			powerCurveDescription=resource.update(new UuidPowerCurveDescription(uuid, powerCurveDescription));			
 		}		
 		catch(Exception e)
 		{

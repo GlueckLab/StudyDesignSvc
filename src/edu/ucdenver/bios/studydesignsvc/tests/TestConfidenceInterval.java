@@ -40,6 +40,7 @@ import edu.ucdenver.bios.studydesignsvc.resource.ConfidenceIntervalResource;
 import edu.ucdenver.bios.studydesignsvc.resource.ConfidenceIntervalServerResource;
 import edu.ucdenver.bios.webservice.common.domain.BetaScale;
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.UuidConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 // TODO: Auto-generated Javadoc
@@ -96,11 +97,10 @@ public class TestConfidenceInterval extends TestCase
 		confidenceInterval.setSigmaFixed(true);
 		confidenceInterval.setLowerTrailProbability(0.5f);
 		confidenceInterval.setUpperTrailProbability(0.5f);
-		confidenceInterval.setUuid(uuid);
 				
 		try
 		{
-			confidenceInterval=resource.create(confidenceInterval);
+			confidenceInterval=resource.create(new UuidConfidenceIntervalDescription(uuid, confidenceInterval));
 		}
 		catch(Exception e)
 		{
@@ -133,10 +133,9 @@ public class TestConfidenceInterval extends TestCase
 		confidenceInterval.setSigmaFixed(true);
 		confidenceInterval.setLowerTrailProbability(0.5f);
 		confidenceInterval.setUpperTrailProbability(0.5f);
-		confidenceInterval.setUuid(uuid);		
 		try
 		{
-			confidenceInterval=resource.update(confidenceInterval);
+			confidenceInterval=resource.update(new UuidConfidenceIntervalDescription(uuid, confidenceInterval));
 		}
 		catch(Exception e)
 		{

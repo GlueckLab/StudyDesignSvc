@@ -235,7 +235,7 @@ public class TestRepeatedMeasures extends TestCase
 	 * Test to retrieve a RepeatedMeasuresNode List.
 	 */
 	@Test
-	public void testRetrieve()
+	private void testRetrieve()
 	{
 		RepeatedMeasuresNodeList repeatedMeasuresTree = null;			
 		

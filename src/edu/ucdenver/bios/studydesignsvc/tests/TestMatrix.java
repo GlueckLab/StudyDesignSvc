@@ -75,19 +75,7 @@ public class TestMatrix extends TestCase
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	public void setUp() {
-        uuid = UUIDUtils.asByteArray(STUDY_UUID);
-        try
-        {
-            System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource(
-                "http://localhost:8080/study/"+StudyDesignConstants.TAG_MATRIX);
-            resource = clientResource.wrap(MatrixResource.class);            
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
-            fail();
-        }
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);        
     }
 	
 	/**
@@ -119,6 +107,10 @@ public class TestMatrix extends TestCase
 		NamedMatrixSet set = new NamedMatrixSet(uuid,matrixSet);		
 		try
 		{
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/matrixSet");
+            setResource = clientResource.wrap(MatrixSetResource.class);
 			set = setResource.create(set);			
 		}		
 		catch(Exception e)
@@ -145,7 +137,7 @@ public class TestMatrix extends TestCase
 	 * Test to retrieve a NamedMatrix.
 	 */
 	@Test
-	public void testCreateMatrix()
+	private void testCreateMatrix()
 	{	
 		NamedMatrix matrix = new NamedMatrix(THETA_MATRIX_NAME);
 			rows=3;
@@ -158,6 +150,10 @@ public class TestMatrix extends TestCase
 			matrix.setDataFromArray(data);			
 		try
 		{
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/matrix");
+            resource = clientResource.wrap(MatrixResource.class);  
 			matrix = resource.create(new UuidMatrix(uuid,matrix));			
 		}		
 		catch(Exception e)
@@ -184,12 +180,16 @@ public class TestMatrix extends TestCase
 	 * Test to retrieve a Set<NamedMatrix>.
 	 */
 	@Test
-	public void testRetrieveMatrixSet()
+	private void testRetrieveMatrixSet()
 	{
 		NamedMatrixSet matrixSet = null;			
 		
 		try
 		{
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/matrixSet");
+            setResource = clientResource.wrap(MatrixSetResource.class);
 			matrixSet = setResource.retrieve(uuid);			
 		}		
 		catch(Exception e)
@@ -217,12 +217,16 @@ public class TestMatrix extends TestCase
 	 * Test to retrieve a NamedMatrix.
 	 */
 	@Test
-	public void testRetrieveMatrix()
+	private void testRetrieveMatrix()
 	{
 		NamedMatrix matrix = null;				
 		
 		try
-		{		    
+		{		
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/matrix");
+            resource = clientResource.wrap(MatrixResource.class);  
 			matrix = resource.retrieve(new UuidMatrixName(uuid,THETA_MATRIX_NAME));			
 		}		
 		catch(Exception e)
@@ -269,6 +273,10 @@ public class TestMatrix extends TestCase
 		
 		try
 		{
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/matrix");
+            resource = clientResource.wrap(MatrixResource.class);  
 			matrix = resource.update(new UuidMatrix(matrix));			
 		}		
 		catch(Exception e)
@@ -332,6 +340,10 @@ public class TestMatrix extends TestCase
 		NamedMatrixSet set = new NamedMatrixSet(uuid,matrixSet);
 		try
 		{
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/matrixSet");
+            setResource = clientResource.wrap(MatrixSetResource.class);
 			set = setResource.update(set);			
 		}		
 		catch(Exception e)
@@ -364,6 +376,10 @@ public class TestMatrix extends TestCase
 		
 		try
 		{
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/matrix");
+            resource = clientResource.wrap(MatrixResource.class);  
 			matrix = resource.remove(new UuidMatrixName(uuid,THETA_MATRIX_NAME));			
 		}		
 		catch(Exception e)
@@ -398,6 +414,10 @@ public class TestMatrix extends TestCase
 		
 		try
 		{
+		    System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                "http://localhost:8080/study/matrixSet");
+            setResource = clientResource.wrap(MatrixSetResource.class);  
 			matrixSet = setResource.remove(uuid);			
 		}		
 		catch(Exception e)

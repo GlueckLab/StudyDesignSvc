@@ -64,25 +64,14 @@ public class TestBetweenParticipantFactor extends TestCase {
      * @see junit.framework.TestCase#setUp()
      */
     public void setUp() {
-        uuid = UUIDUtils.asByteArray(STUDY_UUID);
-        try
-        {
-            System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_BETWEEN_PARTICIPANT_FACTOR);
-            resource = clientResource.wrap(BetweenParticipantResource.class);            
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
-            fail();
-        }
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);        
     }
 
     /**
      * Test to create a BetweenParticipantFactor List.
      */
     @Test
-    private void testCreate() {        
+    public void testCreate() {        
         List<BetweenParticipantFactor> list = new ArrayList<BetweenParticipantFactor>();
         BetweenParticipantFactor betweenParticipantFactor =
                 new BetweenParticipantFactor();
@@ -102,6 +91,9 @@ public class TestBetweenParticipantFactor extends TestCase {
         BetweenParticipantFactorList betweenParticipantFactorList =
                 new BetweenParticipantFactorList(uuid,list);        
         try {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betweenParticipantFactor");
+            resource = clientResource.wrap(BetweenParticipantResource.class);
             betweenParticipantFactorList = resource.create(
                     betweenParticipantFactorList);
         } catch (Exception e) {
@@ -123,7 +115,7 @@ public class TestBetweenParticipantFactor extends TestCase {
      * Test to update a BetweenParticipantFactor List.
      */
     @Test
-    public final void testUpdate() {
+    private final void testUpdate() {
         List<BetweenParticipantFactor> list = new ArrayList<BetweenParticipantFactor>();
         BetweenParticipantFactor betweenParticipantFactor =
                 new BetweenParticipantFactor();
@@ -143,6 +135,9 @@ public class TestBetweenParticipantFactor extends TestCase {
         BetweenParticipantFactorList betweenParticipantFactorList =
                 new BetweenParticipantFactorList(uuid,list);
         try {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betweenParticipantFactor");
+            resource = clientResource.wrap(BetweenParticipantResource.class);
             betweenParticipantFactorList = resource.update(
                     betweenParticipantFactorList);
         } catch (Exception e) {
@@ -167,6 +162,9 @@ public class TestBetweenParticipantFactor extends TestCase {
         BetweenParticipantFactorList betweenParticipantFactorList = null;
 
         try {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betweenParticipantFactor");
+            resource = clientResource.wrap(BetweenParticipantResource.class);
             betweenParticipantFactorList = resource.remove(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -188,9 +186,12 @@ public class TestBetweenParticipantFactor extends TestCase {
      * Test to retrieve a BetweenParticipantFactor List.
      */
     @Test
-    public final void testRetrieve() {
+    private final void testRetrieve() {
         BetweenParticipantFactorList betweenParticipantFactorList = null;
         try {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betweenParticipantFactor");
+            resource = clientResource.wrap(BetweenParticipantResource.class);
             betweenParticipantFactorList = resource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
