@@ -38,7 +38,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  * 
  * @author Uttara Sakhadeo
  */
-public class HypothesisManager extends BaseManager {
+public class HypothesisManager extends StudyDesignParentManager {
 
     /**
      * Instantiates a new hypothesis manager.

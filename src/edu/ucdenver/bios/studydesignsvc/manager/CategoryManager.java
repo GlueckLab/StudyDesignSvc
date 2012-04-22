@@ -38,7 +38,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 /**
  * The Class CategoryManager.
  */
-public class CategoryManager extends BaseManager {
+public class CategoryManager extends StudyDesignParentManager {
 
     /**
      * Instantiates a new category manager.

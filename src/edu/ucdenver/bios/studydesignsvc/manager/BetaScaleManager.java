@@ -28,18 +28,20 @@ import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
-import edu.ucdenver.bios.webservice.common.domain.BetaScaleList;
+
 import edu.ucdenver.bios.webservice.common.domain.BetaScale;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
+import edu.ucdenver.bios.webservice.common.domain.BetaScaleList;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manager class which provides CRUD functionality for MySQL table Beta Scale
  * object.
  * 
  * @author Uttara Sakhadeo
  */
-public class BetaScaleManager extends BaseManager {
+public class BetaScaleManager extends StudyDesignParentManager {
     /**
      * Instantiates a new beta scale manager.
      * 
@@ -51,106 +53,169 @@ public class BetaScaleManager extends BaseManager {
     }
 
     /**
-     * Check existence of a Beta Scale object by the specified UUID.
+     * Retrieve BetaScaleList.
      * 
-     * @param uuidBytes
-     *            the uuid bytes
-     * @param betaScaleList
-     *            the beta scale list
-     * @return boolean
+     * @param uuid
+     *            the uuid
+     * @return the beta scale list
      */
-    /*
-     * public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException { if
-     * (!transactionStarted) throw new
-     * StudyDesignException("Transaction has not been started"); try { //byte[]
-     * uuidBytes = UUIDUtils.asByteArray(uuid); Query query =
-     * session.createQuery(
-     * "from edu.ucdenver.bios.webservice.common.domain.BetaScale where studyDesign = :uuid"
-     * ); query.setBinary("uuid", uuidBytes); List<BetaScale> betaScaleList=
-     * query.list(); if (betaScaleList!=null) return true; else return false; }
-     * catch (Exception e) { throw new
-     * StudyDesignException("Failed to retrieve Beta Scale object for UUID '" +
-     * uuidBytes.toString() + "': " + e.getMessage()); } }
-     */
-
-    /**
-     * Retrieve a Beta Scale object by the specified UUID.
-     * 
-     * @param studyUuid
-     *            : byte[]
-     * @return List<BetaScale>
-     */
-    /*
-     * public List<BetaScale> get(byte[] uuidBytes) { if (!transactionStarted)
-     * throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-     * "Transaction has not been started."); List<BetaScale> betaScaleList =
-     * null; try { //byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID); Query
-     * query = session.createQuery(
-     * "from edu.ucdenver.bios.webservice.common.domain.BetaScale where uuid = :uuid"
-     * ); query.setBinary("uuid", uuidBytes); betaScaleList = query.list(); }
-     * catch (Exception e) { throw new
-     * ResourceException(Status.CONNECTOR_ERROR_CONNECTION
-     * ,"Failed to retrieve BetaScale object for UUID '" + uuidBytes + "': " +
-     * e.getMessage()); } return betaScaleList; }
-     */
-
-    /**
-     * Delete a Beta Scale object by the specified UUID.
-     * 
-     * @param studyUuid
-     *            : byte[]
-     * @return List<BetaScale>
-     */
-    public List<BetaScale> delete(byte[] uuidBytes,
-            List<BetaScale> betaScaleList) {
+    public final BetaScaleList retrieve(final byte[] uuid) {
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
+        BetaScaleList betaScaleList = null;
         try {
-            // betaScaleList = get(uuidBytes);
-            for (BetaScale betaScale : betaScaleList) {
-                session.delete(betaScale);
+            /*
+             * Retrieve Original Beta Scale Object
+             */
+            List<BetaScale> originalList = get(uuid).getBetaScaleList();
+            /*
+             * Delete Existing Beta Scale List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                betaScaleList = new BetaScaleList(uuid, originalList);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                    "Failed to delete BetaScale object for UUID '" + uuidBytes
+                    "Failed to delete BetaScale object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
         return betaScaleList;
     }
 
     /**
-     * Retrieve a BetaScale object by the specified UUID.
+     * Delete BetaScaleList.
      * 
-     * @param betaScaleList
-     *            : List<BetaScale>
-     * @param isCreation
-     *            : boolean
-     * @return betaScaleList : List<BetaScale>
+     * @param uuid
+     *            the uuid
+     * @return the beta scale list
      */
-    public List<BetaScale> saveOrUpdate(List<BetaScale> betaScaleList,
-            boolean isCreation) {
-        if (!transactionStarted)
+    public final BetaScaleList delete(final byte[] uuid) {
+        if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
+        }
+        BetaScaleList betaScaleList = null;
+        StudyDesign studyDesign = null;
         try {
+            /*
+             * Retrieve Original Beta Scale Object
+             */
+            studyDesign = get(uuid);
+            List<BetaScale> originalList = studyDesign.getBetaScaleList();
+            /*
+             * Delete Existing Beta Scale List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                betaScaleList = delete(uuid, originalList);
+            }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setBetaScaleList(null);
+            session.update(studyDesign);
+            /*
+             * Return Persisted BetaScaleList
+             */
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete BetaScale object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return betaScaleList;
+    }
+
+    /**
+     * Delete BetaScaleList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @param betaScaleList
+     *            the beta scale list
+     * @return the beta scale list
+     */
+    private BetaScaleList delete(final byte[] uuid,
+            final List<BetaScale> betaScaleList) {
+        BetaScaleList deletedList = null;
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        try {
+            for (BetaScale betaScale : betaScaleList) {
+                session.delete(betaScale);
+            }
+            deletedList = new BetaScaleList(uuid, betaScaleList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete BetaScale object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return deletedList;
+    }
+
+    /**
+     * Saves or update BetaScaleList.
+     * 
+     * @param betaScaleList
+     *            the beta scale list
+     * @param isCreation
+     *            the is creation
+     * @return the beta scale list
+     */
+    public final BetaScaleList saveOrUpdate(final BetaScaleList betaScaleList,
+            final boolean isCreation) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        StudyDesign studyDesign = null;
+        List<BetaScale> originalList = null;
+        BetaScaleList newBetaScaleList = null;
+        byte[] uuid = betaScaleList.getUuid();
+        List<BetaScale> newList = betaScaleList.getBetaScaleList();
+
+        try {
+            /*
+             * Retrieve Study Design Object
+             */
+            studyDesign = get(uuid);
+            originalList = studyDesign.getBetaScaleList();
+            /*
+             * Delete Existing Beta Scale List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                delete(uuid, originalList);
+            }
             if (isCreation) {
-                for (BetaScale betaScale : betaScaleList) {
+                for (BetaScale betaScale : newList) {
                     session.save(betaScale);
                     System.out.println("in save id: " + betaScale.getId());
                 }
             } else {
-                for (BetaScale betaScale : betaScaleList)
+                for (BetaScale betaScale : newList) {
                     session.update(betaScale);
+                }
             }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setBetaScaleList(newList);
+            session.update(studyDesign);
+            /*
+             * Return Persisted BetaScaleList
+             */
+            newBetaScaleList = new BetaScaleList(uuid, newList);
         } catch (Exception e) {
-            betaScaleList = null;
+            newList = null;
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to save BetaScale object : " + e.getMessage());
         }
-        return betaScaleList;
+        return newBetaScaleList;
     }
 }

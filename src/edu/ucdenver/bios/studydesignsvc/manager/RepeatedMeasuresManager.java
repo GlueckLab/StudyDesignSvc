@@ -39,8 +39,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  * 
  * @author Uttara Sakhadeo
  */
-public class RepeatedMeasuresManager extends BaseManager
-{
+public class RepeatedMeasuresManager extends StudyDesignParentManager {
 	
 	/**
 	 * Instantiates a new repeated measures manager.
@@ -59,19 +58,24 @@ public class RepeatedMeasuresManager extends BaseManager
 	 * @param repeatedMeasuresList the repeated measures list
 	 * @return ArrayList<RepeatedMeasuresNode>
 	 */
-	public List<RepeatedMeasuresNode> delete(byte[] uuidBytes,List<RepeatedMeasuresNode> repeatedMeasuresList)
+	public List<RepeatedMeasuresNode> delete(
+	        byte[] uuidBytes,List<RepeatedMeasuresNode> repeatedMeasuresList)
 	{
 		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
+			throw new ResourceException(
+			        Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
 		try
 		{
-			for(RepeatedMeasuresNode nominalPower : repeatedMeasuresList)
+			for(RepeatedMeasuresNode nominalPower : repeatedMeasuresList) {
 				session.delete(nominalPower);
+			}
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete RepeatedMeasuresNode object for UUID '" + uuidBytes + "': " + e.getMessage());
+			throw new ResourceException(
+		        Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete RepeatedMeasuresNode object for UUID '"
+			+ uuidBytes + "': " + e.getMessage());
 		}
 		return repeatedMeasuresList;
 	}
@@ -83,7 +87,8 @@ public class RepeatedMeasuresManager extends BaseManager
      * @param isCreation : boolean
      * @return repeatedMeasuresList : ArrayList<RepeatedMeasuresNode>
      */
-	public ArrayList<RepeatedMeasuresNode> saveOrUpdate(ArrayList<RepeatedMeasuresNode> repeatedMeasuresList,boolean isCreation)
+	public ArrayList<RepeatedMeasuresNode> saveOrUpdate(
+	        ArrayList<RepeatedMeasuresNode> repeatedMeasuresList,boolean isCreation)
 	{
 		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
 		try

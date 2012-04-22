@@ -24,89 +24,199 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.TypeIError;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
+import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality
- * for MySQL table TypeIError object.
+ * Manager class which provides CRUD functionality for MySQL table TypeIError
+ * object.
  * 
  * @author Uttara Sakhadeo
  */
-public class TypeIErrorManager extends BaseManager {
+public class TypeIErrorManager extends StudyDesignParentManager {
 
-	/**
-	 * Instantiates a new type i error manager.
-	 *
-	 * @throws BaseManagerException the base manager exception
-	 */
-	public TypeIErrorManager() throws BaseManagerException
-	{
-		super();
-	}
+    /**
+     * Instantiates a new type i error manager.
+     * 
+     * @throws BaseManagerException
+     *             the base manager exception
+     */
+    public TypeIErrorManager() throws BaseManagerException {
+        super();
+    }
 
-	/**
-	 * Delete a TypeIError object by the specified UUID.
-	 *
-	 * @param uuidBytes the uuid bytes
-	 * @param typeIErrorList the type i error list
-	 * @return ArrayList<TypeIError>
-	 */
-    public List<TypeIError> delete(byte[] uuidBytes,
-            List<TypeIError> typeIErrorList) {
+    /**
+     * Retrieve TypeIErrorList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the type i error list
+     */
+    public final TypeIErrorList retrieve(final byte[] uuid) {
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
+        TypeIErrorList alphaList = null;
         try {
-            for (TypeIError nominalPower : typeIErrorList) {
-            session.delete(nominalPower); }
+            /*
+             * Retrieve Original TypeIError Object
+             */
+            List<TypeIError> originalList = get(uuid).getAlphaList();
+            /*
+             * Delete Existing TypeIError List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                alphaList = new TypeIErrorList(uuid, originalList);
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                    "Failed to delete TypeIError object for UUID '" + uuidBytes
-                    + "': " + e.getMessage());
+                    "Failed to delete TypeIError object for UUID '" + uuid
+                            + "': " + e.getMessage());
         }
-        return typeIErrorList;
+        return alphaList;
     }
 
-	/**
-     * Retrieve a TypeIError object by the specified UUID.
-     *
-     * @param typeIErrorList : ArrayList<TypeIError>
-     * @param isCreation : boolean
-     * @return typeIErrorList : ArrayList<TypeIError>
+    /**
+     * Delete TypeIErrorList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the type i error list
      */
-    public ArrayList<TypeIError> saveOrUpdate(
-            ArrayList<TypeIError> typeIErrorList, boolean isCreation) {
+    public final TypeIErrorList delete(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        TypeIErrorList alphaList = null;
+        StudyDesign studyDesign = null;
+        try {
+            /*
+             * Retrieve Original TypeIError Object
+             */
+            studyDesign = get(uuid);
+            List<TypeIError> originalList = studyDesign.getAlphaList();
+            /*
+             * Delete Existing TypeIError List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                alphaList = delete(uuid, originalList);
+            }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setAlphaList(null);
+            session.update(studyDesign);
+            /*
+             * Return Persisted TypeIErrorList
+             */
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete TypeIError object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return alphaList;
+    }
+
+    /**
+     * Delete TypeIErrorList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @param alphaList
+     *            the alpha list
+     * @return the type i error list
+     */
+    private TypeIErrorList delete(final byte[] uuid,
+            final List<TypeIError> alphaList) {
+        TypeIErrorList deletedList = null;
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
         try {
+            for (TypeIError betaScale : alphaList) {
+                session.delete(betaScale);
+            }
+            deletedList = new TypeIErrorList(uuid, alphaList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete TypeIError object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return deletedList;
+    }
+
+    /**
+     * Saves or update TypeIErrorList.
+     * 
+     * @param alphaList
+     *            the alpha list
+     * @param isCreation
+     *            the is creation
+     * @return the type i error list
+     */
+    public final TypeIErrorList saveOrUpdate(final TypeIErrorList alphaList,
+            final boolean isCreation) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        StudyDesign studyDesign = null;
+        List<TypeIError> originalList = null;
+        TypeIErrorList newAlphaList = null;
+        byte[] uuid = alphaList.getUuid();
+        List<TypeIError> newList = alphaList.getTypeIErrorList();
+
+        try {
+            /*
+             * Retrieve Study Design Object
+             */
+            studyDesign = get(uuid);
+            originalList = studyDesign.getAlphaList();
+            /*
+             * Delete Existing TypeIError List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                delete(uuid, originalList);
+            }
             if (isCreation) {
-                for (TypeIError nominalPower : typeIErrorList) {
-                   session.save(nominalPower);
+                for (TypeIError betaScale : newList) {
+                    session.save(betaScale);
+                    System.out.println("in save id: " + betaScale.getId());
                 }
             } else {
-                for (TypeIError nominalPower : typeIErrorList) {
-                    session.update(nominalPower);
+                for (TypeIError betaScale : newList) {
+                    session.update(betaScale);
                 }
             }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setAlphaList(newList);
+            session.update(studyDesign);
+            /*
+             * Return Persisted TypeIErrorList
+             */
+            newAlphaList = new TypeIErrorList(uuid, newList);
         } catch (Exception e) {
-            typeIErrorList = null;
+            newList = null;
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to save TypeIError object : " + e.getMessage());
         }
-        return typeIErrorList;
+        return newAlphaList;
     }
 }

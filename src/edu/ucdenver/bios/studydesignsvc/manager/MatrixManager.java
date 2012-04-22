@@ -38,7 +38,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  * 
  * @author Uttara Sakhadeo
  */
-public class MatrixManager extends BaseManager {
+public class MatrixManager extends StudyDesignParentManager {
 
     /**
      * Instantiates a new matrix manager.

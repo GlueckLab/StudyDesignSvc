@@ -22,89 +22,199 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
+import edu.ucdenver.bios.webservice.common.domain.SigmaScaleList;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality 
- * for MySQL table Sigma Scale object.
+ * Manager class which provides CRUD functionality for MySQL table Sigma Scale
+ * object.
  * 
  * @author Uttara Sakhadeo
  */
-public class SigmaScaleManager extends BaseManager
-{
-	
-	/**
-	 * Instantiates a new sigma scale manager.
-	 *
-	 * @throws BaseManagerException the base manager exception
-	 */
-	public SigmaScaleManager() throws BaseManagerException
-	{
-		super();
-	}
-	
-	/**
-	 * Delete a SigmaScale object by the specified UUID.
-	 *
-	 * @param uuidBytes the uuid bytes
-	 * @param sigmaScaleList the sigma scale list
-	 * @return ArrayList<SigmaScale>
-	 */
-	public List<SigmaScale> delete(byte[] uuidBytes,List<SigmaScale> sigmaScaleList)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		try
-		{
-			for(SigmaScale nominalPower : sigmaScaleList)
-				session.delete(nominalPower);
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete SigmaScale object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return sigmaScaleList;
-	}
-	
-	/**
-     * Retrieve a SigmaScale object by the specified UUID.
+public class SigmaScaleManager extends StudyDesignParentManager {
+
+    /**
+     * Instantiates a new sigma scale manager.
      * 
-     * @param sigmaScaleList : ArrayList<SigmaScale>
-     * @param isCreation : boolean
-     * @return sigmaScaleList : ArrayList<SigmaScale>
+     * @throws BaseManagerException
+     *             the base manager exception
      */
-	public ArrayList<SigmaScale> saveOrUpdate(ArrayList<SigmaScale> sigmaScaleList,boolean isCreation)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
-		try
-		{			
-			if(isCreation==true)
-			{
-				for(SigmaScale nominalPower : sigmaScaleList)				
-					session.save(nominalPower);				
-			}
-			else
-			{
-				for(SigmaScale nominalPower : sigmaScaleList)
-					session.update(nominalPower);
-			}
-		}
-		catch(Exception e)
-		{
-			sigmaScaleList=null;
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save SigmaScale object : " + e.getMessage());
-		}
-		return sigmaScaleList;
-	}
+    public SigmaScaleManager() throws BaseManagerException {
+        super();
+    }
+
+    /**
+     * Retrieves the SigmaScaleList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the sigma scale list
+     */
+    public final SigmaScaleList retrieve(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        SigmaScaleList sigmaScaleList = null;
+        try {
+            /*
+             * Retrieve Original SigmaScale Object
+             */
+            List<SigmaScale> originalList = get(uuid).getSigmaScaleList();
+            /*
+             * Delete Existing SigmaScale List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                sigmaScaleList = new SigmaScaleList(uuid, originalList);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete SigmaScale object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return sigmaScaleList;
+    }
+
+    /**
+     * Deletes the SigmaScaleList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the sigma scale list
+     */
+    public final SigmaScaleList delete(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        SigmaScaleList sigmaScaleList = null;
+        StudyDesign studyDesign = null;
+        try {
+            /*
+             * Retrieve Original SigmaScale Object
+             */
+            studyDesign = get(uuid);
+            List<SigmaScale> originalList = studyDesign.getSigmaScaleList();
+            /*
+             * Delete Existing SigmaScale List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                sigmaScaleList = delete(uuid, originalList);
+            }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setSigmaScaleList(null);
+            session.update(studyDesign);
+            /*
+             * Return Persisted SigmaScaleList
+             */
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete SigmaScale object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return sigmaScaleList;
+    }
+
+    /**
+     * Delete the SigmaScaleList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @param sigmaScaleList
+     *            the beta scale list
+     * @return the sigma scale list
+     */
+    private SigmaScaleList delete(final byte[] uuid,
+            final List<SigmaScale> sigmaScaleList) {
+        SigmaScaleList deletedList = null;
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        try {
+            for (SigmaScale sigmaScale : sigmaScaleList) {
+                session.delete(sigmaScale);
+            }
+            deletedList = new SigmaScaleList(uuid, sigmaScaleList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete SigmaScale object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return deletedList;
+    }
+
+    /**
+     * Saves or updates the SigmaScaleList.
+     * 
+     * @param sigmaScaleList
+     *            the beta scale list
+     * @param isCreation
+     *            the is creation
+     * @return the sigma scale list
+     */
+    public final SigmaScaleList saveOrUpdate(
+            final SigmaScaleList sigmaScaleList, final boolean isCreation) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        StudyDesign studyDesign = null;
+        List<SigmaScale> originalList = null;
+        SigmaScaleList newSigmaScaleList = null;
+        byte[] uuid = sigmaScaleList.getUuid();
+        List<SigmaScale> newList = sigmaScaleList.getSigmaScaleList();
+
+        try {
+            /*
+             * Retrieve Study Design Object
+             */
+            studyDesign = get(uuid);
+            originalList = studyDesign.getSigmaScaleList();
+            /*
+             * Delete Existing SigmaScale List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                delete(uuid, originalList);
+            }
+            if (isCreation) {
+                for (SigmaScale sigmaScale : newList) {
+                    session.save(sigmaScale);
+                    System.out.println("in save id: " + sigmaScale.getId());
+                }
+            } else {
+                for (SigmaScale sigmaScale : newList) {
+                    session.update(sigmaScale);
+                }
+            }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setSigmaScaleList(newList);
+            session.update(studyDesign);
+            /*
+             * Return Persisted SigmaScaleList
+             */
+            newSigmaScaleList = new SigmaScaleList(uuid, newList);
+        } catch (Exception e) {
+            newList = null;
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to save SigmaScale object : " + e.getMessage());
+        }
+        return newSigmaScaleList;
+    }
 }

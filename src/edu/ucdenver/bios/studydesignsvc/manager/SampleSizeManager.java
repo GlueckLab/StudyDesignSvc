@@ -22,28 +22,28 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.webservice.common.domain.SampleSize;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
+import edu.ucdenver.bios.webservice.common.domain.SampleSizeList;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality
- * for MySQL table SampleSize object.
- *
+ * Manager class which provides CRUD functionality for MySQL table SampleSize
+ * object.
+ * 
  * @author Uttara Sakhadeo
  */
-public class SampleSizeManager extends BaseManager {
+public class SampleSizeManager extends StudyDesignParentManager {
 
     /**
      * Instantiates a new sample size manager.
-     *
+     * 
      * @throws BaseManagerException
      *             the base manager exception
      */
@@ -52,16 +52,93 @@ public class SampleSizeManager extends BaseManager {
     }
 
     /**
-     * Delete a SampleSize object by the specified UUID.
-     *
-     * @param uuidBytes
-     *            the uuid bytes
+     * Retrieves the SampleSizeList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the sample size list
+     */
+    public final SampleSizeList retrieve(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        SampleSizeList sampleSizeList = null;
+        try {
+            /*
+             * Retrieve Original SampleSize Object
+             */
+            List<SampleSize> originalList = get(uuid).getSampleSizeList();
+            /*
+             * Delete Existing SampleSize List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                sampleSizeList = new SampleSizeList(uuid, originalList);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete SampleSize object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return sampleSizeList;
+    }
+
+    /**
+     * Deletes the SampleSizeList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the sample size list
+     */
+    public final SampleSizeList delete(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        SampleSizeList sampleSizeList = null;
+        StudyDesign studyDesign = null;
+        try {
+            /*
+             * Retrieve Original SampleSize Object
+             */
+            studyDesign = get(uuid);
+            List<SampleSize> originalList = studyDesign.getSampleSizeList();
+            /*
+             * Delete Existing SampleSize List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                sampleSizeList = delete(uuid, originalList);
+            }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setSampleSizeList(null);
+            session.update(studyDesign);
+            /*
+             * Return Persisted SampleSizeList
+             */
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete SampleSize object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return sampleSizeList;
+    }
+
+    /**
+     * Deletes the SampleSizeList.
+     * 
+     * @param uuid
+     *            the uuid
      * @param sampleSizeList
      *            the sample size list
-     * @return ArrayList<SampleSize>
+     * @return the sample size list
      */
-    public List<SampleSize> delete(final byte[] uuidBytes,
+    private SampleSizeList delete(final byte[] uuid,
             final List<SampleSize> sampleSizeList) {
+        SampleSizeList deletedList = null;
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
@@ -70,46 +147,74 @@ public class SampleSizeManager extends BaseManager {
             for (SampleSize sampleSize : sampleSizeList) {
                 session.delete(sampleSize);
             }
+            deletedList = new SampleSizeList(uuid, sampleSizeList);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                    "Failed to delete SampleSize object for UUID '" + uuidBytes
+                    "Failed to delete SampleSize object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
-        return sampleSizeList;
+        return deletedList;
     }
 
     /**
-     * Retrieve a SampleSize object by the specified UUID.
-     *
+     * Saves or updates the SampleSizeList.
+     * 
      * @param sampleSizeList
-     *            : ArrayList<SampleSize>
+     *            the sample size list
      * @param isCreation
-     *            : boolean
-     * @return sampleSizeList : ArrayList<SampleSize>
+     *            the is creation
+     * @return the sample size list
      */
-    public ArrayList<SampleSize> saveOrUpdate(
-            ArrayList<SampleSize> sampleSizeList, boolean isCreation) {
+    public final SampleSizeList saveOrUpdate(
+            final SampleSizeList sampleSizeList, final boolean isCreation) {
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
+        StudyDesign studyDesign = null;
+        List<SampleSize> originalList = null;
+        SampleSizeList newSampleSizeList = null;
+        byte[] uuid = sampleSizeList.getUuid();
+        List<SampleSize> newList = sampleSizeList.getSampleSizeList();
+
         try {
+            /*
+             * Retrieve Study Design Object
+             */
+            studyDesign = get(uuid);
+            originalList = studyDesign.getSampleSizeList();
+            /*
+             * Delete Existing SampleSize List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                delete(uuid, originalList);
+            }
             if (isCreation) {
-                for (SampleSize sampleSize : sampleSizeList) {
+                for (SampleSize sampleSize : newList) {
                     session.save(sampleSize);
+                    System.out.println("in save id: " + sampleSize.getId());
                 }
             } else {
-                for (SampleSize sampleSize : sampleSizeList) {
+                for (SampleSize sampleSize : newList) {
                     session.update(sampleSize);
                 }
             }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setSampleSizeList(newList);
+            session.update(studyDesign);
+            /*
+             * Return Persisted SampleSizeList
+             */
+            newSampleSizeList = new SampleSizeList(uuid, newList);
         } catch (Exception e) {
-            sampleSizeList = null;
+            newList = null;
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to save SampleSize object : " + e.getMessage());
         }
-        return sampleSizeList;
+        return newSampleSizeList;
     }
 }

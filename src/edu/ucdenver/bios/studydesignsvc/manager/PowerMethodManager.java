@@ -22,90 +22,199 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
+import edu.ucdenver.bios.webservice.common.domain.PowerMethodList;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality 
- * for MySQL table Power Method object.
+ * Manager class which provides CRUD functionality for MySQL table Power Method
+ * object.
  * 
  * @author Uttara Sakhadeo
  */
-public class PowerMethodManager extends BaseManager
-{
-	
-	/**
-	 * Instantiates a new power method manager.
-	 *
-	 * @throws BaseManagerException the base manager exception
-	 */
-	public PowerMethodManager() throws BaseManagerException
-	{
-		super();
-	}
-	
-	/**
-	 * Delete a PowerMethod object by the specified UUID.
-	 *
-	 * @param uuidBytes the uuid bytes
-	 * @param powerMethodList the power method list
-	 * @return ArrayList<PowerMethod>
-	 */
-	public List<PowerMethod> delete(byte[] uuidBytes,List<PowerMethod> powerMethodList)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		try
-		{
-			for(PowerMethod nominalPower : powerMethodList)
-				session.delete(nominalPower);
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete PowerMethod object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return powerMethodList;
-	}
-	
-	/**
-     * Retrieve a PowerMethod object by the specified UUID.
-     * 
-     * @param powerMethodList : ArrayList<PowerMethod>
-     * @param isCreation : boolean
-     * @return powerMethodList : ArrayList<PowerMethod>
-     */
-	public ArrayList<PowerMethod> saveOrUpdate(ArrayList<PowerMethod> powerMethodList,boolean isCreation)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
-		try
-		{			
-			if(isCreation==true)
-			{
-				for(PowerMethod nominalPower : powerMethodList)				
-					session.save(nominalPower);				
-			}
-			else
-			{
-				for(PowerMethod nominalPower : powerMethodList)
-					session.update(nominalPower);
-			}
-		}
-		catch(Exception e)
-		{
-			powerMethodList=null;
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save PowerMethod object : " + e.getMessage());
-		}
-		return powerMethodList;
-	}
-}
+public class PowerMethodManager extends StudyDesignParentManager {
 
+    /**
+     * Instantiates a new power method manager.
+     * 
+     * @throws BaseManagerException
+     *             the base manager exception
+     */
+    public PowerMethodManager() throws BaseManagerException {
+        super();
+    }
+
+    /**
+     * Retrieve.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the power method list
+     */
+    public final PowerMethodList retrieve(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        PowerMethodList powerMethodList = null;
+        try {
+            /*
+             * Retrieve Original PowerMethod Object
+             */
+            List<PowerMethod> originalList = get(uuid).getPowerMethodList();
+            /*
+             * Delete Existing PowerMethod List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                powerMethodList = new PowerMethodList(uuid, originalList);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete PowerMethod object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return powerMethodList;
+    }
+
+    /**
+     * Delete.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the power method list
+     */
+    public final PowerMethodList delete(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        PowerMethodList powerMethodList = null;
+        StudyDesign studyDesign = null;
+        try {
+            /*
+             * Retrieve Original PowerMethod Object
+             */
+            studyDesign = get(uuid);
+            List<PowerMethod> originalList = studyDesign.getPowerMethodList();
+            /*
+             * Delete Existing PowerMethod List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                powerMethodList = delete(uuid, originalList);
+            }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setPowerMethodList(null);
+            session.update(studyDesign);
+            /*
+             * Return Persisted PowerMethodList
+             */
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete PowerMethod object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return powerMethodList;
+    }
+
+    /**
+     * Delete.
+     * 
+     * @param uuid
+     *            the uuid
+     * @param powerMethodList
+     *            the power method list
+     * @return the power method list
+     */
+    private PowerMethodList delete(final byte[] uuid,
+            final List<PowerMethod> powerMethodList) {
+        PowerMethodList deletedList = null;
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        try {
+            for (PowerMethod powerMethod : powerMethodList) {
+                session.delete(powerMethod);
+            }
+            deletedList = new PowerMethodList(uuid, powerMethodList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete PowerMethod object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return deletedList;
+    }
+
+    /**
+     * Save or update.
+     * 
+     * @param powerMethodList
+     *            the power method list
+     * @param isCreation
+     *            the is creation
+     * @return the power method list
+     */
+    public final PowerMethodList saveOrUpdate(
+            final PowerMethodList powerMethodList, final boolean isCreation) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        StudyDesign studyDesign = null;
+        List<PowerMethod> originalList = null;
+        PowerMethodList newPowerMethodList = null;
+        byte[] uuid = powerMethodList.getUuid();
+        List<PowerMethod> newList = powerMethodList.getPowerMethodList();
+
+        try {
+            /*
+             * Retrieve Study Design Object
+             */
+            studyDesign = get(uuid);
+            originalList = studyDesign.getPowerMethodList();
+            /*
+             * Delete Existing PowerMethod List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                delete(uuid, originalList);
+            }
+            if (isCreation) {
+                for (PowerMethod powerMethod : newList) {
+                    session.save(powerMethod);
+                    System.out.println("in save id: " + powerMethod.getId());
+                }
+            } else {
+                for (PowerMethod powerMethod : newList) {
+                    session.update(powerMethod);
+                }
+            }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setPowerMethodList(newList);
+            session.update(studyDesign);
+            /*
+             * Return Persisted PowerMethodList
+             */
+            newPowerMethodList = new PowerMethodList(uuid, newList);
+        } catch (Exception e) {
+            newList = null;
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to save PowerMethod object : " + e.getMessage());
+        }
+        return newPowerMethodList;
+    }
+}

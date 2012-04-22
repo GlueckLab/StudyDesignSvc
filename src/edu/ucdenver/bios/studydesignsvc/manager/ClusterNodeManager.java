@@ -39,9 +39,8 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  * 
  * @author Uttara Sakhadeo
  */
-public class ClusterNodeManager extends BaseManager 
-{
-
+public class ClusterNodeManager extends StudyDesignParentManager {
+    
 	/**
 	 * Instantiates a new cluster node manager.
 	 *

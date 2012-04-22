@@ -24,138 +24,197 @@ package edu.ucdenver.bios.studydesignsvc.manager;
 
 import java.util.List;
 
-import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
+import edu.ucdenver.bios.webservice.common.domain.ResponseList;
 import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality 
- * for MySQL table Responses object.
+ * Manager class which provides CRUD functionality for MySQL table Responses
+ * object.
  * 
  * @author Uttara Sakhadeo
  */
-public class ResponsesManager extends BaseManager 
-{
-	
-	/**
-	 * Instantiates a new responses manager.
-	 *
-	 * @throws BaseManagerException the base manager exception
-	 */
-	public ResponsesManager() throws BaseManagerException
-	{
-		super();
-	}
-	
-	/**
-	 * Check existence of a ResponseNode object by the specified UUID.
-	 *
-	 * @param uuidBytes the uuid bytes
-	 * @param responseList the response list
-	 * @return boolean
-	 */
-    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
-    {
-        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
-        try
-        {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ResponseNode where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            List<ResponseNode> responseNodeList= (List<ResponseNode>)query.list(); 
-        	if(responseNodeList!=null)
-        		return true;
-        	else
-        		return false;
-        }
-        catch (Exception e)
-        {
-            throw new StudyDesignException("Failed to retrieve ResponseNode object for UUID '" + 
-            		uuidBytes.toString() + "': " + e.getMessage());
-        }
-    }*/
-    
+public class ResponsesManager extends StudyDesignParentManager {
+
     /**
-     * Retrieve a ResponseNode object by the specified UUID.
+     * Instantiates a new responses manager.
      * 
-     * @param studyUuid : byte[]
-     * @return List<ResponseNode>
+     * @throws BaseManagerException
+     *             the base manager exception
      */
-	/*public List<ResponseNode> get(byte[] uuidBytes)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ResponseNode> responseNodeList = null;
-		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ResponseNode where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            responseNodeList = (List<ResponseNode>)query.list();            
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve ResponseNode object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return responseNodeList;
-	}*/
-	
-	/**
-     * Delete a ResponseNode object by the specified UUID.
+    public ResponsesManager() throws BaseManagerException {
+        super();
+    }
+
+    /**
+     * Retrieves the ResponseList.
      * 
-     * @param studyUuid : byte[]
-     * @return List<ResponseNode>
+     * @param uuid
+     *            the uuid
+     * @return the response list
      */
-	public List<ResponseNode> delete(byte[] uuidBytes,List<ResponseNode> responseList)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		try
-		{
-			for(ResponseNode ResponseNode : responseList)
-				session.delete(ResponseNode);
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete ResponseNode object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return responseList;
-	}
-	
-	/**
-     * Retrieve a ResponseNode object by the specified UUID.
+    public final ResponseList retrieve(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        ResponseList responseList = null;
+        try {
+            /*
+             * Retrieve Original ResponseList Object
+             */
+            List<ResponseNode> originalList = get(uuid).getResponseList();
+            /*
+             * Delete Existing ResponseList List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                responseList = new ResponseList(uuid, originalList);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete ResponseNode object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return responseList;
+    }
+
+    /**
+     * Deletes the ResponseList.
      * 
-     * @param responseNodeList : List<ResponseNode>
-     * @param isCreation : boolean
-     * @return responseNodeList : List<ResponseNode>
+     * @param uuid
+     *            the uuid
+     * @return the response list
      */
-	public List<ResponseNode> saveOrUpdate(List<ResponseNode> responseNodeList,boolean isCreation)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
-		try
-		{			
-			if(isCreation==true)
-			{
-				for(ResponseNode responseNode : responseNodeList)				
-					session.save(responseNode);				
-			}
-			else
-			{
-				for(ResponseNode responseNode : responseNodeList)
-					session.update(responseNode);
-			}
-		}
-		catch(Exception e)
-		{
-			responseNodeList=null;
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save ResponseNode object : " + e.getMessage());
-		}
-		return responseNodeList;
-	}
+    public final ResponseList delete(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        ResponseList responseList = null;
+        StudyDesign studyDesign = null;
+        try {
+            /*
+             * Retrieve Original ResponseList Object
+             */
+            studyDesign = get(uuid);
+            List<ResponseNode> originalList = studyDesign.getResponseList();
+            /*
+             * Delete Existing ResponseList List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                responseList = delete(uuid, originalList);
+            }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setResponseList(null);
+            session.update(studyDesign);
+            /*
+             * Return Persisted ResponseList
+             */
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete ResponseNode object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return responseList;
+    }
+
+    /**
+     * Deletes the ResponseList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @param responseList
+     *            the response list
+     * @return the response list
+     */
+    private ResponseList delete(final byte[] uuid,
+            final List<ResponseNode> responseList) {
+        ResponseList deletedList = null;
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        try {
+            for (ResponseNode response : responseList) {
+                session.delete(response);
+            }
+            deletedList = new ResponseList(uuid, responseList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete ResponseNode object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return deletedList;
+    }
+
+    /**
+     * Saves or updates the ResponseList.
+     * 
+     * @param responseList
+     *            the response list
+     * @param isCreation
+     *            the is creation
+     * @return the response list
+     */
+    public final ResponseList saveOrUpdate(final ResponseList responseList,
+            final boolean isCreation) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        StudyDesign studyDesign = null;
+        List<ResponseNode> originalList = null;
+        ResponseList newResponseList = null;
+        byte[] uuid = responseList.getUuid();
+        List<ResponseNode> newList = responseList.getResponseNodeList();
+
+        try {
+            /*
+             * Retrieve Study Design Object
+             */
+            studyDesign = get(uuid);
+            originalList = studyDesign.getResponseList();
+            /*
+             * Delete Existing ResponseList List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                delete(uuid, originalList);
+            }
+            if (isCreation) {
+                for (ResponseNode response : newList) {
+                    session.save(response);
+                    System.out.println("in save id: " + response.getId());
+                }
+            } else {
+                for (ResponseNode response : newList) {
+                    session.update(response);
+                }
+            }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setResponseList(newList);
+            session.update(studyDesign);
+            /*
+             * Return Persisted ResponseList
+             */
+            newResponseList = new ResponseList(uuid, newList);
+        } catch (Exception e) {
+            newList = null;
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to save ResponseNode object : " + e.getMessage());
+        }
+        return newResponseList;
+    }
 }

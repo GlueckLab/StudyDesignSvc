@@ -40,7 +40,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  * 
  * @author Uttara Sakhadeo
  */
-public class StudyDesignManager extends BaseManager
+public class StudyDesignManager extends StudyDesignParentManager
 {
 	
 	/**
@@ -86,7 +86,7 @@ public class StudyDesignManager extends BaseManager
      * @return data feed object
      * @throws StudyDesignException the study design exception
      */
-    public StudyDesign get(byte[] uuidBytes) throws StudyDesignException
+    /*public StudyDesign get(byte[] uuidBytes) throws StudyDesignException
     {
         if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
         try
@@ -101,7 +101,7 @@ public class StudyDesignManager extends BaseManager
             throw new StudyDesignException("Failed to retrieve StudyDesign for UUID '" + 
             		uuidBytes.toString() + "': " + e.getMessage());
         }
-    }
+    }*/
 
 	
 	/*

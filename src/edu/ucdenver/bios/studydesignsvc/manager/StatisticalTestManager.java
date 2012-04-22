@@ -23,143 +23,204 @@
 package edu.ucdenver.bios.studydesignsvc.manager;
 
 import java.util.List;
-import java.util.List;
 
-import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.webservice.common.domain.BetaScale;
-import edu.ucdenver.bios.webservice.common.domain.NominalPower;
 import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
+import edu.ucdenver.bios.webservice.common.domain.StatisticalTestList;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality 
- * for MySQL table StatisticalTest object.
+ * Manager class which provides CRUD functionality for MySQL table
+ * StatisticalTest object.
  * 
  * @author Uttara Sakhadeo
  */
-public class StatisticalTestManager extends BaseManager
-{
-	
-	/**
-	 * Instantiates a new statistical test manager.
-	 *
-	 * @throws BaseManagerException the base manager exception
-	 */
-	public StatisticalTestManager() throws BaseManagerException
-	{
-		super();
-	}
-	
-	/**
-	 * Check existence of a StatisticalTest object by the specified UUID.
-	 *
-	 * @param uuidBytes the uuid bytes
-	 * @param testList the test list
-	 * @return boolean
-	 */
-    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
-    {
-        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
-        try
-        {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.StatisticalTest where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            List<StatisticalTest> testList= query.list(); 
-        	if(testList!=null)
-        		return true;
-        	else
-        		return false;
-        }
-        catch (Exception e)
-        {
-            throw new StudyDesignException("Failed to retrieve Beta Scale object for UUID '" + 
-            		uuidBytes.toString() + "': " + e.getMessage());
-        }
-    }*/
-    
-    /**
-     * Retrieve a StatisticalTest object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return List<StatisticalTest>
-     */
-	/*public List<StatisticalTest> get(byte[] uuidBytes)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<StatisticalTest> testList = null;
-		try
-		{																				
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.StatisticalTest where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            testList = (List<StatisticalTest>)query.list();            
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve StatisticalTest object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return testList;
-	}*/
-	
-	/**
-     * Delete a StatisticalTest object by the specified UUID.
-     * 
-     * @param studyUuid : byte[]
-     * @return List<StatisticalTest>
-     */
-	public List<StatisticalTest> delete(byte[] uuidBytes,List<StatisticalTest> testList)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
-		try
-		{
-			for(StatisticalTest test : testList)
-				session.delete(test);
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete StatisticalTest object for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return testList;
-	}
-	
-	/**
-     * Retrieve a StatisticalTest object by the specified UUID.
-     * 
-     * @param testList : List<StatisticalTest>
-     * @param isCreation : boolean
-     * @return testList : List<StatisticalTest>
-     */
-	public List<StatisticalTest> saveOrUpdate(List<StatisticalTest> testList,boolean isCreation)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
-		try
-		{			
-			if(isCreation==true)
-			{
-				for(StatisticalTest test : testList)				
-					session.save(test);				
-			}
-			else
-			{
-				for(StatisticalTest test : testList)
-					session.update(test);
-			}
-		}
-		catch(Exception e)
-		{
-			testList=null;
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save StatisticalTest object : " + e.getMessage());
-		}
-		return testList;
-	}
-}
+public class StatisticalTestManager extends StudyDesignParentManager {
 
+    /**
+     * Instantiates a new statistical test manager.
+     * 
+     * @throws BaseManagerException
+     *             the base manager exception
+     */
+    public StatisticalTestManager() throws BaseManagerException {
+        super();
+    }
+
+    /**
+     * Retrieves the StatisticalTestList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the statistical test list
+     */
+    public final StatisticalTestList retrieve(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        StatisticalTestList statisticalTestList = null;
+        try {
+            /*
+             * Retrieve Original StatisticalTest Object
+             */
+            List<StatisticalTest> originalList = get(uuid)
+                    .getStatisticalTestList();
+            /*
+             * Delete Existing StatisticalTest List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                statisticalTestList = new StatisticalTestList(uuid,
+                        originalList);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete StatisticalTest object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return statisticalTestList;
+    }
+
+    /**
+     * Deletes the StatisticalTestList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the statistical test list
+     */
+    public final StatisticalTestList delete(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        StatisticalTestList statisticalTestList = null;
+        StudyDesign studyDesign = null;
+        try {
+            /*
+             * Retrieve Original StatisticalTest Object
+             */
+            studyDesign = get(uuid);
+            List<StatisticalTest> originalList = studyDesign
+                    .getStatisticalTestList();
+            /*
+             * Delete Existing StatisticalTest List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                statisticalTestList = delete(uuid, originalList);
+            }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setStatisticalTestList(null);
+            session.update(studyDesign);
+            /*
+             * Return Persisted StatisticalTestList
+             */
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete StatisticalTest object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return statisticalTestList;
+    }
+
+    /**
+     * Deletes the StatisticalTestList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @param statisticalTestList
+     *            the statistical test list
+     * @return the statistical test list
+     */
+    private StatisticalTestList delete(final byte[] uuid,
+            final List<StatisticalTest> statisticalTestList) {
+        StatisticalTestList deletedList = null;
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        try {
+            for (StatisticalTest statisticalTest : statisticalTestList) {
+                session.delete(statisticalTest);
+            }
+            deletedList = new StatisticalTestList(uuid, statisticalTestList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete StatisticalTest object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return deletedList;
+    }
+
+    /**
+     * Saves or updates the StatisticalTestList.
+     * 
+     * @param statisticalTestList
+     *            the statistical test list
+     * @param isCreation
+     *            the is creation
+     * @return the statistical test list
+     */
+    public final StatisticalTestList saveOrUpdate(
+            final StatisticalTestList statisticalTestList,
+            final boolean isCreation) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        StudyDesign studyDesign = null;
+        List<StatisticalTest> originalList = null;
+        StatisticalTestList newStatisticalTestList = null;
+        byte[] uuid = statisticalTestList.getUuid();
+        List<StatisticalTest> newList = statisticalTestList
+                .getStatisticalTestList();
+
+        try {
+            /*
+             * Retrieve Study Design Object
+             */
+            studyDesign = get(uuid);
+            originalList = studyDesign.getStatisticalTestList();
+            /*
+             * Delete Existing StatisticalTest List Object
+             */
+            if (originalList != null && !originalList.isEmpty()) {
+                delete(uuid, originalList);
+            }
+            if (isCreation) {
+                for (StatisticalTest statisticalTest : newList) {
+                    session.save(statisticalTest);
+                    System.out
+                            .println("in save id: " + statisticalTest.getId());
+                }
+            } else {
+                for (StatisticalTest statisticalTest : newList) {
+                    session.update(statisticalTest);
+                }
+            }
+            /*
+             * Update Study Design Object
+             */
+            studyDesign.setStatisticalTestList(newList);
+            session.update(studyDesign);
+            /*
+             * Return Persisted StatisticalTestList
+             */
+            newStatisticalTestList = new StatisticalTestList(uuid, newList);
+        } catch (Exception e) {
+            newList = null;
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                "Failed to save StatisticalTest object : " + e.getMessage());
+        }
+        return newStatisticalTestList;
+    }
+}

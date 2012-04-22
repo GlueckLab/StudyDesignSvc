@@ -39,119 +39,15 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  * 
  * @author Uttara Sakhadeo
  */
-public class ConfidenceIntervalManager extends BaseManager
-{
+public class ConfidenceIntervalManager extends StudyDesignParentManager {
 	
-	/**
-	 * Instantiates a new confidence interval manager.
-	 *
-	 * @throws BaseManagerException the base manager exception
-	 */
-	public ConfidenceIntervalManager() throws BaseManagerException
-	{
-		super();
-	}
-	
-	/**
-	 * Check existance of a confidence interval description object by the specified UUID.
-	 *
-	 * @param uuid the uuid
-	 * @param confidenceInterval the confidence interval
-	 * @return boolean
-	 */
-    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
-    {
-        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
-        try
-        {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);
-        	ConfidenceIntervalDescription confidenceInterval = null;
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            confidenceInterval = (ConfidenceIntervalDescription)query.uniqueResult(); 
-        	if(confidenceInterval!=null)
-        		return true;
-        	else
-        		return false;
-        }
-        catch (Exception e)
-        {
-            throw new StudyDesignException("Failed to retrieve StudyDesign for UUID '" + 
-            		uuidBytes.toString() + "': " + e.getMessage());
-        }
-    }*/
-	
-	/**
-     * Retrieve a Confidence Interval Description representation by the specified UUID.
-     * 
-     * @param studyUUID:UUID
-     * @return study design object
-     */
-	/*public ConfidenceIntervalDescription get(byte[] uuidBytes)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ConfidenceIntervalDescription confidenceInterval = null;
-		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            confidenceInterval = (ConfidenceIntervalDescription)query.list().get(0);            
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Confidence Interval for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return confidenceInterval;
-	}*/
-	
-	
-	/*public ConfidenceInterval getConfidenceInterval(String studyUUID)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ConfidenceInterval confidenceInterval = null;
-		try
-		{			
-			
-			byte[] uuidBytes = UUIDUtils.asByteArray(UUID.fromString(studyUUID));
-			
-			Criteria criteria= session.createCriteria(ConfidenceInterval.class, "studyDesign").add(Restrictions.eq("studyDesign", uuidBytes));
-			confidenceInterval = (ConfidenceInterval)criteria.uniqueResult();			
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve study design for UUID '" + studyUUID + "': " + e.getMessage());
-		}
-		return confidenceInterval;
-	}*/
-	
-	/**
-     * Delete a Confidence Interval Description by the specified UUID.
-     * 
-     * @param studyUUID:UUID
-     * @return study design object
-     */
-	/*public ConfidenceIntervalDescription delete(byte[] uuidBytes)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ConfidenceIntervalDescription confidenceInterval = null;
-		try
-		{
-			confidenceInterval = get(uuidBytes);
-			session.delete(confidenceInterval);
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete study design for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return confidenceInterval;
-	}*/
-	
-	/**
+		
+	public ConfidenceIntervalManager() throws BaseManagerException {
+        super();
+    }
+
+
+    /**
      * Delete given Confidence Interval Description
      * 
      * @param studyUUID:UUID
@@ -173,22 +69,7 @@ public class ConfidenceIntervalManager extends BaseManager
 		return confidenceInterval;
 	}
 	
-	
-	/*public ConfidenceInterval deleteConfidenceInterval(String studyUUID)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		ConfidenceInterval confidenceInterval = null;
-		try
-		{
-			confidenceInterval = getConfidenceInterval(studyUUID);
-			session.delete(confidenceInterval);
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete study design for UUID '" + studyUUID + "': " + e.getMessage());
-		}
-		return confidenceInterval;
-	}*/
+		
 	
 	/**
 	 * Retrieve a Confidence Interval Description by the specified UUID.

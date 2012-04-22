@@ -41,7 +41,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  * 
  * @author Uttara Sakhadeo
  */
-public class BetweenParticipantFactorManager extends BaseManager
+public class BetweenParticipantFactorManager extends StudyDesignParentManager
 {
 	
 	/**

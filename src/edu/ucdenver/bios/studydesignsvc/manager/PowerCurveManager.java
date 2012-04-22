@@ -42,9 +42,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  * 
  * @author Uttara Sakhadeo
  */
-public class PowerCurveManager extends BaseManager 
-{
-	
+public class PowerCurveManager extends StudyDesignParentManager {
 	/**
 	 * Instantiates a new power curve manager.
 	 *
