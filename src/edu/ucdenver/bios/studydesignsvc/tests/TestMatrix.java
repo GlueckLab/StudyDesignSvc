@@ -33,9 +33,10 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.resource.MatrixResource;
 import edu.ucdenver.bios.studydesignsvc.resource.MatrixSetResource;
+import edu.ucdenver.bios.studydesignsvc.resource.MatrixSetServerResource;
+import edu.ucdenver.bios.webservice.common.domain.Blob2DArray;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrixSet;
 import edu.ucdenver.bios.webservice.common.domain.UuidMatrix;
@@ -93,7 +94,8 @@ public class TestMatrix extends TestCase
 				double[][] data = new double[rows][columns];
 				data[0][0]=2.5;
 				data[0][1]=5.5;
-			matrix.setDataFromArray(data);	
+			matrix.setData(new Blob2DArray(data));	
+			//	matrix.setDataFromArray(data);
 		matrixSet.add(matrix);			
 		rows=1;
 		matrix = new NamedMatrix(BETA_MATRIX_NAME);		
@@ -102,7 +104,8 @@ public class TestMatrix extends TestCase
 				data = new double[rows][columns];
 				data[0][0]=10;
 				data[0][1]=50;
-			matrix.setDataFromArray(data);	
+			//matrix.setData(new Blob2DArray(data));	
+				matrix.setDataFromArray(data);
 		matrixSet.add(matrix);	
 		NamedMatrixSet set = new NamedMatrixSet(uuid,matrixSet);		
 		try
@@ -110,8 +113,9 @@ public class TestMatrix extends TestCase
 		    System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
                 "http://localhost:8080/study/matrixSet");
-            setResource = clientResource.wrap(MatrixSetResource.class);
+            setResource = clientResource.wrap(MatrixSetResource.class);       
 			set = setResource.create(set);			
+            //set = new MatrixSetServerResource().create(set);
 		}		
 		catch(Exception e)
 		{
@@ -137,7 +141,7 @@ public class TestMatrix extends TestCase
 	 * Test to retrieve a NamedMatrix.
 	 */
 	@Test
-	private void testCreateMatrix()
+	public void testCreateMatrix()
 	{	
 		NamedMatrix matrix = new NamedMatrix(THETA_MATRIX_NAME);
 			rows=3;
@@ -180,7 +184,7 @@ public class TestMatrix extends TestCase
 	 * Test to retrieve a Set<NamedMatrix>.
 	 */
 	@Test
-	private void testRetrieveMatrixSet()
+	public void testRetrieveMatrixSet()
 	{
 		NamedMatrixSet matrixSet = null;			
 		
@@ -217,7 +221,7 @@ public class TestMatrix extends TestCase
 	 * Test to retrieve a NamedMatrix.
 	 */
 	@Test
-	private void testRetrieveMatrix()
+	public void testRetrieveMatrix()
 	{
 		NamedMatrix matrix = null;				
 		

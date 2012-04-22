@@ -174,8 +174,8 @@ public class TestStudyDesign extends TestCase
             System.clearProperty("http.proxyHost");
             clientStudyResource = new ClientResource("http://localhost:8080/study/studyUploadRetrieve"); 
             studyDesignUploadResource = clientStudyResource.wrap(StudyDesignUploadRetrieveResource.class);
-        	/*studyDesign=resource.create(studyDesign);*/
-            studyDesign = studyDesignUploadResource.upload(studyDesign);
+        	studyDesign=new StudyDesignUploadRetrieveServerResource().upload(studyDesign);
+            /*studyDesign = studyDesignUploadResource.upload(studyDesign);*/
             
             /*studyDesign1 = resourceUpload.upload(studyDesign1);*/
         	
@@ -401,7 +401,7 @@ public class TestStudyDesign extends TestCase
      * not found will be thrown.
      */
     @Test
-    public void testRetrieve()
+    private void testRetrieve()
     {
         StudyDesign studyDesign = null;
         JsonRepresentation representation = null;

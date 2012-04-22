@@ -76,7 +76,7 @@ public class TestBetweenParticipantFactor extends TestCase {
         BetweenParticipantFactor betweenParticipantFactor =
                 new BetweenParticipantFactor();
         betweenParticipantFactor.setPredictorName("Medicine");
-        ArrayList<Category> categoryList = new ArrayList<Category>();
+        List<Category> categoryList = new ArrayList<Category>();
         categoryList.add(new Category("A"));
         categoryList.add(new Category("B"));
         betweenParticipantFactor.setCategoryList(categoryList);
@@ -115,12 +115,12 @@ public class TestBetweenParticipantFactor extends TestCase {
      * Test to update a BetweenParticipantFactor List.
      */
     @Test
-    private final void testUpdate() {
+    public final void testUpdate() {
         List<BetweenParticipantFactor> list = new ArrayList<BetweenParticipantFactor>();
         BetweenParticipantFactor betweenParticipantFactor =
                 new BetweenParticipantFactor();
         betweenParticipantFactor.setPredictorName("Medicine");
-        ArrayList<Category> categoryList = new ArrayList<Category>();
+        List<Category> categoryList = new ArrayList<Category>();
         categoryList.add(new Category("Alpha"));
         categoryList.add(new Category("Beta"));
         betweenParticipantFactor.setCategoryList(categoryList);
@@ -158,7 +158,7 @@ public class TestBetweenParticipantFactor extends TestCase {
      * Test to delete a BetweenParticipantFactor List.
      */
     @Test
-    private void testDelete() {
+    public void testDelete() {
         BetweenParticipantFactorList betweenParticipantFactorList = null;
 
         try {
@@ -186,7 +186,7 @@ public class TestBetweenParticipantFactor extends TestCase {
      * Test to retrieve a BetweenParticipantFactor List.
      */
     @Test
-    private final void testRetrieve() {
+    public final void testRetrieve() {
         BetweenParticipantFactorList betweenParticipantFactorList = null;
         try {
             System.clearProperty("http.proxyHost");

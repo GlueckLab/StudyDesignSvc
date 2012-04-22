@@ -23,19 +23,19 @@
  * 02110-1301, USA.
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
-import org.hibernate.mapping.Array;
 import org.junit.Test;
 import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.resource.BetaScaleResource;
 import edu.ucdenver.bios.studydesignsvc.resource.BetaScaleServerResource;
 import edu.ucdenver.bios.webservice.common.domain.BetaScale;
@@ -63,6 +63,31 @@ public class TestBetaScaleList extends TestCase {
      */
     public final void setUp() {
     uuid = UUIDUtils.asByteArray(STUDY_UUID);
+    
+   /* byte[] bytes = new byte[16];
+    ByteBuffer bb = ByteBuffer.wrap(bytes);
+    bb.order(ByteOrder.LITTE_ENDIAN | BIG_ENDIAN);
+    bb.putLong(UUID.getMostSignificantBits());
+    bb.putLong(UUID.getLeastSignificantBits());
+
+    // to reverse
+    bb.flip();
+    UUID uuidB = new UUID(bb.getLong(), bb.getLong());*/
+    
+    Gson gson = new Gson();
+    String json = gson.toJson(uuid);
+    System.out.println(json);
+     
+   /* UUID id = UUID.nameUUIDFromBytes(uuid);
+    byte[] byteId = UUIDUtils.asByteArray(id);
+    System.out.println(id);    
+    Gson gson = new Gson();
+    String json = gson.toJson(byteId);
+    System.out.println(json);
+    
+    UUID tempUuid = UUID.nameUUIDFromBytes(byteId);
+    System.out.println(tempUuid); */
+    
      /*try
     {
          System.clearProperty("http.proxyHost");
@@ -142,7 +167,7 @@ public class TestBetaScaleList extends TestCase {
      * Test to update a BetaScale List.
      */
     @Test
-    private final void testUpdate() {
+    public final void testUpdate() {
         BetaScaleList betaScaleList = new BetaScaleList();
         List<BetaScale> list = new ArrayList<BetaScale>();
         betaScaleList.setUuid(uuid);
@@ -213,7 +238,7 @@ public class TestBetaScaleList extends TestCase {
      * Test to delete a BetaScale List.
      */
     @Test
-    private final void testDelete() {
+    public final void testDelete() {
         BetaScaleList betaScaleList = null;
 
         try {

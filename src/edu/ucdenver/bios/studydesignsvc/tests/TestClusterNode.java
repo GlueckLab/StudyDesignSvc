@@ -48,8 +48,7 @@ public class TestClusterNode extends TestCase
 	
 	/** The STUDY_UUID. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");	
-	byte[] uuid = null;	
-	ClusterNodeManager clusterNodeManager = null;
+	byte[] uuid = null;		
 	ClusterNodeResource resource = null;
 		
 	public void setUp() {
