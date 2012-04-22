@@ -24,13 +24,15 @@
 	<property environment="env"/>
 	<property name="catalina.home" value="${env.CATALINA_HOME}" />
     <property name="svcname" value="study" />
-    <property name="wardir" value="${basedir}/war" />
+	<property name="module.version" value="2.0.0" />	
+	<property name="module.name" value="edu.ucdenver.bios.studydesignsvc" />		
+	<property name="wardir" value="${basedir}/war" />
     <property name="sourcedir" value="${basedir}/../src" />
     <property name="bindir" value="${basedir}/bin" />
     <property name="wcdir" value="${basedir}/../WebContent" />
 	<property name="javastatsdir" value="${basedir}/../../JavaStatistics/build/bin" />
 	<property name="thirdpartydir" value="${basedir}/../../thirdparty" />
-	<property name="javadocdir" value="${basedir}/javadoc/StudyDesignSvc-javadoc" />
+	<property name="javadoc.dir" value="${target.dir}/javadoc/${module.name}-${module.version}-javadoc" />
 	<property name="webservicecommonlibsdir" value="${basedir}/../../WebServiceCommon/build/bin" />
 	
 	<fileset id="thirdpartylibs" dir="${thirdpartydir}">
@@ -53,16 +55,21 @@
 		
 		<include name="jackson/1.9.4/lib/jackson-all-1.9.4.jar"/>
 		<include name="gson/2.1/lib/gson-2.1.jar"/>
+		<include name="json/2.9/lib/json-20090211.jar"/>
 		<include name="junit/4.7/lib/junit-4.7.jar" />
 		<include name="log4j/1.2.15/lib/log4j-1.2.15.jar" />
 		<include name="mysql-connector-java/5.1.18/lib/mysql-connector-java-5.1.18-bin.jar"/>
 		<include name="jsc/1.0/lib/jsc.jar" />
 		
 		<include name="restlet/2.0.10/lib/org.restlet.jar" />
+		<include name="restlet/2.0.10/lib/org.restlet.ext.gwt.jar"/>
 		<include name="restlet/2.0.10/lib/org.restlet.ext.xml.jar" />
 	    <include name="restlet/2.0.10/lib/org.restlet.ext.servlet.jar" />
 		<include name="restlet/2.0.10/lib/org.restlet.ext.json.jar" />
-		<include name="restlet/2.0.10/lib/org.restlet.ext.jackson.jar" />				
+		<include name="restlet/2.0.10/lib/org.restlet.ext.jackson.jar" />
+		<include name="Jasypt/1.9.0/lib/jasypt-1.9.0.jar"/>
+		<include name="Jasypt/1.9.0/lib/jasypt-hibernate4-1.9.0.jar"/>
+		<include name="Jasypt/1.9.0/lib/icu4j-3.4.4.jar"/>
 	</fileset>
 		
 	<path id="libraries">
@@ -78,7 +85,7 @@
     <target name="clean">
         <delete dir="${wardir}"/>
         <delete dir="${bindir}"/>
-        <delete dir="${javadocdir}"/>
+        <delete dir="${javadoc.dir}"/>
     	  <delete>
     	    <fileset dir="." includes="TEST-*"/>
     	  </delete>
@@ -111,9 +118,6 @@
         </copy>
         <copy todir="${wardir}/WEB-INF/lib" flatten="true" >
             <fileset refid="thirdpartylibs" />
-        	<fileset dir="${javastatsdir}">
-                <include name="JavaStatistics.jar"/>
-            </fileset>
         	<fileset dir="${webservicecommonlibsdir}">
                 <include name="edu.ucdenver.bios.webservice.common-1.0.0.jar"/>
             </fileset>
@@ -134,10 +138,10 @@
     </target>
     
     <target name="javadoc" depends="compile" description="Generates the API specification (javadoc)">
-        <javadoc packagenames="edu.cudenver.bios.*"
+        <javadoc packagenames="edu.ucdenver.bios.*"
                  access="public"
                  classpath="${basedir}/../classes" 
-                 destdir="${javadocdir}"
+                 destdir="${javadoc.dir}}"
                  use="true"
                  author="true"
                  version="true"
@@ -146,6 +150,7 @@
              <fileset dir="${sourcedir}" defaultexcludes="yes">
                  <include name="**/*.java"/>
             </fileset>
+        	<classpath refid="libraries"/>
             <header><![CDATA[<p><b>study design service</b></p>]]></header>
             <bottom><![CDATA[<font size=1>CU Denver Biostatistic Department</font>]]></bottom>
             <link href="http://java.sun.com/javase/6/docs/api"/>
@@ -159,10 +164,20 @@
               <pathelement location="${wardir}/WEB-INF/classes"/>
             </classpath>
             <formatter type="plain" />
-  		  <test name="edu.cudenver.bios.powersvc.test.TestParsing" haltonfailure="no">
-  		  </test>
-  		  <test name="edu.cudenver.bios.powersvc.test.TestRepresentation" haltonfailure="no">
-  		  </test>
+  		    <!-- <test name="edu.ucdenver.bios.studydesignsvc.tests.TestBetaScaleList" haltonfailure="no">
+  		    </test>
+        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestBetweenParticipantFactorList" haltonfailure="no">
+        	  		  </test>
+        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestClusterNode" haltonfailure="no">
+        	  		  </test>
+        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestConfidenceInterval" haltonfailure="no">
+        	  		  </test>
+        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestCovariance" haltonfailure="no">
+        	  		  </test>
+        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestMatrix" haltonfailure="no">
+        	  		  </test>
+        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestStudyDesign" haltonfailure="no">
+  		    		  </test> -->
         </junit>
     </target>
 	<target name="deploy" description="This target moves the ${svcname}.war 
@@ -178,7 +193,7 @@
 	<target name="buildDeploy" depends="test, deploy"/>
 	<!-- Create the javadoc distribution  -->
 	<target name="javadoc-distribution" depends="javadoc">
-		<jar destfile="${bindir}/${svcname}-javadoc.jar" basedir="${javadocdir}/.." >
+		<jar destfile="${bindir}/${svcname}-javadoc.jar" basedir="${javadoc.dir}}/.." >
 			<manifest>
 				<attribute name="Author" value="Uttara Sakhadeo"/>
 				<section name="Shared">
