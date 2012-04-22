@@ -25,7 +25,7 @@ implements StudyDesignUploadRetrieveResource{
     /*
      * Called while uploading a Study Design.
      */
-    @Post
+    @Post("application/json")
     public StudyDesign upload(StudyDesign studyDesign)
     {
         StudyDesignManager studyDesignManager = null;
@@ -85,7 +85,7 @@ implements StudyDesignUploadRetrieveResource{
         return studyDesign;
     }
     
-    @Get
+    @Get("application/json")
     public StudyDesignList retrieve()
     {
         studyDesignManager = null;

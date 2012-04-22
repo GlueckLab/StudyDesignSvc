@@ -22,6 +22,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.List;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -31,264 +33,201 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.SigmaScaleManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
 import edu.ucdenver.bios.webservice.common.domain.SigmaScaleList;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
- * Server Resource class for handling requests for the Sigma Scale object. 
- * See the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling requests for the Sigma Scale object. See
+ * the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-public class SigmaScaleServerResource extends ServerResource
-implements SigmaScaleResource
-{
-	SigmaScaleManager sigmaScaleManager = null; 
-	StudyDesignManager studyDesignManager = null;
-	boolean uuidFlag;
-
-	/**
-     * Retrieve a SigmaScale object for specified UUID.
+public class SigmaScaleServerResource extends ServerResource implements
+        SigmaScaleResource {
+    /**
+     * Retrieves the SigmaScaleList.
      * 
-     * @param byte[]
-     * @return SigmaScaleList
+     * @param uuid
+     *            the uuid
+     * @return the sigma scale list
      */
-	@Get("json")
-	public SigmaScaleList retrieve(byte[] uuid) 
-	{
-		SigmaScaleList sigmaScaleList = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					StudyDesign studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						sigmaScaleList = new SigmaScaleList(studyDesign.getSigmaScaleList());					
-            	}				
-			studyDesignManager.commit();					
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(sigmaScaleManager!=null)
-			{
-				try
-				{sigmaScaleManager.rollback();}				
-				catch(BaseManagerException re)
-				{sigmaScaleList = null;}				
-			}
-			sigmaScaleList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {sigmaScaleList = null;}					
-			}
-			sigmaScaleList = null;
-		}								
-		return sigmaScaleList;
-	}
-
-	/**
-     * Create a SigmaScale object for specified UUID.
-     * 
-     * @param byte[]
-     * @param SigmaScaleList
-     * @return SigmaScaleList
-     */
-	@Post("json")
-	public SigmaScaleList create(SigmaScaleList sigmaScaleList) 
-	{		
-		StudyDesign studyDesign =null;
-		byte[] uuid = sigmaScaleList.getUuid();
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();				
-				uuidFlag = studyDesignManager.hasUUID(uuid);				
-				if(uuidFlag)
-            	{
-					studyDesign = studyDesignManager.get(uuid);					
-				}																									            				
-				else
-				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-						"no study design UUID specified");}
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing SigmaScale for this object 
-			 * ----------------------------------------------------*/			
-			if(sigmaScaleList!=null)
-				removeFrom(studyDesign);	
-			/* ----------------------------------------------------
-			 * Save new SigmaScale List object 
-			 * ----------------------------------------------------*/
-			if(uuidFlag)
-			{
-				studyDesign.setSigmaScaleList(sigmaScaleList.getSigmaScaleList());
-				studyDesignManager = new StudyDesignManager();
-				studyDesignManager.beginTransaction();
-					studyDesignManager.saveOrUpdate(studyDesign, false);
-				studyDesignManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(sigmaScaleManager!=null)
-			{
-				try
-				{sigmaScaleManager.rollback();}				
-				catch(BaseManagerException re)
-				{sigmaScaleList = null;}				
-			}
-			sigmaScaleList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {sigmaScaleList = null;}					
-			}
-			sigmaScaleList = null;
-		}								
-		return sigmaScaleList;
-	}
-
-	/**
-     * Update a SigmaScale object for specified UUID.
-     * 
-     * @param byte[]
-     * @param SigmaScaleList
-     * @return SigmaScaleList
-     */
-	@Put("json")
-	public SigmaScaleList update(SigmaScaleList sigmaScaleList) 
-	{
-		return create(sigmaScaleList);
-	}
-
-	/**
-     * Delete a SigmaScale object for specified UUID.
-     * 
-     * @param byte[]
-     * @return SigmaScaleList
-     */
-	@Delete("json")
-	public SigmaScaleList remove(byte[] uuid) 
-	{
-		SigmaScaleList sigmaScaleList = null;
-		StudyDesign studyDesign = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						sigmaScaleList = new SigmaScaleList(studyDesign.getSigmaScaleList());
-					if(sigmaScaleList.getSigmaScaleList().isEmpty())
-						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no SigmaScale is specified");					
-            	}				
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing SigmaScale objects for this object 
-			 * ----------------------------------------------------*/
-			if(studyDesign.getSigmaScaleList()!=null)
-			{
-				sigmaScaleManager = new SigmaScaleManager();
-				sigmaScaleManager.beginTransaction();
-					sigmaScaleList = new SigmaScaleList(sigmaScaleManager.delete(uuid,sigmaScaleList.getSigmaScaleList()));
-				sigmaScaleManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(sigmaScaleManager!=null)
-			{
-				try
-				{sigmaScaleManager.rollback();}				
-				catch(BaseManagerException re)
-				{sigmaScaleList = null;}				
-			}
-			sigmaScaleList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {sigmaScaleList = null;}					
-			}
-			sigmaScaleList = null;
-		}		
-		return sigmaScaleList;
-	}
-
-	/**
-     * Delete a SigmaScale object for specified Study Design.
-     * 
-     * @param StudyDesign
-     * @return SigmaScaleList
-     */
-	public SigmaScaleList removeFrom(StudyDesign studyDesign) 
-	{
-		SigmaScaleList sigmaScaleList = null;	
-        try
-        {                    			
-        	sigmaScaleManager = new SigmaScaleManager();
-        	sigmaScaleManager.beginTransaction();
-        		sigmaScaleList=new SigmaScaleList(sigmaScaleManager.delete(studyDesign.getUuid(),studyDesign.getSigmaScaleList()));
-        	sigmaScaleManager.commit();        	       
+    @Get("application/json")
+    public final SigmaScaleList retrieve(final byte[] uuid) {
+        SigmaScaleManager sigmaScaleManager = null;
+        SigmaScaleList sigmaScaleList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
         }
-        catch (BaseManagerException bme)
-        {
-        	System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
-            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
-            if (sigmaScaleManager != null) try { sigmaScaleManager.rollback(); } catch (BaseManagerException e) {}
-            sigmaScaleList = null;           
+        /*
+         * Check : length of uuid.
+         */
+
+        try {
+            /*
+             * Delete SigmaScale list.
+             */
+            sigmaScaleManager = new SigmaScaleManager();
+            sigmaScaleManager.beginTransaction();
+            sigmaScaleList = sigmaScaleManager.retrieve(uuid);
+            sigmaScaleManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (sigmaScaleManager != null) {
+                try {
+                    sigmaScaleManager.rollback();
+                } catch (BaseManagerException re) {
+                    sigmaScaleList = null;
+                }
+            }
+            sigmaScaleList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (sigmaScaleManager != null) {
+                try {
+                    sigmaScaleManager.rollback();
+                } catch (BaseManagerException re) {
+                    sigmaScaleList = null;
+                }
+            }
+            sigmaScaleList = null;
         }
-       return sigmaScaleList;
-	}
+        return sigmaScaleList;
+    }
+
+    /**
+     * Creates the SigmaScaleList.
+     * 
+     * @param sigmaScaleList
+     *            the sigma scale list
+     * @return the sigma scale list
+     */
+    @Post("application/json")
+    public final SigmaScaleList create(SigmaScaleList sigmaScaleList) {
+        SigmaScaleManager sigmaScaleManager = null;
+        byte[] uuid = sigmaScaleList.getUuid();
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        /*
+         * Check : empty SigmaScale list.
+         */
+        List<SigmaScale> list = sigmaScaleList.getSigmaScaleList();
+        if (list == null || list.isEmpty()) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Beta Scale specified");
+        }
+        try {
+            /*
+             * Save SigmaScale list.
+             */
+            sigmaScaleManager = new SigmaScaleManager();
+            sigmaScaleManager.beginTransaction();
+            sigmaScaleList = sigmaScaleManager.saveOrUpdate(sigmaScaleList,
+                    true);
+            sigmaScaleManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (sigmaScaleManager != null) {
+                try {
+                    sigmaScaleManager.rollback();
+                } catch (BaseManagerException re) {
+                    sigmaScaleList = null;
+                }
+            }
+            sigmaScaleList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (sigmaScaleManager != null) {
+                try {
+                    sigmaScaleManager.rollback();
+                } catch (BaseManagerException re) {
+                    sigmaScaleList = null;
+                }
+            }
+            sigmaScaleList = null;
+        }
+        return sigmaScaleList;
+    }
+
+    /**
+     * Updates the SigmaScaleList.
+     * 
+     * @param sigmaScaleList
+     *            the sigma scale list
+     * @return the sigma scale list
+     */
+    @Put("application/json")
+    public final SigmaScaleList update(final SigmaScaleList sigmaScaleList) {
+        return create(sigmaScaleList);
+    }
+
+    /**
+     * Removes the SigmaScaleList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the sigma scale list
+     */
+    @Delete("application/json")
+    public final SigmaScaleList remove(final byte[] uuid) {
+        SigmaScaleManager sigmaScaleManager = null;
+        SigmaScaleList sigmaScaleList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        try {
+            /*
+             * Delete SigmaScale list.
+             */
+            sigmaScaleManager = new SigmaScaleManager();
+            sigmaScaleManager.beginTransaction();
+            sigmaScaleList = sigmaScaleManager.delete(uuid);
+            sigmaScaleManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (sigmaScaleManager != null) {
+                try {
+                    sigmaScaleManager.rollback();
+                } catch (BaseManagerException re) {
+                    sigmaScaleList = null;
+                }
+            }
+            sigmaScaleList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (sigmaScaleManager != null) {
+                try {
+                    sigmaScaleManager.rollback();
+                } catch (BaseManagerException re) {
+                    sigmaScaleList = null;
+                }
+            }
+            sigmaScaleList = null;
+        }
+        return sigmaScaleList;
+    }
+
 }

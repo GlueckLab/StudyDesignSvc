@@ -33,6 +33,7 @@ import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
@@ -49,8 +50,8 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 /**
  * The Class BetweenParticipantServerResource.
  */
-public class BetweenParticipantServerResource implements
-        BetweenParticipantResource {
+public class BetweenParticipantServerResource extends ServerResource
+implements BetweenParticipantResource {
 
     /** The category manager. */
     private CategoryManager categoryManager = null;

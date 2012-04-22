@@ -338,16 +338,18 @@ public class HypothesisServerResource extends ServerResource implements
         HypothesisManager hypothesisManager = null;
         StudyDesignManager studyDesignManager = null;
         StudyDesign studyDesign = null;
-        boolean uuidFlag;
+        boolean uuidFlag = false;
         Hypothesis hypothesis = uuidHypothesis.getHypothesis();
         byte[] uuid = uuidHypothesis.getUuid();
         HypothesisTypeEnum type = hypothesis.getType();
-        if (uuid == null)
+        if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
-        if (hypothesis == null)
+        }
+        if (hypothesis == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no Hypothesis specified");
+        }
         try {
             /*
              * ---------------------------------------------------- Check for
@@ -355,12 +357,12 @@ public class HypothesisServerResource extends ServerResource implements
              * ----------------------------------------------------
              */
             studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
+            studyDesignManager.beginTransaction();            
                 studyDesign = studyDesignManager.get(uuid);
-            } else {
-                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                if(studyDesign != null)
+                    uuidFlag = true;
+                else {
+                    throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                         "no study design UUID specified");
             }
             studyDesignManager.commit();

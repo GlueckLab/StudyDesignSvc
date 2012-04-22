@@ -29,69 +29,55 @@ import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
 
+// TODO: Auto-generated Javadoc
 /**
  * Generic Resource class for handling requests for the domain objects of a Type
  * I Error object. See the StudyDesignApplication class for URI mappings
- *
+ * 
  * @author Uttara Sakhadeo
  */
 public interface TypeIErrorResource {
 
     /**
-     * Retrieve the object for the specified UUID. Returns "not found" if no
-     * matching Object is available.
-     *
+     * Retrieves the TypeIErrorList.
+     * 
      * @param uuid
      *            the uuid
-     * @return Object for specified UUID
+     * @return the type i error list
      */
-    @Get
+    @Get("application/json")
     TypeIErrorList retrieve(byte[] uuid);
 
     /**
-     * Store TypeIErrorList object to the database.
-     *
-     * @param uuid
-     *            the uuid
+     * Creates the TypeIErrorList.
+     * 
      * @param typeIErrorList
      *            the type i error list
-     * @return updated Object.
+     * @return the type i error list
      */
-    @Post
+    @Post("application/json")
     TypeIErrorList create(TypeIErrorList typeIErrorList);
 
     /**
-     * Update the specified object. If there is no object set for specified
-     * UUID ,  then this object will be treated as new and a UUID assigned.
-     *
-     * @param uuid
-     *            the uuid
+     * Updates the TypeIErrorList.
+     * 
      * @param typeIErrorList
      *            the type i error list
-     * @return TypeIErrorList
+     * @return the type i error list
      */
-    @Put
+    @Put("application/json")
     TypeIErrorList update(TypeIErrorList typeIErrorList);
 
     /**
-     * Delete the TypeIErrorList object with the specified UUID.
-     *
+     * Removes the TypeIErrorList.
+     * 
      * @param uuid
-     *            of the object to remove
-     * @return the deleted object
+     *            the uuid
+     * @return the type i error list
      */
-    @Delete
+    @Delete("application/json")
     TypeIErrorList remove(byte[] uuid);
 
-    /**
-     * Delete the TypeIErrorList object with the specified UUID.
-     *
-     * @param studyDesign
-     *            from which object is to be removed
-     * @return the deleted object
-     */
-    TypeIErrorList removeFrom(StudyDesign studyDesign);
 }

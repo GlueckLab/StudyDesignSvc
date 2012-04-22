@@ -38,25 +38,7 @@ import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.studydesignsvc.manager.BetaScaleManager;
-import edu.ucdenver.bios.studydesignsvc.manager.BetweenParticipantFactorManager;
-import edu.ucdenver.bios.studydesignsvc.manager.ClusterNodeManager;
-import edu.ucdenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
-import edu.ucdenver.bios.studydesignsvc.manager.CovarianceManager;
-import edu.ucdenver.bios.studydesignsvc.manager.HypothesisManager;
-import edu.ucdenver.bios.studydesignsvc.manager.MatrixManager;
-import edu.ucdenver.bios.studydesignsvc.manager.NominalPowerManager;
-import edu.ucdenver.bios.studydesignsvc.manager.PowerCurveManager;
-import edu.ucdenver.bios.studydesignsvc.manager.PowerMethodManager;
-import edu.ucdenver.bios.studydesignsvc.manager.QuantileManager;
-import edu.ucdenver.bios.studydesignsvc.manager.RelativeGroupSizeManager;
-import edu.ucdenver.bios.studydesignsvc.manager.RepeatedMeasuresManager;
-import edu.ucdenver.bios.studydesignsvc.manager.ResponsesManager;
-import edu.ucdenver.bios.studydesignsvc.manager.SampleSizeManager;
-import edu.ucdenver.bios.studydesignsvc.manager.SigmaScaleManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StatisticalTestManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.studydesignsvc.manager.TypeIErrorManager;
 import edu.ucdenver.bios.webservice.common.domain.BetaScale;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
@@ -206,10 +188,10 @@ implements StudyDesignResource
 		 * Lists
 		 */
     		/** The alpha list. */
-    	    /*List<TypeIError> alphaList = null;*/
+    	    List<TypeIError> alphaList = null;
     
     	    /** The beta scale list. */
-    	    /*List<BetaScale> betaScaleList = null;*/
+    	    List<BetaScale> betaScaleList = null;
     
     	    /** The sigma scale list. */
     	    List<SigmaScale> sigmaScaleList = null;
@@ -274,11 +256,11 @@ implements StudyDesignResource
                 /*BetaScaleManager betaScaleManager = new BetaScaleManager();
                 if(studyDesign.getBetaScaleList()!=null){
                     betaScaleManager.beginTransaction();      
-                        betaScaleList = betaScaleManager.delete(uuid,studyDesign.getBetaScaleList());
+                        betaScaleList = betaScaleManager.delete(uuid);
                     betaScaleManager.commit();
                 }*/
                 
-                SigmaScaleManager sigmaScaleManager = new SigmaScaleManager();
+                /*SigmaScaleManager sigmaScaleManager = new SigmaScaleManager();
                 if(studyDesign.getSigmaScaleList()!=null){
                     sigmaScaleManager.beginTransaction();      
                         sigmaScaleList = sigmaScaleManager.delete(uuid,studyDesign.getSigmaScaleList());
@@ -292,12 +274,12 @@ implements StudyDesignResource
                     sampleSizeManager.commit();
                 }
                 
-                /*TypeIErrorManager typeIErrorManager = new TypeIErrorManager();
+                TypeIErrorManager typeIErrorManager = new TypeIErrorManager();
                 if(studyDesign.getAlphaList()!=null){
                     typeIErrorManager.beginTransaction();      
                         alphaList = typeIErrorManager.delete(uuid,studyDesign.getAlphaList());
                     typeIErrorManager.commit();
-                }*/
+                }
                 
                 StatisticalTestManager statisticalTestManager = new StatisticalTestManager();
                 if(studyDesign.getStatisticalTestList()!=null){
@@ -339,79 +321,79 @@ implements StudyDesignResource
                     powerMethodManager.beginTransaction();      
                         powerMethodList=powerMethodManager.delete(uuid,studyDesign.getPowerMethodList());
                     powerMethodManager.commit();
-                }
+                }*/
             /*
              * Matrix
              */
-                MatrixManager matrixManager = new MatrixManager();
+                /*MatrixManager matrixManager = new MatrixManager();
                 if(studyDesign.getMatrixSet()!=null){
                     matrixManager.beginTransaction();      
                         matrixSet=matrixManager.delete(uuid,studyDesign.getMatrixSet());
                     matrixManager.commit();
-                }
+                }*/
             /*
              * Confidence Interval Description
              */
-                ConfidenceIntervalManager confidenceIntervalManager = new ConfidenceIntervalManager();
+                /*ConfidenceIntervalManager confidenceIntervalManager = new ConfidenceIntervalManager();
                 if(studyDesign.getConfidenceIntervalDescriptions()!=null){
                     confidenceIntervalManager.beginTransaction();      
                         confidenceIntervalDescriptions=confidenceIntervalManager.delete(uuid,studyDesign.getConfidenceIntervalDescriptions());
                     confidenceIntervalManager.commit();
-                }
+                }*/
             /*
              * Power Curve Description
              */
-                PowerCurveManager powerCurveManager = new PowerCurveManager();
+                /*PowerCurveManager powerCurveManager = new PowerCurveManager();
                 if(studyDesign.getPowerCurveDescriptions()!=null){
                     powerCurveManager.beginTransaction();      
                         powerCurveDescriptions=powerCurveManager.delete(uuid,studyDesign.getPowerCurveDescriptions());
                     powerCurveManager.commit();
-                }
+                }*/
             /*
              * Clustering
              */
-                ClusterNodeManager clusterNodeManager = new ClusterNodeManager();
+                /*ClusterNodeManager clusterNodeManager = new ClusterNodeManager();
                 if(studyDesign.getClusteringTree()!=null){
                     clusterNodeManager.beginTransaction();      
                         clusteringTree=clusterNodeManager.delete(uuid,studyDesign.getClusteringTree());
                     clusterNodeManager.commit();
-                }            
+                }*/            
             /*
              * Covariance
              */
-                CovarianceManager covarianceManager = new CovarianceManager();
+                /*CovarianceManager covarianceManager = new CovarianceManager();
                 if(studyDesign.getCovariance()!=null){
                     covarianceManager.beginTransaction();      
                         covariance=covarianceManager.delete(uuid,studyDesign.getCovariance());
                     covarianceManager.commit();
-                }
+                }*/
             /*
              * Repeated Measures
              */
-                RepeatedMeasuresManager repeatedMeasuresManager = new RepeatedMeasuresManager();
+                /*RepeatedMeasuresManager repeatedMeasuresManager = new RepeatedMeasuresManager();
                 if(studyDesign.getRepeatedMeasuresTree()!=null){
                     repeatedMeasuresManager.beginTransaction();      
                         repeatedMeasuresTree=repeatedMeasuresManager.delete(uuid,studyDesign.getRepeatedMeasuresTree());
                     repeatedMeasuresManager.commit();
-                }
+                }*/
             /*
              * Between Participant Factor
              */
-                BetweenParticipantFactorManager betweenParticipantFactorManager = new BetweenParticipantFactorManager();
+                /*BetweenParticipantFactorManager betweenParticipantFactorManager = new BetweenParticipantFactorManager();
                 if(studyDesign.getBetweenParticipantFactorList()!=null){
                     betweenParticipantFactorManager.beginTransaction();      
                         betweenParticipantFactorList=betweenParticipantFactorManager.delete(uuid,studyDesign.getBetweenParticipantFactorList());
                     betweenParticipantFactorManager.commit();
-                }
+                }*/
             /*
              * Hypothesis
              */
-                HypothesisManager hypothesisManager = new HypothesisManager();
+                /*HypothesisManager hypothesisManager = new HypothesisManager();
                 if(studyDesign.getHypothesis()!=null){
                     hypothesisManager.beginTransaction();      
                         hypothesis=hypothesisManager.delete(uuid,studyDesign.getHypothesis());
                     hypothesisManager.commit();
-                }
+                }*/
             /*
              * Study Design
              */    
@@ -423,10 +405,10 @@ implements StudyDesignResource
             /*
              * Set Lists to the study Design
              */
-                //studyDesign.setBetaScaleList(betaScaleList);
+                studyDesign.setBetaScaleList(betaScaleList);
                 studyDesign.setSampleSizeList(sampleSizeList);
                 studyDesign.setSigmaScaleList(sigmaScaleList);
-                //studyDesign.setAlphaList(alphaList);
+                studyDesign.setAlphaList(alphaList);
                 studyDesign.setNominalPowerList(nominalPowerList);
                 studyDesign.setPowerMethodList(powerMethodList);
                 studyDesign.setRelativeGroupSizeList(relativeGroupSizeList);

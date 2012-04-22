@@ -30,6 +30,7 @@ import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
@@ -45,7 +46,8 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  *
  * @author Uttara Sakhadeo
  */
-public class ClusterNodeServerResource implements ClusterNodeResource {
+public class ClusterNodeServerResource extends ServerResource 
+implements ClusterNodeResource {
     /** The cluster node manager. */
     private ClusterNodeManager clusterNodeManager = null;
 

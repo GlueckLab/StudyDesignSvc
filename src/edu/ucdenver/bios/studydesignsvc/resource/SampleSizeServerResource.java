@@ -22,6 +22,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.List;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -31,11 +33,9 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.SampleSizeManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.domain.SampleSize;
 import edu.ucdenver.bios.webservice.common.domain.SampleSizeList;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
@@ -47,249 +47,187 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 public class SampleSizeServerResource extends ServerResource 
 implements SampleSizeResource
 {
-    SampleSizeManager sampleSizeManager = null; 
-    StudyDesignManager studyDesignManager = null;
-    boolean uuidFlag;
-
     /**
-     * Retrieve a SampleSize object for specified UUID.
+     * Retrieves the SampleSizeList.
      * 
-     * @param byte[]
-     * @return SampleSizeList
+     * @param uuid
+     *            the uuid
+     * @return the sample size list
      */
-    @Get("json")
-    public SampleSizeList retrieve(byte[] uuid) 
-    {
+    @Get("application/json")
+    public final SampleSizeList retrieve(final byte[] uuid) {
+        SampleSizeManager sampleSizeManager = null;
         SampleSizeList sampleSizeList = null;
-        if(uuid==null)
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-                    "no study design UUID specified");      
-        try
-        {
-            /* ----------------------------------------------------
-             * Check for existence of a UUID in Study Design object 
-             * ----------------------------------------------------*/
-            studyDesignManager = new StudyDesignManager();          
-            studyDesignManager.beginTransaction();                              
-                uuidFlag = studyDesignManager.hasUUID(uuid);
-                if(uuidFlag)
-                {       
-                    StudyDesign studyDesign = studyDesignManager.get(uuid);
-                    if(studyDesign!=null)
-                        sampleSizeList = new SampleSizeList(studyDesign.getSampleSizeList());                   
-                }               
-            studyDesignManager.commit();                    
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
         }
-        catch (BaseManagerException bme)
-        {
+        /*
+         * Check : length of uuid.
+         */
+        
+        try {
+            /*
+             * Delete SampleSize list.
+             */
+            sampleSizeManager = new SampleSizeManager();
+            sampleSizeManager.beginTransaction();
+            sampleSizeList = sampleSizeManager.retrieve(uuid);
+            sampleSizeManager.commit();
+
+        } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
             StudyDesignLogger.getInstance().error(bme.getMessage());
-            if(sampleSizeManager!=null)
-            {
-                try
-                {sampleSizeManager.rollback();}               
-                catch(BaseManagerException re)
-                {sampleSizeList = null;}              
+            if (sampleSizeManager != null) {
+                try {
+                    sampleSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    sampleSizeList = null;
+                }
             }
             sampleSizeList = null;
-        }   
-        catch(StudyDesignException sde)
-        {
-            System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error(sde.getMessage());
-            if(studyDesignManager!=null)
-            {
-                try {studyDesignManager.rollback();}
-                catch(BaseManagerException re) {sampleSizeList = null;}                   
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (sampleSizeManager != null) {
+                try {
+                    sampleSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    sampleSizeList = null;
+                }
             }
             sampleSizeList = null;
-        }                               
+        }
         return sampleSizeList;
     }
 
     /**
-     * Create a SampleSize object for specified UUID.
+     * Creates the SampleSizeList.
      * 
-     * @param byte[]
-     * @param SampleSizeList
-     * @return SampleSizeList
+     * @param list
+     *            the list
+     * @return the sample size list
      */
-    @Post("json")
-    public SampleSizeList create(SampleSizeList sampleSizeList) 
-    {       
-        StudyDesign studyDesign =null;
+    @Post("application/json")
+    public final SampleSizeList create(SampleSizeList sampleSizeList) {
+        SampleSizeManager sampleSizeManager = null;
         byte[] uuid = sampleSizeList.getUuid();
-        if(uuid==null)
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-                    "no study design UUID specified");      
-        try
-        {
-            /* ----------------------------------------------------
-             * Check for existence of a UUID in Study Design object 
-             * ----------------------------------------------------*/
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();              
-                uuidFlag = studyDesignManager.hasUUID(uuid);                
-                if(uuidFlag)
-                {
-                    studyDesign = studyDesignManager.get(uuid);                 
-                }                                                                                                                               
-                else
-                {throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-                        "no study design UUID specified");}
-            studyDesignManager.commit();
-            /* ----------------------------------------------------
-             * Remove existing SampleSize for this object 
-             * ----------------------------------------------------*/           
-            if(uuidFlag && studyDesign.getSampleSizeList()!=null)
-                removeFrom(studyDesign);    
-            /* ----------------------------------------------------
-             * Save new SampleSize List object 
-             * ----------------------------------------------------*/
-            if(uuidFlag)
-            {
-                studyDesign.setSampleSizeList(sampleSizeList.getSampleSizeList());
-                studyDesignManager = new StudyDesignManager();
-                studyDesignManager.beginTransaction();
-                    studyDesignManager.saveOrUpdate(studyDesign, false);
-                studyDesignManager.commit();
-            }
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
         }
-        catch (BaseManagerException bme)
-        {
+        /*
+         * Check : empty SampleSize list.
+         */
+        List<SampleSize> list = sampleSizeList.getSampleSizeList();
+        if (list == null || list.isEmpty()) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Beta Scale specified");
+        }
+        try {
+        /*
+         * Save SampleSize list.
+         */
+        sampleSizeManager = new SampleSizeManager();
+        sampleSizeManager.beginTransaction();
+            sampleSizeList = sampleSizeManager.saveOrUpdate(sampleSizeList, true);
+        sampleSizeManager.commit();
+
+        } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
             StudyDesignLogger.getInstance().error(bme.getMessage());
-            if(sampleSizeManager!=null)
-            {
-                try
-                {sampleSizeManager.rollback();}               
-                catch(BaseManagerException re)
-                {sampleSizeList = null;}              
+            if (sampleSizeManager != null) {
+                try {
+                    sampleSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    sampleSizeList = null;
+                }
             }
             sampleSizeList = null;
-        }   
-        catch(StudyDesignException sde)
-        {
-            System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error(sde.getMessage());
-            if(studyDesignManager!=null)
-            {
-                try {studyDesignManager.rollback();}
-                catch(BaseManagerException re) {sampleSizeList = null;}                   
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (sampleSizeManager != null) {
+                try {
+                    sampleSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    sampleSizeList = null;
+                }
             }
             sampleSizeList = null;
-        }                               
+        }
         return sampleSizeList;
     }
 
     /**
-     * Update a SampleSize object for specified UUID.
+     * Updates the SampleSizeList.
      * 
-     * @param byte[]
-     * @param SampleSizeList
-     * @return SampleSizeList
+     * @param list
+     *            the list
+     * @return the sample size list
      */
-    @Put("json")
-    public SampleSizeList update(SampleSizeList sampleSizeList) 
-    {
+    @Put("application/json")
+    public final SampleSizeList update(final SampleSizeList sampleSizeList) {
         return create(sampleSizeList);
     }
 
     /**
-     * Delete a SampleSize object for specified UUID.
+     * Removes the SampleSizeList.
      * 
-     * @param byte[]
-     * @return SampleSizeList
+     * @param uuid
+     *            the uuid
+     * @return the sample size list
      */
-    @Delete("json")
-    public SampleSizeList remove(byte[] uuid) 
-    {
+    @Delete("application/json")
+    public final SampleSizeList remove(final byte[] uuid) {
+        SampleSizeManager sampleSizeManager = null;
         SampleSizeList sampleSizeList = null;
-        StudyDesign studyDesign = null;
-        if(uuid==null)
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-                    "no study design UUID specified");      
-        try
-        {
-            /* ----------------------------------------------------
-             * Check for existence of a UUID in Study Design object 
-             * ----------------------------------------------------*/
-            studyDesignManager = new StudyDesignManager();          
-            studyDesignManager.beginTransaction();                              
-                uuidFlag = studyDesignManager.hasUUID(uuid);
-                if(uuidFlag)
-                {       
-                    studyDesign = studyDesignManager.get(uuid);
-                    if(studyDesign!=null)
-                        sampleSizeList = new SampleSizeList(studyDesign.getSampleSizeList());
-                    if(sampleSizeList.getSampleSizeList().isEmpty())
-                        throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-                                "no SampleSize is specified");                    
-                }               
-            studyDesignManager.commit();
-            /* ----------------------------------------------------
-             * Remove existing SampleSize objects for this object 
-             * ----------------------------------------------------*/
-            if(studyDesign.getQuantileList()!=null)
-            {
-                sampleSizeManager = new SampleSizeManager();
-                sampleSizeManager.beginTransaction();
-                    sampleSizeList = new SampleSizeList(sampleSizeManager.delete(uuid,sampleSizeList.getSampleSizeList()));
-                sampleSizeManager.commit();
-            }
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
         }
-        catch (BaseManagerException bme)
-        {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if(sampleSizeManager!=null)
-            {
-                try
-                {sampleSizeManager.rollback();}               
-                catch(BaseManagerException re)
-                {sampleSizeList = null;}             
-            }
-            sampleSizeList = null;
-        }   
-        catch(StudyDesignException sde)
-        {
-            System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error(sde.getMessage());
-            if(studyDesignManager!=null)
-            {
-                try {studyDesignManager.rollback();}
-                catch(BaseManagerException re) {sampleSizeList = null;}                   
-            }
-            sampleSizeList = null;
-        }       
-        return sampleSizeList;
-    }
-
-    /**
-     * Delete a SampleSize object for specified Study Design.
-     * 
-     * @param StudyDesign
-     * @return SampleSizeList
-     */
-    public SampleSizeList removeFrom(StudyDesign studyDesign) 
-    {
-        SampleSizeList sampleSizeList = null; 
-        try
-        {                               
+        try {
+            /*
+             * Delete SampleSize list.
+             */
             sampleSizeManager = new SampleSizeManager();
             sampleSizeManager.beginTransaction();
-                sampleSizeList=new SampleSizeList(sampleSizeManager.delete(studyDesign.getUuid(),studyDesign.getSampleSizeList()));
-            sampleSizeManager.commit();                  
-        }
-        catch (BaseManagerException bme)
-        {
+            sampleSizeList = sampleSizeManager.delete(uuid);
+            sampleSizeManager.commit();
+
+        } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
-            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
-            if (sampleSizeManager != null) try { sampleSizeManager.rollback(); } catch (BaseManagerException e) {}
-            sampleSizeList = null;           
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (sampleSizeManager != null) {
+                try {
+                    sampleSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    sampleSizeList = null;
+                }
+            }
+            sampleSizeList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (sampleSizeManager != null) {
+                try {
+                    sampleSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    sampleSizeList = null;
+                }
+            }
+            sampleSizeList = null;
         }
-       return sampleSizeList;
+        return sampleSizeList;
     }
 
 }

@@ -22,6 +22,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.List;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -31,264 +33,200 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.QuantileManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.domain.Quantile;
 import edu.ucdenver.bios.webservice.common.domain.QuantileList;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
- * Server Resource class for handling requests for the Quantile object. 
- * See the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling requests for the Quantile object. See the
+ * StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-public class QuantileServerResource  extends ServerResource
-implements QuantileResource
-{
-	QuantileManager quantileManager = null; 
-	StudyDesignManager studyDesignManager = null;
-	boolean uuidFlag;
-
-	/**
-     * Retrieve a Quantile object for specified UUID.
+public class QuantileServerResource extends ServerResource implements
+        QuantileResource {
+    /**
+     * Retrieves the QuantileList.
      * 
-     * @param byte[]
-     * @return QuantileList
+     * @param uuid
+     *            the uuid
+     * @return the quantile list
      */
-	@Get("application/json")
-	public QuantileList retrieve(byte[] uuid) 
-	{
-		QuantileList quantileList = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					StudyDesign studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						quantileList = new QuantileList(studyDesign.getQuantileList());					
-            	}				
-			studyDesignManager.commit();					
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(quantileManager!=null)
-			{
-				try
-				{quantileManager.rollback();}				
-				catch(BaseManagerException re)
-				{quantileList = null;}				
-			}
-			quantileList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {quantileList = null;}					
-			}
-			quantileList = null;
-		}								
-		return quantileList;
-	}
-
-	/**
-     * Create a Quantile object for specified UUID.
-     * 
-     * @param byte[]
-     * @param QuantileList
-     * @return QuantileList
-     */
-	@Post("application/json")
-	public QuantileList create(QuantileList quantileList) 
-	{		
-		StudyDesign studyDesign =null;
-		byte[] uuid = quantileList.getUuid();
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();				
-				uuidFlag = studyDesignManager.hasUUID(uuid);				
-				if(uuidFlag)
-            	{
-					studyDesign = studyDesignManager.get(uuid);					
-				}																									            				
-				else
-				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-						"no study design UUID specified");}
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing Quantile for this object 
-			 * ----------------------------------------------------*/			
-			 if(uuidFlag && studyDesign.getQuantileList()!=null)
-				removeFrom(studyDesign);	
-			/* ----------------------------------------------------
-			 * Save new Quantile List object 
-			 * ----------------------------------------------------*/
-			if(uuidFlag)
-			{
-				studyDesign.setQuantileList(quantileList.getQuantileList());
-				studyDesignManager = new StudyDesignManager();
-				studyDesignManager.beginTransaction();
-					studyDesignManager.saveOrUpdate(studyDesign, false);
-				studyDesignManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(quantileManager!=null)
-			{
-				try
-				{quantileManager.rollback();}				
-				catch(BaseManagerException re)
-				{quantileList = null;}				
-			}
-			quantileList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {quantileList = null;}					
-			}
-			quantileList = null;
-		}								
-		return quantileList;
-	}
-
-	/**
-     * Update a Quantile object for specified UUID.
-     * 
-     * @param byte[]
-     * @param QuantileList
-     * @return QuantileList
-     */
-	@Put("application/json")
-	public QuantileList update(QuantileList quantileList) 
-	{
-		return create(quantileList);
-	}
-
-	/**
-     * Delete a Quantile object for specified UUID.
-     * 
-     * @param byte[]
-     * @return QuantileList
-     */
-	@Delete("application/json")
-	public QuantileList remove(byte[] uuid) 
-	{
-		QuantileList quantileList = null;
-		StudyDesign studyDesign = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						quantileList = new QuantileList(studyDesign.getQuantileList());
-					if(quantileList.getQuantileList().isEmpty())
-						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no Quantile is specified");					
-            	}				
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing Quantile objects for this object 
-			 * ----------------------------------------------------*/
-			if(studyDesign.getQuantileList()!=null)
-			{
-				quantileManager = new QuantileManager();
-				quantileManager.beginTransaction();
-					quantileList = new QuantileList(quantileManager.delete(uuid,quantileList.getQuantileList()));
-				quantileManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(quantileManager!=null)
-			{
-				try
-				{quantileManager.rollback();}				
-				catch(BaseManagerException re)
-				{quantileList = null;}				
-			}
-			quantileList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {quantileList = null;}					
-			}
-			quantileList = null;
-		}		
-		return quantileList;
-	}
-
-	/**
-     * Delete a Quantile object for specified Study Design.
-     * 
-     * @param StudyDesign
-     * @return QuantileList
-     */
-	public QuantileList removeFrom(StudyDesign studyDesign) 
-	{
-		QuantileList quantileList = null;	
-        try
-        {                    			
-        	quantileManager = new QuantileManager();
-        	quantileManager.beginTransaction();
-        		quantileList=new QuantileList(quantileManager.delete(studyDesign.getUuid(),studyDesign.getQuantileList()));
-        	quantileManager.commit();        	       
+    @Get("application/json")
+    public final QuantileList retrieve(final byte[] uuid) {
+        QuantileManager quantileManager = null;
+        QuantileList quantileList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
         }
-        catch (BaseManagerException bme)
-        {
-        	System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
-            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
-            if (quantileManager != null) try { quantileManager.rollback(); } catch (BaseManagerException e) {}
-            quantileList = null;           
+        /*
+         * Check : length of uuid.
+         */
+
+        try {
+            /*
+             * Delete Quantile list.
+             */
+            quantileManager = new QuantileManager();
+            quantileManager.beginTransaction();
+            quantileList = quantileManager.retrieve(uuid);
+            quantileManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (quantileManager != null) {
+                try {
+                    quantileManager.rollback();
+                } catch (BaseManagerException re) {
+                    quantileList = null;
+                }
+            }
+            quantileList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (quantileManager != null) {
+                try {
+                    quantileManager.rollback();
+                } catch (BaseManagerException re) {
+                    quantileList = null;
+                }
+            }
+            quantileList = null;
         }
-       return quantileList;
-	}
+        return quantileList;
+    }
+
+    /**
+     * Creates the QuantileList.
+     * 
+     * @param quantileList
+     *            the quantile list
+     * @return the quantile list
+     */
+    @Post("application/json")
+    public final QuantileList create(QuantileList quantileList) {
+        QuantileManager quantileManager = null;
+        byte[] uuid = quantileList.getUuid();
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        /*
+         * Check : empty Quantile list.
+         */
+        List<Quantile> list = quantileList.getQuantileList();
+        if (list == null || list.isEmpty()) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Beta Scale specified");
+        }
+        try {
+            /*
+             * Save Quantile list.
+             */
+            quantileManager = new QuantileManager();
+            quantileManager.beginTransaction();
+            quantileList = quantileManager.saveOrUpdate(quantileList, true);
+            quantileManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (quantileManager != null) {
+                try {
+                    quantileManager.rollback();
+                } catch (BaseManagerException re) {
+                    quantileList = null;
+                }
+            }
+            quantileList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (quantileManager != null) {
+                try {
+                    quantileManager.rollback();
+                } catch (BaseManagerException re) {
+                    quantileList = null;
+                }
+            }
+            quantileList = null;
+        }
+        return quantileList;
+    }
+
+    /**
+     * Updates the QuantileList.
+     * 
+     * @param quantileList
+     *            the quantile list
+     * @return the quantile list
+     */
+    @Put("application/json")
+    public final QuantileList update(final QuantileList quantileList) {
+        return create(quantileList);
+    }
+
+    /**
+     * Removes the QuantileList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the quantile list
+     */
+    @Delete("application/json")
+    public final QuantileList remove(final byte[] uuid) {
+        QuantileManager quantileManager = null;
+        QuantileList quantileList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        try {
+            /*
+             * Delete Quantile list.
+             */
+            quantileManager = new QuantileManager();
+            quantileManager.beginTransaction();
+            quantileList = quantileManager.delete(uuid);
+            quantileManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (quantileManager != null) {
+                try {
+                    quantileManager.rollback();
+                } catch (BaseManagerException re) {
+                    quantileList = null;
+                }
+            }
+            quantileList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (quantileManager != null) {
+                try {
+                    quantileManager.rollback();
+                } catch (BaseManagerException re) {
+                    quantileList = null;
+                }
+            }
+            quantileList = null;
+        }
+        return quantileList;
+    }
+
 }

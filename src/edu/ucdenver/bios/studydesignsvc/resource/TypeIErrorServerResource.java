@@ -33,264 +33,202 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.studydesignsvc.manager.TypeIErrorManager;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.TypeIError;
 import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+
 /**
- * Server Resource class for handling requests for the Type I Error object. 
- * See the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling requests for the Type I Error object. See
+ * the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-public class TypeIErrorServerResource  extends ServerResource
-implements TypeIErrorResource 
-{
-	TypeIErrorManager typeIErrorManager = null; 
-	StudyDesignManager studyDesignManager = null;
-	boolean uuidFlag;
+public class TypeIErrorServerResource extends ServerResource implements
+        TypeIErrorResource {
 
-	/**
-     * Retrieve a TypeIError object for specified UUID.
+    /**
+     * Retrieves the TypeIErrorList.
      * 
-     * @param byte[]
-     * @return List<TypeIError>
+     * @param uuid
+     *            the uuid
+     * @return the type i error list
      */
-	@Get("json")
-	public TypeIErrorList retrieve(byte[] uuid) 
-	{
-	    TypeIErrorList typeIErrorList = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					StudyDesign studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						typeIErrorList = new TypeIErrorList(studyDesign.getAlphaList());					
-            	}				
-			studyDesignManager.commit();					
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(typeIErrorManager!=null)
-			{
-				try
-				{typeIErrorManager.rollback();}				
-				catch(BaseManagerException re)
-				{typeIErrorList = null;}				
-			}
-			typeIErrorList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {typeIErrorList = null;}					
-			}
-			typeIErrorList = null;
-		}								
-		return typeIErrorList;
-	}
-
-	/**
-     * Create a TypeIError object for specified UUID.
-     * 
-     * @param byte[]
-     * @param List<TypeIError>
-     * @return List<TypeIError>
-     */
-	@Post("json")
-	public TypeIErrorList create(TypeIErrorList typeIErrorList) 
-	{		
-		StudyDesign studyDesign =null;
-		byte[] uuid = typeIErrorList.getUuid();
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();				
-				uuidFlag = studyDesignManager.hasUUID(uuid);				
-				if(uuidFlag)
-            	{
-					studyDesign = studyDesignManager.get(uuid);					
-				}																									            				
-				else
-				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-						"no study design UUID specified");}
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing TypeIError for this object 
-			 * ----------------------------------------------------*/			
-			if(typeIErrorList!=null)
-				removeFrom(studyDesign);	
-			/* ----------------------------------------------------
-			 * Save new TypeIError List object 
-			 * ----------------------------------------------------*/
-			if(uuidFlag)
-			{
-				studyDesign.setAlphaList(typeIErrorList.getTypeIErrorList());
-				studyDesignManager = new StudyDesignManager();
-				studyDesignManager.beginTransaction();
-					studyDesignManager.saveOrUpdate(studyDesign, false);
-				studyDesignManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(typeIErrorManager!=null)
-			{
-				try
-				{typeIErrorManager.rollback();}				
-				catch(BaseManagerException re)
-				{typeIErrorList = null;}				
-			}
-			typeIErrorList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {typeIErrorList = null;}					
-			}
-			typeIErrorList = null;
-		}								
-		return typeIErrorList;
-	}
-
-	/**
-     * Update a TypeIError object for specified UUID.
-     * 
-     * @param byte[]
-     * @param List<TypeIError>
-     * @return List<TypeIError>
-     */
-	@Put("json")
-	public TypeIErrorList update(TypeIErrorList typeIErrorList) 
-	{
-		return create(typeIErrorList);
-	}
-
-	/**
-     * Delete a TypeIError object for specified UUID.
-     * 
-     * @param byte[]
-     * @return List<TypeIError>
-     */
-	@Delete("json")
-	public TypeIErrorList remove(byte[] uuid) 
-	{
-	    TypeIErrorList typeIErrorList = null;
-		StudyDesign studyDesign = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						typeIErrorList = new TypeIErrorList(studyDesign.getAlphaList());
-					if(typeIErrorList.getTypeIErrorList().isEmpty())
-						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no TypeIError is specified");					
-            	}				
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing TypeIError objects for this object 
-			 * ----------------------------------------------------*/
-			if(studyDesign.getAlphaList()!=null)
-			{
-				typeIErrorManager = new TypeIErrorManager();
-				typeIErrorManager.beginTransaction();
-					typeIErrorList = new TypeIErrorList(typeIErrorManager.delete(uuid,typeIErrorList.getTypeIErrorList()));
-				typeIErrorManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(typeIErrorManager!=null)
-			{
-				try
-				{typeIErrorManager.rollback();}				
-				catch(BaseManagerException re)
-				{typeIErrorList = null;}				
-			}
-			typeIErrorList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {typeIErrorList = null;}					
-			}
-			typeIErrorList = null;
-		}		
-		return typeIErrorList;
-	}
-
-	/**
-     * Delete a TypeIError object for specified Study Design.
-     * 
-     * @param StudyDesign
-     * @return List<TypeIError>
-     */
-	public TypeIErrorList removeFrom(StudyDesign studyDesign) 
-	{
-	    TypeIErrorList typeIErrorList = null;	
-        try
-        {                    			
-        	typeIErrorManager = new TypeIErrorManager();
-        	typeIErrorManager.beginTransaction();
-        		typeIErrorList=new TypeIErrorList(typeIErrorManager.delete(studyDesign.getUuid(),studyDesign.getAlphaList()));
-        	typeIErrorManager.commit();        	       
+    @Get("application/json")
+    public final TypeIErrorList retrieve(final byte[] uuid) {
+        TypeIErrorManager typeIErrorManager = null;
+        TypeIErrorList typeIErrorList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
         }
-        catch (BaseManagerException bme)
-        {
-        	System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
-            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
-            if (typeIErrorManager != null) try { typeIErrorManager.rollback(); } catch (BaseManagerException e) {}
-            typeIErrorList = null;           
+        /*
+         * Check : length of uuid.
+         */
+
+        try {
+            /*
+             * Delete TypeIError list.
+             */
+            typeIErrorManager = new TypeIErrorManager();
+            typeIErrorManager.beginTransaction();
+            typeIErrorList = typeIErrorManager.retrieve(uuid);
+            typeIErrorManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (typeIErrorManager != null) {
+                try {
+                    typeIErrorManager.rollback();
+                } catch (BaseManagerException re) {
+                    typeIErrorList = null;
+                }
+            }
+            typeIErrorList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (typeIErrorManager != null) {
+                try {
+                    typeIErrorManager.rollback();
+                } catch (BaseManagerException re) {
+                    typeIErrorList = null;
+                }
+            }
+            typeIErrorList = null;
         }
-       return typeIErrorList;
-	}
+        return typeIErrorList;
+    }
+
+    /**
+     * Creates the TypeIErrorList.
+     * 
+     * @param typeIErrorList
+     *            the type i error list
+     * @return the type i error list
+     */
+    @Post("application/json")
+    public final TypeIErrorList create(TypeIErrorList typeIErrorList) {
+        TypeIErrorManager typeIErrorManager = null;
+        byte[] uuid = typeIErrorList.getUuid();
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        /*
+         * Check : empty TypeIError list.
+         */
+        List<TypeIError> list = typeIErrorList.getTypeIErrorList();
+        if (list == null || list.isEmpty()) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Beta Scale specified");
+        }
+        try {
+            /*
+             * Save TypeIError list.
+             */
+            typeIErrorManager = new TypeIErrorManager();
+            typeIErrorManager.beginTransaction();
+            typeIErrorList = typeIErrorManager.saveOrUpdate(typeIErrorList,
+                    true);
+            typeIErrorManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (typeIErrorManager != null) {
+                try {
+                    typeIErrorManager.rollback();
+                } catch (BaseManagerException re) {
+                    typeIErrorList = null;
+                }
+            }
+            typeIErrorList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (typeIErrorManager != null) {
+                try {
+                    typeIErrorManager.rollback();
+                } catch (BaseManagerException re) {
+                    typeIErrorList = null;
+                }
+            }
+            typeIErrorList = null;
+        }
+        return typeIErrorList;
+    }
+
+    /**
+     * Updates the TypeIErrorList.
+     * 
+     * @param typeIErrorList
+     *            the type i error list
+     * @return the type i error list
+     */
+    @Put("application/json")
+    public final TypeIErrorList update(final TypeIErrorList typeIErrorList) {
+        return create(typeIErrorList);
+    }
+
+    /**
+     * Removes the TypeIErrorList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the type i error list
+     */
+    @Delete("application/json")
+    public final TypeIErrorList remove(final byte[] uuid) {
+        TypeIErrorManager typeIErrorManager = null;
+        TypeIErrorList typeIErrorList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        try {
+            /*
+             * Delete TypeIError list.
+             */
+            typeIErrorManager = new TypeIErrorManager();
+            typeIErrorManager.beginTransaction();
+            typeIErrorList = typeIErrorManager.delete(uuid);
+            typeIErrorManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (typeIErrorManager != null) {
+                try {
+                    typeIErrorManager.rollback();
+                } catch (BaseManagerException re) {
+                    typeIErrorList = null;
+                }
+            }
+            typeIErrorList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (typeIErrorManager != null) {
+                try {
+                    typeIErrorManager.rollback();
+                } catch (BaseManagerException re) {
+                    typeIErrorList = null;
+                }
+            }
+            typeIErrorList = null;
+        }
+        return typeIErrorList;
+    }
+
 }

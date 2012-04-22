@@ -32,58 +32,53 @@ import org.restlet.resource.Put;
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
+// TODO: Auto-generated Javadoc
 /**
- * Generic Resource class for handling requests for the
- * domain List object of a Relative Group Size.
- * See the StudyDesignApplication class for URI mappings
- *
+ * Generic Resource class for handling requests for the domain List object of a
+ * Relative Group Size. See the StudyDesignApplication class for URI mappings
+ * 
  * @author Uttara Sakhadeo
  */
 public interface RelativeGroupSizeResource {
+
     /**
-     * Retrieve the object for the specified UUID.
-     * Returns "not found" if no matching Object is available.
-     *
-     * @param uuid the uuid
-     * @return Object for specified UUID
+     * Retrieves the RelativeGroupSizeList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the relative group size list
      */
-     @Get("application/json")
+    @Get("application/json")
     RelativeGroupSizeList retrieve(byte[] uuid);
+
     /**
-     * Store Relative Group Size object to the database.
-     *
-     * @param uuid the uuid
-     * @param relativeGroupSizeList the relative group size list
-     * @return updated Object.
+     * Creates the RelativeGroupSizeList.
+     * 
+     * @param relativeGroupSizeList
+     *            the relative group size list
+     * @return the relative group size list
      */
     @Post("application/json")
-    RelativeGroupSizeList create(
-            RelativeGroupSizeList relativeGroupSizeList);
+    RelativeGroupSizeList create(RelativeGroupSizeList relativeGroupSizeList);
+
     /**
-     * Update the specified object. If there is no
-     * object set for specified UUID ,  then this object
-     * will be treated as new and a UUID assigned.
-     *
-     * @param uuid the uuid
-     * @param relativeGroupSizeList the relative group size list
-     * @return Object
+     * Updates the RelativeGroupSizeList.
+     * 
+     * @param relativeGroupSizeList
+     *            the relative group size list
+     * @return the relative group size list
      */
     @Put("application/json")
-    RelativeGroupSizeList update(
-            RelativeGroupSizeList relativeGroupSizeList);
+    RelativeGroupSizeList update(RelativeGroupSizeList relativeGroupSizeList);
+
     /**
-     * Delete the Relative Group Size object with the specified UUID.
-     *
-     * @param uuid of the object to remove
-     * @return the deleted object
+     * Removes the RelativeGroupSizeList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the relative group size list
      */
     @Delete("application/json")
     RelativeGroupSizeList remove(byte[] uuid);
-    /**
-     * Delete the RelativeGroupSizeList object with the specified UUID.
-     *
-     * @param studyDesign from which object is to be removed
-     * @return the deleted object
-     */
-    RelativeGroupSizeList removeFrom(StudyDesign studyDesign);
+
 }

@@ -15,7 +15,7 @@ public interface StudyDesignUploadRetrieveResource {
      *            study design object
      * @return study design object with updated UUID.
      */
-    @Post
+    @Post("application/json")
     StudyDesign upload(StudyDesign studyDesign);
     /*@Post
     StudyDesign upload(JsonRepresentation entity);*/
@@ -25,7 +25,7 @@ public interface StudyDesignUploadRetrieveResource {
      *
      * @return list of study designs
      */
-    @Get
+    @Get("application/json")
     StudyDesignList retrieve();
     
 }

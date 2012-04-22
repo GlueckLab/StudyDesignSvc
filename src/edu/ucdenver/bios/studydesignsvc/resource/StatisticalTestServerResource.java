@@ -22,6 +22,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.List;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -31,240 +33,204 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.StatisticalTestManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
 import edu.ucdenver.bios.webservice.common.domain.StatisticalTestList;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
- * Server Resource class for handling requests for the StatisticalTest object. 
+ * Server Resource class for handling requests for the StatisticalTest object.
  * See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-public class StatisticalTestServerResource extends ServerResource
-implements StatisticalTestResource
-{
-	StatisticalTestManager testManager = null; 
-	StudyDesignManager studyDesignManager = null;
-	boolean uuidFlag;
-
-	@Get("json")
-	public StatisticalTestList retrieve(byte[] uuid) 
-	{
-		StatisticalTestList testList = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					StudyDesign studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						testList = new StatisticalTestList(studyDesign.getStatisticalTestList());					
-            	}				
-			studyDesignManager.commit();					
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(testManager!=null)
-			{
-				try
-				{testManager.rollback();}				
-				catch(BaseManagerException re)
-				{testList = null;}				
-			}
-			testList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {testList = null;}					
-			}
-			testList = null;
-		}								
-		return testList;
-	}
-
-	@Post("json")
-	public StatisticalTestList create(StatisticalTestList testList) 
-	{		
-		StudyDesign studyDesign =null;
-		byte[] uuid = testList.getUuid();
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();				
-				uuidFlag = studyDesignManager.hasUUID(uuid);				
-				if(uuidFlag)
-            	{studyDesign = studyDesignManager.get(uuid);}																									            				
-				else
-				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-						"no study design UUID specified");}
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing StatisticalTest for this object 
-			 * ----------------------------------------------------*/			
-			if(uuidFlag && studyDesign.getStatisticalTestList()!=null)
-				removeFrom(studyDesign);	
-			/* ----------------------------------------------------
-			 * Set reference of Study Design Object to each StatisticalTest element 
-			 * ----------------------------------------------------*/	
-			/*for(StatisticalTest test : testList)					
-				test.setStudyDesign(studyDesign);*/			
-			/* ----------------------------------------------------
-			 * Save new StatisticalTest List object 
-			 * ----------------------------------------------------*/
-			if(uuidFlag)
-			{
-				studyDesign.setStatisticalTestList(testList.getStatisticalTestList());
-				studyDesignManager = new StudyDesignManager();
-				studyDesignManager.beginTransaction();
-					studyDesignManager.saveOrUpdate(studyDesign, false);
-				studyDesignManager.commit();	
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(testManager!=null)
-			{
-				try
-				{testManager.rollback();}				
-				catch(BaseManagerException re)
-				{testList = null;}				
-			}
-			testList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {testList = null;}					
-			}
-			testList = null;
-		}								
-		return testList;
-	}
-
-	@Put("json")
-	public StatisticalTestList update(StatisticalTestList testList) {
-		return create(testList);
-	}
-
-	@Delete("json")
-	public StatisticalTestList remove(byte[] uuid) 
-	{
-		StatisticalTestList testList = null;
-		StudyDesign studyDesign = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						testList = new StatisticalTestList(studyDesign.getStatisticalTestList());
-					if(testList.getStatisticalTestList().isEmpty())
-						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no StatisticalTest is specified");					
-            	}				
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing StatisticalTest objects for this object 
-			 * ----------------------------------------------------*/
-			if(testList!=null)
-			{
-				testManager = new StatisticalTestManager();
-				testManager.beginTransaction();
-					testList = new StatisticalTestList(testManager.delete(uuid,testList.getStatisticalTestList()));
-				testManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(testManager!=null)
-			{
-				try
-				{testManager.rollback();}				
-				catch(BaseManagerException re)
-				{testList = null;}				
-			}
-			testList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {testList = null;}					
-			}
-			testList = null;
-		}		
-		return testList;
-	}
-	
-	/**
-     * Delete a StatisticalTest object for specified Study Design.
+public class StatisticalTestServerResource extends ServerResource implements
+        StatisticalTestResource {
+    /**
+     * Retrieve the StatisticalTestList.
      * 
-     * @param StudyDesign
-     * @return StatisticalTestList
+     * @param uuid
+     *            the uuid
+     * @return the statistical test list
      */
-	public StatisticalTestList removeFrom(StudyDesign studyDesign) 
-	{
-		StatisticalTestList testList = null;	
-        try
-        {                    			
-        	testManager = new StatisticalTestManager();
-        	testManager.beginTransaction();
-        		testList=new StatisticalTestList(testManager.delete(studyDesign.getUuid(),studyDesign.getStatisticalTestList()));
-        	testManager.commit();        	       
+    @Get("application/json")
+    public final StatisticalTestList retrieve(final byte[] uuid) {
+        StatisticalTestManager statisticalTestManager = null;
+        StatisticalTestList statisticalTestList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
         }
-        catch (BaseManagerException bme)
-        {
-        	System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
-            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
-            if (testManager != null) try { testManager.rollback(); } catch (BaseManagerException e) {}
-            testList = null;           
+        /*
+         * Check : length of uuid.
+         */
+
+        try {
+            /*
+             * Delete StatisticalTest list.
+             */
+            statisticalTestManager = new StatisticalTestManager();
+            statisticalTestManager.beginTransaction();
+            statisticalTestList = statisticalTestManager.retrieve(uuid);
+            statisticalTestManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (statisticalTestManager != null) {
+                try {
+                    statisticalTestManager.rollback();
+                } catch (BaseManagerException re) {
+                    statisticalTestList = null;
+                }
+            }
+            statisticalTestList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (statisticalTestManager != null) {
+                try {
+                    statisticalTestManager.rollback();
+                } catch (BaseManagerException re) {
+                    statisticalTestList = null;
+                }
+            }
+            statisticalTestList = null;
         }
-       return testList;
-	}
+        return statisticalTestList;
+    }
+
+    /**
+     * Creates the StatisticalTestList.
+     * 
+     * @param statisticalTestList
+     *            the statistical test list
+     * @return the statistical test list
+     */
+    @Post("application/json")
+    public final StatisticalTestList create(
+            StatisticalTestList statisticalTestList) {
+        StatisticalTestManager statisticalTestManager = null;
+        byte[] uuid = statisticalTestList.getUuid();
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        /*
+         * Check : empty StatisticalTest list.
+         */
+        List<StatisticalTest> list = statisticalTestList
+                .getStatisticalTestList();
+        if (list == null || list.isEmpty()) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Beta Scale specified");
+        }
+        try {
+            /*
+             * Save StatisticalTest list.
+             */
+            statisticalTestManager = new StatisticalTestManager();
+            statisticalTestManager.beginTransaction();
+            statisticalTestList = statisticalTestManager.saveOrUpdate(
+                    statisticalTestList, true);
+            statisticalTestManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (statisticalTestManager != null) {
+                try {
+                    statisticalTestManager.rollback();
+                } catch (BaseManagerException re) {
+                    statisticalTestList = null;
+                }
+            }
+            statisticalTestList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (statisticalTestManager != null) {
+                try {
+                    statisticalTestManager.rollback();
+                } catch (BaseManagerException re) {
+                    statisticalTestList = null;
+                }
+            }
+            statisticalTestList = null;
+        }
+        return statisticalTestList;
+    }
+
+    /**
+     * Update the StatisticalTestList.
+     * 
+     * @param statisticalTestList
+     *            the statistical test list
+     * @return the statistical test list
+     */
+    @Put("application/json")
+    public final StatisticalTestList update(
+            final StatisticalTestList statisticalTestList) {
+        return create(statisticalTestList);
+    }
+
+    /**
+     * Removes the StatisticalTestList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the statistical test list
+     */
+    @Delete("application/json")
+    public final StatisticalTestList remove(final byte[] uuid) {
+        StatisticalTestManager statisticalTestManager = null;
+        StatisticalTestList statisticalTestList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        try {
+            /*
+             * Delete StatisticalTest list.
+             */
+            statisticalTestManager = new StatisticalTestManager();
+            statisticalTestManager.beginTransaction();
+            statisticalTestList = statisticalTestManager.delete(uuid);
+            statisticalTestManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (statisticalTestManager != null) {
+                try {
+                    statisticalTestManager.rollback();
+                } catch (BaseManagerException re) {
+                    statisticalTestList = null;
+                }
+            }
+            statisticalTestList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (statisticalTestManager != null) {
+                try {
+                    statisticalTestManager.rollback();
+                } catch (BaseManagerException re) {
+                    statisticalTestList = null;
+                }
+            }
+            statisticalTestList = null;
+        }
+        return statisticalTestList;
+    }
+
 }

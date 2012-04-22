@@ -22,6 +22,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.List;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -31,11 +33,9 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.ResponsesManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.ResponseList;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
@@ -47,248 +47,187 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 public class ResponsesServerResource  extends ServerResource
 implements ResponsesResource 
 {
-
-	ResponsesManager responsesManager = null; 
-	StudyDesignManager studyDesignManager = null;
-	boolean uuidFlag;
-
-	/**
-     * Retrieve a ResponseNode object for specified UUID.
+    /**
+     * Retrieves the ResponseList.
      * 
-     * @param byte[]
-     * @return ResponseList
+     * @param uuid
+     *            the uuid
+     * @return the response list
      */
-	@Get("application/json")
-	public ResponseList retrieve(byte[] uuid) 
-	{
-		ResponseList responseNodeList = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					StudyDesign studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						responseNodeList = new ResponseList(studyDesign.getResponseList());					
-            	}				
-			studyDesignManager.commit();					
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(responsesManager!=null)
-			{
-				try
-				{responsesManager.rollback();}				
-				catch(BaseManagerException re)
-				{responseNodeList = null;}				
-			}
-			responseNodeList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {responseNodeList = null;}					
-			}
-			responseNodeList = null;
-		}								
-		return responseNodeList;
-	}
-
-	/**
-     * Create a ResponseNode object for specified UUID.
-     * 
-     * @param byte[]
-     * @return ResponseList
-     */
-	@Post("application/json")
-	public ResponseList create(ResponseList responseNodeList) 
-	{		
-		StudyDesign studyDesign =null;
-		byte[] uuid = responseNodeList.getUuid();
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();				
-				uuidFlag = studyDesignManager.hasUUID(uuid);				
-				if(uuidFlag)
-            	{studyDesign = studyDesignManager.get(uuid);}																									            				
-				if(!uuidFlag)
-				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-						"no study design UUID specified");}
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing ResponseNode for this object 
-			 * ----------------------------------------------------*/
-			if(uuidFlag && studyDesign.getResponseList()!=null)
-				removeFrom(studyDesign);	
-			/* ----------------------------------------------------
-			 * Set reference of Study Design Object to each ResponseNode element 
-			 * ----------------------------------------------------*/	
-			/*for(ResponseNode ResponseNode : responseNodeList)					
-				ResponseNode.setStudyDesign(studyDesign);*/			
-			/* ----------------------------------------------------
-			 * Save new ResponseNode List object 
-			 * ----------------------------------------------------*/
-			if(uuidFlag)
-			{
-				studyDesign.setResponseList(responseNodeList.getResponseNodeList());
-				studyDesignManager = new StudyDesignManager();
-				studyDesignManager.beginTransaction();
-					studyDesignManager.saveOrUpdate(studyDesign, false);
-				studyDesignManager.commit();			
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(responsesManager!=null)
-			{
-				try
-				{responsesManager.rollback();}				
-				catch(BaseManagerException re)
-				{responseNodeList = null;}				
-			}
-			responseNodeList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {responseNodeList = null;}					
-			}
-			responseNodeList = null;
-		}								
-		return responseNodeList;
-	}
-
-	/**
-     * Update a ResponseNode object for specified UUID.
-     * 
-     * @param byte[]
-     * @return ResponseList
-     */
-	@Put("application/json")
-	public ResponseList update(ResponseList responseNodeList) 
-	{				
-		return create(responseNodeList);			
-	}	
-
-	/**
-     * Delete a ResponseNode object for specified UUID.
-     * 
-     * @param byte[]
-     * @return ResponseList
-     */
-	@Delete("application/json")
-	public ResponseList remove(byte[] uuid) 
-	{
-		ResponseList responseNodeList = null;
-		StudyDesign studyDesign = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						responseNodeList = new ResponseList(studyDesign.getResponseList());									
-            	}				
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing ResponseNode objects for this object 
-			 * ----------------------------------------------------*/
-			if(responseNodeList!=null)
-			{
-				responsesManager = new ResponsesManager();
-				responsesManager.beginTransaction();
-					responseNodeList = new ResponseList(responsesManager.delete(uuid,responseNodeList.getResponseNodeList()));
-				responsesManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(responsesManager!=null)
-			{
-				try
-				{responsesManager.rollback();}				
-				catch(BaseManagerException re)
-				{responseNodeList = null;}				
-			}
-			responseNodeList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {responseNodeList = null;}					
-			}
-			responseNodeList = null;
-		}		
-		return responseNodeList;
-	}
-
-	/**
-     * Update a ResponseNode object for specified studyDesign.
-     * 
-     * @param byte[]
-     * @return ResponseList
-     */
-	public ResponseList removeFrom(StudyDesign studyDesign) 
-	{
-		boolean flag;	
-		ResponseList responseNodeList = null;	
-        try
-        {                    			
-        	responsesManager = new ResponsesManager();
-        	responsesManager.beginTransaction();
-        		responseNodeList=new ResponseList(responsesManager.delete(studyDesign.getUuid(),studyDesign.getResponseList()));
-        	responsesManager.commit();        	       
+    @Get("application/json")
+    public final ResponseList retrieve(final byte[] uuid) {
+        ResponsesManager responsesManager = null;
+        ResponseList responsesList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
         }
-        catch (BaseManagerException bme)
-        {
-        	System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
-            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
-            if (responsesManager != null) try { responsesManager.rollback(); } catch (BaseManagerException e) {}
-            responseNodeList = null;           
+        /*
+         * Check : length of uuid.
+         */
+        
+        try {
+            /*
+             * Delete ResponseList list.
+             */
+            responsesManager = new ResponsesManager();
+            responsesManager.beginTransaction();
+            responsesList = responsesManager.retrieve(uuid);
+            responsesManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (responsesManager != null) {
+                try {
+                    responsesManager.rollback();
+                } catch (BaseManagerException re) {
+                    responsesList = null;
+                }
+            }
+            responsesList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (responsesManager != null) {
+                try {
+                    responsesManager.rollback();
+                } catch (BaseManagerException re) {
+                    responsesList = null;
+                }
+            }
+            responsesList = null;
         }
-        return responseNodeList;
-	}
+        return responsesList;
+    }
+
+    /**
+     * Creates the ResponseList.
+     * 
+     * @param responseNodeList
+     *            the response node list
+     * @return the response list
+     */
+    @Post("application/json")
+    public final ResponseList create(ResponseList responsesList) {
+        ResponsesManager responsesManager = null;
+        byte[] uuid = responsesList.getUuid();
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        /*
+         * Check : empty ResponseList list.
+         */
+        List<ResponseNode> list = responsesList.getResponseNodeList();
+        if (list == null || list.isEmpty()) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Beta Scale specified");
+        }
+        try {
+        /*
+         * Save ResponseList list.
+         */
+        responsesManager = new ResponsesManager();
+        responsesManager.beginTransaction();
+            responsesList = responsesManager.saveOrUpdate(responsesList, true);
+        responsesManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (responsesManager != null) {
+                try {
+                    responsesManager.rollback();
+                } catch (BaseManagerException re) {
+                    responsesList = null;
+                }
+            }
+            responsesList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (responsesManager != null) {
+                try {
+                    responsesManager.rollback();
+                } catch (BaseManagerException re) {
+                    responsesList = null;
+                }
+            }
+            responsesList = null;
+        }
+        return responsesList;
+    }
+
+    /**
+     * Updates the ResponseList.
+     * 
+     * @param responseNodeList
+     *            the response node list
+     * @return the response list
+     */
+    @Put("application/json")
+    public final ResponseList update(final ResponseList responsesList) {
+        return create(responsesList);
+    }
+
+    /**
+     * Removes the ResponseList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the response list
+     */
+    @Delete("application/json")
+    public final ResponseList remove(final byte[] uuid) {
+        ResponsesManager responsesManager = null;
+        ResponseList responsesList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        try {
+            /*
+             * Delete ResponseList list.
+             */
+            responsesManager = new ResponsesManager();
+            responsesManager.beginTransaction();
+            responsesList = responsesManager.delete(uuid);
+            responsesManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (responsesManager != null) {
+                try {
+                    responsesManager.rollback();
+                } catch (BaseManagerException re) {
+                    responsesList = null;
+                }
+            }
+            responsesList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (responsesManager != null) {
+                try {
+                    responsesManager.rollback();
+                } catch (BaseManagerException re) {
+                    responsesList = null;
+                }
+            }
+            responsesList = null;
+        }
+        return responsesList;
+    }
+
 }

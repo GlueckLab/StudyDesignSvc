@@ -32,65 +32,53 @@ import org.restlet.resource.Put;
 import edu.ucdenver.bios.webservice.common.domain.SampleSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
+// TODO: Auto-generated Javadoc
 /**
  * Generic Resource class for handling requests for the domain list object of a
  * Sample Size. See the StudyDesignApplication class for URI mappings
- *
+ * 
  * @author Uttara Sakhadeo
  */
 public interface SampleSizeResource {
+
     /**
-     * Retrieve the object for the specified UUID. Returns "not found" if no
-     * matching Object is available.
-     *
+     * Retrieves the SampleSizeList.
+     * 
      * @param uuid
      *            the uuid
-     * @return Object for specified UUID
+     * @return the sample size list
      */
-    @Get
+    @Get("application/json")
     SampleSizeList retrieve(byte[] uuid);
 
     /**
-     * Store SampleSizeList object to the database.
-     *
-     * @param uuid
-     *            the uuid
+     * Creates the SampleSizeList.
+     * 
      * @param list
      *            the list
-     * @return updated Object.
+     * @return the sample size list
      */
-    @Post
+    @Post("application/json")
     SampleSizeList create(SampleSizeList list);
 
     /**
-     * Update the specified object. If there is no object set for specified
-     * UUID, then this object will be treated as new and a UUID assigned.
-     *
-     * @param uuid
-     *            the uuid
+     * Updates the SampleSizeList.
+     * 
      * @param list
      *            the list
-     * @return SampleSizeList
+     * @return the sample size list
      */
-    @Put
+    @Put("application/json")
     SampleSizeList update(SampleSizeList list);
 
     /**
-     * Delete the SampleSize object with the specified UUID.
-     *
+     * Removes the SampleSizeList.
+     * 
      * @param uuid
-     *            of the object to remove
-     * @return the deleted object
+     *            the uuid
+     * @return the sample size list
      */
-    @Delete
+    @Delete("application/json")
     SampleSizeList remove(byte[] uuid);
 
-    /**
-     * Delete the SampleSizeList object with the specified UUID.
-     *
-     * @param studyDesign
-     *            from which object is to be removed
-     * @return the deleted object
-     */
-    SampleSizeList removeFrom(StudyDesign studyDesign);
 }

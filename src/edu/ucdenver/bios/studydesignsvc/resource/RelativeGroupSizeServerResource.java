@@ -22,6 +22,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.List;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -31,264 +33,204 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.RelativeGroupSizeManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSizeList;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
- * Server Resource class for handling requests for the Relative Group Size object. 
- * See the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling requests for the Relative Group Size
+ * object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-public class RelativeGroupSizeServerResource  extends ServerResource
-implements RelativeGroupSizeResource
-{
-	RelativeGroupSizeManager relativeGroupSizeManager = null; 
-	StudyDesignManager studyDesignManager = null;
-	boolean uuidFlag;
-
-	/**
-     * Retrieve a RelativeGroupSize object for specified UUID.
+public class RelativeGroupSizeServerResource extends ServerResource implements
+        RelativeGroupSizeResource {
+    /**
+     * Retrieves the RelativeGroupSizeList.
      * 
-     * @param byte[]
-     * @return RelativeGroupSizeList
+     * @param uuid
+     *            the uuid
+     * @return the relative group size list
      */
-	@Get("application/json")
-	public RelativeGroupSizeList retrieve(byte[] uuid) 
-	{
-		RelativeGroupSizeList relativeGroupSizeList = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					StudyDesign studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						relativeGroupSizeList = new RelativeGroupSizeList(studyDesign.getRelativeGroupSizeList());					
-            	}				
-			studyDesignManager.commit();					
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(relativeGroupSizeManager!=null)
-			{
-				try
-				{relativeGroupSizeManager.rollback();}				
-				catch(BaseManagerException re)
-				{relativeGroupSizeList = null;}				
-			}
-			relativeGroupSizeList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {relativeGroupSizeList = null;}					
-			}
-			relativeGroupSizeList = null;
-		}								
-		return relativeGroupSizeList;
-	}
-
-	/**
-     * Create a RelativeGroupSize object for specified UUID.
-     * 
-     * @param byte[]
-     * @param RelativeGroupSizeList
-     * @return RelativeGroupSizeList
-     */
-	@Post("application/json")
-	public RelativeGroupSizeList create(RelativeGroupSizeList relativeGroupSizeList) 
-	{		
-		StudyDesign studyDesign =null;
-		byte[] uuid = relativeGroupSizeList.getUuid();
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();				
-				uuidFlag = studyDesignManager.hasUUID(uuid);				
-				if(uuidFlag)
-            	{
-					studyDesign = studyDesignManager.get(uuid);					
-				}																									            				
-				else
-				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-						"no study design UUID specified");}
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing RelativeGroupSize for this object 
-			 * ----------------------------------------------------*/			
-			 if(uuidFlag && studyDesign.getRelativeGroupSizeList()!=null)
-				removeFrom(studyDesign);	
-			/* ----------------------------------------------------
-			 * Save new RelativeGroupSize List object 
-			 * ----------------------------------------------------*/
-			if(uuidFlag)
-			{
-				studyDesign.setRelativeGroupSizeList(relativeGroupSizeList.getRelativeGroupSizeList());
-				studyDesignManager = new StudyDesignManager();
-				studyDesignManager.beginTransaction();
-					studyDesignManager.saveOrUpdate(studyDesign, false);
-				studyDesignManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(relativeGroupSizeManager!=null)
-			{
-				try
-				{relativeGroupSizeManager.rollback();}				
-				catch(BaseManagerException re)
-				{relativeGroupSizeList = null;}				
-			}
-			relativeGroupSizeList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {relativeGroupSizeList = null;}					
-			}
-			relativeGroupSizeList = null;
-		}								
-		return relativeGroupSizeList;
-	}
-
-	/**
-     * Update a RelativeGroupSize object for specified UUID.
-     * 
-     * @param byte[]
-     * @param RelativeGroupSizeList
-     * @return RelativeGroupSizeList
-     */
-	@Put("application/json")
-	public RelativeGroupSizeList update(RelativeGroupSizeList relativeGroupSizeList) 
-	{
-		return create(relativeGroupSizeList);
-	}
-
-	/**
-     * Delete a RelativeGroupSize object for specified UUID.
-     * 
-     * @param byte[]
-     * @return RelativeGroupSizeList
-     */
-	@Delete("application/json")
-	public RelativeGroupSizeList remove(byte[] uuid) 
-	{
-		RelativeGroupSizeList relativeGroupSizeList = null;
-		StudyDesign studyDesign = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						relativeGroupSizeList = new RelativeGroupSizeList(studyDesign.getRelativeGroupSizeList());
-					if(relativeGroupSizeList.getRelativeGroupSizeList().isEmpty())
-						throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-								"no RelativeGroupSize is specified");					
-            	}				
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing RelativeGroupSize objects for this object 
-			 * ----------------------------------------------------*/
-			if(studyDesign.getRelativeGroupSizeList()!=null)
-			{
-				relativeGroupSizeManager = new RelativeGroupSizeManager();
-				relativeGroupSizeManager.beginTransaction();
-					relativeGroupSizeList = new RelativeGroupSizeList(relativeGroupSizeManager.delete(uuid,relativeGroupSizeList.getRelativeGroupSizeList()));
-				relativeGroupSizeManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(relativeGroupSizeManager!=null)
-			{
-				try
-				{relativeGroupSizeManager.rollback();}				
-				catch(BaseManagerException re)
-				{relativeGroupSizeList = null;}				
-			}
-			relativeGroupSizeList = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {relativeGroupSizeList = null;}					
-			}
-			relativeGroupSizeList = null;
-		}		
-		return relativeGroupSizeList;
-	}
-
-	/**
-     * Delete a RelativeGroupSize object for specified Study Design.
-     * 
-     * @param StudyDesign
-     * @return RelativeGroupSizeList
-     */
-	public RelativeGroupSizeList removeFrom(StudyDesign studyDesign) 
-	{
-		RelativeGroupSizeList relativeGroupSizeList = null;	
-        try
-        {                    			
-        	relativeGroupSizeManager = new RelativeGroupSizeManager();
-        	relativeGroupSizeManager.beginTransaction();
-        		relativeGroupSizeList=new RelativeGroupSizeList(relativeGroupSizeManager.delete(studyDesign.getUuid(),studyDesign.getRelativeGroupSizeList()));
-        	relativeGroupSizeManager.commit();        	       
+    @Get("application/json")
+    public final RelativeGroupSizeList retrieve(final byte[] uuid) {
+        RelativeGroupSizeManager relativeGroupSizeManager = null;
+        RelativeGroupSizeList relatuveGPList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
         }
-        catch (BaseManagerException bme)
-        {
-        	System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
-            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
-            if (relativeGroupSizeManager != null) try { relativeGroupSizeManager.rollback(); } catch (BaseManagerException e) {}
-            relativeGroupSizeList = null;           
+        /*
+         * Check : length of uuid.
+         */
+
+        try {
+            /*
+             * Delete RelativeGroupSize list.
+             */
+            relativeGroupSizeManager = new RelativeGroupSizeManager();
+            relativeGroupSizeManager.beginTransaction();
+            relatuveGPList = relativeGroupSizeManager.retrieve(uuid);
+            relativeGroupSizeManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (relativeGroupSizeManager != null) {
+                try {
+                    relativeGroupSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    relatuveGPList = null;
+                }
+            }
+            relatuveGPList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (relativeGroupSizeManager != null) {
+                try {
+                    relativeGroupSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    relatuveGPList = null;
+                }
+            }
+            relatuveGPList = null;
         }
-       return relativeGroupSizeList;
-	}
+        return relatuveGPList;
+    }
+
+    /**
+     * Creates the RelativeGroupSizeList.
+     * 
+     * @param relativeGroupSizeList
+     *            the relative group size list
+     * @return the relative group size list
+     */
+    @Post("application/json")
+    public final RelativeGroupSizeList create(
+            RelativeGroupSizeList relatuveGPList) {
+        RelativeGroupSizeManager relativeGroupSizeManager = null;
+        byte[] uuid = relatuveGPList.getUuid();
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        /*
+         * Check : empty RelativeGroupSize list.
+         */
+        List<RelativeGroupSize> list = relatuveGPList
+                .getRelativeGroupSizeList();
+        if (list == null || list.isEmpty()) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Beta Scale specified");
+        }
+        try {
+            /*
+             * Save RelativeGroupSize list.
+             */
+            relativeGroupSizeManager = new RelativeGroupSizeManager();
+            relativeGroupSizeManager.beginTransaction();
+            relatuveGPList = relativeGroupSizeManager.saveOrUpdate(
+                    relatuveGPList, true);
+            relativeGroupSizeManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (relativeGroupSizeManager != null) {
+                try {
+                    relativeGroupSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    relatuveGPList = null;
+                }
+            }
+            relatuveGPList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (relativeGroupSizeManager != null) {
+                try {
+                    relativeGroupSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    relatuveGPList = null;
+                }
+            }
+            relatuveGPList = null;
+        }
+        return relatuveGPList;
+    }
+
+    /**
+     * Updates the RelativeGroupSizeList.
+     * 
+     * @param relativeGroupSizeList
+     *            the relative group size list
+     * @return the relative group size list
+     */
+    @Put("application/json")
+    public final RelativeGroupSizeList update(
+            final RelativeGroupSizeList relatuveGPList) {
+        return create(relatuveGPList);
+    }
+
+    /**
+     * Removes the RelativeGroupSizeList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the relative group size list
+     */
+    @Delete("application/json")
+    public final RelativeGroupSizeList remove(final byte[] uuid) {
+        RelativeGroupSizeManager relativeGroupSizeManager = null;
+        RelativeGroupSizeList relatuveGPList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        try {
+            /*
+             * Delete RelativeGroupSize list.
+             */
+            relativeGroupSizeManager = new RelativeGroupSizeManager();
+            relativeGroupSizeManager.beginTransaction();
+            relatuveGPList = relativeGroupSizeManager.delete(uuid);
+            relativeGroupSizeManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (relativeGroupSizeManager != null) {
+                try {
+                    relativeGroupSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    relatuveGPList = null;
+                }
+            }
+            relatuveGPList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (relativeGroupSizeManager != null) {
+                try {
+                    relativeGroupSizeManager.rollback();
+                } catch (BaseManagerException re) {
+                    relatuveGPList = null;
+                }
+            }
+            relatuveGPList = null;
+        }
+        return relatuveGPList;
+    }
+
 }

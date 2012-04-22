@@ -82,12 +82,5 @@ public interface BetweenParticipantResource {
      */
     @Delete("application/json")
     BetweenParticipantFactorList remove(byte[] uuid);
-
-    /**
-     * Delete the BetweenParticipantFactor object with the specified UUID.
-     *
-     * @param studyDesign from which object is to be removed
-     * @return the deleted object
-     */
-   BetweenParticipantFactorList removeFrom(StudyDesign studyDesign);
+    
 }

@@ -24,9 +24,7 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -37,67 +35,52 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.BetaScaleManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.BetaScale;
 import edu.ucdenver.bios.webservice.common.domain.BetaScaleList;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
-import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * Server Resource class for handling requests for the Beta Scale object. See
  * the StudyDesignApplication class for URI mappings
- *
+ * 
  * @author Uttara Sakhadeo
  */
 public class BetaScaleServerResource extends ServerResource implements
         BetaScaleResource {
 
-    /** The beta scale manager. */
-    private BetaScaleManager betaScaleManager = null;
-
-    /** The study design manager. */
-    private StudyDesignManager studyDesignManager = null;
-
-    /** The uuid flag. */
-    private boolean uuidFlag;
-
     /**
-     * Retrieve a BetaScale object for specified UUID.
-     * <br>
-     * Use {@link edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager#hasUUID(byte[])} to check existence of
-     * a Study Design with given UUID.
+     * Retrieves the Beta Scale List.
      * 
      * @param uuid
      *            the uuid
-     * @return ArrayList<BetaScale>
+     * @return the beta scale list
      */
     @Get("application/json")
     public final BetaScaleList retrieve(final byte[] uuid) {
+        BetaScaleManager betaScaleManager = null;
         BetaScaleList betaScaleList = null;
+        /*
+         * Check : empty uuid.
+         */
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
+        /*
+         * Check : length of uuid.
+         */
+        
         try {
             /*
-             * ----------------------------------------------------
-             * Check for existence of a UUID in Study Design object
-             * ----------------------------------------------------
+             * Delete beta scale list.
              */
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
-                StudyDesign studyDesign = studyDesignManager.get(uuid);
-                if (studyDesign != null) {
-                    betaScaleList = new BetaScaleList(studyDesign.getUuid(),
-                            studyDesign.getBetaScaleList());
-                }
-            }
-            studyDesignManager.commit();
+            betaScaleManager = new BetaScaleManager();
+            betaScaleManager.beginTransaction();
+            betaScaleList = betaScaleManager.retrieve(uuid);
+            betaScaleManager.commit();
+
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
             StudyDesignLogger.getInstance().error(bme.getMessage());
@@ -109,12 +92,12 @@ public class BetaScaleServerResource extends ServerResource implements
                 }
             }
             betaScaleList = null;
-        } catch (StudyDesignException sde) {
-            System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error(sde.getMessage());
-            if (studyDesignManager != null) {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (betaScaleManager != null) {
                 try {
-                    studyDesignManager.rollback();
+                    betaScaleManager.rollback();
                 } catch (BaseManagerException re) {
                     betaScaleList = null;
                 }
@@ -125,84 +108,40 @@ public class BetaScaleServerResource extends ServerResource implements
     }
 
     /**
-     * Create a BetaScale object for specified UUID.
-     *
-     * @param uuid
-     *            the uuid
+     * Creates the Beta Scale List.
+     * 
      * @param betaScaleList
      *            the beta scale list
-     * @return ArrayList<BetaScale>
+     * @return the beta scale list
      */
     @Post("application/json")
-    /*public final BetaScaleList create(final byte[] uuid ,
-            BetaScaleList betaScaleList) {*/
-    public final BetaScaleList create(
-            /*BetaScaleList betaScaleList, final byte[] uuid ) {*/
-            BetaScaleList betaScaleList) {
-        StudyDesign studyDesign = null;
+    public final BetaScaleList create(BetaScaleList betaScaleList) {
+        BetaScaleManager betaScaleManager = null;
         byte[] uuid = betaScaleList.getUuid();
+        /*
+         * Check : empty uuid.
+         */
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
+        /*
+         * Check : empty beta scale list.
+         */
+        List<BetaScale> list = betaScaleList.getBetaScaleList();
+        if (list == null || list.isEmpty()) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Beta Scale specified");
+        }
         try {
-            /*
-             * ----------------------------------------------------
-             * Check for existence of a UUID in Study Design object
-             * ----------------------------------------------------
-             */
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
-                studyDesign = studyDesignManager.get(uuid);
-            } else {
-                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                        "no study design UUID specified");
-            }
-            studyDesignManager.commit();
-            /*
-             * ---------------------------------------------------- Remove
-             * existing Beta Scale for this object
-             * ----------------------------------------------------
-             */            
-            if (uuidFlag && !studyDesign.getBetaScaleList().isEmpty()) {
-                removeFrom(studyDesign);
-            }
-            /*
-             * ---------------------------------------------------- Set
-             * reference of Study Design Object to each Beta Scale element
-             * ----------------------------------------------------
-             */
-            /*
-             * for(BetaScale betaScale : betaScaleList) {
-             * //betaScale.setStudyDesign(studyDesign); betaScale.setUuid(uuid);
-             * }
-             */
-            if (uuidFlag) {
-                /*
-                 * betaScaleManager = new BetaScaleManager();
-                 * betaScaleManager.beginTransaction();
-                 * betaScaleList=betaScaleManager.saveOrUpdate(betaScaleList,
-                 * true); betaScaleManager.commit();
-                 */
-                /*
-                 * ---------------------------------------------------- Set
-                 * reference of BetaScale Object to Study Design object
-                 * ----------------------------------------------------
-                 */
-                /*
-                 * for(BetaScale betaScale : betaScaleList) {
-                 * System.out.println(
-                 * "in ServerResource id: "+betaScale.getId()); }
-                 */
-                studyDesign.setBetaScaleList(betaScaleList.getBetaScaleList());
-                studyDesignManager = new StudyDesignManager();
-                studyDesignManager.beginTransaction();
-                studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
-                        false);
-                studyDesignManager.commit();
-            }
+        /*
+         * Save beta scale list.
+         */
+        betaScaleManager = new BetaScaleManager();
+        betaScaleManager.beginTransaction();
+            betaScaleList = betaScaleManager.saveOrUpdate(betaScaleList, true);
+        betaScaleManager.commit();
+
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
             StudyDesignLogger.getInstance().error(bme.getMessage());
@@ -214,12 +153,12 @@ public class BetaScaleServerResource extends ServerResource implements
                 }
             }
             betaScaleList = null;
-        } catch (StudyDesignException sde) {
-            System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error(sde.getMessage());
-            if (studyDesignManager != null) {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (betaScaleManager != null) {
                 try {
-                    studyDesignManager.rollback();
+                    betaScaleManager.rollback();
                 } catch (BaseManagerException re) {
                     betaScaleList = null;
                 }
@@ -230,75 +169,44 @@ public class BetaScaleServerResource extends ServerResource implements
     }
 
     /**
-     * Update a BetaScale object for specified UUID.
-     *
-     * @param uuid
-     *            the uuid
+     * Updates the Beta Scale List.
+     * 
      * @param betaScaleList
-     *            the beta scale list
-     * @return ArrayList<BetaScale>
+     *            the list
+     * @return the beta scale list
      */
     @Put("application/json")
-    public final BetaScaleList update(
-            final BetaScaleList betaScaleList) {
+    public final BetaScaleList update(final BetaScaleList betaScaleList) {
         return create(betaScaleList);
-        /*return create(betaScaleList, uuid);*/
     }
 
     /**
-     * Delete a BetaScale object for specified UUID.
-     *
+     * Removes the Beta Scale List.
+     * 
      * @param uuid
      *            the uuid
-     * @return ArrayList<BetaScale>
+     * @return the beta scale list
      */
     @Delete("application/json")
     public final BetaScaleList remove(final byte[] uuid) {
+        BetaScaleManager betaScaleManager = null;
         BetaScaleList betaScaleList = null;
-        StudyDesign studyDesign = null;
+        /*
+         * Check : empty uuid.
+         */
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
         try {
             /*
-             * ----------------------------------------------------
-             * Check for existence of a UUID in Study Design object
-             * ----------------------------------------------------
+             * Delete beta scale list.
              */
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
-                studyDesign = studyDesignManager.get(uuid);
-                if (studyDesign != null) {
-                    betaScaleList = new BetaScaleList(uuid,studyDesign.getBetaScaleList());
-                }
-            }
-            studyDesignManager.commit();
-            /*
-             * ---------------------------------------------------- Remove
-             * existing Beta Scale objects for this object
-             * ----------------------------------------------------
-             */
-            if (!betaScaleList.getBetaScaleList().isEmpty()) {
-                betaScaleManager = new BetaScaleManager();
-                betaScaleManager.beginTransaction();
-                betaScaleList = new BetaScaleList(uuid,betaScaleManager.delete(uuid, betaScaleList.getBetaScaleList()));
-                betaScaleManager.commit();
-                /*
-                 * ---------------------------------------------------- Set
-                 * reference of BetaScale Object to Study Design object
-                 * ----------------------------------------------------
-                 */
-                /*
-                 * studyDesign.setBetaScaleList(null); studyDesignManager = new
-                 * StudyDesignManager(); studyDesignManager.beginTransaction();
-                 * studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
-                 * false); studyDesignManager.commit();
-                 * betaScaleList=studyDesign.getBetaScaleList();
-                 */
-            }
+            betaScaleManager = new BetaScaleManager();
+            betaScaleManager.beginTransaction();
+            betaScaleList = betaScaleManager.delete(uuid);
+            betaScaleManager.commit();
+
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
             StudyDesignLogger.getInstance().error(bme.getMessage());
@@ -310,12 +218,12 @@ public class BetaScaleServerResource extends ServerResource implements
                 }
             }
             betaScaleList = null;
-        } catch (StudyDesignException sde) {
-            System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error(sde.getMessage());
-            if (studyDesignManager != null) {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (betaScaleManager != null) {
                 try {
-                    studyDesignManager.rollback();
+                    betaScaleManager.rollback();
                 } catch (BaseManagerException re) {
                     betaScaleList = null;
                 }
@@ -325,59 +233,4 @@ public class BetaScaleServerResource extends ServerResource implements
         return betaScaleList;
     }
 
-    /**
-     * Delete a BetaScale object for specified Study Design.
-     *
-     * @param studyDesign
-     *            the study design
-     * @return ArrayList<BetaScale>
-     */    
-    public final BetaScaleList removeFrom(final StudyDesign studyDesign) {
-        BetaScaleList betaScaleList = null;
-        try {
-            betaScaleManager = new BetaScaleManager();
-            betaScaleManager.beginTransaction();
-            betaScaleList = new BetaScaleList(studyDesign.getUuid(),betaScaleManager.delete(studyDesign.getUuid(),
-                    studyDesign.getBetaScaleList()));
-            betaScaleManager.commit();
-            /*
-             * ----------------------------------------------------
-             * Set reference of BetaScale Object to Study Design object
-             * ----------------------------------------------------
-             */
-            /*
-             * studyDesign.setConfidenceIntervalDescriptions(null);
-             * studyDesignManager = new StudyDesignManager();
-             * studyDesignManager.beginTransaction(); studyDesign =
-             * studyDesignManager.saveOrUpdate(studyDesign, false);
-             * studyDesignManager.commit();
-             */
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(
-                    "Failed to load Study Design information: "
-                            + bme.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException e) {}
-            }
-            if (betaScaleManager != null) {
-                try {
-                    betaScaleManager.rollback();
-                } catch (BaseManagerException e) {}
-            }
-            betaScaleList = null;
-        }
-        /*
-         * catch (StudyDesignException sde) {
-         * StudyDesignLogger.getInstance().error
-         * ("Failed to load Study Design information: " + sde.getMessage()); if
-         * (studyDesignManager != null) try { studyDesignManager.rollback(); }
-         * catch (BaseManagerException e) {} if (betaScaleManager != null) try {
-         * betaScaleManager.rollback(); } catch (BaseManagerException e) {}
-         * betaScaleList = null; }
-         */
-        return betaScaleList;
-    }
 }
