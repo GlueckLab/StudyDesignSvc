@@ -7,7 +7,7 @@
 	<session-factory>
 		<!-- Begin : Jasypt Password Encryprion Setting -->
 			<property name="connection.provider_class">
-	      		org.jasypt.hibernate4.connectionprovider.EncryptedPasswordDriverManagerConnectionProvider
+	      		org.jasypt.hibernate4.connectionprovider.EncryptedPasswordC3P0ConnectionProvider
 	    	</property>
 		    <property name="connection.encryptor_registered_name">
 		      configurationHibernateEncryptor
