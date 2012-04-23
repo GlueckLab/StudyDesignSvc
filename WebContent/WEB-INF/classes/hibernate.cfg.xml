@@ -9,16 +9,20 @@
 			<property name="connection.provider_class">
 	      		org.jasypt.hibernate4.connectionprovider.EncryptedPasswordC3P0ConnectionProvider
 	    	</property>
-		    <property name="connection.encryptor_registered_name">
-		      configurationHibernateEncryptor
-		    </property>
+		    <property name="connection.encryptor_registered_name">configurationHibernateEncryptor</property>
 		<!-- End : Jasypt Password Encryprion Setting -->
 		
 		<!-- Begin : Database connection settings -->
 			<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
 			<property name="connection.username">root</property>
-			<property name="connection.password">
+			<!-- <property name="hibernate.connection.password">
+				ENC(*81F5E21E35407D884A6CD4A731AEBFB6AF209E1B)
+			</property> -->
+			<!-- <property name="connection.password">
 				ENC(7OFMFkKoaRWPnKedOX3iZg==)
+			</property> -->
+			<property name="connection.password">
+				root
 			</property>
 			<property name="connection.url">jdbc:mysql://localhost:3306/studydesigndb</property>
 		<!-- End : Database connection settings -->
