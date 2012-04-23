@@ -5,25 +5,38 @@
 
 <hibernate-configuration>
 	<session-factory>
-		<!-- Database connection settings -->
-		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="connection.username">root</property>
-		<property name="connection.password">root</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/</property>  
-		<property name="hibernate.connection.isolation">2</property>
+		<!-- Begin : Jasypt Password Encryprion Setting -->
+			<property name="connection.provider_class">
+	      		org.jasypt.hibernate4.connectionprovider.EncryptedPasswordC3P0ConnectionProvider
+	    	</property>
+		    <property name="connection.encryptor_registered_name">
+		      configurationHibernateEncryptor
+		    </property>
+		<!-- End : Jasypt Password Encryprion Setting -->
+		
+		<!-- Begin : Database connection settings -->
+			<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+			<property name="connection.username">root</property>
+			<property name="connection.password">
+				ENC(7OFMFkKoaRWPnKedOX3iZg==)
+			</property>
+			<property name="connection.url">jdbc:mysql://localhost:3306/studydesigndb</property>
+		<!-- End : Database connection settings -->
+		
+		<!-- <property name="hibernate.connection.isolation">2</property> -->
 
 		<!-- JDBC connection pool (DO NOT use the built-in Hibernate pool!) -->
-		<property name="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+		<!-- <property name="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property> -->
 		<!--  <property name="hibernate.c3p0.min_size">5</property> -->
-		<property name="hibernate.c3p0.max_size">20</property>
+		<!-- <property name="hibernate.c3p0.max_size">20</property> -->
 		<!--  <property name="hibernate.c3p0.timeout">1800</property> -->
 		<!--  <property name="hibernate.c3p0.max_statements">50</property> -->
 		<!--  <property name="connection.pool_size">1</property> -->
 
 		<!-- SQL dialect -->
-		<property name="dialect">
+		<!-- <property name="dialect">
 			org.hibernate.dialect.MySQLDialect
-		</property>
+		</property> -->
 
 		<!-- Enable Hibernate's automatic session context management -->
 		<property name="current_session_context_class">thread</property>
@@ -33,10 +46,25 @@
 			org.hibernate.cache.NoCacheProvider
 		</property>
 
-		<mapping resource="HibernateTesting/sampletest/SampleTest.hbm.xml"/>
-		<mapping resource="HibernateTesting/listmapping/Student.hbm.xml"/>
-		<mapping resource="HibernateTesting/listmapping/NameList.hbm.xml"/>
-		<!-- <mapping resource="edu/cudenver/bios/studydesignsvc/hibernate/hbmxml/BetweenSubjectEffect.hbm.xml"/> -->		
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/StudyDesign.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/ConfidenceInterval.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/PowerCurveDescription.hbm.xml"/>		
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Lists.hbm.xml"/>		
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/ClusterNode.hbm.xml"/>					
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/BetweenParticipantFactor.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Category.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/RepeatedMeasures.hbm.xml"/>		
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Covariance.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Matrix.hbm.xml"/>
+		<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/Hypothesis.hbm.xml"/>
+				
+		<!-- <mapping resource="com/jdpa/mlg/datafeed/BetweenSubjectEffect.hbm.xml"/> -->
+			
+		<!-- <mapping resource="edu/cudenver/bios/studydesignsvc/hibernate/SampleTest.hbm.xml"/>-->
+		 <!-- <mapping resource="HibernateTesting/listmapping/Student.hbm.xml"/>
+		<mapping resource="HibernateTesting/listmapping/Group.hbm.xml"/>
+		<mapping resource="HibernateTesting/listmapping/NameList.hbm.xml"/>-->
+		<!--<mapping resource="edu/ucdenver/bios/studydesignsvc/hibernate/PowerMethod.hbm.xml"/>	 -->								
 		
 	</session-factory>
 </hibernate-configuration>
