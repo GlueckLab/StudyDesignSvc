@@ -43,174 +43,149 @@ import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.domain.UuidConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'ConfidenceIntervalDescription' - CRUD operations.
  * 
  * @author Uttara Sakhadeo
  */
-public class TestConfidenceInterval extends TestCase 
-{	
-	
-	/** The STUD y_ uuid. */
-	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	
-	/** The SAMPL e_ size. */
-	private static int SAMPLE_SIZE = 100;
-	
-	/** The uuid. */
-	byte[] uuid = null;
-	
-	/** The resource. */
-	ConfidenceIntervalResource resource = null;
-	
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	public void setUp() {
+public class TestConfidenceInterval extends TestCase {
+
+    /** The STUD y_ uuid. */
+    private static UUID STUDY_UUID = UUID
+            .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+
+    /** The SAMPL e_ size. */
+    private static int SAMPLE_SIZE = 100;
+
+    /** The uuid. */
+    byte[] uuid = null;
+
+    /** The resource. */
+    ConfidenceIntervalResource resource = null;
+
+    /*
+     * Sets tomcat connection properties while calling each Test method.
+     */
+    public void setUp() {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);
-        try
-        {
+        try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                "http://localhost:8080/study/"+StudyDesignConstants.TAG_CONFIDENCE_INTERVAL_DESCRIPTION);
-            resource = clientResource.wrap(ConfidenceIntervalResource.class);            
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
+                    "http://localhost:8080/study/confidenceIntervalDescription");
+            resource = clientResource.wrap(ConfidenceIntervalResource.class);
+        } catch (Exception e) {
+            System.err
+                    .println("Failed to connect to server: " + e.getMessage());
             fail();
         }
     }
-		
-	/**
-	 * Test to create a ConfidenceIntervalDescription.
-	 */
-	@Test
-	public void testCreate()
-	{	
-		ConfidenceIntervalDescription confidenceInterval = new ConfidenceIntervalDescription();
-		confidenceInterval.setSigmaFixed(true);		
-		confidenceInterval.setSampleSize(SAMPLE_SIZE);
-		confidenceInterval.setRankOfDesignMatrix(2);
-		confidenceInterval.setBetaFixed(true);
-		confidenceInterval.setSigmaFixed(true);
-		confidenceInterval.setLowerTrailProbability(0.5f);
-		confidenceInterval.setUpperTrailProbability(0.5f);
-				
-		try
-		{
-			confidenceInterval=resource.create(new UuidConfidenceIntervalDescription(uuid, confidenceInterval));
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			confidenceInterval=null;
-			fail();
-		}
-		if(confidenceInterval==null)
-		{
-			fail();
-		}
-		else
-		{
-			System.out.println("testCreate() : ");
-			System.out.println(confidenceInterval);
-		}		
-	}
-	
-	/**
-	 * Test to update a ConfidenceIntervalDescription.
-	 */
-	@Test
-	private void testUpdate()
-	{	
-		ConfidenceIntervalDescription confidenceInterval = new ConfidenceIntervalDescription();
-		confidenceInterval.setSigmaFixed(true);		
-		confidenceInterval.setSampleSize(SAMPLE_SIZE*2);
-		confidenceInterval.setRankOfDesignMatrix(2);
-		confidenceInterval.setBetaFixed(true);
-		confidenceInterval.setSigmaFixed(true);
-		confidenceInterval.setLowerTrailProbability(0.5f);
-		confidenceInterval.setUpperTrailProbability(0.5f);
-		try
-		{
-			confidenceInterval=resource.update(new UuidConfidenceIntervalDescription(uuid, confidenceInterval));
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			confidenceInterval=null;
-			fail();
-		}
-		if(confidenceInterval==null)
-		{
-			fail();
-		}
-		else
-		{
-			System.out.println("ID: "+confidenceInterval.getId()+" SampleSize: "+confidenceInterval.getSampleSize());
-		}
-	}
-	
-	/**
-	 * Test to retrieve a ConfidenceIntervalDescription.
-	 */
-	@Test
-	public void testRetrieve()
-	{
-		ConfidenceIntervalDescription confidenceInterval = null;
-		try
-		{
-			confidenceInterval = resource.retrieve(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			confidenceInterval=null;
-			fail();
-		}
-		if (confidenceInterval == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
+
+    /**
+     * Test to create a ConfidenceIntervalDescription.
+     */
+    @Test
+    public void testCreate() {
+        ConfidenceIntervalDescription confidenceInterval = new ConfidenceIntervalDescription();
+        confidenceInterval.setSigmaFixed(true);
+        confidenceInterval.setSampleSize(SAMPLE_SIZE);
+        confidenceInterval.setRankOfDesignMatrix(2);
+        confidenceInterval.setBetaFixed(true);
+        confidenceInterval.setSigmaFixed(true);
+        confidenceInterval.setLowerTailProbability(0.5f);
+        confidenceInterval.setLowerTailProbability(0.5f);
+        UuidConfidenceIntervalDescription uuidConfidence = new UuidConfidenceIntervalDescription(
+                uuid, confidenceInterval);
+
+        try {
+            uuidConfidence = resource.create(uuidConfidence);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            uuidConfidence = null;
+            fail();
         }
-        else
-        {     
-        	System.out.println("testRetrieve() : ");
-        	System.out.println(confidenceInterval);        	
-            assertTrue(confidenceInterval!=null);
+        if (uuidConfidence == null) {
+            fail();
+        } else {
+            System.out.println("testCreate() : ");
+            System.out.println(uuidConfidence);
         }
-	}
-	
-	/**
-	 * Test to delete a ConfidenceIntervalDescription.
-	 */
-	@Test
-	private void testDelete()
-	{
-		ConfidenceIntervalDescription confidenceInterval = null;
-		try
-		{
-			confidenceInterval = resource.remove(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			confidenceInterval=null;
-			fail();
-		}
-		if (confidenceInterval == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
+    }
+
+    /**
+     * Test to update a ConfidenceIntervalDescription.
+     */
+    @Test
+    public void testUpdate() {
+        ConfidenceIntervalDescription confidenceInterval = new ConfidenceIntervalDescription();
+        confidenceInterval.setSigmaFixed(true);
+        confidenceInterval.setSampleSize(SAMPLE_SIZE * 2);
+        confidenceInterval.setRankOfDesignMatrix(2);
+        confidenceInterval.setBetaFixed(true);
+        confidenceInterval.setSigmaFixed(true);
+        confidenceInterval.setLowerTailProbability(0.5f);
+        confidenceInterval.setLowerTailProbability(0.5f);
+        UuidConfidenceIntervalDescription uuidConfidence = new UuidConfidenceIntervalDescription(
+                uuid, confidenceInterval);
+        try {
+            uuidConfidence = resource.update(uuidConfidence);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            uuidConfidence = null;
+            fail();
         }
-        else
-        {     
-        	System.out.println("testDelete() : ");
-        	System.out.println(confidenceInterval.getId()+" "+confidenceInterval.getSampleSize());        	
-            assertTrue(confidenceInterval!=null);
+        if (uuidConfidence == null) {
+            fail();
+        } else {
+            System.out.println("Update() : " + uuidConfidence);
         }
-	}
-		
+    }
+
+    /**
+     * Test to retrieve a ConfidenceIntervalDescription.
+     */
+    @Test
+    public void testRetrieve() {
+        UuidConfidenceIntervalDescription uuidConfidence = null;
+        try {
+            uuidConfidence = resource.retrieve(uuid);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            uuidConfidence = null;
+            fail();
+        }
+        if (uuidConfidence == null) {
+            System.err.println("No matching confidence interval found");
+            fail();
+        } else {
+            System.out.println("testRetrieve() : ");
+            System.out.println(uuidConfidence);
+            assertTrue(uuidConfidence != null);
+        }
+    }
+
+    /**
+     * Test to delete a ConfidenceIntervalDescription.
+     */
+    @Test
+    public void testDelete() {
+        UuidConfidenceIntervalDescription uuidConfidence = null;
+        try {
+            uuidConfidence = resource.remove(uuid);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            uuidConfidence = null;
+            fail();
+        }
+        if (uuidConfidence == null) {
+            System.err.println("No matching confidence interval found");
+            fail();
+        } else {
+            System.out.println("testDelete() : ");
+            System.out.println(uuidConfidence);
+            assertTrue(uuidConfidence != null);
+        }
+    }
+
 }

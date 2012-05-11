@@ -38,176 +38,149 @@ import edu.ucdenver.bios.studydesignsvc.resource.ResponsesResource;
 import edu.ucdenver.bios.webservice.common.domain.ResponseList;
 import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'ResponseNode' object - CRUD operations.
  * 
  * @author Uttara Sakhadeo
  */
-public class TestResponseList extends TestCase
-{
-	
-	/** The STUD y_ uuid. */
-	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	
-	/** The STUD y_ name. */
-	private static String STUDY_NAME = "Junit Test Study Design";
-	
-	/** The resource. */
-	ResponsesResource resource = null;
-	
-	/** The uuid. */
-	byte[] uuid = null;		
-		
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	public void setUp() {
+public class TestResponseList extends TestCase {
+
+    /** The STUD y_ uuid. */
+    private static UUID STUDY_UUID = UUID
+            .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+
+    /** The STUD y_ name. */
+    private static String STUDY_NAME = "Junit Test Study Design";
+
+    /** The resource. */
+    ResponsesResource resource = null;
+
+    /** The uuid. */
+    byte[] uuid = null;
+
+    /*
+     * Sets tomcat connection properties while calling each Test method.
+     */
+    public void setUp() {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);
-        try
-        {
+        try {
             System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_RESPONSE_LIST);
-            resource = clientResource.wrap(ResponsesResource.class);            
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
+            ClientResource clientResource = new ClientResource(
+                    "http://localhost:8080/study/"
+                            + StudyDesignConstants.TAG_RESPONSE_LIST);
+            resource = clientResource.wrap(ResponsesResource.class);
+        } catch (Exception e) {
+            System.err
+                    .println("Failed to connect to server: " + e.getMessage());
             fail();
         }
     }
-	
-	/**
-	 * Test to create a Response List.
-	 */
-	@Test
-	public void testCreate()
-	{			
-	    List<ResponseNode> list = new ArrayList<ResponseNode>();	
-		ResponseNode ResponseNode = new ResponseNode();		
-			ResponseNode.setName("node1");	
-		list.add(ResponseNode);	
-		ResponseNode = new ResponseNode();		
-			ResponseNode.setName("node2");			
-		list.add(ResponseNode);		
-		ResponseList responseList = new ResponseList(uuid,list);   		
-		try
-		{
-			responseList = resource.create(responseList);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			responseList=null;
-			fail();
-		}
-		if(responseList==null)
-		{
-			fail();
-		}
-		else
-		{
-			System.out.println("testCreate() : ");
-			System.out.println(responseList);
-		}
-	}	
-	
-	/**
-	 * Test update.
-	 */
-	@Test
-	private void testUpdate()
-	{
-	    List<ResponseNode> list = new ArrayList<ResponseNode>();	
-		ResponseNode responseNode = new ResponseNode();		
-			responseNode.setName("node_11");	
-		list.add(responseNode);	
-		responseNode = new ResponseNode();		
-			responseNode.setName("node_22");			
-		list.add(responseNode);		
-		ResponseList responseList = new ResponseList(uuid,list);   		
-		try
-		{
-			responseList = resource.update(responseList);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			responseList=null;
-			fail();
-		}
-		if(responseList==null)
-		{
-			fail();
-		}
-		else
-		{
-			System.out.println("testUpdate");
-			System.out.println(responseList);
-		}
-	}
-	
-	/**
-	 * Test to delete a Response List.
-	 */
-	@Test
-	private void testDelete()
-	{
-	    ResponseList responseList = null;			
-		
-		try
-		{
-			responseList = resource.remove(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			responseList=null;
-			fail();
-		}
-		if (responseList == null)
-        {
-        	System.err.println("No matching Response Node List found");
-        	fail();
+
+    /**
+     * Test to create a Response List.
+     */
+    @Test
+    public void testCreate() {
+        List<ResponseNode> list = new ArrayList<ResponseNode>();
+        ResponseNode ResponseNode = new ResponseNode();
+        ResponseNode.setName("node1");
+        list.add(ResponseNode);
+        ResponseNode = new ResponseNode();
+        ResponseNode.setName("node2");
+        list.add(ResponseNode);
+        ResponseList responseList = new ResponseList(uuid, list);
+        try {
+            responseList = resource.create(responseList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            responseList = null;
+            fail();
         }
-        else
-        {     
-        	System.out.println("testDelete() : ");
-        	System.out.println(responseList);
-            assertTrue(responseList!=null);
+        if (responseList == null) {
+            fail();
+        } else {
+            System.out.println("testCreate() : ");
+            System.out.println(responseList);
         }
-	}
-	
-	/**
-	 * Test to Retrieve a Response List.
-	 */
-	@Test
-	public void testRetrieve()
-	{
-		ResponseList responseList = null;			
-		
-		try
-		{
-			responseList = resource.retrieve(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			responseList=null;
-			fail();
-		}
-		if (responseList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
+    }
+
+    /**
+     * Test update.
+     */
+    @Test
+    private void testUpdate() {
+        List<ResponseNode> list = new ArrayList<ResponseNode>();
+        ResponseNode responseNode = new ResponseNode();
+        responseNode.setName("node_11");
+        list.add(responseNode);
+        responseNode = new ResponseNode();
+        responseNode.setName("node_22");
+        list.add(responseNode);
+        ResponseList responseList = new ResponseList(uuid, list);
+        try {
+            responseList = resource.update(responseList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            responseList = null;
+            fail();
         }
-        else
-        {     
-        	System.out.println("testRetrieve() : ");        	
-        	 Gson gson = new Gson();
-             String json = gson.toJson(responseList);  
-             System.out.println(json);
-            assertTrue(responseList!=null);
+        if (responseList == null) {
+            fail();
+        } else {
+            System.out.println("testUpdate");
+            System.out.println(responseList);
         }
-	}
+    }
+
+    /**
+     * Test to delete a Response List.
+     */
+    @Test
+    private void testDelete() {
+        ResponseList responseList = null;
+
+        try {
+            responseList = resource.remove(uuid);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            responseList = null;
+            fail();
+        }
+        if (responseList == null) {
+            System.err.println("No matching Response Node List found");
+            fail();
+        } else {
+            System.out.println("testDelete() : ");
+            System.out.println(responseList);
+            assertTrue(responseList != null);
+        }
+    }
+
+    /**
+     * Test to Retrieve a Response List.
+     */
+    @Test
+    public void testRetrieve() {
+        ResponseList responseList = null;
+
+        try {
+            responseList = resource.retrieve(uuid);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            responseList = null;
+            fail();
+        }
+        if (responseList == null) {
+            System.err.println("No matching confidence interval found");
+            fail();
+        } else {
+            System.out.println("testRetrieve() : ");
+            Gson gson = new Gson();
+            String json = gson.toJson(responseList);
+            System.out.println(json);
+            assertTrue(responseList != null);
+        }
+    }
 }

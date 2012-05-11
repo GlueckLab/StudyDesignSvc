@@ -71,7 +71,7 @@ public class TestDataConnectionForGeneralClass extends TestCase
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			try
+			/*try
 			{
 				studyDesignManager.rollback();
 				confidenceIntervalManager.rollback();
@@ -79,7 +79,7 @@ public class TestDataConnectionForGeneralClass extends TestCase
 			catch (BaseManagerException bme) 
 			{
 				System.out.println("rollback failed: " + bme.getMessage());
-			}
+			}*/
 			//transaction.rollback();
 		}
 		finally

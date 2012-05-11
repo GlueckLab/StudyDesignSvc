@@ -41,9 +41,10 @@ import edu.ucdenver.bios.webservice.common.domain.NominalPower;
 import edu.ucdenver.bios.webservice.common.domain.NominalPowerList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'NominalPower' object - CRUD operations.
- *
+ * 
  * @author Uttara Sakhadeo
  */
 public class TestNominalPowerList extends TestCase {
@@ -59,22 +60,19 @@ public class TestNominalPowerList extends TestCase {
     private byte[] uuid = null;
 
     /*
-     * (non-Javadoc)
-     *
-     * @see junit.framework.TestCase#setUp()
+     * Sets tomcat connection properties while calling each Test method.
      */
     public void setUp() {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);
-        try
-        {
+        try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                "http://localhost:8080/study/"+StudyDesignConstants.TAG_NOMINAL_POWER_LIST);
-            resource = clientResource.wrap(NominalPowerResource.class);            
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
+                    "http://localhost:8080/study/"
+                            + StudyDesignConstants.TAG_NOMINAL_POWER_LIST);
+            resource = clientResource.wrap(NominalPowerResource.class);
+        } catch (Exception e) {
+            System.err
+                    .println("Failed to connect to server: " + e.getMessage());
             fail();
         }
     }
@@ -84,14 +82,14 @@ public class TestNominalPowerList extends TestCase {
      */
     @Test
     public final void testCreate() {
-        List<NominalPower> list = new ArrayList<NominalPower>();          
+        List<NominalPower> list = new ArrayList<NominalPower>();
         NominalPower nominalPower = new NominalPower();
         nominalPower.setValue(0.5);
         list.add(nominalPower);
         nominalPower = new NominalPower();
         nominalPower.setValue(0.1);
         list.add(nominalPower);
-        NominalPowerList nominalPowerList = new NominalPowerList(uuid,list);
+        NominalPowerList nominalPowerList = new NominalPowerList(uuid, list);
         try {
             nominalPowerList = resource.create(nominalPowerList);
         } catch (Exception e) {
@@ -119,7 +117,7 @@ public class TestNominalPowerList extends TestCase {
         nominalPower = new NominalPower();
         nominalPower.setValue(0.22);
         list.add(nominalPower);
-        NominalPowerList nominalPowerList = new NominalPowerList(uuid,list);
+        NominalPowerList nominalPowerList = new NominalPowerList(uuid, list);
         try {
             nominalPowerList = resource.update(nominalPowerList);
         } catch (Exception e) {

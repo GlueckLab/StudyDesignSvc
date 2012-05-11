@@ -45,181 +45,153 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  * 
  * @author Uttara Sakhadeo
  */
-public class TestTypeIError extends TestCase
-{
-	
-	/** The STUD y_ uuid. */
-	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	
-	/** The resource. */
-	TypeIErrorResource resource = null;
-	
-	/** The uuid. */
-	byte[] uuid = null;		
-		
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	public void setUp() {
+public class TestTypeIError extends TestCase {
+
+    /** The STUDY_UUID. */
+    private static UUID STUDY_UUID = UUID
+            .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+
+    /** The resource. */
+    TypeIErrorResource resource = null;
+
+    /** The uuid. */
+    byte[] uuid = null;
+
+    /*
+     * Sets tomcat connection properties while calling each Test method.
+     */
+    public void setUp() {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);
-        try
-        {
+        try {
             System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_ALPHA_LIST);
-            resource = clientResource.wrap(TypeIErrorResource.class);            
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
+            ClientResource clientResource = new ClientResource(
+                    "http://localhost:8080/study/"
+                            + StudyDesignConstants.TAG_ALPHA_LIST);
+            resource = clientResource.wrap(TypeIErrorResource.class);
+        } catch (Exception e) {
+            System.err
+                    .println("Failed to connect to server: " + e.getMessage());
             fail();
         }
     }
-	
-	/**
-	 * Test to create a TypeIError List.
-	 */
-	@Test
-	public void testCreate()
-	{			
-	    TypeIErrorList typeIErrorList = new TypeIErrorList();
-	    typeIErrorList.setUuid(uuid);
-	    List<TypeIError> list = new ArrayList<TypeIError>();
-		TypeIError typeIError = new TypeIError();		
-			typeIError.setAlphaValue(0.5);	
-		list.add(typeIError);	
-		typeIError = new TypeIError();		
-			typeIError.setAlphaValue(1);			
-		list.add(typeIError);
-		typeIErrorList.setTypeIErrorList(list);
-				
-		try
-		{
-			typeIErrorList = resource.create(typeIErrorList);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			typeIErrorList=null;
-			fail();
-		}
-		if(typeIErrorList==null)
-		{
-			fail();
-		}
-		else
-		{
-			System.out.println("testCreate() :  ");
-			 Gson gson = new Gson();
-             String json = gson.toJson(typeIErrorList);  
-             System.out.println(json);
-            assertTrue(typeIErrorList!=null);
-		}
-	}	
-	
-	/**
-	 * Test to update a TypeIError List.
-	 */
-	@Test
-	private void testUpdate()
-	{
-	    TypeIErrorList typeIErrorList = new TypeIErrorList();
-	    typeIErrorList.setUuid(uuid);
+
+    /**
+     * Test to create a TypeIError List.
+     */
+    @Test
+    public void testCreate() {
+        TypeIErrorList typeIErrorList = new TypeIErrorList();
+        typeIErrorList.setUuid(uuid);
         List<TypeIError> list = new ArrayList<TypeIError>();
-		TypeIError typeIError = new TypeIError();		
-			typeIError.setAlphaValue(0.11);	
-		list.add(typeIError);	
-		typeIError = new TypeIError();		
-			typeIError.setAlphaValue(0.22);			
-		list.add(typeIError);	
-		typeIErrorList.setTypeIErrorList(list);
-				
-		try
-		{
-			typeIErrorList = resource.update(typeIErrorList);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			typeIErrorList=null;
-			fail();
-		}
-		if(typeIErrorList==null)
-		{
-			fail();
-		}
-		else
-		{
-			System.out.println("testUpdate() :  ");
-			 Gson gson = new Gson();
-             String json = gson.toJson(typeIErrorList);  
-             System.out.println(json);
-            assertTrue(typeIErrorList!=null);
-		}
-	}
-	
-	/**
-	 * Test to retrieve a TypeIError List.
-	 */
-	@Test
-	public void testRetrieve()
-	{
-		List<TypeIError> typeIErrorList = null;			
-		
-		try
-		{
-			typeIErrorList = resource.retrieve(uuid).getTypeIErrorList();			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			typeIErrorList=null;
-			fail();
-		}
-		if (typeIErrorList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
+        TypeIError typeIError = new TypeIError();
+        typeIError.setAlphaValue(0.5);
+        list.add(typeIError);
+        typeIError = new TypeIError();
+        typeIError.setAlphaValue(1);
+        list.add(typeIError);
+        typeIErrorList.setTypeIErrorList(list);
+
+        try {
+            typeIErrorList = resource.create(typeIErrorList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            typeIErrorList = null;
+            fail();
         }
-        else
-        {     
-        	System.out.println("testRetrieve() : ");
-        	 Gson gson = new Gson();
-             String json = gson.toJson(typeIErrorList);  
-             System.out.println(json);
-            assertTrue(typeIErrorList!=null);
+        if (typeIErrorList == null) {
+            fail();
+        } else {
+            System.out.println("testCreate() :  ");
+            Gson gson = new Gson();
+            String json = gson.toJson(typeIErrorList);
+            System.out.println(json);
+            assertTrue(typeIErrorList != null);
         }
-	}
-	
-	/**
-	 * Test to delete a TypeIError List.
-	 */
-	@Test
-	private void testDelete()
-	{
-		List<TypeIError> typeIErrorList = null;			
-		
-		try
-		{
-			typeIErrorList = resource.remove(uuid).getTypeIErrorList();			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			typeIErrorList=null;
-			fail();
-		}
-		if (typeIErrorList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
+    }
+
+    /**
+     * Test to update a TypeIError List.
+     */
+    @Test
+    private void testUpdate() {
+        TypeIErrorList typeIErrorList = new TypeIErrorList();
+        typeIErrorList.setUuid(uuid);
+        List<TypeIError> list = new ArrayList<TypeIError>();
+        TypeIError typeIError = new TypeIError();
+        typeIError.setAlphaValue(0.11);
+        list.add(typeIError);
+        typeIError = new TypeIError();
+        typeIError.setAlphaValue(0.22);
+        list.add(typeIError);
+        typeIErrorList.setTypeIErrorList(list);
+
+        try {
+            typeIErrorList = resource.update(typeIErrorList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            typeIErrorList = null;
+            fail();
         }
-        else
-        {     
-        	System.out.println("testDelete() : ");
-        	 Gson gson = new Gson();
-             String json = gson.toJson(typeIErrorList);  
-             System.out.println(json);
-            assertTrue(typeIErrorList!=null);
+        if (typeIErrorList == null) {
+            fail();
+        } else {
+            System.out.println("testUpdate() :  ");
+            Gson gson = new Gson();
+            String json = gson.toJson(typeIErrorList);
+            System.out.println(json);
+            assertTrue(typeIErrorList != null);
         }
-	}	
+    }
+
+    /**
+     * Test to retrieve a TypeIError List.
+     */
+    @Test
+    public void testRetrieve() {
+        List<TypeIError> typeIErrorList = null;
+
+        try {
+            typeIErrorList = resource.retrieve(uuid).getTypeIErrorList();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            typeIErrorList = null;
+            fail();
+        }
+        if (typeIErrorList == null) {
+            System.err.println("No matching confidence interval found");
+            fail();
+        } else {
+            System.out.println("testRetrieve() : ");
+            Gson gson = new Gson();
+            String json = gson.toJson(typeIErrorList);
+            System.out.println(json);
+            assertTrue(typeIErrorList != null);
+        }
+    }
+
+    /**
+     * Test to delete a TypeIError List.
+     */
+    @Test
+    private void testDelete() {
+        List<TypeIError> typeIErrorList = null;
+
+        try {
+            typeIErrorList = resource.remove(uuid).getTypeIErrorList();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            typeIErrorList = null;
+            fail();
+        }
+        if (typeIErrorList == null) {
+            System.err.println("No matching confidence interval found");
+            fail();
+        } else {
+            System.out.println("testDelete() : ");
+            Gson gson = new Gson();
+            String json = gson.toJson(typeIErrorList);
+            System.out.println(json);
+            assertTrue(typeIErrorList != null);
+        }
+    }
 }

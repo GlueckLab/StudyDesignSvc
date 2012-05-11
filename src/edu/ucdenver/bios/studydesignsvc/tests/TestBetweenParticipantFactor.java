@@ -58,13 +58,24 @@ public class TestBetweenParticipantFactor extends TestCase {
     private byte[] uuid = null;
     /** The client resource. */
     ClientResource clientResource = null;
+    
     /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#setUp()
+     * Sets tomcat connection properties
+     * while calling each Test method.
      */
     public void setUp() {
-        uuid = UUIDUtils.asByteArray(STUDY_UUID);        
+        uuid = UUIDUtils.asByteArray(STUDY_UUID); 
+        try
+        {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betweenParticipantFactor");
+            resource = clientResource.wrap(BetweenParticipantResource.class);
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
     }
 
     /**
@@ -90,10 +101,7 @@ public class TestBetweenParticipantFactor extends TestCase {
         list.add(betweenParticipantFactor);
         BetweenParticipantFactorList betweenParticipantFactorList =
                 new BetweenParticipantFactorList(uuid,list);        
-        try {
-            System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betweenParticipantFactor");
-            resource = clientResource.wrap(BetweenParticipantResource.class);
+        try {           
             betweenParticipantFactorList = resource.create(
                     betweenParticipantFactorList);
         } catch (Exception e) {
@@ -135,10 +143,7 @@ public class TestBetweenParticipantFactor extends TestCase {
         BetweenParticipantFactorList betweenParticipantFactorList =
                 new BetweenParticipantFactorList(uuid,list);
         try {
-            System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betweenParticipantFactor");
-            resource = clientResource.wrap(BetweenParticipantResource.class);
-            betweenParticipantFactorList = resource.update(
+           betweenParticipantFactorList = resource.update(
                     betweenParticipantFactorList);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -158,13 +163,10 @@ public class TestBetweenParticipantFactor extends TestCase {
      * Test to delete a BetweenParticipantFactor List.
      */
     @Test
-    public void testDelete() {
+    private void testDelete() {
         BetweenParticipantFactorList betweenParticipantFactorList = null;
 
         try {
-            System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betweenParticipantFactor");
-            resource = clientResource.wrap(BetweenParticipantResource.class);
             betweenParticipantFactorList = resource.remove(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -189,9 +191,6 @@ public class TestBetweenParticipantFactor extends TestCase {
     public final void testRetrieve() {
         BetweenParticipantFactorList betweenParticipantFactorList = null;
         try {
-            System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betweenParticipantFactor");
-            resource = clientResource.wrap(BetweenParticipantResource.class);
             betweenParticipantFactorList = resource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());

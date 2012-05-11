@@ -31,192 +31,155 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource;
 import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.UuidPowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.enums.HorizontalAxisLabelEnum;
 import edu.ucdenver.bios.webservice.common.enums.StratificationVariableEnum;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'PowerCurveDescription' object - CRUD operations.
  * 
  * @author Uttara Sakhadeo
  */
-public class TestPowerCurveDescription extends TestCase 
-{
-	
-	/** The STUD y_ uuid. */
-	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	
-	/** The uuid. */
-	byte[] uuid = null;
-	//private static int SAMPLE_SIZE = 100;
-	/** The study design manager. */
-	StudyDesignManager studyDesignManager = null;
-	PowerCurveResource resource = null;       
-    
-		
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	public void setUp() {
+public class TestPowerCurveDescription extends TestCase {
+
+    /** The STUD y_ uuid. */
+    private static UUID STUDY_UUID = UUID
+            .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+
+    /** The uuid. */
+    byte[] uuid = null;
+    // private static int SAMPLE_SIZE = 100;
+    /** The study design manager. */
+    PowerCurveResource resource = null;
+
+    /*
+     * Sets tomcat connection properties while calling each Test method.
+     */
+    public void setUp() {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);
-        try
-        {
+        try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                "http://localhost:8080/study/"+StudyDesignConstants.TAG_POWER_CURVE_DESCRIPTION);
-            resource = clientResource.wrap(PowerCurveResource.class);            
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
+                    "http://localhost:8080/study/powerCurveDescription");
+            resource = clientResource.wrap(PowerCurveResource.class);
+        } catch (Exception e) {
+            System.err
+                    .println("Failed to connect to server: " + e.getMessage());
             fail();
         }
     }
-	
-	/**
-	 * Test to create a PowerCurveDescription.
-	 */
-	@Test
-	public void testCreate()
-	{	
-		
-		boolean flag;		
-		PowerCurveDescription powerCurveDescription = new PowerCurveDescription();
-		powerCurveDescription.setPowerCurveDescription("test1 description");
-		powerCurveDescription.setSampleSize(100);
-		powerCurveDescription.setRegressionCoeeficientScaleFactor(0.2f);
-		powerCurveDescription.setTypeIError(0.8f);				
-		powerCurveDescription.setHorizontalAxisLabelEnum(HorizontalAxisLabelEnum.TOTAL_SAMPLE_SIZE);
-		powerCurveDescription.setStratificationVarEnum(StratificationVariableEnum.TYPE_I_ERROR);
-		
-		try
-		{
-			powerCurveDescription = resource.create(new UuidPowerCurveDescription(uuid, powerCurveDescription));			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			powerCurveDescription=null;
-			fail();
-		}
-		if(powerCurveDescription==null)
-		{
-			fail();
-		}
-		else
-		{
-			System.out.println("testCreate() : ");
-			System.out.println(powerCurveDescription);
-		}	
-	}
-	
-	/**
-	 * Test to update a PowerCurveDescription.
-	 */
-	@Test
-	private void testUpdate()
-	{			
-		boolean flag;
-		StudyDesign studyDesign = new StudyDesign();
-		studyDesign.setUuid(uuid);
-		
-		PowerCurveDescription powerCurveDescription = new PowerCurveDescription();
-		powerCurveDescription.setPowerCurveDescription("changed");
-		powerCurveDescription.setSampleSize(100);
-		powerCurveDescription.setRegressionCoeeficientScaleFactor(0.2f);
-		powerCurveDescription.setTypeIError(0.8f);		
-		powerCurveDescription.setStudyDesign(studyDesign);		
-		
-		try
-		{
-			powerCurveDescription=resource.update(new UuidPowerCurveDescription(uuid, powerCurveDescription));			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			powerCurveDescription=null;
-			fail();
-		}
-		if(powerCurveDescription==null)
-		{
-			fail();
-		}
-		else
-		{
-			System.out.println("testUpdate() : ");
-			System.out.println(powerCurveDescription);
-		}	
-	}
-	
-	/**
-	 * Test to retrieve a PowerCurveDescription.
-	 */
-	@Test
-	public void testRetrieve()
-	{		
-		PowerCurveDescription powerCurveDescription = null;		
-		
-		
-		try
-		{
-			powerCurveDescription = resource.retrieve(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			powerCurveDescription=null;
-			fail();
-		}
-		if (powerCurveDescription == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
+
+    /**
+     * Test to create a PowerCurveDescription.
+     */
+    @Test
+    public void testCreate() {
+        PowerCurveDescription powerCurveDescription = new PowerCurveDescription();
+        powerCurveDescription.setPowerCurveDescription("test1 description");
+        powerCurveDescription.setSampleSize(100);
+        powerCurveDescription.setBetaScale(0.2);
+        powerCurveDescription.setTypeIError(0.8f);
+        powerCurveDescription
+                .setHorizontalAxisLabelEnum(HorizontalAxisLabelEnum.TOTAL_SAMPLE_SIZE);
+        powerCurveDescription
+                .setStratificationVarEnum(StratificationVariableEnum.TYPE_I_ERROR);
+        UuidPowerCurveDescription uuidPowerCurve = new UuidPowerCurveDescription(
+                uuid, powerCurveDescription);
+        try {
+            uuidPowerCurve = resource.create(uuidPowerCurve);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            uuidPowerCurve = null;
+            fail();
         }
-        else
-        {              	                    
-        	System.out.println("testRetrieve() : ");
-        	//System.out.println(powerCurveDescription);
-        	 Gson gson = new Gson();
-             String json = gson.toJson(powerCurveDescription);  
-             System.out.println(json);
-            assertTrue(powerCurveDescription!=null);
+        if (uuidPowerCurve == null) {
+            fail();
+        } else {
+            System.out.println("testCreate() : ");
+            System.out.println(uuidPowerCurve);
         }
-	}
-	
-	/**
-	 * Test to delete a PowerCurveDescription.
-	 */
-	@Test
-	private void testDelete()
-	{		
-		PowerCurveDescription powerCurveDescription = null;
-		
-		try
-		{
-			powerCurveDescription = resource.remove(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			powerCurveDescription=null;
-			fail();
-		}
-		if (powerCurveDescription == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
+    }
+
+    /**
+     * Test to update a PowerCurveDescription.
+     */
+    @Test
+    public void testUpdate() {
+        PowerCurveDescription powerCurveDescription = new PowerCurveDescription();
+        powerCurveDescription.setPowerCurveDescription("changed");
+        powerCurveDescription.setSampleSize(100);
+        powerCurveDescription.setBetaScale(0.2);
+        powerCurveDescription.setTypeIError(0.8);
+        UuidPowerCurveDescription uuidPowerCurve = new UuidPowerCurveDescription(
+                uuid, powerCurveDescription);
+        try {
+            uuidPowerCurve = resource.update(uuidPowerCurve);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            uuidPowerCurve = null;
+            fail();
         }
-        else
-        {              	                    
-        	System.out.println("testDelete() : ");
-        	System.out.println(powerCurveDescription);
-            assertTrue(powerCurveDescription!=null);
+        if (uuidPowerCurve == null) {
+            fail();
+        } else {
+            System.out.println("testUpdate() : ");
+            System.out.println(uuidPowerCurve);
         }
-	}
+    }
+
+    /**
+     * Test to retrieve a PowerCurveDescription.
+     */
+    @Test
+    public void testRetrieve() {
+        UuidPowerCurveDescription powerCurveDescription = null;
+
+        try {
+            powerCurveDescription = resource.retrieve(uuid);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            powerCurveDescription = null;
+            fail();
+        }
+        if (powerCurveDescription == null) {
+            System.err.println("No matching confidence interval found");
+            fail();
+        } else {
+            System.out.println("testRetrieve() : ");
+            // System.out.println(powerCurveDescription);
+            Gson gson = new Gson();
+            String json = gson.toJson(powerCurveDescription);
+            System.out.println(json);
+            assertTrue(powerCurveDescription != null);
+        }
+    }
+
+    /**
+     * Test to delete a PowerCurveDescription.
+     */
+    @Test
+    public void testDelete() {
+        UuidPowerCurveDescription powerCurveDescription = null;
+
+        try {
+            powerCurveDescription = resource.remove(uuid);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            powerCurveDescription = null;
+            fail();
+        }
+        if (powerCurveDescription == null) {
+            System.err.println("No matching confidence interval found");
+            fail();
+        } else {
+            System.out.println("testDelete() : ");
+            System.out.println(powerCurveDescription);
+            assertTrue(powerCurveDescription != null);
+        }
+    }
 }

@@ -22,6 +22,9 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
@@ -36,6 +39,7 @@ import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignUploadRetrieveResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignUploadRetrieveServerResource;
+import edu.ucdenver.bios.webservice.common.domain.SampleSize;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesignList;
 import edu.ucdenver.bios.webservice.common.enums.SolutionTypeEnum;
@@ -51,6 +55,7 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 public class TestStudyDesign extends TestCase
 {	
 	
+    
 	/** The STUDY_UUID. */
 	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 	
@@ -135,7 +140,8 @@ public class TestStudyDesign extends TestCase
             fail();
         }
     }
-
+    
+    
 	
 	/**
 	 * Test retrieving a UUID from the database
@@ -145,15 +151,15 @@ public class TestStudyDesign extends TestCase
 	@Test
 	public void testCreate()	
 	{	
-		StudyDesign studyDesign = new StudyDesign();
+		/*StudyDesign studyDesign = new StudyDesign();
 		studyDesign.setUuid(uuid);
 		studyDesign.setParticipantLabel(PARTICIPANT_LABEL);
 		studyDesign.setName(STUDY_NAME);
 		studyDesign.setViewTypeEnum(StudyDesignViewTypeEnum.GUIDED_MODE);
 		studyDesign.setGaussianCovariate(true);				
-		studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER);
+		studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER);*/
 		
-		/*StudyDesign studyDesign1 = new StudyDesign();
+		StudyDesign studyDesign1 = new StudyDesign();
         studyDesign1.setUuid(uuid_one);
         studyDesign1.setParticipantLabel(PARTICIPANT_LABEL);
         studyDesign1.setName(STUDY_NAME+" 1");
@@ -167,15 +173,16 @@ public class TestStudyDesign extends TestCase
             sampleSize = new SampleSize();      
                 sampleSize.setValue(1);           
             sampleSizeList.add(sampleSize);     
-		studyDesign1.setSampleSizeList(sampleSizeList);*/
+		studyDesign1.setSampleSizeList(sampleSizeList);
 		
         try
 		{
             System.clearProperty("http.proxyHost");
             clientStudyResource = new ClientResource("http://localhost:8080/study/studyUploadRetrieve"); 
             studyDesignUploadResource = clientStudyResource.wrap(StudyDesignUploadRetrieveResource.class);
-        	studyDesign=new StudyDesignUploadRetrieveServerResource().upload(studyDesign);
-            /*studyDesign = studyDesignUploadResource.upload(studyDesign);*/
+        	//studyDesign=new StudyDesignUploadRetrieveServerResource().upload(studyDesign);
+            studyDesign1=new StudyDesignUploadRetrieveServerResource().upload(studyDesign1);
+            //studyDesign = studyDesignUploadResource.upload(studyDesign);
             
             /*studyDesign1 = resourceUpload.upload(studyDesign1);*/
         	
@@ -184,10 +191,10 @@ public class TestStudyDesign extends TestCase
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			studyDesign=null;
+			studyDesign1=null;
 			fail();
 		}
-		if(studyDesign==null)
+		if(studyDesign1==null)
 		{
 			fail();
 		}
@@ -195,9 +202,9 @@ public class TestStudyDesign extends TestCase
 		{
 			System.out.println("testCreate():");
 			 Gson gson = new Gson();
-	            String json = gson.toJson(studyDesign);  
+	            String json = gson.toJson(studyDesign1);  
 	            System.out.println(json);
-	           assertTrue(studyDesign!=null);
+	           assertTrue(studyDesign1!=null);
 		}
 	}
 	
@@ -401,7 +408,7 @@ public class TestStudyDesign extends TestCase
      * not found will be thrown.
      */
     @Test
-    private void testRetrieve()
+    public void testRetrieve()
     {
         StudyDesign studyDesign = null;
         JsonRepresentation representation = null;

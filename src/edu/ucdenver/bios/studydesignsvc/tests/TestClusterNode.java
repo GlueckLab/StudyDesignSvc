@@ -38,187 +38,166 @@ import edu.ucdenver.bios.studydesignsvc.resource.ClusterNodeResource;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNodeList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
+
+// TODO: Auto-generated Javadoc
 /**
  * JUnit test cases for 'ClusterNode' object - CRUD operations.
  * 
  * @author Uttara Sakhadeo
  */
-public class TestClusterNode extends TestCase
-{
-	
-	/** The STUDY_UUID. */
-	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");	
-	byte[] uuid = null;		
-	ClusterNodeResource resource = null;
-		
-	public void setUp() {
-        uuid = UUIDUtils.asByteArray(STUDY_UUID);        
+public class TestClusterNode extends TestCase {
+
+    /** The STUDY_UUID. */
+    private static UUID STUDY_UUID = UUID
+            .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+
+    /** The uuid. */
+    byte[] uuid = null;
+
+    /** The resource. */
+    ClusterNodeResource resource = null;
+
+    /*
+     * Sets tomcat connection properties while calling each Test method.
+     */
+    public void setUp() {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try {
+            System.clearProperty("http.proxyHost");
+            ClientResource clientResource = new ClientResource(
+                    "http://localhost:8080/study/clustering");
+            resource = clientResource.wrap(ClusterNodeResource.class);
+        } catch (Exception e) {
+            System.err
+                    .println("Failed to connect to server: " + e.getMessage());
+            fail();
+        }
     }
-	
-	/**
-	 * Test to create a ClusterNode List
-	 */
-	@Test
-	public void testCreate()
-	{	
-		
-	    List<ClusterNode> list = new ArrayList<ClusterNode>();		
-			ClusterNode clusterNode = new ClusterNode();		
-			clusterNode.setGroupName("group1");
-			clusterNode.setGroupSize(new Integer(10));			
-			clusterNode.setNode(0);
-			clusterNode.setParent(null);
-		list.add(clusterNode);		
-			clusterNode = new ClusterNode();		
-			clusterNode.setGroupName("group2");	
-			clusterNode.setGroupSize(new Integer(20));
-			clusterNode.setNode(1);
-			clusterNode.setParent(0);			
-		list.add(clusterNode);		
-		ClusterNodeList clusterNodeList = new ClusterNodeList(uuid,list);
-		
-		
-		try
-		{
-		    System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/clustering");
-            resource = clientResource.wrap(ClusterNodeResource.class);    
-			clusterNodeList = resource.create(clusterNodeList);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			clusterNodeList=null;
-			fail();
-		}
-		if(clusterNodeList==null)
-		{
-			fail();
-		}
-		else
-		{
-			System.out.println("testCreate() : ");
-			Gson gson = new Gson();
-            String json = gson.toJson(clusterNodeList);  
+
+    /**
+     * Test to create a ClusterNode List.
+     */
+    @Test
+    public void testCreate() {
+
+        List<ClusterNode> list = new ArrayList<ClusterNode>();
+        ClusterNode clusterNode = new ClusterNode();
+        clusterNode.setGroupName("group1");
+        clusterNode.setGroupSize(new Integer(10));
+        clusterNode.setNode(0);
+        clusterNode.setParent(null);
+        list.add(clusterNode);
+        clusterNode = new ClusterNode();
+        clusterNode.setGroupName("group2");
+        clusterNode.setGroupSize(new Integer(20));
+        clusterNode.setNode(1);
+        clusterNode.setParent(0);
+        list.add(clusterNode);
+        ClusterNodeList clusterNodeList = new ClusterNodeList(uuid, list);
+
+        try {
+            clusterNodeList = resource.create(clusterNodeList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            clusterNodeList = null;
+            fail();
+        }
+        if (clusterNodeList == null) {
+            fail();
+        } else {
+            System.out.println("testCreate() : ");
+            Gson gson = new Gson();
+            String json = gson.toJson(clusterNodeList);
             System.out.println(json);
-            assertTrue(clusterNodeList!=null);
-		}
-	}
-	
-	/**
-	 * Test to retrieve a ClusterNode List
-	 */
-	@Test
-	public void testRetrieve()
-	{		
-		ClusterNodeList clusterNodeList = null;		
-		
-		try
-		{
-		    System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/clustering");
-            resource = clientResource.wrap(ClusterNodeResource.class);    
-			clusterNodeList = resource.retrieve(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			clusterNodeList=null;
-			fail();
-		}
-		if (clusterNodeList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
+            assertTrue(clusterNodeList != null);
         }
-        else
-        {              	                    
-        	System.out.println("testRead() : ");
-			Gson gson = new Gson();
-            String json = gson.toJson(clusterNodeList);  
+    }
+
+    /**
+     * Test to retrieve a ClusterNode List.
+     */
+    @Test
+    public void testRetrieve() {
+        ClusterNodeList clusterNodeList = null;
+
+        try {
+            clusterNodeList = resource.retrieve(uuid);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            clusterNodeList = null;
+            fail();
+        }
+        if (clusterNodeList == null) {
+            System.err.println("No matching confidence interval found");
+            fail();
+        } else {
+            System.out.println("testRead() : ");
+            Gson gson = new Gson();
+            String json = gson.toJson(clusterNodeList);
             System.out.println(json);
-            assertTrue(clusterNodeList!=null);
+            assertTrue(clusterNodeList != null);
         }
-	}
-	
-	/**
-	 * Test to delete a ClusterNode List
-	 */
-	@Test
-	public void testDelete()
-	{		
-	    ClusterNodeList clusterNodeList = null;		
-		try
-		{
-		    System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/clustering");
-            resource = clientResource.wrap(ClusterNodeResource.class);    
-			clusterNodeList = resource.remove(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			clusterNodeList=null;
-			fail();
-		}
-		if (clusterNodeList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
+    }
+
+    /**
+     * Test to delete a ClusterNode List.
+     */
+    @Test
+    private void testDelete() {
+        ClusterNodeList clusterNodeList = null;
+        try {
+            clusterNodeList = resource.remove(uuid);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            clusterNodeList = null;
+            fail();
         }
-        else
-        {         
-        	System.out.println("testDelete() : ");
-        	System.out.println(clusterNodeList);
-            assertTrue(clusterNodeList!=null);
+        if (clusterNodeList == null) {
+            System.err.println("No matching confidence interval found");
+            fail();
+        } else {
+            System.out.println("testDelete() : ");
+            System.out.println(clusterNodeList);
+            assertTrue(clusterNodeList != null);
         }
-	}
-	
-	/**
-	 * Test to update a ClusterNode List
-	 */
-	@Test
-	public void testUpdate()
-	{			
-		boolean flag;
-		List<ClusterNode> list = new ArrayList<ClusterNode>();        		
-			ClusterNode clusterNode = new ClusterNode();		
-			clusterNode.setGroupName("group1");
-			clusterNode.setGroupSize(new Integer(100));			
-			clusterNode.setNode(0);
-			clusterNode.setParent(null);
-		list.add(clusterNode);		
-			clusterNode = new ClusterNode();		
-			clusterNode.setGroupName("group2");	
-			clusterNode.setGroupSize(new Integer(200));
-			clusterNode.setNode(1);
-			clusterNode.setParent(0);			
-		list.add(clusterNode);		
-		ClusterNodeList clusterNodeList = new ClusterNodeList(uuid,list);	
-		
-		try
-		{
-		    System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/clustering");
-            resource = clientResource.wrap(ClusterNodeResource.class);    
-			clusterNodeList = resource.update(clusterNodeList);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println("Error : "+e.getMessage()+"\n"+e.getStackTrace());
-			clusterNodeList=null;
-			fail();
-		}
-		if (clusterNodeList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
+    }
+
+    /**
+     * Test to update a ClusterNode List.
+     */
+    @Test
+    public void testUpdate() {
+        boolean flag;
+        List<ClusterNode> list = new ArrayList<ClusterNode>();
+        ClusterNode clusterNode = new ClusterNode();
+        clusterNode.setGroupName("group1");
+        clusterNode.setGroupSize(new Integer(100));
+        clusterNode.setNode(0);
+        clusterNode.setParent(null);
+        list.add(clusterNode);
+        clusterNode = new ClusterNode();
+        clusterNode.setGroupName("group2");
+        clusterNode.setGroupSize(new Integer(200));
+        clusterNode.setNode(1);
+        clusterNode.setParent(0);
+        list.add(clusterNode);
+        ClusterNodeList clusterNodeList = new ClusterNodeList(uuid, list);
+
+        try {
+            clusterNodeList = resource.update(clusterNodeList);
+        } catch (Exception e) {
+            System.out.println("Error : " + e.getMessage() + "\n"
+                    + e.getStackTrace());
+            clusterNodeList = null;
+            fail();
         }
-        else
-        {         
-        	System.out.println("testUpdate() : ");
-        	System.out.println(clusterNodeList);
-            assertTrue(clusterNodeList!=null);
+        if (clusterNodeList == null) {
+            System.err.println("No matching confidence interval found");
+            fail();
+        } else {
+            System.out.println("testUpdate() : ");
+            System.out.println(clusterNodeList);
+            assertTrue(clusterNodeList != null);
         }
-	}
+    }
 }

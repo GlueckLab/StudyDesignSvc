@@ -23,8 +23,6 @@
  * 02110-1301, USA.
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -102,26 +100,7 @@ public class TestBetaScaleList extends TestCase {
         fail();
     }*/
     }
-
-    /**
-     * Call the calculatePower function.
-     */
-    private void testFunction() {
-        // calculate power
-        /*try {
-            List<BetaScale> betaScaleList = (List<BetaScale>)
-                    betaScaleResource.retrieve(uuid);
-            //System.err.println("Got object: " + betaScaleList.get(0).getClass());
-            for (BetaScale betaScale : betaScaleList) {
-                System.err.println(betaScale.getValue()); }
-            assertTrue(true); }
-        catch (Exception e) {
-            System.err.println("Failed to retrieve: " + e.getMessage());
-            fail();
-        }*/
-
-
-    }
+    
 
     /**
      * Test to create a BetaScale List.
@@ -238,7 +217,7 @@ public class TestBetaScaleList extends TestCase {
      * Test to delete a BetaScale List.
      */
     @Test
-    public final void testDelete() {
+    private final void testDelete() {
         BetaScaleList betaScaleList = null;
 
         try {

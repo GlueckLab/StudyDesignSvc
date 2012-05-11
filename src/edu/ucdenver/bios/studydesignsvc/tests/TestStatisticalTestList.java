@@ -46,172 +46,144 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  * 
  * @author Uttara Sakhadeo
  */
-public class TestStatisticalTestList extends TestCase
-{
-	
-	/** The STUD y_ uuid. */
-	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
-	
-	/** The STUD y_ name. */
-	private static String STUDY_NAME = "Junit StatisticalTest Study Design";
-	
-	/** The resource. */
-	StatisticalTestResource resource = null;
-	
-	/** The uuid. */
-	byte[] uuid = null;		
-		
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	public void setUp() {
+public class TestStatisticalTestList extends TestCase {
+
+    /** The STUD y_ uuid. */
+    private static UUID STUDY_UUID = UUID
+            .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+
+    /** The STUD y_ name. */
+    private static String STUDY_NAME = "Junit StatisticalTest Study Design";
+
+    /** The resource. */
+    StatisticalTestResource resource = null;
+
+    /** The uuid. */
+    byte[] uuid = null;
+
+    /*
+     * Sets tomcat connection properties while calling each Test method.
+     */
+    public void setUp() {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);
-        try
-        {
+        try {
             System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/"+StudyDesignConstants.TAG_TEST_LIST);
-            resource = clientResource.wrap(StatisticalTestResource.class);            
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
+            ClientResource clientResource = new ClientResource(
+                    "http://localhost:8080/study/"
+                            + StudyDesignConstants.TAG_TEST_LIST);
+            resource = clientResource.wrap(StatisticalTestResource.class);
+        } catch (Exception e) {
+            System.err
+                    .println("Failed to connect to server: " + e.getMessage());
             fail();
         }
     }
-	
-	/**
-	 * Test to create a BetaScale List.
-	 */
-	@Test
-	public void testCreate()
-	{	
-	    List<StatisticalTest> list = new ArrayList<StatisticalTest>();    			
-		StatisticalTest test = new StatisticalTest();		
-			test.setType(StatisticalTestTypeEnum.UNIREP);	
-		list.add(test);	
-		test = new StatisticalTest();		
-			test.setType(StatisticalTestTypeEnum.UNIREPBOX);		
-		list.add(test);		
-		StatisticalTestList testList = new StatisticalTestList(uuid,list);		
-		try
-		{
-			testList = resource.create(testList);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			testList=null;
-			fail();
-		}
-		if(testList==null)
-		{
-			fail();
-		}
-		else
-		{
-			System.out.println("testCreate() ");
-			System.out.println(testList);
-			 assertTrue(testList!=null);
-		}
-	}	
-	
-	/**
-	 * Test to update a BetaScale List.
-	 */
-	@Test
-	private void testUpdate()
-	{
-	    List<StatisticalTest> list = new ArrayList<StatisticalTest>(); 	    	
-		StatisticalTest test = new StatisticalTest();		
-			test.setType(StatisticalTestTypeEnum.UNIREPGG);
-		list.add(test);	
-		test = new StatisticalTest();		
-			test.setType(StatisticalTestTypeEnum.UNIREP);			
-		list.add(test);       
-        StatisticalTestList testList = new StatisticalTestList(uuid,list);		
-		try
-		{
-			testList = resource.update(testList);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			testList=null;
-			fail();
-		}
-		if(testList==null)
-		{
-			fail();
-		}
-		else
-		{
-			System.out.println("testUpdate() : ");
-			System.out.println(testList);
-			 assertTrue(testList!=null);
-		}
-	}
-	
-	/**
-	 * Test to delete a BetaScale List.
-	 */
-	@Test
-	private void testDelete()
-	{
-		StatisticalTestList testList = null;			
-		
-		try
-		{
-			testList = resource.remove(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			testList=null;
-			fail();
-		}
-		if (testList == null)
-        {
-        	System.err.println("No matching confidence interval found");
-        	fail();
+
+    /**
+     * Test to create a BetaScale List.
+     */
+    @Test
+    public void testCreate() {
+        List<StatisticalTest> list = new ArrayList<StatisticalTest>();
+        StatisticalTest test = new StatisticalTest();
+        test.setType(StatisticalTestTypeEnum.UNIREP);
+        list.add(test);
+        test = new StatisticalTest();
+        test.setType(StatisticalTestTypeEnum.UNIREPBOX);
+        list.add(test);
+        StatisticalTestList testList = new StatisticalTestList(uuid, list);
+        try {
+            testList = resource.create(testList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            testList = null;
+            fail();
         }
-        else
-        {     
-        	System.out.println("testDelete() : ");        	
-        	System.out.println(testList);
-            assertTrue(testList!=null);
+        if (testList == null) {
+            fail();
+        } else {
+            System.out.println("testCreate() ");
+            System.out.println(testList);
+            assertTrue(testList != null);
         }
-	}
-	
-	/**
-	 * Test to retrieve a BetaScale List.
-	 */
-	@Test
-	public void testRetrieve()
-	{
-		StatisticalTestList testList = null;			
-		
-		try
-		{
-			testList = resource.retrieve(uuid);			
-		}		
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			testList=null;
-			fail();
-		}
-		if (testList == null)
-        {
-        	System.err.println("No matching StatisticalTest found");
-        	fail();
+    }
+
+    /**
+     * Test to update a BetaScale List.
+     */
+    @Test
+    private void testUpdate() {
+        List<StatisticalTest> list = new ArrayList<StatisticalTest>();
+        StatisticalTest test = new StatisticalTest();
+        test.setType(StatisticalTestTypeEnum.UNIREPGG);
+        list.add(test);
+        test = new StatisticalTest();
+        test.setType(StatisticalTestTypeEnum.UNIREP);
+        list.add(test);
+        StatisticalTestList testList = new StatisticalTestList(uuid, list);
+        try {
+            testList = resource.update(testList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            testList = null;
+            fail();
         }
-        else
-        {     
-        	System.out.println("testRetrieve() : ");
-        	 Gson gson = new Gson();
-             String json = gson.toJson(testList);  
-             System.out.println(json);
-            assertTrue(testList!=null);
+        if (testList == null) {
+            fail();
+        } else {
+            System.out.println("testUpdate() : ");
+            System.out.println(testList);
+            assertTrue(testList != null);
         }
-	}
+    }
+
+    /**
+     * Test to delete a BetaScale List.
+     */
+    @Test
+    private void testDelete() {
+        StatisticalTestList testList = null;
+
+        try {
+            testList = resource.remove(uuid);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            testList = null;
+            fail();
+        }
+        if (testList == null) {
+            System.err.println("No matching confidence interval found");
+            fail();
+        } else {
+            System.out.println("testDelete() : ");
+            System.out.println(testList);
+            assertTrue(testList != null);
+        }
+    }
+
+    /**
+     * Test to retrieve a BetaScale List.
+     */
+    @Test
+    public void testRetrieve() {
+        StatisticalTestList testList = null;
+
+        try {
+            testList = resource.retrieve(uuid);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            testList = null;
+            fail();
+        }
+        if (testList == null) {
+            System.err.println("No matching StatisticalTest found");
+            fail();
+        } else {
+            System.out.println("testRetrieve() : ");
+            Gson gson = new Gson();
+            String json = gson.toJson(testList);
+            System.out.println(json);
+            assertTrue(testList != null);
+        }
+    }
 }
