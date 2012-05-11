@@ -47,12 +47,13 @@ import edu.ucdenver.bios.studydesignsvc.resource.RelativeGroupSizeServerResource
 import edu.ucdenver.bios.studydesignsvc.resource.RepeatedMeasuresServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.ResponsesServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.SampleSizeServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.SaveAsServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.SigmaScaleServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StatisticalTestServerResource;
-import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignRetrieveServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignUploadRetrieveServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.TypeIErrorServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.UploadServerResource;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -94,8 +95,10 @@ public class StudyDesignApplication extends Application {
         /* Study Design Resource */
         router.attach("/study", StudyDesignServerResource.class);
         /* Study Design Retrieve Resource */// TODO: REMOVE THIS RESOURCE
-        router.attach("/studyRetrieve", StudyDesignRetrieveServerResource.class);
+        //router.attach("/studyRetrieve", StudyDesignRetrieveServerResource.class);
         /* Study Design Upload Retrieve Resource */
+        router.attach("/studyUpload",
+                UploadServerResource.class);
         router.attach("/studyUploadRetrieve",
                 StudyDesignUploadRetrieveServerResource.class);
         /* ConfidenceInterval Resource */
@@ -106,6 +109,7 @@ public class StudyDesignApplication extends Application {
 
         /* Beta Scale List Resource */
         router.attach("/betaScaleList", BetaScaleServerResource.class);
+        router.attach("/betaScaleList/{uuid}", BetaScaleServerResource.class);
         /* Alpha List Resource */
         router.attach("/alphaList", TypeIErrorServerResource.class);
         /* Relative Group Size List Resource */
@@ -142,6 +146,12 @@ public class StudyDesignApplication extends Application {
         /* Covariance */
         router.attach("/covariance", CovarianceServerResource.class);
         router.attach("/covarianceSet", CovarianceSetServerResource.class);
+        
+        /* Study Design Save*/
+        router.attach("/saveas",SaveAsServerResource.class);
+        /*Study Design Upload*/
+        router.attach("/upload",UploadServerResource.class);
+        
         return router;
 
     }

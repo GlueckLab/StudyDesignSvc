@@ -7,18 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
-import org.hibernate.type.AbstractStandardBasicType;
-import org.hibernate.type.NullableType;
-import org.hibernate.type.TypeFactory;
 import org.hibernate.type.TypeResolver;
 import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
-
-import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
 
 // TODO: Auto-generated Javadoc
 /**
