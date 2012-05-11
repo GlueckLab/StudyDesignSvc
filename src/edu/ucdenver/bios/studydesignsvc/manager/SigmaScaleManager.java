@@ -34,8 +34,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality for MySQL table Sigma Scale
- * object.
+ * Manager class which provides CRUD functionality for SigmaScale object.
  * 
  * @author Uttara Sakhadeo
  */
@@ -66,14 +65,23 @@ public class SigmaScaleManager extends StudyDesignParentManager {
         SigmaScaleList sigmaScaleList = null;
         try {
             /*
-             * Retrieve Original SigmaScale Object
+             * Retrieve Study Design for given uuid
              */
-            List<SigmaScale> originalList = get(uuid).getSigmaScaleList();
-            /*
-             * Delete Existing SigmaScale List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                sigmaScaleList = new SigmaScaleList(uuid, originalList);
+            StudyDesign studyDesign = get(uuid);
+            if (studyDesign != null) {
+                /*
+                 * Retrieve Original SigmaScale Object
+                 */
+                List<SigmaScale> originalList = get(uuid).getSigmaScaleList();
+                if (originalList != null && !originalList.isEmpty()) {
+                    sigmaScaleList = new SigmaScaleList(uuid, originalList);
+                } else {
+                    /*
+                     * uuid exists but no SigmaScaleList entry present. If uuid
+                     * = null too; then it means no entry for this uuid.
+                     */
+                    sigmaScaleList = new SigmaScaleList(uuid, null);
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -103,27 +111,29 @@ public class SigmaScaleManager extends StudyDesignParentManager {
              * Retrieve Original SigmaScale Object
              */
             studyDesign = get(uuid);
-            List<SigmaScale> originalList = studyDesign.getSigmaScaleList();
-            /*
-             * Delete Existing SigmaScale List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                sigmaScaleList = delete(uuid, originalList);
+            if (studyDesign != null) {
+                List<SigmaScale> originalList = studyDesign.getSigmaScaleList();
+                /*
+                 * Delete Existing SigmaScale List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    sigmaScaleList = delete(uuid, originalList);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setSigmaScaleList(null);
+                session.update(studyDesign);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setSigmaScaleList(null);
-            session.update(studyDesign);
-            /*
-             * Return Persisted SigmaScaleList
-             */
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to delete SigmaScale object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
+        /*
+         * Return Deleted SigmaScaleList
+         */
         return sigmaScaleList;
     }
 
@@ -183,32 +193,34 @@ public class SigmaScaleManager extends StudyDesignParentManager {
              * Retrieve Study Design Object
              */
             studyDesign = get(uuid);
-            originalList = studyDesign.getSigmaScaleList();
-            /*
-             * Delete Existing SigmaScale List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                delete(uuid, originalList);
-            }
-            if (isCreation) {
-                for (SigmaScale sigmaScale : newList) {
-                    session.save(sigmaScale);
-                    System.out.println("in save id: " + sigmaScale.getId());
+            if (studyDesign != null) {
+                originalList = studyDesign.getSigmaScaleList();
+                /*
+                 * Delete Existing SigmaScale List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    delete(uuid, originalList);
                 }
-            } else {
-                for (SigmaScale sigmaScale : newList) {
-                    session.update(sigmaScale);
+                if (isCreation) {
+                    for (SigmaScale sigmaScale : newList) {
+                        session.save(sigmaScale);
+                        System.out.println("in save id: " + sigmaScale.getId());
+                    }
+                } else {
+                    for (SigmaScale sigmaScale : newList) {
+                        session.update(sigmaScale);
+                    }
                 }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setSigmaScaleList(newList);
+                session.update(studyDesign);
+                /*
+                 * Return Persisted SigmaScaleList
+                 */
+                newSigmaScaleList = new SigmaScaleList(uuid, newList);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setSigmaScaleList(newList);
-            session.update(studyDesign);
-            /*
-             * Return Persisted SigmaScaleList
-             */
-            newSigmaScaleList = new SigmaScaleList(uuid, newList);
         } catch (Exception e) {
             newList = null;
             System.out.println(e.getMessage());

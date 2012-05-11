@@ -34,8 +34,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality for MySQL table SampleSize
- * object.
+ * Manager class which provides CRUD functionality for SampleSize object.
  * 
  * @author Uttara Sakhadeo
  */
@@ -66,14 +65,23 @@ public class SampleSizeManager extends StudyDesignParentManager {
         SampleSizeList sampleSizeList = null;
         try {
             /*
-             * Retrieve Original SampleSize Object
+             * Retrieve Study Design for given uuid
              */
-            List<SampleSize> originalList = get(uuid).getSampleSizeList();
-            /*
-             * Delete Existing SampleSize List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                sampleSizeList = new SampleSizeList(uuid, originalList);
+            StudyDesign studyDesign = get(uuid);
+            if (studyDesign != null) {
+                /*
+                 * Retrieve Original SampleSize Object
+                 */
+                List<SampleSize> originalList = get(uuid).getSampleSizeList();
+                if (originalList != null && !originalList.isEmpty()) {
+                    sampleSizeList = new SampleSizeList(uuid, originalList);
+                } else {
+                    /*
+                     * uuid exists but no SampleSizeList entry present. If uuid
+                     * = null too; then it means no entry for this uuid.
+                     */
+                    sampleSizeList = new SampleSizeList(uuid, null);
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -103,27 +111,29 @@ public class SampleSizeManager extends StudyDesignParentManager {
              * Retrieve Original SampleSize Object
              */
             studyDesign = get(uuid);
-            List<SampleSize> originalList = studyDesign.getSampleSizeList();
-            /*
-             * Delete Existing SampleSize List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                sampleSizeList = delete(uuid, originalList);
+            if (studyDesign != null) {
+                List<SampleSize> originalList = studyDesign.getSampleSizeList();
+                /*
+                 * Delete Existing SampleSize List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    sampleSizeList = delete(uuid, originalList);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setSampleSizeList(null);
+                session.update(studyDesign);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setSampleSizeList(null);
-            session.update(studyDesign);
-            /*
-             * Return Persisted SampleSizeList
-             */
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to delete SampleSize object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
+        /*
+         * Return Deleted SampleSizeList
+         */
         return sampleSizeList;
     }
 
@@ -183,32 +193,34 @@ public class SampleSizeManager extends StudyDesignParentManager {
              * Retrieve Study Design Object
              */
             studyDesign = get(uuid);
-            originalList = studyDesign.getSampleSizeList();
-            /*
-             * Delete Existing SampleSize List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                delete(uuid, originalList);
-            }
-            if (isCreation) {
-                for (SampleSize sampleSize : newList) {
-                    session.save(sampleSize);
-                    System.out.println("in save id: " + sampleSize.getId());
+            if (studyDesign != null) {
+                originalList = studyDesign.getSampleSizeList();
+                /*
+                 * Delete Existing SampleSize List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    delete(uuid, originalList);
                 }
-            } else {
-                for (SampleSize sampleSize : newList) {
-                    session.update(sampleSize);
+                if (isCreation) {
+                    for (SampleSize sampleSize : newList) {
+                        session.save(sampleSize);
+                        System.out.println("in save id: " + sampleSize.getId());
+                    }
+                } else {
+                    for (SampleSize sampleSize : newList) {
+                        session.update(sampleSize);
+                    }
                 }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setSampleSizeList(newList);
+                session.update(studyDesign);
+                /*
+                 * Return Persisted SampleSizeList
+                 */
+                newSampleSizeList = new SampleSizeList(uuid, newList);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setSampleSizeList(newList);
-            session.update(studyDesign);
-            /*
-             * Return Persisted SampleSizeList
-             */
-            newSampleSizeList = new SampleSizeList(uuid, newList);
         } catch (Exception e) {
             newList = null;
             System.out.println(e.getMessage());

@@ -22,77 +22,215 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
-import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.UuidConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
-
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality 
- * for MySQL table ConfidenceIntervalDescription.
+ * Manager class which provides CRUD functionality for
+ * ConfidenceIntervalDescription object.
  * 
  * @author Uttara Sakhadeo
  */
 public class ConfidenceIntervalManager extends StudyDesignParentManager {
-	
-		
-	public ConfidenceIntervalManager() throws BaseManagerException {
+
+    /**
+     * Instantiates a new confidence interval manager.
+     * 
+     * @throws BaseManagerException
+     *             the base manager exception
+     */
+    public ConfidenceIntervalManager() throws BaseManagerException {
         super();
     }
 
+    /**
+     * Retrieve UuidConfidenceIntervalDescription.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the uuid confidence interval description
+     */
+    public final UuidConfidenceIntervalDescription retrieve(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        UuidConfidenceIntervalDescription uuidConfidenceIntervalDescription = null;
+        try {
+            /*
+             * Retrieve Study Design for given uuid
+             */
+            StudyDesign studyDesign = get(uuid);
+            /*
+             * Retrieve Original ConfidenceIntervalDescription Object
+             */
+            if (studyDesign != null) {
+                ConfidenceIntervalDescription original = studyDesign
+                        .getConfidenceIntervalDescriptions();
+                if (original != null) {
+                    uuidConfidenceIntervalDescription = new UuidConfidenceIntervalDescription(
+                            uuid, original);
+                } else {
+                    /*
+                     * uuid exists but no ConfidenceIntervalDescription entry
+                     * present. If uuid = null too; then it means no entry for
+                     * this uuid.
+                     */
+                    uuidConfidenceIntervalDescription = new UuidConfidenceIntervalDescription(
+                            uuid, null);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete ConfidenceIntervalDescription object for UUID '"
+                            + uuid + "': " + e.getMessage());
+        }
+        return uuidConfidenceIntervalDescription;
+    }
 
     /**
-     * Delete given Confidence Interval Description
+     * Delete UuidConfidenceIntervalDescription.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param uuid
+     *            the uuid
+     * @return the uuid confidence interval description
      */
-	public ConfidenceIntervalDescription delete(byte[] uuid,ConfidenceIntervalDescription confidenceInterval)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
-		try
-		{			
-			session.delete(confidenceInterval);
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete ConfidenceInterval for uuid '" + uuid + "': " + e.getMessage());
-		}
-		return confidenceInterval;
-	}
-	
-		
-	
-	/**
-	 * Retrieve a Confidence Interval Description by the specified UUID.
-	 *
-	 * @param confidenceInterval the confidence interval
-	 * @param isCreation the is creation
-	 * @return study design object
-	 */
-	public ConfidenceIntervalDescription saveOrUpdate(ConfidenceIntervalDescription confidenceInterval,boolean isCreation)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
-		try
-		{			
-			if(isCreation==true)
-				session.save(confidenceInterval);
-			else
-				session.update(confidenceInterval);			
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save confidence interval : " + e.getMessage());
-		}
-		return confidenceInterval;
-	}
+    public final UuidConfidenceIntervalDescription delete(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        UuidConfidenceIntervalDescription deleted = null;
+        StudyDesign studyDesign = null;
+        try {
+            /*
+             * Retrieve Original ConfidenceIntervalDescription Object
+             */
+            studyDesign = get(uuid);
+            if (studyDesign != null) {
+                ConfidenceIntervalDescription original = studyDesign
+                        .getConfidenceIntervalDescriptions();
+                /*
+                 * Delete Existing ConfidenceIntervalDescription List Object
+                 */
+                if (original != null) {
+                    deleted = delete(uuid, original);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setConfidenceIntervalDescriptions(null);
+                session.update(studyDesign);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete ConfidenceIntervalDescription object for UUID '"
+                            + uuid + "': " + e.getMessage());
+        }
+        /*
+         * Return ConfidenceIntervalDescription
+         */
+        return deleted;
+    }
+
+    /**
+     * Delete UuidConfidenceIntervalDescription.
+     * 
+     * @param uuid
+     *            the uuid
+     * @param original
+     *            the original
+     * @return the uuid confidence interval description
+     */
+    private UuidConfidenceIntervalDescription delete(final byte[] uuid,
+            final ConfidenceIntervalDescription original) {
+        UuidConfidenceIntervalDescription deleted = null;
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        try {
+            session.delete(original);
+            deleted = new UuidConfidenceIntervalDescription(uuid, original);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete ConfidenceIntervalDescription object for UUID '"
+                            + uuid + "': " + e.getMessage());
+        }
+        return deleted;
+    }
+
+    /**
+     * Save or update UuidConfidenceIntervalDescription.
+     * 
+     * @param uuidConfidence
+     *            the uuid confidence
+     * @param isCreation
+     *            the is creation
+     * @return the uuid confidence interval description
+     */
+    public final UuidConfidenceIntervalDescription saveOrUpdate(
+            final UuidConfidenceIntervalDescription uuidConfidence,
+            final boolean isCreation) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        StudyDesign studyDesign = null;
+        UuidConfidenceIntervalDescription uuidConfidenceIntervalDescription = null;
+        ConfidenceIntervalDescription originalConfidence = null;
+        byte[] uuid = uuidConfidence.getUuid();
+        ConfidenceIntervalDescription newConfidence = uuidConfidence
+                .getConfidenceInterval();
+
+        try {
+            /*
+             * Retrieve Study Design Object
+             */
+            studyDesign = get(uuid);
+            if (studyDesign != null) {
+                originalConfidence = studyDesign
+                        .getConfidenceIntervalDescriptions();
+                /*
+                 * Delete Existing ConfidenceIntervalDescription Object
+                 */
+                if (originalConfidence != null) {
+                    delete(uuid, originalConfidence);
+                }
+                if (isCreation) {
+                    session.save(newConfidence);
+                } else {
+                    session.update(newConfidence);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setConfidenceIntervalDescriptions(newConfidence);
+                session.update(studyDesign);
+                /*
+                 * Return Persisted ConfidenceIntervalDescription
+                 */
+                uuidConfidenceIntervalDescription = new UuidConfidenceIntervalDescription(
+                        uuid, newConfidence);
+            }
+        } catch (Exception e) {
+            uuidConfidenceIntervalDescription = null;
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to save ConfidenceIntervalDescription object : "
+                            + e.getMessage());
+        }
+        return uuidConfidenceIntervalDescription;
+    }
+
 }

@@ -24,135 +24,216 @@ package edu.ucdenver.bios.studydesignsvc.manager;
 
 import java.util.List;
 
-import org.hibernate.Query;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
+import edu.ucdenver.bios.webservice.common.domain.ClusterNodeList;
+import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality 
- * for MySQL table ClusterNode object.
+ * Manager class which provides CRUD functionality for ClusterNode object.
  * 
  * @author Uttara Sakhadeo
  */
 public class ClusterNodeManager extends StudyDesignParentManager {
-    
-	/**
-	 * Instantiates a new cluster node manager.
-	 *
-	 * @throws BaseManagerException the base manager exception
-	 */
-	public ClusterNodeManager() throws BaseManagerException {super();}
-	
-	/**
-	 * Check existance of a Cluster Node object by the specified UUID.
-	 *
-	 * @param uuidBytes the uuid bytes
-	 * @param clusteringTree the clustering tree
-	 * @return boolean
-	 */
-    /*public boolean hasUUID(byte[] uuidBytes) throws StudyDesignException
-    {
-        if (!transactionStarted) throw new StudyDesignException("Transaction has not been started");
-        try
-        {
-        	//byte[] uuidBytes = UUIDUtils.asByteArray(uuid);        	
-        	Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            List<ClusterNode> clusterNodeList= (List<ClusterNode>)query.list(); 
-        	if(clusterNodeList!=null)
-        		return true;
-        	else
-        		return false;
-        }
-        catch (Exception e)
-        {
-            throw new StudyDesignException("Failed to retrieve Cluster Node for UUID '" + 
-            		uuidBytes.toString() + "': " + e.getMessage());
-        }
-    }*/
-    
+
     /**
-     * Retrieve a Cluster Node by the specified UUID.
+     * Delete the ClusterNodeList.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @param uuid
+     *            the uuid
+     * @param clusteNodeList
+     *            the cluste node list
+     * @return the cluster node list
      */
-	/*public List<ClusterNode> get(byte[] uuidBytes)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");
-		List<ClusterNode> clusterNodeList = null;
-		try
-		{									
-			//byte[] uuidBytes = UUIDUtils.asByteArray(studyUUID);									
-			Query query = session.createQuery("from edu.ucdenver.bios.webservice.common.domain.ClusterNode where studyDesign = :uuid");
-            query.setBinary("uuid", uuidBytes);	                      
-            clusterNodeList = (List<ClusterNode>)query.list();            
-		}
-		catch(Exception e)
-		{
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to retrieve Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return clusterNodeList;
-	}*/
-	
-	/**
-     * Delete a Confidence Interval Description by the specified UUID.
+    private ClusterNodeList delete(final byte[] uuid,
+            final List<ClusterNode> clusteNodeList) {
+        ClusterNodeList deletedList = null;
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        try {
+            if (clusteNodeList != null && !clusteNodeList.isEmpty()) {
+                for (ClusterNode clusterNode : clusteNodeList) {
+                    session.delete(clusterNode);
+                }
+            }
+            deletedList = new ClusterNodeList(uuid, clusteNodeList);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete ClusterNode object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return deletedList;
+    }
+
+    /**
+     * Instantiates a new cluster node manager.
      * 
-     * @param studyUUID:UUID
-     * @return study design object
+     * @throws BaseManagerException
+     *             the base manager exception
      */
-	public List<ClusterNode> delete(byte[] uuidBytes,List<ClusterNode> clusteringTree)
-	{
-		if(!transactionStarted) 
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
-		try
-		{
-			for(ClusterNode clusterNode : clusteringTree)
-				session.delete(clusterNode);
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to delete Cluster Node for UUID '" + uuidBytes + "': " + e.getMessage());
-		}
-		return clusteringTree;
-	}
-	
-	/**
-	 * Retrieve a Cluster Node by the specified UUID.
-	 *
-	 * @param clusterNodeList the cluster node list
-	 * @param isCreation the is creation
-	 * @return study design object
-	 */
-	public List<ClusterNode> saveOrUpdate(List<ClusterNode> clusterNodeList,boolean isCreation)
-	{
-		if(!transactionStarted) throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Transaction has not been started.");		
-		try
-		{			
-			if(isCreation==true)
-			{
-				for(ClusterNode clusterNode : clusterNodeList)				
-					session.save(clusterNode);				
-			}
-			else
-			{
-				for(ClusterNode clusterNode : clusterNodeList)
-					session.update(clusterNode);
-			}
-		}
-		catch(Exception e)
-		{
-			clusterNodeList=null;
-			System.out.println(e.getMessage());
-			throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,"Failed to save Cluster Node : " + e.getMessage());
-		}
-		return clusterNodeList;
-	}
+    public ClusterNodeManager() throws BaseManagerException {
+        super();
+    }
+
+    /**
+     * Retrieves the ClusterNodeList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the cluster node list
+     */
+    public final ClusterNodeList retrieve(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        ClusterNodeList clusteNodeList = null;
+        try {
+            /*
+             * Retrieve Study Design for given uuid
+             */
+            StudyDesign studyDesign = get(uuid);
+            /*
+             * Retrieve Original ClusterNodeList Object
+             */
+            if (studyDesign != null) {
+                List<ClusterNode> originalList = studyDesign
+                        .getClusteringTree();
+                if (originalList != null && !originalList.isEmpty()) {
+                    clusteNodeList = new ClusterNodeList(uuid, originalList);
+                } else {
+                    /*
+                     * uuid exists but no ClusterNodeList entry present. If uuid
+                     * = null too; then it means no entry for this uuid.
+                     */
+                    clusteNodeList = new ClusterNodeList(uuid, null);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete ClusterNode object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        return clusteNodeList;
+    }
+
+    /**
+     * Deletes the ClusterNodeList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the cluster node list
+     */
+    public final ClusterNodeList delete(final byte[] uuid) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        ClusterNodeList clusteNodeList = null;
+        StudyDesign studyDesign = null;
+        try {
+            /*
+             * Retrieve Original ClusterNode Object
+             */
+            studyDesign = get(uuid);
+            if (studyDesign != null) {
+                List<ClusterNode> originalList = studyDesign
+                        .getClusteringTree();
+                /*
+                 * Delete Existing ClusterNode List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    clusteNodeList = delete(uuid, originalList);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setClusteringTree(null);
+                session.update(studyDesign);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to delete ClusterNode object for UUID '" + uuid
+                            + "': " + e.getMessage());
+        }
+        /*
+         * Return ClusterNodeList
+         */
+        return clusteNodeList;
+    }
+
+    /**
+     * Saves or updates the ClusterNodeList.
+     * 
+     * @param clusteNodeList
+     *            the cluste node list
+     * @param isCreation
+     *            the is creation
+     * @return the cluster node list
+     */
+    public final ClusterNodeList saveOrUpdate(
+            final ClusterNodeList clusteNodeList, final boolean isCreation) {
+        if (!transactionStarted) {
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Transaction has not been started.");
+        }
+        StudyDesign studyDesign = null;
+        List<ClusterNode> originalList = null;
+        ClusterNodeList newClusterNodeList = null;
+        byte[] uuid = clusteNodeList.getUuid();
+        List<ClusterNode> newList = clusteNodeList.getClusterNodeList();
+
+        try {
+            /*
+             * Retrieve Study Design Object
+             */
+            studyDesign = get(uuid);
+            if (studyDesign != null) {
+                originalList = studyDesign.getClusteringTree();
+                /*
+                 * Delete Existing ClusterNode List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    delete(uuid, originalList);
+                }
+                if (isCreation) {
+                    for (ClusterNode clusterNode : newList) {
+                        session.save(clusterNode);
+                        System.out
+                                .println("in save id: " + clusterNode.getId());
+                    }
+                } else {
+                    for (ClusterNode clusterNode : newList) {
+                        session.update(clusterNode);
+                    }
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setClusteringTree(newList);
+                session.update(studyDesign);
+                /*
+                 * Return Persisted ClusterNodeList
+                 */
+                newClusterNodeList = new ClusterNodeList(uuid, newList);
+            }
+        } catch (Exception e) {
+            newList = null;
+            System.out.println(e.getMessage());
+            throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
+                    "Failed to save ClusterNode object : " + e.getMessage());
+        }
+        return newClusterNodeList;
+    }
 
 }

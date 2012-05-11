@@ -34,8 +34,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality for MySQL table
- * RelativeGroupSize object.
+ * Manager class which provides CRUD functionality for RelativeGroupSize object.
  * 
  * @author Uttara Sakhadeo
  */
@@ -66,16 +65,26 @@ public class RelativeGroupSizeManager extends StudyDesignParentManager {
         RelativeGroupSizeList relativeGroupSizeList = null;
         try {
             /*
-             * Retrieve Original RelativeGroupSize Object
+             * Retrieve Study Design for given uuid
              */
-            List<RelativeGroupSize> originalList = get(uuid)
-                    .getRelativeGroupSizeList();
-            /*
-             * Delete Existing RelativeGroupSize List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                relativeGroupSizeList = new RelativeGroupSizeList(uuid,
-                        originalList);
+            StudyDesign studyDesign = get(uuid);
+            if (studyDesign != null) {
+                /*
+                 * Retrieve Original RelativeGroupSize Object
+                 */
+                List<RelativeGroupSize> originalList = studyDesign
+                        .getRelativeGroupSizeList();
+                if (originalList != null && !originalList.isEmpty()) {
+                    relativeGroupSizeList = new RelativeGroupSizeList(uuid,
+                            originalList);
+                } else {
+                    /*
+                     * uuid exists but no RelativeGroupSizeList entry present.
+                     * If uuid = null too; then it means no entry for this uuid.
+                     */
+                    relativeGroupSizeList = new RelativeGroupSizeList(uuid,
+                            null);
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -105,28 +114,30 @@ public class RelativeGroupSizeManager extends StudyDesignParentManager {
              * Retrieve Original RelativeGroupSize Object
              */
             studyDesign = get(uuid);
-            List<RelativeGroupSize> originalList = studyDesign
-                    .getRelativeGroupSizeList();
-            /*
-             * Delete Existing RelativeGroupSize List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                relativeGroupSizeList = delete(uuid, originalList);
+            if (studyDesign != null) {
+                List<RelativeGroupSize> originalList = studyDesign
+                        .getRelativeGroupSizeList();
+                /*
+                 * Delete Existing RelativeGroupSize List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    relativeGroupSizeList = delete(uuid, originalList);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setRelativeGroupSizeList(null);
+                session.update(studyDesign);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setRelativeGroupSizeList(null);
-            session.update(studyDesign);
-            /*
-             * Return Persisted RelativeGroupSizeList
-             */
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to delete RelativeGroupSize object for UUID '"
                             + uuid + "': " + e.getMessage());
         }
+        /*
+         * Return Deleted RelativeGroupSizeList
+         */
         return relativeGroupSizeList;
     }
 
@@ -150,8 +161,7 @@ public class RelativeGroupSizeManager extends StudyDesignParentManager {
             for (RelativeGroupSize relativeGroupSize : relativeGroupSizeList) {
                 session.delete(relativeGroupSize);
             }
-            deletedList = 
-                    new RelativeGroupSizeList(uuid, relativeGroupSizeList);
+            deletedList = new RelativeGroupSizeList(uuid, relativeGroupSizeList);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
@@ -189,33 +199,35 @@ public class RelativeGroupSizeManager extends StudyDesignParentManager {
              * Retrieve Study Design Object
              */
             studyDesign = get(uuid);
-            originalList = studyDesign.getRelativeGroupSizeList();
-            /*
-             * Delete Existing RelativeGroupSize List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                delete(uuid, originalList);
-            }
-            if (isCreation) {
-                for (RelativeGroupSize relativeGroupSize : newList) {
-                    session.save(relativeGroupSize);
-                    System.out.println("in save id: "
-                            + relativeGroupSize.getId());
+            if (studyDesign != null) {
+                originalList = studyDesign.getRelativeGroupSizeList();
+                /*
+                 * Delete Existing RelativeGroupSize List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    delete(uuid, originalList);
                 }
-            } else {
-                for (RelativeGroupSize relativeGroupSize : newList) {
-                    session.update(relativeGroupSize);
+                if (isCreation) {
+                    for (RelativeGroupSize relativeGroupSize : newList) {
+                        session.save(relativeGroupSize);
+                        System.out.println("in save id: "
+                                + relativeGroupSize.getId());
+                    }
+                } else {
+                    for (RelativeGroupSize relativeGroupSize : newList) {
+                        session.update(relativeGroupSize);
+                    }
                 }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setRelativeGroupSizeList(newList);
+                session.update(studyDesign);
+                /*
+                 * Return Persisted RelativeGroupSizeList
+                 */
+                newGroupSizeList = new RelativeGroupSizeList(uuid, newList);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setRelativeGroupSizeList(newList);
-            session.update(studyDesign);
-            /*
-             * Return Persisted RelativeGroupSizeList
-             */
-            newGroupSizeList = new RelativeGroupSizeList(uuid, newList);
         } catch (Exception e) {
             newList = null;
             System.out.println(e.getMessage());

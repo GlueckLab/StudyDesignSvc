@@ -34,8 +34,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality for MySQL table
- * StatisticalTest object.
+ * Manager class which provides CRUD functionality for StatisticalTest object.
  * 
  * @author Uttara Sakhadeo
  */
@@ -66,16 +65,25 @@ public class StatisticalTestManager extends StudyDesignParentManager {
         StatisticalTestList statisticalTestList = null;
         try {
             /*
-             * Retrieve Original StatisticalTest Object
+             * Retrieve Study Design for given uuid
              */
-            List<StatisticalTest> originalList = get(uuid)
-                    .getStatisticalTestList();
-            /*
-             * Delete Existing StatisticalTest List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                statisticalTestList = new StatisticalTestList(uuid,
-                        originalList);
+            StudyDesign studyDesign = get(uuid);
+            if (studyDesign != null) {
+                /*
+                 * Retrieve Original StatisticalTest Object
+                 */
+                List<StatisticalTest> originalList = get(uuid)
+                        .getStatisticalTestList();
+                if (originalList != null && !originalList.isEmpty()) {
+                    statisticalTestList = new StatisticalTestList(uuid,
+                            originalList);
+                } else {
+                    /*
+                     * uuid exists but no StatisticalTestList entry present. If
+                     * uuid = null too; then it means no entry for this uuid.
+                     */
+                    statisticalTestList = new StatisticalTestList(uuid, null);
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -105,28 +113,30 @@ public class StatisticalTestManager extends StudyDesignParentManager {
              * Retrieve Original StatisticalTest Object
              */
             studyDesign = get(uuid);
-            List<StatisticalTest> originalList = studyDesign
-                    .getStatisticalTestList();
-            /*
-             * Delete Existing StatisticalTest List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                statisticalTestList = delete(uuid, originalList);
+            if (studyDesign != null) {
+                List<StatisticalTest> originalList = studyDesign
+                        .getStatisticalTestList();
+                /*
+                 * Delete Existing StatisticalTest List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    statisticalTestList = delete(uuid, originalList);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setStatisticalTestList(null);
+                session.update(studyDesign);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setStatisticalTestList(null);
-            session.update(studyDesign);
-            /*
-             * Return Persisted StatisticalTestList
-             */
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to delete StatisticalTest object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
+        /*
+         * Return Deleted StatisticalTestList
+         */
         return statisticalTestList;
     }
 
@@ -188,38 +198,40 @@ public class StatisticalTestManager extends StudyDesignParentManager {
              * Retrieve Study Design Object
              */
             studyDesign = get(uuid);
-            originalList = studyDesign.getStatisticalTestList();
-            /*
-             * Delete Existing StatisticalTest List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                delete(uuid, originalList);
-            }
-            if (isCreation) {
-                for (StatisticalTest statisticalTest : newList) {
-                    session.save(statisticalTest);
-                    System.out
-                            .println("in save id: " + statisticalTest.getId());
+            if (studyDesign != null) {
+                originalList = studyDesign.getStatisticalTestList();
+                /*
+                 * Delete Existing StatisticalTest List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    delete(uuid, originalList);
                 }
-            } else {
-                for (StatisticalTest statisticalTest : newList) {
-                    session.update(statisticalTest);
+                if (isCreation) {
+                    for (StatisticalTest statisticalTest : newList) {
+                        session.save(statisticalTest);
+                        System.out.println("in save id: "
+                                + statisticalTest.getId());
+                    }
+                } else {
+                    for (StatisticalTest statisticalTest : newList) {
+                        session.update(statisticalTest);
+                    }
                 }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setStatisticalTestList(newList);
+                session.update(studyDesign);
+                /*
+                 * Return Persisted StatisticalTestList
+                 */
+                newStatisticalTestList = new StatisticalTestList(uuid, newList);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setStatisticalTestList(newList);
-            session.update(studyDesign);
-            /*
-             * Return Persisted StatisticalTestList
-             */
-            newStatisticalTestList = new StatisticalTestList(uuid, newList);
         } catch (Exception e) {
             newList = null;
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                "Failed to save StatisticalTest object : " + e.getMessage());
+                    "Failed to save StatisticalTest object : " + e.getMessage());
         }
         return newStatisticalTestList;
     }

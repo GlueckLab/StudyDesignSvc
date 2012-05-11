@@ -22,172 +22,174 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
-import java.util.List;
+import java.util.Set;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
-import edu.ucdenver.bios.webservice.common.domain.PowerMethodList;
+import edu.ucdenver.bios.webservice.common.domain.Covariance;
+import edu.ucdenver.bios.webservice.common.domain.CovarianceSet;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality for PowerMethod object.
+ * Manager class which provides CRUD functionality for CovarianceSet object.
  * 
  * @author Uttara Sakhadeo
  */
-public class PowerMethodManager extends StudyDesignParentManager {
+public class CovarianceSetManager extends StudyDesignParentManager {
 
     /**
-     * Instantiates a new power method manager.
+     * Instantiates a new covariance set manager.
      * 
      * @throws BaseManagerException
      *             the base manager exception
      */
-    public PowerMethodManager() throws BaseManagerException {
+    public CovarianceSetManager() throws BaseManagerException {
         super();
     }
 
     /**
-     * Retrieve.
+     * Retrieve CovarianceSet.
      * 
      * @param uuid
      *            the uuid
-     * @return the power method list
+     * @return the covariance set
      */
-    public final PowerMethodList retrieve(final byte[] uuid) {
+    public final CovarianceSet retrieve(final byte[] uuid) {
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
-        PowerMethodList powerMethodList = null;
+        CovarianceSet covarianceSet = null;
         try {
             /*
              * Retrieve Study Design for given uuid
              */
             StudyDesign studyDesign = get(uuid);
+            /*
+             * Retrieve Original CovarianceSet Object
+             */
             if (studyDesign != null) {
-                /*
-                 * Retrieve Original PowerMethod Object
-                 */
-                List<PowerMethod> originalList = get(uuid).getPowerMethodList();
-                if (originalList != null && !originalList.isEmpty()) {
-                    powerMethodList = new PowerMethodList(uuid, originalList);
+                Set<Covariance> originalSet = studyDesign.getCovariance();
+                if (originalSet != null && !originalSet.isEmpty()) {
+                    covarianceSet = new CovarianceSet(uuid, originalSet);
                 } else {
                     /*
-                     * uuid exists but no PowerMethodList entry present. If uuid
-                     * = null too; then it means no entry for this uuid.
+                     * uuid exists but no CovarianceSet entry present. If uuid =
+                     * null too; then it means no entry for this uuid.
                      */
-                    powerMethodList = new PowerMethodList(uuid, null);
+                    covarianceSet = new CovarianceSet(uuid, null);
                 }
             }
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                    "Failed to delete PowerMethod object for UUID '" + uuid
+                    "Failed to delete Covariance object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
-        return powerMethodList;
+        return covarianceSet;
     }
 
     /**
-     * Delete.
+     * Delete CovarianceSet.
      * 
      * @param uuid
      *            the uuid
-     * @return the power method list
+     * @return the covariance set
      */
-    public final PowerMethodList delete(final byte[] uuid) {
+    public final CovarianceSet delete(final byte[] uuid) {
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
-        PowerMethodList powerMethodList = null;
+        CovarianceSet covarianceSet = null;
         StudyDesign studyDesign = null;
         try {
             /*
-             * Retrieve Original PowerMethod Object
+             * Retrieve Original Covariance Object
              */
             studyDesign = get(uuid);
             if (studyDesign != null) {
-                List<PowerMethod> originalList = studyDesign
-                        .getPowerMethodList();
+                Set<Covariance> originalSet = studyDesign.getCovariance();
                 /*
-                 * Delete Existing PowerMethod List Object
+                 * Delete Existing Covariance Set Object
                  */
-                if (originalList != null && !originalList.isEmpty()) {
-                    powerMethodList = delete(uuid, originalList);
+                if (originalSet != null && !originalSet.isEmpty()) {
+                    covarianceSet = delete(uuid, originalSet);
                 }
                 /*
                  * Update Study Design Object
                  */
-                studyDesign.setPowerMethodList(null);
+                studyDesign.setCovariance(null);
                 session.update(studyDesign);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                    "Failed to delete PowerMethod object for UUID '" + uuid
+                    "Failed to delete Covariance object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
         /*
-         * Return Deleted PowerMethodList
+         * Return CovarianceSet
          */
-        return powerMethodList;
+        return covarianceSet;
     }
 
     /**
-     * Delete.
+     * Delete CovarianceSet.
      * 
      * @param uuid
      *            the uuid
-     * @param powerMethodList
-     *            the power method list
-     * @return the power method list
+     * @param covarianceSet
+     *            the covariance set
+     * @return the covariance set
      */
-    private PowerMethodList delete(final byte[] uuid,
-            final List<PowerMethod> powerMethodList) {
-        PowerMethodList deletedList = null;
+    private CovarianceSet delete(final byte[] uuid,
+            final Set<Covariance> covarianceSet) {
+        CovarianceSet deletedSet = null;
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
         try {
-            for (PowerMethod powerMethod : powerMethodList) {
-                session.delete(powerMethod);
+            if (covarianceSet != null && !covarianceSet.isEmpty()) {
+                for (Covariance covariance : covarianceSet) {
+                    session.delete(covariance);
+                }
             }
-            deletedList = new PowerMethodList(uuid, powerMethodList);
+            deletedSet = new CovarianceSet(uuid, covarianceSet);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                    "Failed to delete PowerMethod object for UUID '" + uuid
+                    "Failed to delete Covariance object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
-        return deletedList;
+        return deletedSet;
     }
 
     /**
-     * Save or update.
+     * Save or update CovarianceSet.
      * 
-     * @param powerMethodList
-     *            the power method list
+     * @param covarianceSet
+     *            the covariance set
      * @param isCreation
      *            the is creation
-     * @return the power method list
+     * @return the covariance set
      */
-    public final PowerMethodList saveOrUpdate(
-            final PowerMethodList powerMethodList, final boolean isCreation) {
+    public final CovarianceSet saveOrUpdate(final CovarianceSet covarianceSet,
+            final boolean isCreation) {
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
         StudyDesign studyDesign = null;
-        List<PowerMethod> originalList = null;
-        PowerMethodList newPowerMethodList = null;
-        byte[] uuid = powerMethodList.getUuid();
-        List<PowerMethod> newList = powerMethodList.getPowerMethodList();
+        Set<Covariance> originalSet = null;
+        CovarianceSet newCovarianceSet = null;
+        byte[] uuid = covarianceSet.getUuid();
+        Set<Covariance> newSet = covarianceSet.getCovarianceSet();
 
         try {
             /*
@@ -195,40 +197,38 @@ public class PowerMethodManager extends StudyDesignParentManager {
              */
             studyDesign = get(uuid);
             if (studyDesign != null) {
-                originalList = studyDesign.getPowerMethodList();
+                originalSet = studyDesign.getCovariance();
                 /*
-                 * Delete Existing PowerMethod List Object
+                 * Delete Existing Covariance Set Object
                  */
-                if (originalList != null && !originalList.isEmpty()) {
-                    delete(uuid, originalList);
+                if (originalSet != null && !originalSet.isEmpty()) {
+                    delete(uuid, originalSet);
                 }
                 if (isCreation) {
-                    for (PowerMethod powerMethod : newList) {
-                        session.save(powerMethod);
-                        System.out
-                                .println("in save id: " + powerMethod.getId());
+                    for (Covariance covariance : newSet) {
+                        session.save(covariance);
                     }
                 } else {
-                    for (PowerMethod powerMethod : newList) {
-                        session.update(powerMethod);
+                    for (Covariance covariance : newSet) {
+                        session.update(covariance);
                     }
                 }
                 /*
                  * Update Study Design Object
                  */
-                studyDesign.setPowerMethodList(newList);
+                studyDesign.setCovariance(newSet);
                 session.update(studyDesign);
                 /*
-                 * Return Persisted PowerMethodList
+                 * Return Persisted CovarianceSet
                  */
-                newPowerMethodList = new PowerMethodList(uuid, newList);
+                newCovarianceSet = new CovarianceSet(uuid, newSet);
             }
         } catch (Exception e) {
-            newList = null;
+            newCovarianceSet.setCovarianceSet(null);
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                    "Failed to save PowerMethod object : " + e.getMessage());
+                    "Failed to save Covariance object : " + e.getMessage());
         }
-        return newPowerMethodList;
+        return newCovarianceSet;
     }
 }

@@ -27,6 +27,7 @@ import java.util.List;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
+import edu.ucdenver.bios.webservice.common.domain.BetaScaleList;
 import edu.ucdenver.bios.webservice.common.domain.Quantile;
 import edu.ucdenver.bios.webservice.common.domain.QuantileList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
@@ -34,8 +35,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality for MySQL table Quantile
- * object.
+ * Manager class which provides CRUD functionality for Quantile object.
  * 
  * @author Uttara Sakhadeo
  */
@@ -66,14 +66,23 @@ public class QuantileManager extends StudyDesignParentManager {
         QuantileList quantileList = null;
         try {
             /*
-             * Retrieve Original Quantile Object
+             * Retrieve Study Design for given uuid
              */
-            List<Quantile> originalList = get(uuid).getQuantileList();
-            /*
-             * Delete Existing Quantile List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                quantileList = new QuantileList(uuid, originalList);
+            StudyDesign studyDesign = get(uuid);
+            if (studyDesign != null) {
+                /*
+                 * Retrieve Original Quantile Object
+                 */
+                List<Quantile> originalList = get(uuid).getQuantileList();
+                if (originalList != null && !originalList.isEmpty()) {
+                    quantileList = new QuantileList(uuid, originalList);
+                } else {
+                    /*
+                     * uuid exists but no QuantileList entry present. If uuid =
+                     * null too; then it means no entry for this uuid.
+                     */
+                    quantileList = new QuantileList(uuid, null);
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -103,27 +112,29 @@ public class QuantileManager extends StudyDesignParentManager {
              * Retrieve Original Quantile Object
              */
             studyDesign = get(uuid);
-            List<Quantile> originalList = studyDesign.getQuantileList();
-            /*
-             * Delete Existing Quantile List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                quantileList = delete(uuid, originalList);
+            if (studyDesign != null) {
+                List<Quantile> originalList = studyDesign.getQuantileList();
+                /*
+                 * Delete Existing Quantile List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    quantileList = delete(uuid, originalList);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setQuantileList(null);
+                session.update(studyDesign);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setQuantileList(null);
-            session.update(studyDesign);
-            /*
-             * Return Persisted QuantileList
-             */
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to delete Quantile object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
+        /*
+         * Return Persisted QuantileList
+         */
         return quantileList;
     }
 
@@ -183,32 +194,34 @@ public class QuantileManager extends StudyDesignParentManager {
              * Retrieve Study Design Object
              */
             studyDesign = get(uuid);
-            originalList = studyDesign.getQuantileList();
-            /*
-             * Delete Existing Quantile List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                delete(uuid, originalList);
-            }
-            if (isCreation) {
-                for (Quantile quantile : newList) {
-                    session.save(quantile);
-                    System.out.println("in save id: " + quantile.getId());
+            if (studyDesign != null) {
+                originalList = studyDesign.getQuantileList();
+                /*
+                 * Delete Existing Quantile List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    delete(uuid, originalList);
                 }
-            } else {
-                for (Quantile quantile : newList) {
-                    session.update(quantile);
+                if (isCreation) {
+                    for (Quantile quantile : newList) {
+                        session.save(quantile);
+                        System.out.println("in save id: " + quantile.getId());
+                    }
+                } else {
+                    for (Quantile quantile : newList) {
+                        session.update(quantile);
+                    }
                 }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setQuantileList(newList);
+                session.update(studyDesign);
+                /*
+                 * Return Persisted QuantileList
+                 */
+                newQuantileList = new QuantileList(uuid, newList);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setQuantileList(newList);
-            session.update(studyDesign);
-            /*
-             * Return Persisted QuantileList
-             */
-            newQuantileList = new QuantileList(uuid, newList);
         } catch (Exception e) {
             newList = null;
             System.out.println(e.getMessage());

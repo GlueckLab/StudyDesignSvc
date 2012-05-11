@@ -36,8 +36,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality for MySQL table Beta Scale
- * object.
+ * Manager class which provides CRUD functionality for BetaScale object.
  * 
  * @author Uttara Sakhadeo
  */
@@ -67,15 +66,25 @@ public class BetaScaleManager extends StudyDesignParentManager {
         BetaScaleList betaScaleList = null;
         try {
             /*
-             * Retrieve Original Beta Scale Object
+             * Retrieve Study Design for given uuid
              */
-            List<BetaScale> originalList = get(uuid).getBetaScaleList();
+            StudyDesign studyDesign = get(uuid);
             /*
-             * Delete Existing Beta Scale List Object
+             * Retrieve Original BetaScaleList Object
              */
-            if (originalList != null && !originalList.isEmpty()) {
-                betaScaleList = new BetaScaleList(uuid, originalList);
+            if (studyDesign != null) {
+                List<BetaScale> originalList = studyDesign.getBetaScaleList();
+                if (originalList != null && !originalList.isEmpty()) {
+                    betaScaleList = new BetaScaleList(uuid, originalList);
+                } else {
+                    /*
+                     * uuid exists but no BetaScaleList entry present. If uuid =
+                     * null too; then it means no entry for this uuid.
+                     */
+                    betaScaleList = new BetaScaleList(uuid, null);
+                }
             }
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
@@ -104,27 +113,29 @@ public class BetaScaleManager extends StudyDesignParentManager {
              * Retrieve Original Beta Scale Object
              */
             studyDesign = get(uuid);
-            List<BetaScale> originalList = studyDesign.getBetaScaleList();
-            /*
-             * Delete Existing Beta Scale List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                betaScaleList = delete(uuid, originalList);
+            if (studyDesign != null) {
+                List<BetaScale> originalList = studyDesign.getBetaScaleList();
+                /*
+                 * Delete Existing Beta Scale List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    betaScaleList = delete(uuid, originalList);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setBetaScaleList(null);
+                session.update(studyDesign);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setBetaScaleList(null);
-            session.update(studyDesign);
-            /*
-             * Return Persisted BetaScaleList
-             */
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to delete BetaScale object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
+        /*
+         * Return BetaScaleList
+         */
         return betaScaleList;
     }
 
@@ -145,8 +156,10 @@ public class BetaScaleManager extends StudyDesignParentManager {
                     "Transaction has not been started.");
         }
         try {
-            for (BetaScale betaScale : betaScaleList) {
-                session.delete(betaScale);
+            if (betaScaleList != null && !betaScaleList.isEmpty()) {
+                for (BetaScale betaScale : betaScaleList) {
+                    session.delete(betaScale);
+                }
             }
             deletedList = new BetaScaleList(uuid, betaScaleList);
         } catch (Exception e) {
@@ -184,34 +197,36 @@ public class BetaScaleManager extends StudyDesignParentManager {
              * Retrieve Study Design Object
              */
             studyDesign = get(uuid);
-            originalList = studyDesign.getBetaScaleList();
-            /*
-             * Delete Existing Beta Scale List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                delete(uuid, originalList);
-            }
-            if (isCreation) {
-                for (BetaScale betaScale : newList) {
-                    session.save(betaScale);
-                    System.out.println("in save id: " + betaScale.getId());
+            if (studyDesign != null) {
+                originalList = studyDesign.getBetaScaleList();
+                /*
+                 * Delete Existing Beta Scale List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    delete(uuid, originalList);
                 }
-            } else {
-                for (BetaScale betaScale : newList) {
-                    session.update(betaScale);
+                if (isCreation) {
+                    for (BetaScale betaScale : newList) {
+                        session.save(betaScale);
+                    }
+                } else {
+                    for (BetaScale betaScale : newList) {
+                        session.update(betaScale);
+                    }
                 }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setBetaScaleList(newList);
+                session.update(studyDesign);
+                /*
+                 * Return Persisted BetaScaleList
+                 */
+                newBetaScaleList = new BetaScaleList(uuid, newList);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setBetaScaleList(newList);
-            session.update(studyDesign);
-            /*
-             * Return Persisted BetaScaleList
-             */
-            newBetaScaleList = new BetaScaleList(uuid, newList);
         } catch (Exception e) {
             newList = null;
+            newBetaScaleList.setBetaScaleList(newList);
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to save BetaScale object : " + e.getMessage());

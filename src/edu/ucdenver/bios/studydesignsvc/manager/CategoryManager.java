@@ -32,9 +32,9 @@ import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.webservice.common.domain.Category;
 import edu.ucdenver.bios.webservice.common.domain.Category;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManager;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class CategoryManager.
  */
@@ -74,10 +74,8 @@ public class CategoryManager extends StudyDesignParentManager {
      */
 
     /**
-     * Delete a Category object by the specified UUID.
-     * 
-     * @param studyUuid
-     *            : byte[]
+     * @param uuidBytes
+     * @param categoryList
      * @return List<Category>
      */
     public List<Category> delete(byte[] uuidBytes, List<Category> categoryList) {

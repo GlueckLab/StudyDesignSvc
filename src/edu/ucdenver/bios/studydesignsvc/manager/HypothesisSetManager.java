@@ -1,25 +1,3 @@
-/*
- * Study Design Service for the GLIMMPSE Software System.  
- * This service stores study design definitions for users of the GLIMMSE interface.
- * Service contain all information related to a power or sample size calculation.  
- * The Study Design Service simplifies communication between different screens in the user interface.
- * 
- * Copyright (C) 2010 Regents of the University of Colorado.  
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
 import java.util.ArrayList;
@@ -32,7 +10,6 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
-import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
 import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
 import edu.ucdenver.bios.webservice.common.domain.HypothesisBetweenParticipantMapping;
 import edu.ucdenver.bios.webservice.common.domain.HypothesisRepeatedMeasuresMapping;
@@ -43,15 +20,15 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality for BetweenParticipantFactor
- * object.
+ * Manager class which provides CRUD functionality for HypothesisSet object.
  * 
  * @author Uttara Sakhadeo
  */
-public class BetweenParticipantFactorManager extends StudyDesignParentManager {
+public class HypothesisSetManager extends StudyDesignParentManager {
 
     /**
-     * Gets the between participant factor.
+     * A method for Returning a BetweenParticipantFactor with specified id from
+     * the list.
      * 
      * @param studyBetweenParticipantList
      *            the study between participant list
@@ -69,7 +46,8 @@ public class BetweenParticipantFactorManager extends StudyDesignParentManager {
     }
 
     /**
-     * Gets the repeated measures node.
+     * A method for Returning a RepeatedMeasuresNode with specified id from the
+     * list.
      * 
      * @param studyRepeatedMeasuresTree
      *            the study repeated measures tree
@@ -87,7 +65,8 @@ public class BetweenParticipantFactorManager extends StudyDesignParentManager {
     }
 
     /**
-     * Check between participant factor id.
+     * A method for Checking existence of a BetweenParticipantFactor object in
+     * given list.
      * 
      * @param studyBetweenParticipantList
      *            the study between participant list
@@ -105,7 +84,8 @@ public class BetweenParticipantFactorManager extends StudyDesignParentManager {
     }
 
     /**
-     * Check repeated measures node id.
+     * A method for Checking existence of a RepeatedMeasuresNode object in given
+     * list.
      * 
      * @param studyRepeatedMeasuresTree
      *            the study repeated measures tree
@@ -123,7 +103,8 @@ public class BetweenParticipantFactorManager extends StudyDesignParentManager {
     }
 
     /**
-     * Check between participant factor entry.
+     * A method for Checking existence of RepeatedMeasuresNode objects in given
+     * list.
      * 
      * @param studyBetweenParticipantList
      *            the study between participant list
@@ -133,9 +114,10 @@ public class BetweenParticipantFactorManager extends StudyDesignParentManager {
      */
     private boolean checkBetweenParticipantFactorEntry(
             List<BetweenParticipantFactor> studyBetweenParticipantList,
-            Set<Hypothesis> hypothesisSet) {
+            HypothesisSet hypothesisSet) {
         try {
-            Iterator<Hypothesis> itr = hypothesisSet.iterator();
+            Iterator<Hypothesis> itr = hypothesisSet.getHypothesisSet()
+                    .iterator();
             boolean flag = false;
             while (itr.hasNext()) {
                 Hypothesis hypothesis = itr.next();
@@ -160,19 +142,21 @@ public class BetweenParticipantFactorManager extends StudyDesignParentManager {
     }
 
     /**
-     * Check repeated measures node entry.
+     * A method for Checking existence of RepeatedMeasuresNode objects in given
+     * list.
      * 
      * @param studyRepeatedMeasuresTree
      *            the study repeated measures tree
      * @param hypothesisSet
      *            the hypothesis set
-     * @return true, if successful
+     * @return flag
      */
     private boolean checkRepeatedMeasuresNodeEntry(
             List<RepeatedMeasuresNode> studyRepeatedMeasuresTree,
-            Set<Hypothesis> hypothesisSet) {
+            HypothesisSet hypothesisSet) {
         try {
-            Iterator<Hypothesis> itr = hypothesisSet.iterator();
+            Iterator<Hypothesis> itr = hypothesisSet.getHypothesisSet()
+                    .iterator();
             boolean flag = false;
             while (itr.hasNext()) {
                 Hypothesis hypothesis = itr.next();
@@ -196,7 +180,8 @@ public class BetweenParticipantFactorManager extends StudyDesignParentManager {
     }
 
     /**
-     * Sets the entry.
+     * A method returning set of Hypothesis objects containing passed
+     * BetweenParticipantList and RepeatedMeasuresTree.
      * 
      * @param studyBetweenParticipantList
      *            the study between participant list
@@ -204,28 +189,31 @@ public class BetweenParticipantFactorManager extends StudyDesignParentManager {
      *            the study repeated measures tree
      * @param hypothesisSet
      *            the hypothesis set
-     * @return the sets the
+     * @return the hypothesis set
      */
-    private Set<Hypothesis> setEntry(
+    private HypothesisSet setEntry(
             List<BetweenParticipantFactor> studyBetweenParticipantList,
             List<RepeatedMeasuresNode> studyRepeatedMeasuresTree,
-            Set<Hypothesis> hypothesisSet) {
+            HypothesisSet hypothesisSet) {
+        HypothesisSet hpSet = new HypothesisSet(hypothesisSet.getUuid());
+        Iterator<Hypothesis> itr = hypothesisSet.getHypothesisSet().iterator();
         Set<Hypothesis> set = new HashSet<Hypothesis>();
-        Iterator<Hypothesis> itr = hypothesisSet.iterator();
 
         while (itr.hasNext()) {
             Hypothesis hypothesis = itr.next();
             List<HypothesisBetweenParticipantMapping> newBList = null;
             List<HypothesisRepeatedMeasuresMapping> newRList = null;
-            /*
-             * Update Hypothesis-BetweenParticipantFactor Mapping
-             */
             if (studyBetweenParticipantList != null
-                    && !studyBetweenParticipantList.isEmpty()) {
+                    && !studyBetweenParticipantList.isEmpty()
+                    && hypothesis.getBetweenParticipantFactorMapList() != null
+                    && !hypothesis.getBetweenParticipantFactorMapList()
+                            .isEmpty()) {
                 List<HypothesisBetweenParticipantMapping> bList = hypothesis
                         .getBetweenParticipantFactorMapList();
                 newBList = new ArrayList<HypothesisBetweenParticipantMapping>();
                 for (HypothesisBetweenParticipantMapping betweenParticipantFactorMap : bList) {
+                    // BetweenParticipantFactor b =
+                    // getBetweenParticipantFactor(studyBetweenParticipantList,betweenParticipantFactor.getId());
                     BetweenParticipantFactor b = getBetweenParticipantFactor(
                             studyBetweenParticipantList,
                             betweenParticipantFactorMap
@@ -236,11 +224,10 @@ public class BetweenParticipantFactorManager extends StudyDesignParentManager {
                     }
                 }
             }
-            /*
-             * Update Hypothesis-RepeatedMeasures Mapping
-             */
             if (studyRepeatedMeasuresTree != null
-                    && !studyRepeatedMeasuresTree.isEmpty()) {
+                    && !studyRepeatedMeasuresTree.isEmpty()
+                    && hypothesis.getRepeatedMeasuresMapTree() != null
+                    && !hypothesis.getRepeatedMeasuresMapTree().isEmpty()) {
                 List<HypothesisRepeatedMeasuresMapping> rList = hypothesis
                         .getRepeatedMeasuresMapTree();
                 newRList = new ArrayList<HypothesisRepeatedMeasuresMapping>();
@@ -256,207 +243,166 @@ public class BetweenParticipantFactorManager extends StudyDesignParentManager {
             }
             set.add(new Hypothesis(hypothesis.getType(), newBList, newRList));
         }
-        return set;
+        hpSet.setHypothesisSet(set);
+        return hpSet;
     }
 
     /**
-     * Delete BetweenParticipantFactorList.
+     * Delete.
      * 
      * @param uuid
      *            the uuid
-     * @param betweenParticipantFactorList
-     *            the between participant factor list
-     * @return the between participant factor list
+     * @param hypothesisSet
+     *            the hypothesis set
+     * @return the hypothesis set
      */
-    private BetweenParticipantFactorList delete(final byte[] uuid,
-            final List<BetweenParticipantFactor> betweenParticipantFactorList) {
-        BetweenParticipantFactorList deletedList = null;
+    private HypothesisSet delete(final byte[] uuid,
+            final Set<Hypothesis> hypothesisSet) {
+        HypothesisSet deletedSet = null;
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
         try {
-            for (BetweenParticipantFactor repeatedMeasuresNode : betweenParticipantFactorList) {
-                session.delete(repeatedMeasuresNode);
+            if (hypothesisSet != null && !hypothesisSet.isEmpty()) {
+                for (Hypothesis hypothesis : hypothesisSet) {
+                    session.delete(hypothesis);
+                }
             }
-            deletedList = new BetweenParticipantFactorList(uuid,
-                    betweenParticipantFactorList);
+            deletedSet = new HypothesisSet(uuid, hypothesisSet);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                    "Failed to delete BetweenParticipantFactor object for UUID '"
-                            + uuid + "': " + e.getMessage());
+                    "Failed to delete Hypothesis object for UUID '" + uuid
+                            + "': " + e.getMessage());
         }
-        return deletedList;
+        return deletedSet;
     }
 
     /**
-     * Instantiates a new between participant factor manager.
+     * Instantiates a new hypothesis set manager.
      * 
      * @throws BaseManagerException
      *             the base manager exception
      */
-    public BetweenParticipantFactorManager() throws BaseManagerException {
+    public HypothesisSetManager() throws BaseManagerException {
         super();
+        // TODO Auto-generated constructor stub
     }
 
     /**
-     * Retrieve BetweenParticipantFactorList.
+     * Retrieves the HypothesisSet.
      * 
      * @param uuid
      *            the uuid
-     * @return the between participant factor list
+     * @return the hypothesis set
      */
-    public final BetweenParticipantFactorList retrieve(final byte[] uuid) {
+    public final HypothesisSet retrieve(final byte[] uuid) {
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
-        BetweenParticipantFactorList betweenParticipantFactorList = null;
+        HypothesisSet hypothesisSet = null;
         try {
             /*
              * Retrieve Study Design for given uuid
              */
             StudyDesign studyDesign = get(uuid);
             /*
-             * Retrieve Original BetweenParticipantFactorList Object
+             * Retrieve Original HypothesisSet Object
              */
             if (studyDesign != null) {
-                /*
-                 * Retrieve Original BetweenParticipantFactor Objects
-                 */
-                List<BetweenParticipantFactor> originalList = studyDesign
-                        .getBetweenParticipantFactorList();
-                if (originalList != null && !originalList.isEmpty()) {
-                    betweenParticipantFactorList = new BetweenParticipantFactorList(
-                            uuid, originalList);
+                Set<Hypothesis> originalSet = studyDesign.getHypothesis();
+                if (originalSet != null && !originalSet.isEmpty()) {
+                    hypothesisSet = new HypothesisSet(uuid, originalSet);
                 } else {
                     /*
-                     * uuid exists but no BetaScaleList entry present. If uuid =
+                     * uuid exists but no HypothesisSet entry present. If uuid =
                      * null too; then it means no entry for this uuid.
                      */
-                    betweenParticipantFactorList = new BetweenParticipantFactorList(
-                            uuid, null);
+                    hypothesisSet = new HypothesisSet(uuid, null);
                 }
             }
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                    "Failed to delete BetweenParticipantFactor object for UUID '"
-                            + uuid + "': " + e.getMessage());
+                    "Failed to delete Hypothesis object for UUID '" + uuid
+                            + "': " + e.getMessage());
         }
-        return betweenParticipantFactorList;
+        return hypothesisSet;
     }
 
     /**
-     * Delete BetweenParticipantFactorList.
+     * Deletes the HypothesisSet.
      * 
      * @param uuid
      *            the uuid
-     * @return the between participant factor list
+     * @return the hypothesis set
      */
-    public final BetweenParticipantFactorList delete(final byte[] uuid) {
+    public final HypothesisSet delete(final byte[] uuid) {
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
-        BetweenParticipantFactorList betweenParticipantFactorList = null;
+        HypothesisSet hypothesisSet = null;
         StudyDesign studyDesign = null;
-        List<BetweenParticipantFactor> originalBPList = null;
-        List<RepeatedMeasuresNode> originalRPList = null;
         try {
             /*
-             * Retrieve Original BetweenParticipantFactor List Object
+             * Retrieve Original Hypothesis Object
              */
             studyDesign = get(uuid);
             if (studyDesign != null) {
-                originalBPList = studyDesign.getBetweenParticipantFactorList();
-                originalRPList = studyDesign.getRepeatedMeasuresTree();
-                if (originalBPList != null && !originalBPList.isEmpty()) {
-
-                    /*
-                     * delete corresponding hypothesis entries
-                     */
-                    /*
-                     * Set<Hypothesis> hypothesisSet =
-                     * studyDesign.getHypothesis(); if (hypothesisSet != null &&
-                     * !hypothesisSet.isEmpty()) { Iterator<Hypothesis> iterator
-                     * = hypothesisSet.iterator(); while (iterator.hasNext()) {
-                     * Hypothesis hypothesis = iterator.next(); if (hypothesis
-                     * != null) { List<HypothesisRepeatedMeasuresMapping> list =
-                     * hypothesis .getRepeatedMeasuresMapTree(); if (list !=
-                     * null && !list.isEmpty()) {
-                     * 
-                     * } } } }
-                     */
-                    /*
-                     * Check for Hypothesis-BetweenParticipant Mapping. Delete
-                     * if any such mapping exists. Keep
-                     * Hypothesis-RepeatedMeasures Mapping.
-                     */
-                    Set<Hypothesis> hypothesisSet = studyDesign.getHypothesis();
-                    if (hypothesisSet != null && !hypothesisSet.isEmpty()) {
-                        boolean flagRepeatedMeasures = checkRepeatedMeasuresNodeEntry(
-                                originalRPList, hypothesisSet);
-                        if (flagRepeatedMeasures) {
-                            hypothesisSet = setEntry(null, originalRPList,
-                                    hypothesisSet);
-                            session.update(hypothesisSet);
-                        } else {
-                            hypothesisSet = null;
-                            session.delete(hypothesisSet);
-                        }
-                        /*
-                         * Update Study Design Object
-                         */
-                        studyDesign.setHypothesis(hypothesisSet);
-                    }
-                    /*
-                     * Delete Existing BetweenParticipantFactor List Object
-                     */
-                    betweenParticipantFactorList = delete(uuid, originalBPList);
+                Set<Hypothesis> originalSet = studyDesign.getHypothesis();
+                /*
+                 * Delete Existing Hypothesis Set Object
+                 */
+                if (originalSet != null && !originalSet.isEmpty()) {
+                    hypothesisSet = delete(uuid, originalSet);
                 }
                 /*
                  * Update Study Design Object
                  */
-                studyDesign.setBetweenParticipantFactorList(null);
+                studyDesign.setHypothesis(null);
                 session.update(studyDesign);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                    "Failed to delete BetweenParticipantFactor object for UUID '"
-                            + uuid + "': " + e.getMessage());
+                    "Failed to delete Hypothesis object for UUID '" + uuid
+                            + "': " + e.getMessage());
         }
         /*
-         * Return Persisted BetweenParticipantFactorList
+         * Return HypothesisSet
          */
-        return betweenParticipantFactorList;
+        return hypothesisSet;
     }
 
     /**
-     * Save or update BetweenParticipantFactorList.
+     * Saves or updates the HypothesisSet.
      * 
-     * @param betweenParticipantFactorList
-     *            the between participant factor list
+     * @param hypothesisSet
+     *            the hypothesis set
      * @param isCreation
      *            the is creation
-     * @return the between participant factor list
+     * @return the hypothesis set
      */
-    public final BetweenParticipantFactorList saveOrUpdate(
-            final BetweenParticipantFactorList betweenParticipantFactorList,
+    public final HypothesisSet saveOrUpdate(final HypothesisSet hypothesisSet,
             final boolean isCreation) {
         if (!transactionStarted) {
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Transaction has not been started.");
         }
         StudyDesign studyDesign = null;
-        List<BetweenParticipantFactor> originalBPList = null;
-        List<RepeatedMeasuresNode> originalRPList = null;
-        BetweenParticipantFactorList newBPTree = null;
-        byte[] uuid = betweenParticipantFactorList.getUuid();
-        List<BetweenParticipantFactor> newList = betweenParticipantFactorList
-                .getBetweenParticipantFactorList();
+        Set<Hypothesis> originalSet = null;
+        Set<Hypothesis> newSet = null;
+        HypothesisSet newHypothesisSet = null;
+        boolean flagBetweenParticipant = false;
+        boolean flagRepeatedMeasures = false;
+        byte[] uuid = hypothesisSet.getUuid();
+        // Set<Hypothesis> setFromUser = hypothesisSet.getHypothesisSet();
+        List<BetweenParticipantFactor> studyBetweenParticipantList = null;
+        List<RepeatedMeasuresNode> studyRepeatedMeasuresTree = null;
 
         try {
             /*
@@ -464,66 +410,135 @@ public class BetweenParticipantFactorManager extends StudyDesignParentManager {
              */
             studyDesign = get(uuid);
             if (studyDesign != null) {
-                originalBPList = studyDesign.getBetweenParticipantFactorList();
-                originalRPList = studyDesign.getRepeatedMeasuresTree();
                 /*
-                 * Delete Existing BetweenParticipantFactor List Object
+                 * Retrieve HypothesisSet object from StudyDesign object.
                  */
-                if (originalBPList != null && !originalBPList.isEmpty()) {
-                    /*
-                     * Check for Hypothesis-BetweenParticipant Mapping. Delete
-                     * if any such mapping exists. Keep
-                     * Hypothesis-RepeatedMeasures Mapping.
-                     */
-                    Set<Hypothesis> hypothesisSet = studyDesign.getHypothesis();
-                    if (hypothesisSet != null && !hypothesisSet.isEmpty()) {
-                        boolean flagRepeatedMeasures = checkRepeatedMeasuresNodeEntry(
-                                originalRPList, hypothesisSet);
-                        if (flagRepeatedMeasures) {
-                            hypothesisSet = setEntry(null, originalRPList,
-                                    hypothesisSet);
-                            session.update(hypothesisSet);
-                        } else {
-                            hypothesisSet = null;
-                            session.delete(hypothesisSet);
-                        }
-                        /*
-                         * Update Study Design Object
-                         */
-                        studyDesign.setHypothesis(hypothesisSet);
-                    }
-                    /*
-                     * Delete BetweenParticipant Mapping
-                     */
-                    delete(uuid, originalBPList);
+                originalSet = studyDesign.getHypothesis();
+
+                /*
+                 * Delete Existing Hypothesis Set Object
+                 */
+                if (originalSet != null && !originalSet.isEmpty()) {
+                    delete(uuid, originalSet);
                 }
+
+                /*
+                 * Fetch List of BetweenParticipantFactors from existing
+                 * StudyDesign object.
+                 */
+                if (!studyDesign.getBetweenParticipantFactorList().isEmpty()) {
+                    studyBetweenParticipantList = studyDesign
+                            .getBetweenParticipantFactorList();
+                }
+                /*
+                 * Fetch List of RepeatedMeasures from existing StudyDesign
+                 * object.
+                 */
+                if (!studyDesign.getRepeatedMeasuresTree().isEmpty()) {
+                    studyRepeatedMeasuresTree = studyDesign
+                            .getRepeatedMeasuresTree();
+                }
+
+                /*
+                 * Check validity of each BetweenParticipantFactors sent through
+                 * new HypothesisSet object.
+                 */
+                if (studyBetweenParticipantList != null
+                        && !studyBetweenParticipantList.isEmpty()) {
+                    flagBetweenParticipant = checkBetweenParticipantFactorEntry(
+                            studyBetweenParticipantList, hypothesisSet);
+                }
+                /*
+                 * Check validity of each RepeatedMeasures sent through new
+                 * HypothesisSet object.
+                 */
+                if (studyRepeatedMeasuresTree != null
+                        && !studyRepeatedMeasuresTree.isEmpty()) {
+                    flagRepeatedMeasures = checkRepeatedMeasuresNodeEntry(
+                            studyRepeatedMeasuresTree, hypothesisSet);
+                }
+                /*
+                 * Update HypothesisSet object for IDs. Case : Hypothesis
+                 * involving both BetweenParticipantFactors and
+                 * RepeatedMeasures.
+                 */
+                if (flagBetweenParticipant && flagRepeatedMeasures) {
+                    // hypothesisSet =
+                    // setBetweenParticipantFactorEntry(studyBetweenParticipantList,
+                    // hypothesisSet);
+                    newHypothesisSet = setEntry(studyBetweenParticipantList,
+                            studyRepeatedMeasuresTree, hypothesisSet);
+                }
+                /*
+                 * Update HypothesisSet object for IDs. Case : Hypothesis
+                 * involving only BetweenParticipantFactors.
+                 */
+                else if (flagBetweenParticipant) {
+                    // hypothesisSet =
+                    // setBetweenParticipantFactorEntry(studyBetweenParticipantList,
+                    // hypothesisSet);
+                    newHypothesisSet = setEntry(studyBetweenParticipantList,
+                            null, hypothesisSet);
+                }
+                /*
+                 * Update HypothesisSet object for IDs. Case : Hypothesis
+                 * involving only RepeatedMeasures.
+                 */
+                else if (flagRepeatedMeasures) {
+                    // hypothesisSet =
+                    // setBetweenParticipantFactorEntry(studyBetweenParticipantList,
+                    // hypothesisSet);
+                    newHypothesisSet = setEntry(null,
+                            studyRepeatedMeasuresTree, hypothesisSet);
+                }
+                /*
+                 * Update HypothesisSet object. Case : Hypothesis involving
+                 * neither Between Participant Factors nor RepeatedMeasures.
+                 */
+                else {
+                    /*
+                     * Set basic properties.
+                     */
+                    newHypothesisSet = new HypothesisSet(
+                            hypothesisSet.getUuid());
+                    Iterator<Hypothesis> itr = hypothesisSet.getHypothesisSet()
+                            .iterator();
+                    Set<Hypothesis> set = new HashSet<Hypothesis>();
+                    /*
+                     * Iterate over set for dealing with set<Hypothesis> object
+                     */
+                    while (itr.hasNext()) {
+                        Hypothesis hypothesis = itr.next();
+                        set.add(hypothesis);
+                    }
+                    newHypothesisSet.setHypothesisSet(set);
+                }
+                if (newHypothesisSet != null)
+                    newSet = newHypothesisSet.getHypothesisSet();
                 if (isCreation) {
-                    for (BetweenParticipantFactor repeatedMeasuresNode : newList) {
-                        session.save(repeatedMeasuresNode);
+                    for (Hypothesis hypothesis : newSet) {
+                        session.save(hypothesis);
                     }
                 } else {
-                    for (BetweenParticipantFactor repeatedMeasuresNode : newList) {
-                        session.update(repeatedMeasuresNode);
+                    for (Hypothesis hypothesis : newSet) {
+                        session.update(hypothesis);
                     }
                 }
                 /*
-                 * Update Study Design Object
+                 * Update Study Design Object.
                  */
-                studyDesign.setBetweenParticipantFactorList(newList);
+                studyDesign.setHypothesis(newSet);
                 session.update(studyDesign);
-                /*
-                 * Return Persisted BetweenParticipantFactorList
-                 */
-                newBPTree = new BetweenParticipantFactorList(uuid, newList);
             }
         } catch (Exception e) {
-            newList = null;
+            newHypothesisSet.setHypothesisSet(null);
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
-                    "Failed to save BetweenParticipantFactor object : "
-                            + e.getMessage());
+                    "Failed to save Hypothesis object : " + e.getMessage());
         }
-        return newBPTree;
+        /*
+         * Return Persisted HypothesisSet.
+         */
+        return newHypothesisSet;
     }
-
 }

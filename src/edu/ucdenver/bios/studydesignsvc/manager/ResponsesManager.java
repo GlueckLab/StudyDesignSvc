@@ -34,8 +34,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality for MySQL table Responses
- * object.
+ * Manager class which provides CRUD functionality for Responses object.
  * 
  * @author Uttara Sakhadeo
  */
@@ -66,14 +65,23 @@ public class ResponsesManager extends StudyDesignParentManager {
         ResponseList responseList = null;
         try {
             /*
+             * Retrieve Study Design for given uuid
+             */
+            StudyDesign studyDesign = get(uuid);
+            /*
              * Retrieve Original ResponseList Object
              */
-            List<ResponseNode> originalList = get(uuid).getResponseList();
-            /*
-             * Delete Existing ResponseList List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                responseList = new ResponseList(uuid, originalList);
+            if (studyDesign != null) {
+                List<ResponseNode> originalList = studyDesign.getResponseList();
+                if (originalList != null && !originalList.isEmpty()) {
+                    responseList = new ResponseList(uuid, originalList);
+                } else {
+                    /*
+                     * uuid exists but no ResponseList entry present. If uuid =
+                     * null too; then it means no entry for this uuid.
+                     */
+                    responseList = new ResponseList(uuid, null);
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -103,27 +111,29 @@ public class ResponsesManager extends StudyDesignParentManager {
              * Retrieve Original ResponseList Object
              */
             studyDesign = get(uuid);
-            List<ResponseNode> originalList = studyDesign.getResponseList();
-            /*
-             * Delete Existing ResponseList List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                responseList = delete(uuid, originalList);
+            if (studyDesign != null) {
+                List<ResponseNode> originalList = studyDesign.getResponseList();
+                /*
+                 * Delete Existing ResponseList List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    responseList = delete(uuid, originalList);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setResponseList(null);
+                session.update(studyDesign);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setResponseList(null);
-            session.update(studyDesign);
-            /*
-             * Return Persisted ResponseList
-             */
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to delete ResponseNode object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
+        /*
+         * Return ResponseList
+         */
         return responseList;
     }
 
@@ -144,9 +154,10 @@ public class ResponsesManager extends StudyDesignParentManager {
                     "Transaction has not been started.");
         }
         try {
-            for (ResponseNode response : responseList) {
-                session.delete(response);
-            }
+            if (responseList != null && !responseList.isEmpty())
+                for (ResponseNode response : responseList) {
+                    session.delete(response);
+                }
             deletedList = new ResponseList(uuid, responseList);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -183,32 +194,34 @@ public class ResponsesManager extends StudyDesignParentManager {
              * Retrieve Study Design Object
              */
             studyDesign = get(uuid);
-            originalList = studyDesign.getResponseList();
-            /*
-             * Delete Existing ResponseList List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                delete(uuid, originalList);
-            }
-            if (isCreation) {
-                for (ResponseNode response : newList) {
-                    session.save(response);
-                    System.out.println("in save id: " + response.getId());
+            if (studyDesign != null) {
+                originalList = studyDesign.getResponseList();
+                /*
+                 * Delete Existing ResponseList List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    delete(uuid, originalList);
                 }
-            } else {
-                for (ResponseNode response : newList) {
-                    session.update(response);
+                if (isCreation) {
+                    for (ResponseNode response : newList) {
+                        session.save(response);
+                        System.out.println("in save id: " + response.getId());
+                    }
+                } else {
+                    for (ResponseNode response : newList) {
+                        session.update(response);
+                    }
                 }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setResponseList(newList);
+                session.update(studyDesign);
+                /*
+                 * Return Persisted ResponseList
+                 */
+                newResponseList = new ResponseList(uuid, newList);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setResponseList(newList);
-            session.update(studyDesign);
-            /*
-             * Return Persisted ResponseList
-             */
-            newResponseList = new ResponseList(uuid, newList);
         } catch (Exception e) {
             newList = null;
             System.out.println(e.getMessage());

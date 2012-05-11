@@ -36,8 +36,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality for MySQL table TypeIError
- * object.
+ * Manager class which provides CRUD functionality for TypeIError object.
  * 
  * @author Uttara Sakhadeo
  */
@@ -68,14 +67,23 @@ public class TypeIErrorManager extends StudyDesignParentManager {
         TypeIErrorList alphaList = null;
         try {
             /*
-             * Retrieve Original TypeIError Object
+             * Retrieve Study Design for given uuid
              */
-            List<TypeIError> originalList = get(uuid).getAlphaList();
-            /*
-             * Delete Existing TypeIError List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                alphaList = new TypeIErrorList(uuid, originalList);
+            StudyDesign studyDesign = get(uuid);
+            if (studyDesign != null) {
+                /*
+                 * Retrieve Original TypeIError Object
+                 */
+                List<TypeIError> originalList = studyDesign.getAlphaList();
+                if (originalList != null && !originalList.isEmpty()) {
+                    alphaList = new TypeIErrorList(uuid, originalList);
+                } else {
+                    /*
+                     * uuid exists but no TypeIErrorList entry present. If uuid
+                     * = null too; then it means no entry for this uuid.
+                     */
+                    alphaList = new TypeIErrorList(uuid, null);
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -105,27 +113,30 @@ public class TypeIErrorManager extends StudyDesignParentManager {
              * Retrieve Original TypeIError Object
              */
             studyDesign = get(uuid);
-            List<TypeIError> originalList = studyDesign.getAlphaList();
-            /*
-             * Delete Existing TypeIError List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                alphaList = delete(uuid, originalList);
+            if (studyDesign != null) {
+                List<TypeIError> originalList = studyDesign.getAlphaList();
+                /*
+                 * Delete Existing TypeIError List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    alphaList = delete(uuid, originalList);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setAlphaList(null);
+                session.update(studyDesign);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setAlphaList(null);
-            session.update(studyDesign);
-            /*
-             * Return Persisted TypeIErrorList
-             */
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to delete TypeIError object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
+        /*
+         * Return Deleted TypeIErrorList
+         */
         return alphaList;
     }
 
@@ -185,32 +196,34 @@ public class TypeIErrorManager extends StudyDesignParentManager {
              * Retrieve Study Design Object
              */
             studyDesign = get(uuid);
-            originalList = studyDesign.getAlphaList();
-            /*
-             * Delete Existing TypeIError List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                delete(uuid, originalList);
-            }
-            if (isCreation) {
-                for (TypeIError betaScale : newList) {
-                    session.save(betaScale);
-                    System.out.println("in save id: " + betaScale.getId());
+            if (studyDesign != null) {
+                originalList = studyDesign.getAlphaList();
+                /*
+                 * Delete Existing TypeIError List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    delete(uuid, originalList);
                 }
-            } else {
-                for (TypeIError betaScale : newList) {
-                    session.update(betaScale);
+                if (isCreation) {
+                    for (TypeIError betaScale : newList) {
+                        session.save(betaScale);
+                        System.out.println("in save id: " + betaScale.getId());
+                    }
+                } else {
+                    for (TypeIError betaScale : newList) {
+                        session.update(betaScale);
+                    }
                 }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setAlphaList(newList);
+                session.update(studyDesign);
+                /*
+                 * Return Persisted TypeIErrorList
+                 */
+                newAlphaList = new TypeIErrorList(uuid, newList);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setAlphaList(newList);
-            session.update(studyDesign);
-            /*
-             * Return Persisted TypeIErrorList
-             */
-            newAlphaList = new TypeIErrorList(uuid, newList);
         } catch (Exception e) {
             newList = null;
             System.out.println(e.getMessage());

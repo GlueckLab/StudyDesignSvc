@@ -34,8 +34,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Manager class which provides CRUD functionality for MySQL table NominalPower
- * object.
+ * Manager class which provides CRUD functionality for NominalPower object.
  * 
  * @author Uttara Sakhadeo
  */
@@ -66,14 +65,24 @@ public class NominalPowerManager extends StudyDesignParentManager {
         NominalPowerList nominalPowerList = null;
         try {
             /*
-             * Retrieve Original NominalPower Object
+             * Retrieve Study Design for given uuid
              */
-            List<NominalPower> originalList = get(uuid).getNominalPowerList();
-            /*
-             * Delete Existing NominalPower List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                nominalPowerList = new NominalPowerList(uuid, originalList);
+            StudyDesign studyDesign = get(uuid);
+            if (studyDesign != null) {
+                /*
+                 * Retrieve Original NominalPower Object
+                 */
+                List<NominalPower> originalList = get(uuid)
+                        .getNominalPowerList();
+                if (originalList != null && !originalList.isEmpty()) {
+                    nominalPowerList = new NominalPowerList(uuid, originalList);
+                } else {
+                    /*
+                     * uuid exists but no NominalPowerList entry present. If
+                     * uuid = null too; then it means no entry for this uuid.
+                     */
+                    nominalPowerList = new NominalPowerList(uuid, null);
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -103,27 +112,30 @@ public class NominalPowerManager extends StudyDesignParentManager {
              * Retrieve Original NominalPower Object
              */
             studyDesign = get(uuid);
-            List<NominalPower> originalList = studyDesign.getNominalPowerList();
-            /*
-             * Delete Existing NominalPower List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                nominalPowerList = delete(uuid, originalList);
+            if (studyDesign != null) {
+                List<NominalPower> originalList = studyDesign
+                        .getNominalPowerList();
+                /*
+                 * Delete Existing NominalPower List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    nominalPowerList = delete(uuid, originalList);
+                }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setNominalPowerList(null);
+                session.update(studyDesign);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setNominalPowerList(null);
-            session.update(studyDesign);
-            /*
-             * Return Persisted NominalPowerList
-             */
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResourceException(Status.CONNECTOR_ERROR_CONNECTION,
                     "Failed to delete NominalPower object for UUID '" + uuid
                             + "': " + e.getMessage());
         }
+        /*
+         * Return Deleted NominalPowerList
+         */
         return nominalPowerList;
     }
 
@@ -183,32 +195,35 @@ public class NominalPowerManager extends StudyDesignParentManager {
              * Retrieve Study Design Object
              */
             studyDesign = get(uuid);
-            originalList = studyDesign.getNominalPowerList();
-            /*
-             * Delete Existing NominalPower List Object
-             */
-            if (originalList != null && !originalList.isEmpty()) {
-                delete(uuid, originalList);
-            }
-            if (isCreation) {
-                for (NominalPower nominalPower : newList) {
-                    session.save(nominalPower);
-                    System.out.println("in save id: " + nominalPower.getId());
+            if (studyDesign != null) {
+                originalList = studyDesign.getNominalPowerList();
+                /*
+                 * Delete Existing NominalPower List Object
+                 */
+                if (originalList != null && !originalList.isEmpty()) {
+                    delete(uuid, originalList);
                 }
-            } else {
-                for (NominalPower nominalPower : newList) {
-                    session.update(nominalPower);
+                if (isCreation) {
+                    for (NominalPower nominalPower : newList) {
+                        session.save(nominalPower);
+                        System.out.println("in save id: "
+                                + nominalPower.getId());
+                    }
+                } else {
+                    for (NominalPower nominalPower : newList) {
+                        session.update(nominalPower);
+                    }
                 }
+                /*
+                 * Update Study Design Object
+                 */
+                studyDesign.setNominalPowerList(newList);
+                session.update(studyDesign);
+                /*
+                 * Return Persisted NominalPowerList
+                 */
+                newNominalPList = new NominalPowerList(uuid, newList);
             }
-            /*
-             * Update Study Design Object
-             */
-            studyDesign.setNominalPowerList(newList);
-            session.update(studyDesign);
-            /*
-             * Return Persisted NominalPowerList
-             */
-            newNominalPList = new NominalPowerList(uuid, newList);
         } catch (Exception e) {
             newList = null;
             System.out.println(e.getMessage());
