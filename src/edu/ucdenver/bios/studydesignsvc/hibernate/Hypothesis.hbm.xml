@@ -29,6 +29,9 @@
 	<typedef name="type" class="edu.ucdenver.bios.studydesignsvc.application.GenericEnumUserType">
 		<param name="enumClass">edu.ucdenver.bios.webservice.common.enums.HypothesisTypeEnum</param>
 	</typedef>
+	<typedef name="trendType" class="edu.ucdenver.bios.studydesignsvc.application.GenericEnumUserType">
+		<param name="enumClass">edu.ucdenver.bios.webservice.common.enums.HypothesisTrendTypeEnum</param>
+	</typedef>
 	
 	<class name="edu.ucdenver.bios.webservice.common.domain.Hypothesis" table="HYPOTHESIS" lazy="false">
 		<id name="id" column="id"><generator class="native"/></id>
@@ -43,7 +46,7 @@
 			<composite-element class="edu.ucdenver.bios.webservice.common.domain.HypothesisBetweenParticipantMapping">
 				<property name="type" 
 					column="trendType" 
-					type="type"
+					type="trendType"
 					not-null="false"
 					update="false"/>
 				<many-to-one name="betweenParticipantFactor" class="edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor" 
@@ -56,7 +59,7 @@
 			<composite-element class="edu.ucdenver.bios.webservice.common.domain.HypothesisRepeatedMeasuresMapping">
 				<property name="type" 
 					column="trendType" 
-					type="type"
+					type="trendType"
 					not-null="false"
 					update="false"/>
 				<many-to-one name="repeatedMeasuresNode" class="edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode" 

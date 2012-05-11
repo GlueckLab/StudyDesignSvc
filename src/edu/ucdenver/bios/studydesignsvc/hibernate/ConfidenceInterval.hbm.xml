@@ -36,8 +36,8 @@
 		<id name="id" column="id"><generator class="native"/></id>				
 		<property name="betaFixed" column="isBetaFixed"/>		
 		<property name="sigmaFixed" column="isSigmaFixed"/>
-		<property name="lowerTrailProbability" column="lowerTrailProbability"/>
-		<property name="upperTrailProbability" column="upperTrailProbability"/>
+		<property name="lowerTailProbability" column="lowerTailProbability"/>
+		<property name="upperTailProbability" column="upperTailProbability"/>
 		<property name="sampleSize" column="sampleSize"/>
 		<property name="rankOfDesignMatrix" column="rankOfDesignMatrix"/>		
 		<!--<many-to-one name="studyDesign" column="uuid" not-null="true" unique="true"/>-->
