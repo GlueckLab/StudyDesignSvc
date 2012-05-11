@@ -38,15 +38,15 @@ import edu.ucdenver.bios.webservice.common.domain.SampleSize;
 import edu.ucdenver.bios.webservice.common.domain.SampleSizeList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
- * Server Resource class for handling requests for the SampleSize object. 
- * See the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling requests for the SampleSize object. See
+ * the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-public class SampleSizeServerResource extends ServerResource 
-implements SampleSizeResource
-{
+public class SampleSizeServerResource extends ServerResource implements
+        SampleSizeResource {
     /**
      * Retrieves the SampleSizeList.
      * 
@@ -68,10 +68,10 @@ implements SampleSizeResource
         /*
          * Check : length of uuid.
          */
-        
+
         try {
             /*
-             * Delete SampleSize list.
+             * Retrieve SampleSize list.
              */
             sampleSizeManager = new SampleSizeManager();
             sampleSizeManager.beginTransaction();
@@ -107,8 +107,8 @@ implements SampleSizeResource
     /**
      * Creates the SampleSizeList.
      * 
-     * @param list
-     *            the list
+     * @param sampleSizeList
+     *            the sample size list
      * @return the sample size list
      */
     @Post("application/json")
@@ -131,13 +131,14 @@ implements SampleSizeResource
                     "no Beta Scale specified");
         }
         try {
-        /*
-         * Save SampleSize list.
-         */
-        sampleSizeManager = new SampleSizeManager();
-        sampleSizeManager.beginTransaction();
-            sampleSizeList = sampleSizeManager.saveOrUpdate(sampleSizeList, true);
-        sampleSizeManager.commit();
+            /*
+             * Save SampleSize list.
+             */
+            sampleSizeManager = new SampleSizeManager();
+            sampleSizeManager.beginTransaction();
+            sampleSizeList = sampleSizeManager.saveOrUpdate(sampleSizeList,
+                    true);
+            sampleSizeManager.commit();
 
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
@@ -168,8 +169,8 @@ implements SampleSizeResource
     /**
      * Updates the SampleSizeList.
      * 
-     * @param list
-     *            the list
+     * @param sampleSizeList
+     *            the sample size list
      * @return the sample size list
      */
     @Put("application/json")

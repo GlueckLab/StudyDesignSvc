@@ -34,67 +34,52 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.UuidMatrix;
 import edu.ucdenver.bios.webservice.common.domain.UuidMatrixName;
 
+// TODO: Auto-generated Javadoc
 /**
- * Generic Resource class for handling requests for the
- * domain list object of a NamedMatrix.
- * See the StudyDesignApplication class for URI mappings
- *
+ * Generic Resource class for handling requests for the domain list object of a
+ * NamedMatrix. See the StudyDesignApplication class for URI mappings
+ * 
  * @author Uttara Sakhadeo
  */
 public interface MatrixResource {
 
-    
-     /**
-     * Retrieve the object for the specified UUID.
-     * Returns "not found" if no matching Object is available.
-     *
-     * @param uuid the uuid
-     * @param name the name
-     * @return Object for specified UUID
-     */
-     @Get("application/json")
-     NamedMatrix retrieve(UuidMatrixName uuidName);
-
-    
     /**
-     * Store Matrix object to the database.
-     *
-     * @param uuid the uuid
-     * @param namedMatrix the named matrix
-     * @return updated Object.
+     * Retrieves the NamedMatrix.
+     * 
+     * @param uuidName
+     *            the uuid name
+     * @return the named matrix
      */
-     @Post("application/json")
-     NamedMatrix create(UuidMatrix uuidMatrix);
+    @Get("application/json")
+    NamedMatrix retrieve(UuidMatrixName uuidName);
 
     /**
-     * Update the specified object. If there is no
-     * object set for specified UUID ,  then this object
-     * will be treated as new and a UUID assigned.
-     *
-     * @param uuid the uuid
-     * @param namedMatrix the named matrix
-     * @return Object
+     * Creates the NamedMatrix.
+     * 
+     * @param uuidMatrix
+     *            the uuid matrix
+     * @return the named matrix
+     */
+    @Post("application/json")
+    NamedMatrix create(UuidMatrix uuidMatrix);
+
+    /**
+     * Updates the NamedMatrix.
+     * 
+     * @param uuidMatrix
+     *            the uuid matrix
+     * @return the named matrix
      */
     @Put("application/json")
     NamedMatrix update(UuidMatrix uuidMatrix);
 
     /**
-     * Delete the NamedMatrix object with the specified UUID.
-     *
-     * @param uuid of the object to remove
-     * @param name the name
-     * @return the deleted object
+     * Removes the NamedMatrix.
+     * 
+     * @param uuidName
+     *            the uuid name
+     * @return the named matrix
      */
     @Delete("application/json")
     NamedMatrix remove(UuidMatrixName uuidName);
-
-     
-     /**
-      * Delete the NamedMatrix object with the specified UUID.
-      *
-      * @param studyDesign from which object is to be removed
-      * @param name the name
-      * @return the deleted object
-      */
-     NamedMatrix removeFrom(StudyDesign studyDesign , String name);
 }

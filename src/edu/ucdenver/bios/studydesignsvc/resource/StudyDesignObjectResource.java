@@ -47,270 +47,196 @@ import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
- * Resource class for handling requests for the complete 
- * study design object. 
+ * Resource class for handling requests for the complete study design object.
  * See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-public class StudyDesignObjectResource extends ServerResource
-{
-	private static Logger logger = StudyDesignLogger.getInstance();
-	private UUID studyUUID = null;
-	
-	/**
-	 * Create a new resource to handle list requests.  Data
-	 * is returned as XML.
-	 * 
-	 * @param context restlet context
-	 * @param request http request object
-	 * @param response http response object
-	 */
-   /* public StudyDesignObjectResource(Context context, Request request, Response response) 
-    {
-        //super(context, request, response);
-    	//super();
-        //getVariants().add(new Variant(MediaType.APPLICATION_XML));
-        // Determine UUID from URL
-        this.studyUUID = UUID.fromString(request.getAttributes().get(StudyDesignConstants.TAG_STUDY_UUID).toString());         
-    }*/
-	/*public StudyDesignObjectResource()
-	{
-		getVariants().add(new Variant(MediaType.APPLICATION_JSON));		
-	}*/
-    
-	 /**
+public class StudyDesignObjectResource extends ServerResource {
+
+    /** The logger. */
+    private static Logger logger = StudyDesignLogger.getInstance();
+
+    /** The study uuid. */
+    private UUID studyUUID = null;
+
+    /**
+     * Create a new resource to handle list requests. Data is returned as XML.
+     * 
+     * @param studyDesign
+     *            the study design
+     * @return the study design
+     * @throws ResourceException
+     *             the resource exception
+     */
+    /*
+     * public StudyDesignObjectResource(Context context, Request request,
+     * Response response) { //super(context, request, response); //super();
+     * //getVariants().add(new Variant(MediaType.APPLICATION_XML)); // Determine
+     * UUID from URL this.studyUUID =
+     * UUID.fromString(request.getAttributes().get
+     * (StudyDesignConstants.TAG_STUDY_UUID).toString()); }
+     */
+    /*
+     * public StudyDesignObjectResource() { getVariants().add(new
+     * Variant(MediaType.APPLICATION_JSON)); }
+     */
+
+    /**
      * Process a GET request to Return a full representation of a given variant.
-     * Please see REST API documentation for details on the entity 
-     * body format.
+     * Please see REST API documentation for details on the entity body format.
      * 
-     * @param entity variant
-     */ 
-	/*@Get
-    public JsonRepresentation read() throws ResourceException
-    {		
-		StudyDesignManager manager = null;
-		StudyDesign studyDesign = null; 
-		try
-		{
-			this.studyUUID = UUID.fromString((this.getRequest().getAttributes().get(StudyDesignConstants.TAG_STUDY_UUID).toString()));
-			//System.out.println(this.studyUUID);
-			studyDesign=new StudyDesign(this.studyUUID);			
-			manager = new StudyDesignManager();
-			manager.beginTransaction();			
-				List<UUID> list = manager.getStudyUUIDs();			
-				if(list!=null)
-				{
-					System.out.println(list.toString());
-				}
-				else
-				{
-					System.out.println("empty list");
-				}	
-			manager.commit();
-		}
-		catch(ResourceException e)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: "+e.getMessage());
-			if(manager!=null)
-			{
-				try
-				{manager.rollback();}				
-				catch(ResourceException re)
-				{studyDesign = null;}				
-			}
-		}				
-		//return JSONObject.fromObject(studyDesign);
-		JSONObject obj = new JSONObject(studyDesign);
-		return obj;		
-		//return JSONObject.fromObject(studyDesign);
-		JsonRepresentation jsonRep = new JsonRepresentation(studyDesign);
-		return jsonRep;		
-    }*/
-	/*@Get
-    public StudyDesign read() throws ResourceException
-    {		
-		StudyDesignManager manager = null;
-		StudyDesign studyDesign = null; 
-		try
-		{
-			this.studyUUID = UUID.fromString((this.getRequest().getAttributes().get(StudyDesignConstants.TAG_STUDY_UUID).toString()));
-			//System.out.println(this.studyUUID);
-			studyDesign=new StudyDesign(this.studyUUID);			
-			manager = new StudyDesignManager();
-			manager.beginTransaction();			
-				List<UUID> list = manager.getStudyUUIDs();			
-				if(list!=null)
-				{
-					System.out.println(list.toString());
-				}
-				else
-				{
-					System.out.println("empty list");
-				}	
-			manager.commit();
-		}
-		catch(ResourceException e)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: "+e.getMessage());
-			if(manager!=null)
-			{
-				try
-				{manager.rollback();}				
-				catch(ResourceException re)
-				{studyDesign = null;}				
-			}
-		}						
-		return studyDesign;	
-    }*/
-		
-	 /**
-     * Process a DELETE request to delete a 'Study Design Object' from the data base.
-     * Please see REST API documentation for details on the entity 
-     * body format.
+     * @param entity
+     *            variant
+     */
+    /*
+     * @Get public JsonRepresentation read() throws ResourceException {
+     * StudyDesignManager manager = null; StudyDesign studyDesign = null; try {
+     * this.studyUUID =
+     * UUID.fromString((this.getRequest().getAttributes().get(StudyDesignConstants
+     * .TAG_STUDY_UUID).toString())); //System.out.println(this.studyUUID);
+     * studyDesign=new StudyDesign(this.studyUUID); manager = new
+     * StudyDesignManager(); manager.beginTransaction(); List<UUID> list =
+     * manager.getStudyUUIDs(); if(list!=null) {
+     * System.out.println(list.toString()); } else {
+     * System.out.println("empty list"); } manager.commit(); }
+     * catch(ResourceException e) { StudyDesignLogger.getInstance().error(
+     * "StudyDesignResource.read - Failed to load UUIDs from database: "
+     * +e.getMessage()); if(manager!=null) { try {manager.rollback();}
+     * catch(ResourceException re) {studyDesign = null;} } } //return
+     * JSONObject.fromObject(studyDesign); JSONObject obj = new
+     * JSONObject(studyDesign); return obj; //return
+     * JSONObject.fromObject(studyDesign); JsonRepresentation jsonRep = new
+     * JsonRepresentation(studyDesign); return jsonRep; }
+     */
+    /*
+     * @Get public StudyDesign read() throws ResourceException {
+     * StudyDesignManager manager = null; StudyDesign studyDesign = null; try {
+     * this.studyUUID =
+     * UUID.fromString((this.getRequest().getAttributes().get(StudyDesignConstants
+     * .TAG_STUDY_UUID).toString())); //System.out.println(this.studyUUID);
+     * studyDesign=new StudyDesign(this.studyUUID); manager = new
+     * StudyDesignManager(); manager.beginTransaction(); List<UUID> list =
+     * manager.getStudyUUIDs(); if(list!=null) {
+     * System.out.println(list.toString()); } else {
+     * System.out.println("empty list"); } manager.commit(); }
+     * catch(ResourceException e) { StudyDesignLogger.getInstance().error(
+     * "StudyDesignResource.read - Failed to load UUIDs from database: "
+     * +e.getMessage()); if(manager!=null) { try {manager.rollback();}
+     * catch(ResourceException re) {studyDesign = null;} } } return studyDesign;
+     * }
+     */
+
+    /**
+     * Process a DELETE request to delete a 'Study Design Object' from the data
+     * base. Please see REST API documentation for details on the entity body
+     * format.
      * 
-     * @param entity HTTP entity body for the request
-     * @return 
-     */    
-   /* @Delete
-    public StudyDesign remove()
-    {    
-    	StudyDesignManager manager = null;
-		StudyDesign studyDesign = null; 
-		try
-		{
-			this.studyUUID = UUID.fromString((this.getRequest().getAttributes().get(StudyDesignConstants.TAG_STUDY_UUID).toString()));
-			//System.out.println(this.studyUUID);
-			studyDesign=new StudyDesign(this.studyUUID);			
-			manager = new StudyDesignManager();
-			manager.beginTransaction();			
-				studyDesign=manager.deleteStudyDesign(studyUUID);			
-			manager.commit();
-		}
-		catch(ResourceException e)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: "+e.getMessage());
-			if(manager!=null)
-			{
-				try
-				{manager.rollback();}				
-				catch(ResourceException re)
-				{studyDesign = null;}
-				
-			}
-		}		
-		return studyDesign;
-    }*/
-    
+     * @param entity
+     *            HTTP entity body for the request
+     * @return
+     */
+    /*
+     * @Delete public StudyDesign remove() { StudyDesignManager manager = null;
+     * StudyDesign studyDesign = null; try { this.studyUUID =
+     * UUID.fromString((this
+     * .getRequest().getAttributes().get(StudyDesignConstants
+     * .TAG_STUDY_UUID).toString())); //System.out.println(this.studyUUID);
+     * studyDesign=new StudyDesign(this.studyUUID); manager = new
+     * StudyDesignManager(); manager.beginTransaction();
+     * studyDesign=manager.deleteStudyDesign(studyUUID); manager.commit(); }
+     * catch(ResourceException e) { StudyDesignLogger.getInstance().error(
+     * "StudyDesignResource.read - Failed to load UUIDs from database: "
+     * +e.getMessage()); if(manager!=null) { try {manager.rollback();}
+     * catch(ResourceException re) {studyDesign = null;}
+     * 
+     * } } return studyDesign; }
+     */
+
     /**
      * Process a PUT request to update a 'Study Design Object' in the data base.
-     * Please see REST API documentation for details on the entity 
-     * body format.
+     * Please see REST API documentation for details on the entity body format.
      * PUT works as create/update
-     * @param entity HTTP entity body for the request
+     * 
+     * @param entity
+     *            HTTP entity body for the request
      */
     @Put
-    public StudyDesign update(StudyDesign studyDesign)
-    throws ResourceException 
-    {    	
-    	StudyDesignManager manager = null;		
-		try
-		{
-			manager = new StudyDesignManager();
-			manager.beginTransaction();				
-				manager.saveOrUpdate(studyDesign, false);
-			manager.commit();
-		}
-		catch(BaseManagerException bme)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: " + bme.getMessage());
-			if(manager!=null)
-			{
-				try {manager.rollback();}				
-				catch(BaseManagerException re)
-				{studyDesign = null;}
-			}
-		}	
-		catch(StudyDesignException sde)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: " + sde.getMessage());
-			if(manager!=null)
-			{
-				try {manager.rollback();}				
-				catch(BaseManagerException re)
-				{studyDesign = null;}
-			}
-		}		
-		return studyDesign;
+    public StudyDesign update(StudyDesign studyDesign) throws ResourceException {
+        StudyDesignManager manager = null;
+        try {
+            manager = new StudyDesignManager();
+            manager.beginTransaction();
+            manager.saveOrUpdate(studyDesign, false);
+            manager.commit();
+        } catch (BaseManagerException bme) {
+            StudyDesignLogger.getInstance().error(
+                    "StudyDesignResource.read - Failed to load UUIDs from database: "
+                            + bme.getMessage());
+            if (manager != null) {
+                try {
+                    manager.rollback();
+                } catch (BaseManagerException re) {
+                    studyDesign = null;
+                }
+            }
+        } catch (StudyDesignException sde) {
+            StudyDesignLogger.getInstance().error(
+                    "StudyDesignResource.read - Failed to load UUIDs from database: "
+                            + sde.getMessage());
+            if (manager != null) {
+                try {
+                    manager.rollback();
+                } catch (BaseManagerException re) {
+                    studyDesign = null;
+                }
+            }
+        }
+        return studyDesign;
     }
-	
+
     /**
-     * Process a POST request to store a List in data base.
-     * Please see REST API documentation for details on the entity 
-     * body format.
+     * Process a POST request to store a List in data base. Please see REST API
+     * documentation for details on the entity body format.
      * 
-     * @param entity HTTP entity body for the request
+     * @param entity
+     *            HTTP entity body for the request
      */
-    /*@Post     
-    public StudyDesign create(JsonRepresentation jsonStudyDesign)
-    {  
-    	StudyDesignManager manager = null;
-    	//StudyDesign studyDesign = (StudyDesign)JSONObject.toBean(jsonStudyDesign);
-    	
-    	JsonConverter converter = new JsonConverter();
-    	StudyDesign studyDesign = (StudyDesign)converter.toObject(jsonStudyDesign, StudyDesign.class,);
-    	try
-		{
-			manager = new StudyDesignManager();
-			manager.beginTransaction();
-				studyDesign.generateUUID();
-				manager.saveOrUpdateStudyDesign(studyDesign, true);
-			manager.commit();
-		}
-		catch(ResourceException e)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: "+e.getMessage());
-			if(manager!=null)
-			{
-				try
-				{manager.rollback();}				
-				catch(ResourceException re)
-				{studyDesign = null;}				
-			}
-		}		
-    	
-		return studyDesign;
-    }*/
-    /*@Post 
-    public StudyDesign create(JsonRepresentation jsonStudyDesign)
-    {  
-    	StudyDesignManager manager = null;
-    	//StudyDesign studyDesign = (StudyDesign)JSONObject.toBean(jsonStudyDesign);
-    	StudyDesign studyDesign = null; 	
-    	try
-		{
-    		JSONObject jsonObject= jsonStudyDesign.getJsonObject();
-    		
-    		//studyDesign = new ObjectMapper().readValue(jsonStudyDesign.getJsonObject(), StudyDesign.class);
-			manager = new StudyDesignManager();
-			manager.beginTransaction();
-				studyDesign.generateUUID();
-				manager.saveOrUpdateStudyDesign(studyDesign, true);
-			manager.commit();
-		}
-		catch(ResourceException e)
-		{
-			StudyDesignLogger.getInstance().error("StudyDesignResource.read - Failed to load UUIDs from database: "+e.getMessage());
-			if(manager!=null)
-			{
-				try
-				{manager.rollback();}				
-				catch(ResourceException re)
-				{studyDesign = null;}				
-			}
-		}	    	
-    	
-		return studyDesign;
-    }*/
+    /*
+     * @Post public StudyDesign create(JsonRepresentation jsonStudyDesign) {
+     * StudyDesignManager manager = null; //StudyDesign studyDesign =
+     * (StudyDesign)JSONObject.toBean(jsonStudyDesign);
+     * 
+     * JsonConverter converter = new JsonConverter(); StudyDesign studyDesign =
+     * (StudyDesign)converter.toObject(jsonStudyDesign, StudyDesign.class,); try
+     * { manager = new StudyDesignManager(); manager.beginTransaction();
+     * studyDesign.generateUUID(); manager.saveOrUpdateStudyDesign(studyDesign,
+     * true); manager.commit(); } catch(ResourceException e) {
+     * StudyDesignLogger.getInstance().error(
+     * "StudyDesignResource.read - Failed to load UUIDs from database: "
+     * +e.getMessage()); if(manager!=null) { try {manager.rollback();}
+     * catch(ResourceException re) {studyDesign = null;} } }
+     * 
+     * return studyDesign; }
+     */
+    /*
+     * @Post public StudyDesign create(JsonRepresentation jsonStudyDesign) {
+     * StudyDesignManager manager = null; //StudyDesign studyDesign =
+     * (StudyDesign)JSONObject.toBean(jsonStudyDesign); StudyDesign studyDesign
+     * = null; try { JSONObject jsonObject= jsonStudyDesign.getJsonObject();
+     * 
+     * //studyDesign = new
+     * ObjectMapper().readValue(jsonStudyDesign.getJsonObject(),
+     * StudyDesign.class); manager = new StudyDesignManager();
+     * manager.beginTransaction(); studyDesign.generateUUID();
+     * manager.saveOrUpdateStudyDesign(studyDesign, true); manager.commit(); }
+     * catch(ResourceException e) { StudyDesignLogger.getInstance().error(
+     * "StudyDesignResource.read - Failed to load UUIDs from database: "
+     * +e.getMessage()); if(manager!=null) { try {manager.rollback();}
+     * catch(ResourceException re) {studyDesign = null;} } }
+     * 
+     * return studyDesign; }
+     */
 }

@@ -38,6 +38,7 @@ import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSizeList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Server Resource class for handling requests for the Relative Group Size
  * object. See the StudyDesignApplication class for URI mappings
@@ -70,7 +71,7 @@ public class RelativeGroupSizeServerResource extends ServerResource implements
 
         try {
             /*
-             * Delete RelativeGroupSize list.
+             * Retrieve RelativeGroupSize list.
              */
             relativeGroupSizeManager = new RelativeGroupSizeManager();
             relativeGroupSizeManager.beginTransaction();
@@ -106,8 +107,8 @@ public class RelativeGroupSizeServerResource extends ServerResource implements
     /**
      * Creates the RelativeGroupSizeList.
      * 
-     * @param relativeGroupSizeList
-     *            the relative group size list
+     * @param relatuveGPList
+     *            the relatuve gp list
      * @return the relative group size list
      */
     @Post("application/json")
@@ -170,8 +171,8 @@ public class RelativeGroupSizeServerResource extends ServerResource implements
     /**
      * Updates the RelativeGroupSizeList.
      * 
-     * @param relativeGroupSizeList
-     *            the relative group size list
+     * @param relatuveGPList
+     *            the relatuve gp list
      * @return the relative group size list
      */
     @Put("application/json")

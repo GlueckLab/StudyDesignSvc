@@ -49,7 +49,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class BetaScaleServerResource extends ServerResource implements
         BetaScaleResource {
-
+    
     /**
      * Retrieves the Beta Scale List.
      * 
@@ -74,11 +74,11 @@ public class BetaScaleServerResource extends ServerResource implements
         
         try {
             /*
-             * Delete beta scale list.
+             * Retrieve beta scale list.
              */
             betaScaleManager = new BetaScaleManager();
             betaScaleManager.beginTransaction();
-            betaScaleList = betaScaleManager.retrieve(uuid);
+                betaScaleList = betaScaleManager.retrieve(uuid);
             betaScaleManager.commit();
 
         } catch (BaseManagerException bme) {

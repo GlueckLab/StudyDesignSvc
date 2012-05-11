@@ -24,6 +24,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.List;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -33,60 +35,52 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.ClusterNodeManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNodeList;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Server Resource class for handling requests for the Cluster Node object. See
  * the StudyDesignApplication class for URI mappings
- *
+ * 
  * @author Uttara Sakhadeo
  */
-public class ClusterNodeServerResource extends ServerResource 
-implements ClusterNodeResource {
-    /** The cluster node manager. */
-    private ClusterNodeManager clusterNodeManager = null;
-
-    /** The study design manager. */
-    private StudyDesignManager studyDesignManager = null;
-
-    /** The uuid flag. */
-    private boolean uuidFlag;
+public class ClusterNodeServerResource extends ServerResource implements
+        ClusterNodeResource {
 
     /**
-     * Retrieve a ClusterNode object for specified UUID.
-     *
+     * Retrieve the ClusterNodeList.
+     * 
      * @param uuid
      *            the uuid
-     * @return ClusterNodeList
+     * @return the cluster node list
      */
     @Get("application/json")
     public final ClusterNodeList retrieve(final byte[] uuid) {
+        ClusterNodeManager clusterNodeManager = null;
         ClusterNodeList clusterNodeList = null;
+        /*
+         * Check : empty uuid.
+         */
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
+        /*
+         * Check : length of uuid.
+         */
+
         try {
             /*
-             * ---------------------------------------------------- Check for
-             * existence of a UUID in Study Design object
-             * ----------------------------------------------------
+             * Retrieve ClusterNode list.
              */
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
-                StudyDesign studyDesign = studyDesignManager.get(uuid);
-                if (studyDesign != null) {
-                    clusterNodeList = new ClusterNodeList(uuid,studyDesign.getClusteringTree());
-                }
-            }
-            studyDesignManager.commit();
+            clusterNodeManager = new ClusterNodeManager();
+            clusterNodeManager.beginTransaction();
+            clusterNodeList = clusterNodeManager.retrieve(uuid);
+            clusterNodeManager.commit();
+
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
             StudyDesignLogger.getInstance().error(bme.getMessage());
@@ -98,12 +92,12 @@ implements ClusterNodeResource {
                 }
             }
             clusterNodeList = null;
-        } catch (StudyDesignException sde) {
-            System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error(sde.getMessage());
-            if (studyDesignManager != null) {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (clusterNodeManager != null) {
                 try {
-                    studyDesignManager.rollback();
+                    clusterNodeManager.rollback();
                 } catch (BaseManagerException re) {
                     clusterNodeList = null;
                 }
@@ -114,71 +108,41 @@ implements ClusterNodeResource {
     }
 
     /**
-     * Create a ClusterNode object for specified UUID.
-     *
-     * @param uuid
-     *            the uuid
+     * Creates the ClusterNodeList.
+     * 
      * @param clusterNodeList
      *            the cluster node list
-     * @return ClusterNodeList
+     * @return the cluster node list
      */
     @Post("application/json")
-    public final ClusterNodeList create(
-            ClusterNodeList clusterNodeList) {
-        StudyDesign studyDesign = null;
+    public final ClusterNodeList create(ClusterNodeList clusterNodeList) {
+        ClusterNodeManager clusterNodeManager = null;
         byte[] uuid = clusterNodeList.getUuid();
+        /*
+         * Check : empty uuid.
+         */
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
+        /*
+         * Check : empty ClusterNode list.
+         */
+        List<ClusterNode> list = clusterNodeList.getClusterNodeList();
+        if (list == null || list.isEmpty()) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Beta Scale specified");
+        }
         try {
             /*
-             * ----------------------------------------------------
-             * Check for existence of a UUID in Study Design object
-             * ----------------------------------------------------
+             * Save ClusterNode list.
              */
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
-                studyDesign = studyDesignManager.get(uuid);
-            } else {
-                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                        "no study design UUID specified");
-            }
-            studyDesignManager.commit();
-            /*
-             * ----------------------------------------------------
-             * Remove existing ClusterNode for this object
-             * ----------------------------------------------------
-             */
-            if (uuidFlag && !studyDesign.getClusteringTree().isEmpty()) {
-                removeFrom(studyDesign);
-            }
-            /*
-             * ----------------------------------------------------
-             * Save new ClusterNode List object
-             * ----------------------------------------------------
-             */
-            if (uuidFlag) {
-                /*
-                 * clusterNodeManager = new ClusterNodeManager();
-                 * clusterNodeManager.beginTransaction();
-                 * clusterNodeManager.saveOrUpdate(clusterNodeList, true);
-                 * clusterNodeManager.commit();
-                 */
-                /*
-                 * ---------------------------------------------------- Set
-                 * reference of ClusterNode Object to Study Design object
-                 * ----------------------------------------------------
-                 */
-                studyDesign.setClusteringTree(clusterNodeList.getClusterNodeList());
-                studyDesignManager = new StudyDesignManager();
-                studyDesignManager.beginTransaction();
-                studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
-                        false);
-                studyDesignManager.commit();
-            }
+            clusterNodeManager = new ClusterNodeManager();
+            clusterNodeManager.beginTransaction();
+            clusterNodeList = clusterNodeManager.saveOrUpdate(clusterNodeList,
+                    true);
+            clusterNodeManager.commit();
+
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
             StudyDesignLogger.getInstance().error(bme.getMessage());
@@ -190,12 +154,12 @@ implements ClusterNodeResource {
                 }
             }
             clusterNodeList = null;
-        } catch (StudyDesignException sde) {
-            System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error(sde.getMessage());
-            if (studyDesignManager != null) {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (clusterNodeManager != null) {
                 try {
-                    studyDesignManager.rollback();
+                    clusterNodeManager.rollback();
                 } catch (BaseManagerException re) {
                     clusterNodeList = null;
                 }
@@ -206,63 +170,44 @@ implements ClusterNodeResource {
     }
 
     /**
-     * Update a ClusterNode object for specified UUID.
-     *
-     * @param uuid
-     *            the uuid
+     * Update the ClusterNodeList.
+     * 
      * @param clusterNodeList
      *            the cluster node list
-     * @return ClusterNodeList
+     * @return the cluster node list
      */
     @Put("application/json")
-    public final ClusterNodeList update(
-            final ClusterNodeList clusterNodeList) {
+    public final ClusterNodeList update(final ClusterNodeList clusterNodeList) {
         return create(clusterNodeList);
     }
 
     /**
-     * Delete a ClusterNode object for specified UUID.
-     *
+     * Removes the ClusterNodeList.
+     * 
      * @param uuid
      *            the uuid
-     * @return ClusterNodeList
+     * @return the cluster node list
      */
     @Delete("application/json")
     public final ClusterNodeList remove(final byte[] uuid) {
+        ClusterNodeManager clusterNodeManager = null;
         ClusterNodeList clusterNodeList = null;
-        StudyDesign studyDesign = null;
+        /*
+         * Check : empty uuid.
+         */
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
         try {
             /*
-             * ---------------------------------------------------- Check for
-             * existence of a UUID in Study Design object
-             * ----------------------------------------------------
+             * Delete ClusterNode list.
              */
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
-                studyDesign = studyDesignManager.get(uuid);
-                if (studyDesign != null) {
-                    clusterNodeList = new ClusterNodeList(uuid,studyDesign.getClusteringTree());
-                }
-            }
-            studyDesignManager.commit();
-            /*
-             * ---------------------------------------------------- Remove
-             * existing ClusterNode objects for this object
-             * ----------------------------------------------------
-             */
-            if (!clusterNodeList.getClusterNodeList().isEmpty()) {
-                clusterNodeManager = new ClusterNodeManager();
-                clusterNodeManager.beginTransaction();
-                clusterNodeList = new ClusterNodeList(clusterNodeManager.delete(uuid,
-                        clusterNodeList.getClusterNodeList()));
-                clusterNodeManager.commit();
-            }
+            clusterNodeManager = new ClusterNodeManager();
+            clusterNodeManager.beginTransaction();
+            clusterNodeList = clusterNodeManager.delete(uuid);
+            clusterNodeManager.commit();
+
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
             StudyDesignLogger.getInstance().error(bme.getMessage());
@@ -274,12 +219,12 @@ implements ClusterNodeResource {
                 }
             }
             clusterNodeList = null;
-        } catch (StudyDesignException sde) {
-            System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error(sde.getMessage());
-            if (studyDesignManager != null) {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (clusterNodeManager != null) {
                 try {
-                    studyDesignManager.rollback();
+                    clusterNodeManager.rollback();
                 } catch (BaseManagerException re) {
                     clusterNodeList = null;
                 }
@@ -289,41 +234,4 @@ implements ClusterNodeResource {
         return clusterNodeList;
     }
 
-    /**
-     * Delete a ClusterNode object for specified Study Design.
-     *
-     * @param studyDesign
-     *            the study design
-     * @return ClusterNodeList
-     */
-    public final ClusterNodeList removeFrom(final StudyDesign studyDesign) {
-        ClusterNodeList clusteringTree = null;
-        try {
-            clusterNodeManager = new ClusterNodeManager();
-            clusterNodeManager.beginTransaction();
-            clusteringTree = new ClusterNodeList(studyDesign.getUuid(),
-                    clusterNodeManager.delete(studyDesign.getUuid(),
-                    studyDesign.getClusteringTree()));
-            clusterNodeManager.commit();
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(
-                    "Failed to load Study Design information: "
-                            + bme.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            }
-            if (clusterNodeManager != null) {
-                try {
-                    clusterNodeManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            }
-            clusteringTree = null;
-        }
-        return clusteringTree;
-    }
 }

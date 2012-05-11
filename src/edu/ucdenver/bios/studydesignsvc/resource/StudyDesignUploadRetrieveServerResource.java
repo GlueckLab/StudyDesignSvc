@@ -54,9 +54,9 @@ implements StudyDesignUploadRetrieveResource{
              * Remove existing Study Design for this object
              * ----------------------------------------------------
              */            
-            if (uuidFlag) {
+            /*if (uuidFlag) {
                 new StudyDesignServerResource().remove(uuid);
-            }
+            }*/
             
                 studyDesignManager = new StudyDesignManager();
                 studyDesignManager.beginTransaction();      

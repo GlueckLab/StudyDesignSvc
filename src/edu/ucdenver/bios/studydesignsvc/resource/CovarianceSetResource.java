@@ -6,55 +6,51 @@ import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.CovarianceSet;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface CovarianceSetResource.
+ */
 public interface CovarianceSetResource {
+
     /**
-     * Retrieve the object for the specified UUID.
-     * Returns "not found" if no matching Object is available.
-     *
-     * @param uuid the uuid
-     * @return Object for specified UUID
+     * Retrieves the CovarianceSet.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the covariance set
      */
-     @Get("application/json")
+    @Get("application/json")
     CovarianceSet retrieve(byte[] uuid);
 
     /**
-     * Store Covariance object to the database.
-     *
-     * @param uuid the uuid
-     * @param covarianceSet the covariance set
-     * @return updated Object.
+     * Creates the CovarianceSet.
+     * 
+     * @param covarianceSet
+     *            the covariance set
+     * @return the covariance set
      */
     @Post("application/json")
     CovarianceSet create(CovarianceSet covarianceSet);
 
     /**
-     * Update the specified object. If there is no
-     * object set for specified UUID, then this object
-     * will be treated as new and a UUID assigned.
-     *
-     * @param uuid the uuid
-     * @param covarianceSet the covariance set
-     * @return Object
+     * Updates the CovarianceSet.
+     * 
+     * @param covarianceSet
+     *            the covariance set
+     * @return the covariance set
      */
     @Put("application/json")
     CovarianceSet update(CovarianceSet covarianceSet);
 
     /**
-     * Delete the Covariance object with the specified UUID.
-     *
-     * @param uuid of the object to remove
-     * @return the deleted object
+     * Removes the CovarianceSet.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the covariance set
      */
     @Delete("application/json")
     CovarianceSet remove(byte[] uuid);
-
-    /**
-     * Delete the Covariance object with the specified UUID.
-     *
-     * @param studyDesign from which object is to be removed
-     * @return the deleted object
-     */
-    CovarianceSet removeFrom(StudyDesign studyDesign);
+    
 }

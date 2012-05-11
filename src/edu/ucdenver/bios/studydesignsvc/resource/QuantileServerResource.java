@@ -70,7 +70,7 @@ public class QuantileServerResource extends ServerResource implements
 
         try {
             /*
-             * Delete Quantile list.
+             * Retrieve Quantile list.
              */
             quantileManager = new QuantileManager();
             quantileManager.beginTransaction();

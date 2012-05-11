@@ -13,50 +13,45 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
  * The Interface HypothesisSetResource.
  */
 public interface HypothesisSetResource {
+
     /**
-     * Retrieve the object for the specified UUID.
-     * Returns "not found" if no matching Object is available.
-     *
-     * @param uuid the uuid
-     * @return Object for specified UUID
+     * Retrieves the HypothesisSet.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the hypothesis set
      */
-     @Get("application/json")
+    @Get("application/json")
     HypothesisSet retrieve(byte[] uuid);
 
     /**
-     * Store HypothesisSet object to the database.
-     *
-     * @param hypothesisSet the hypothesis set
-     * @return updated Object.
+     * Creates the HypothesisSet.
+     * 
+     * @param hypothesisSet
+     *            the hypothesis set
+     * @return the hypothesis set
      */
     @Post("application/json")
     HypothesisSet create(HypothesisSet hypothesisSet);
 
     /**
-     * Update the specified object. If there is no
-     * object set for specified UUID, then this object
-     * will be treated as new and a UUID assigned.
-     *
-     * @param hypothesisSet the hypothesis set
-     * @return HypothesisSet
+     * Updates HypothesisSet.
+     * 
+     * @param hypothesisSet
+     *            the hypothesis set
+     * @return the hypothesis set
      */
     @Put("application/json")
     HypothesisSet update(HypothesisSet hypothesisSet);
 
     /**
-     * Delete the Hypothesis object with the specified UUID.
-     *
-     * @param uuid of the object to remove
-     * @return the deleted object
+     * Removes the HypothesisSet.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the hypothesis set
      */
     @Delete("application/json")
     HypothesisSet remove(byte[] uuid);
 
-    /**
-     * Delete the HypothesisSet object with the specified UUID.
-     *
-     * @param studyDesign from which object is to be removed
-     * @return the deleted object
-     */
-    HypothesisSet removeFrom(StudyDesign studyDesign);
 }

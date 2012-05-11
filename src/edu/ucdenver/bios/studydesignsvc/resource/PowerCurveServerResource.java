@@ -31,15 +31,12 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.PowerCurveManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.UuidPowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
-
+// TODO: Auto-generated Javadoc
 /**
  * Concrete class which implements methods of Power Curve Resource interface.
  * See the StudyDesignApplication class for URI mappings
@@ -49,351 +46,191 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 public class PowerCurveServerResource extends ServerResource implements
         PowerCurveResource {
 
-    /** The study design manager. */
-    StudyDesignManager studyDesignManager = null;
-
-    /** The power curve manager. */
-    PowerCurveManager powerCurveManager = null;
-
-    /*
-     * (non-Javadoc)
+    /**
+     * Retrieve UuidPowerCurveDescription.
      * 
-     * @see
-     * edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource#retrieve
-     * (byte[])
+     * @param uuid
+     *            the uuid
+     * @return the uuid power curve description
      */
     @Get("application/json")
-    public PowerCurveDescription retrieve(byte[] uuid) {
-        boolean uuidFlag = false;
-        PowerCurveDescription powerCurveDescription = null;
-        StudyDesign studyDesign = null;
-        try {
-            if (uuid == null)
-                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                        "no study design UUID specified");
-
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-                studyDesign = studyDesignManager.get(uuid);
-                if(studyDesign!=null)
-                    uuidFlag = true;
-                if (uuidFlag)
-                    powerCurveDescription = studyDesign
-                            .getPowerCurveDescriptions();            
-            studyDesignManager.commit();            
-        } catch (BaseManagerException bme) {
-            StudyDesignLogger.getInstance().error(
-                    "ConfidenceIntervalResource : " + bme.getMessage());
-            if (powerCurveManager != null) {
-                try {
-                    powerCurveManager.rollback();
-                } catch (BaseManagerException re) {
-                    powerCurveDescription = null;
-                }
-            }
-        } catch (StudyDesignException sde) {
-            StudyDesignLogger.getInstance().error(
-                    "PowerCurveResource : " + sde.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    powerCurveManager.rollback();
-                } catch (BaseManagerException re) {
-                    powerCurveDescription = null;
-                }
-            }
-        }
-        return powerCurveDescription;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource#create(byte
-     * [], edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription)
-     */
-    @Post("application/json")
-    public PowerCurveDescription create(
-            UuidPowerCurveDescription uuidPowerCurveDescription) {
-        boolean uuidFlag = false;
-        StudyDesign studyDesign = null;
-        byte[] uuid = uuidPowerCurveDescription.getUuid();
-        PowerCurveDescription powerCurveDescription = 
-                uuidPowerCurveDescription.getPowerCurveDescription();
-        if (uuid == null)
+    public final UuidPowerCurveDescription retrieve(final byte[] uuid) {
+        PowerCurveManager powerCurveManager = null;
+        UuidPowerCurveDescription uuidPowerCurve = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
-        if (powerCurveDescription == null)
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no PowerCurveDescription specified");
-        try {
-            /*
-             * ---------------------------------------------------- Check for
-             * existence of a UUID in Study Design object
-             * ----------------------------------------------------
-             */
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-                studyDesign = studyDesignManager.get(uuid);
-                if(studyDesign != null)
-                    uuidFlag = true;
-            studyDesignManager.commit();
-            /*
-             * ---------------------------------------------------- Remove
-             * existing Power Curve for this object
-             * ----------------------------------------------------
-             */
-            if (uuidFlag && studyDesign.getPowerCurveDescriptions() != null)
-                removeFrom(studyDesign);
-            /*
-             * ---------------------------------------------------- Save new
-             * Power Curve object
-             * ----------------------------------------------------
-             */
-            if (uuidFlag) {
-                powerCurveManager = new PowerCurveManager();
-                powerCurveManager.beginTransaction();
-                powerCurveManager.saveOrUpdate(powerCurveDescription, true);
-                powerCurveManager.commit();
-                /*
-                 * ---------------------------------------------------- Set
-                 * reference of Power Curve Object to Study Design object
-                 * ----------------------------------------------------
-                 */
-                studyDesign.setPowerCurveDescriptions(powerCurveDescription);
-
-                studyDesignManager = new StudyDesignManager();
-                studyDesignManager.beginTransaction();
-                studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
-                        false);
-                studyDesignManager.commit();
-            }
-        } catch (BaseManagerException bme) {
-            StudyDesignLogger.getInstance().error(
-                    "ConfidenceIntervalResource : " + bme.getMessage());
-            if (powerCurveManager != null) {
-                try {
-                    powerCurveManager.rollback();
-                } catch (BaseManagerException re) {
-                    powerCurveDescription = null;
-                }
-            }
-        } catch (StudyDesignException sde) {
-            StudyDesignLogger.getInstance().error(
-                    "StudyDesignResource : " + sde.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException re) {
-                    powerCurveDescription = null;
-                }
-            }
         }
-        return powerCurveDescription;
-    }
+        /*
+         * Check : length of uuid.
+         */
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource#update(byte
-     * [], edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription)
-     */
-    @Put("application/json")
-    public PowerCurveDescription update(
-            UuidPowerCurveDescription uuidPowerCurveDescription) {
-        boolean uuidFlag = false;
-        StudyDesign studyDesign = null;
-        byte[] uuid = uuidPowerCurveDescription.getUuid();
-        PowerCurveDescription powerCurveDescription =
-                uuidPowerCurveDescription.getPowerCurveDescription();
-        if (uuid == null)
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        if (powerCurveDescription == null)
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no PowerCurveDescription specified");
         try {
             /*
-             * ---------------------------------------------------- Check for
-             * existence of a UUID in Study Design object
-             * ----------------------------------------------------
+             * Retrieve PowerCurveDescription.
              */
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();            
-                studyDesign = studyDesignManager.get(uuid);
-                if(studyDesign!=null)
-                    uuidFlag = true;
-            studyDesignManager.commit();
-            /*
-             * ---------------------------------------------------- Update Power
-             * Curve object ----------------------------------------------------
-             */
-            PowerCurveDescription powerCurve = studyDesign
-                    .getPowerCurveDescriptions();
-            if (uuidFlag && powerCurve != null) {
-                powerCurveDescription.setId(powerCurve.getId());
-                powerCurveManager = new PowerCurveManager();
-                powerCurveManager.beginTransaction();
-                    powerCurveManager.saveOrUpdate(powerCurveDescription, false);
-                powerCurveManager.commit();
-            } else
-                create(uuidPowerCurveDescription);
-        } catch (BaseManagerException bme) {
-            StudyDesignLogger.getInstance().error(
-                    "ConfidenceIntervalResource : " + bme.getMessage());
-            if (powerCurveManager != null) {
-                try {
-                    powerCurveManager.rollback();
-                } catch (BaseManagerException re) {
-                    powerCurveDescription = null;
-                }
-            }
-        } catch (StudyDesignException sde) {
-            StudyDesignLogger.getInstance().error(
-                    "StudyDesignResource : " + sde.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException re) {
-                    powerCurveDescription = null;
-                }
-            }
-        }
-        return powerCurveDescription;
-    }
+            powerCurveManager = new PowerCurveManager();
+            powerCurveManager.beginTransaction();
+            uuidPowerCurve = powerCurveManager.retrieve(uuid);
+            powerCurveManager.commit();
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource#remove(byte
-     * [])
-     */
-    @Delete("application/json")
-    public PowerCurveDescription remove(byte[] uuid) {
-        boolean flag = false;
-        PowerCurveDescription powerCurveDescription = null;
-        StudyDesign studyDesign = null;
-        try {
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();            
-                studyDesign = studyDesignManager.get(uuid);
-                if(studyDesign != null)
-                    flag = true;
-            studyDesignManager.commit();
-            if (flag) {
-                powerCurveManager = new PowerCurveManager();
-                powerCurveManager.beginTransaction();
-                powerCurveDescription = powerCurveManager.delete(uuid,
-                        studyDesign.getPowerCurveDescriptions());
-                powerCurveManager.commit();
-                /*
-                 * ---------------------------------------------------- Set
-                 * reference of Confidence Interval Object to Study Design
-                 * object ----------------------------------------------------
-                 */
-                /*
-                 * studyDesign.setPowerCurveDescriptions(null);
-                 * studyDesignManager = new StudyDesignManager();
-                 * studyDesignManager.beginTransaction(); studyDesign =
-                 * studyDesignManager.saveOrUpdate(studyDesign, false);
-                 * studyDesignManager.commit();
-                 */
-            } else
-                throw new StudyDesignException(
-                        "No such studyUUID present in tableStudyDesign!!!");
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(
-                    "Failed to load Study Design information: "
-                            + bme.getMessage());
-            if (studyDesignManager != null)
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            if (powerCurveManager != null)
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (powerCurveManager != null) {
                 try {
                     powerCurveManager.rollback();
-                } catch (BaseManagerException e) {
+                } catch (BaseManagerException re) {
+                    uuidPowerCurve = null;
                 }
-            powerCurveDescription = null;
-        } catch (StudyDesignException sde) {
-            StudyDesignLogger.getInstance().error(
-                    "Failed to load Study Design information: "
-                            + sde.getMessage());
-            if (studyDesignManager != null)
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            if (powerCurveManager != null)
+            }
+            uuidPowerCurve = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (powerCurveManager != null) {
                 try {
                     powerCurveManager.rollback();
-                } catch (BaseManagerException e) {
+                } catch (BaseManagerException re) {
+                    uuidPowerCurve = null;
                 }
-            powerCurveDescription = null;
+            }
+            uuidPowerCurve = null;
         }
-        return powerCurveDescription;
+        return uuidPowerCurve;
     }
 
     /**
-     * Delete a Power Curve object for specified Study Design.
+     * Creates the UuidPowerCurveDescription.
      * 
-     * @param studyDesign
-     *            the study design
-     * @return PowerCurveDescription
+     * @param uuidPowerCurve
+     *            the uuid power curve
+     * @return the uuid power curve description
      */
-    public PowerCurveDescription removeFrom(StudyDesign studyDesign) {
-        boolean flag;
-        // byte
-        PowerCurveDescription powerCurveDescription = null;
-        try {
-            powerCurveManager = new PowerCurveManager();
-            powerCurveManager.beginTransaction();
-            powerCurveDescription = powerCurveManager.delete(
-                    studyDesign.getUuid(),
-                    studyDesign.getPowerCurveDescriptions());
-            powerCurveManager.commit();
-            /*
-             * ---------------------------------------------------- Set
-             * reference of Power Curve Object to Study Design object
-             * ----------------------------------------------------
-             */
-            /*
-             * studyDesign.setPowerCurveDescriptions(null); studyDesignManager =
-             * new StudyDesignManager(); studyDesignManager.beginTransaction();
-             * studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
-             * false); studyDesignManager.commit();
-             */
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(
-                    "Failed to load Study Design information: "
-                            + bme.getMessage());
-            if (studyDesignManager != null)
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            if (powerCurveManager != null)
-                try {
-                    powerCurveManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            powerCurveDescription = null;
+    @Post("application/json")
+    public final UuidPowerCurveDescription create(
+            UuidPowerCurveDescription uuidPowerCurve) {
+        PowerCurveManager powerCurveManager = null;
+        byte[] uuid = uuidPowerCurve.getUuid();
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
         }
         /*
-         * catch (StudyDesignException sde) {
-         * StudyDesignLogger.getInstance().error
-         * ("Failed to load Study Design information: " + sde.getMessage()); if
-         * (studyDesignManager != null) try { studyDesignManager.rollback(); }
-         * catch (BaseManagerException e) {} if (powerCurveManager != null) try
-         * { powerCurveManager.rollback(); } catch (BaseManagerException e) {}
-         * powerCurveDescription = null; }
+         * Check : empty PowerCurveDescription.
          */
-        return powerCurveDescription;
+        PowerCurveDescription newPowerCurve = uuidPowerCurve
+                .getPowerCurveDescription();
+        if (newPowerCurve == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Confidence Interval Description specified");
+        }
+        try {
+            /*
+             * Save PowerCurveDescription.
+             */
+            powerCurveManager = new PowerCurveManager();
+            powerCurveManager.beginTransaction();
+            uuidPowerCurve = powerCurveManager.saveOrUpdate(uuidPowerCurve,
+                    true);
+            powerCurveManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (powerCurveManager != null) {
+                try {
+                    powerCurveManager.rollback();
+                } catch (BaseManagerException re) {
+                    uuidPowerCurve = null;
+                }
+            }
+            uuidPowerCurve = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (powerCurveManager != null) {
+                try {
+                    powerCurveManager.rollback();
+                } catch (BaseManagerException re) {
+                    uuidPowerCurve = null;
+                }
+            }
+            uuidPowerCurve = null;
+        }
+        return uuidPowerCurve;
+    }
+
+    /**
+     * Update UuidPowerCurveDescription.
+     * 
+     * @param uuidPowerCurve
+     *            the uuid power curve
+     * @return the uuid power curve description
+     */
+    @Put("application/json")
+    public final UuidPowerCurveDescription update(
+            final UuidPowerCurveDescription uuidPowerCurve) {
+        return create(uuidPowerCurve);
+    }
+
+    /**
+     * Removes the UuidPowerCurveDescription.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the uuid power curve description
+     */
+    @Delete("application/json")
+    public final UuidPowerCurveDescription remove(final byte[] uuid) {
+        PowerCurveManager powerCurveManager = null;
+        UuidPowerCurveDescription uuidPowerCurve = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        try {
+            /*
+             * Delete PowerCurveDescription.
+             */
+            powerCurveManager = new PowerCurveManager();
+            powerCurveManager.beginTransaction();
+            uuidPowerCurve = powerCurveManager.delete(uuid);
+            powerCurveManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (powerCurveManager != null) {
+                try {
+                    powerCurveManager.rollback();
+                } catch (BaseManagerException re) {
+                    uuidPowerCurve = null;
+                }
+            }
+            uuidPowerCurve = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (powerCurveManager != null) {
+                try {
+                    powerCurveManager.rollback();
+                } catch (BaseManagerException re) {
+                    uuidPowerCurve = null;
+                }
+            }
+            uuidPowerCurve = null;
+        }
+        return uuidPowerCurve;
     }
 
 }

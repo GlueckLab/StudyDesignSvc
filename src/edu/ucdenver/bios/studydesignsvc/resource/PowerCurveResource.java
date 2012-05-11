@@ -29,63 +29,57 @@ import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.UuidPowerCurveDescription;
 
+// TODO: Auto-generated Javadoc
 /**
- * Resource class for handling requests for the
- * power curve object.
- * See the StudyDesignApplication class for URI mappings
- *
+ * Resource class for handling requests for the power curve object. See the
+ * StudyDesignApplication class for URI mappings
+ * 
  * @author Uttara Sakhadeo
  */
 public interface PowerCurveResource {
+
     /**
-     * Retrieve the PowerCurveDescription for the specified UUID.
-     * Returns "not found" if no matching PowerCurveDescription
-     * is available.
-     *
-     * @param uuid the uuid
-     * @return PowerCurveDescription with specified UUID
+     * Retrieve UuidPowerCurveDescription.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the uuid power curve description
      */
-     @Get("application/json")
-    PowerCurveDescription retrieve(byte[] uuid);
+    @Get("application/json")
+    UuidPowerCurveDescription retrieve(byte[] uuid);
+
     /**
-     * Store the PowerCurveDescription to the database.
-     *
-     * @param uuid the uuid
-     * @param powerCurveDescription the power curve description
-     * @return PowerCurveDescription object with updated UUID.
+     * Creates the UuidPowerCurveDescription.
+     * 
+     * @param uuidPowerCurveDescription
+     *            the uuid power curve description
+     * @return the uuid power curve description
      */
     @Post("application/json")
-    PowerCurveDescription create(
+    UuidPowerCurveDescription create(
             UuidPowerCurveDescription uuidPowerCurveDescription);
+
     /**
-     * Update the specified PowerCurveDescription object. If there is no
-     * PowerCurveDescription set for specified UUID ,  then this object
-     * will be treated as new and a UUID assigned.
-     *
-     * @param uuid the uuid
-     * @param powerCurveDescription the power curve description
-     * @return the PowerCurveDescription object
+     * Update UuidPowerCurveDescription.
+     * 
+     * @param uuidPowerCurveDescription
+     *            the uuid power curve description
+     * @return the uuid power curve description
      */
     @Put("application/json")
-    PowerCurveDescription update(
+    UuidPowerCurveDescription update(
             UuidPowerCurveDescription uuidPowerCurveDescription);
+
     /**
-     * Delete the object with the specified UUID.
-     *
-     * @param uuid the uuid of the object to remove
-     * @return the deleted study design object
+     * Removes the UuidPowerCurveDescription.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the uuid power curve description
      */
     @Delete("application/json")
-    PowerCurveDescription remove(byte[] uuid);
-    /**
-     * Delete the object with the specified UUID.
-     *
-     * @param studyDesign from which object is to be removed
-     * @return the deleted study design object
-     */
-    PowerCurveDescription removeFrom(StudyDesign studyDesign);
+    UuidPowerCurveDescription remove(byte[] uuid);
+
 }

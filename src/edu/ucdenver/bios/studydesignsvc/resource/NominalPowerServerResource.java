@@ -63,7 +63,7 @@ public class NominalPowerServerResource extends ServerResource implements
 
         try {
             /*
-             * Delete NominalPower list.
+             * Retrieve NominalPower list.
              */
             nominalPowerManager = new NominalPowerManager();
             nominalPowerManager.beginTransaction();

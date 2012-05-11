@@ -24,7 +24,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
-import org.apache.log4j.Logger;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -34,471 +33,206 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.UuidConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Resource class for handling requests for the complete study design object.
  * See the StudyDesignApplication class for URI mappings
- *
+ * 
  * @author Uttara Sakhadeo
  */
 public class ConfidenceIntervalServerResource extends ServerResource implements
         ConfidenceIntervalResource {
 
-    /** The logger. */
-    private Logger logger = StudyDesignLogger.getInstance();
-    
     /**
-     * Retrieve a Confidence Interval object by the specified UUID.
-     *
+     * Retrieve ConfidenceIntervalDescription.
+     * 
      * @param uuid
-     *            : byte[]
-     * @return ConfidenceIntervalDescription
+     *            the uuid
+     * @return the uuid confidence interval description
      */
     @Get("application/json")
-    public final ConfidenceIntervalDescription retrieve(final byte[] uuid) {
-        if (uuid == null)  {
+    public final UuidConfidenceIntervalDescription retrieve(final byte[] uuid) {
+        ConfidenceIntervalManager confidenceIntervalManager = null;
+        UuidConfidenceIntervalDescription uuidConfidence = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
-        boolean uuidFlag = false;
-        StudyDesign studyDesign = null;
-        ConfidenceIntervalDescription confidenceInterval = null;
-        ConfidenceIntervalManager confidenceIntervalManager = null;
-        StudyDesignManager studyDesignManager = null;
-        try {
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-                studyDesign = studyDesignManager.get(uuid);
-                if(studyDesign != null)                    
-                    uuidFlag = true;
-                 else {
-                     throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                         "no study design UUID specified");
-                 }
-            studyDesignManager.commit();
+        /*
+         * Check : length of uuid.
+         */
 
-            confidenceInterval = studyDesign
-                    .getConfidenceIntervalDescriptions();
+        try {
             /*
-             * if(uuidFlag) { confidenceIntervalManager = new
-             * ConfidenceIntervalManager();
-             * confidenceIntervalManager.beginTransaction(); confidenceInterval
-             * = confidenceIntervalManager.get(uuid);
-             * confidenceIntervalManager.commit(); }
+             * Retrieve ConfidenceIntervalDescription.
              */
+            confidenceIntervalManager = new ConfidenceIntervalManager();
+            confidenceIntervalManager.beginTransaction();
+            uuidConfidence = confidenceIntervalManager.retrieve(uuid);
+            confidenceIntervalManager.commit();
+
         } catch (BaseManagerException bme) {
-            StudyDesignLogger.getInstance().error(
-                    "ConfidenceIntervalResource : " + bme.getMessage());
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
             if (confidenceIntervalManager != null) {
                 try {
                     confidenceIntervalManager.rollback();
                 } catch (BaseManagerException re) {
-                    confidenceInterval = null;
+                    uuidConfidence = null;
                 }
             }
-        } catch (StudyDesignException sde) {
-            StudyDesignLogger.getInstance().error(
-                    "StudyDesignResource : " + sde.getMessage());
-            if (studyDesignManager != null) {
+            uuidConfidence = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (confidenceIntervalManager != null) {
                 try {
-                    studyDesignManager.rollback();
+                    confidenceIntervalManager.rollback();
                 } catch (BaseManagerException re) {
-                    confidenceInterval = null;
+                    uuidConfidence = null;
                 }
             }
+            uuidConfidence = null;
         }
-        return confidenceInterval;
+        return uuidConfidence;
     }
 
     /**
-     * Create a Confidence Interval object by the specified UUID.
-     *
-     * @param uuid
-     *            : byte[]
-     * @param confidenceInterval
-     *            : ConfidenceIntervalDescription
-     * @return ConfidenceIntervalDescription
+     * Creates the ConfidenceIntervalDescription.
+     * 
+     * @param uuidConfidence
+     *            the uuid confidence
+     * @return the uuid confidence interval description
      */
     @Post("application/json")
-    public final ConfidenceIntervalDescription create(
-            UuidConfidenceIntervalDescription uuidConfidenceInterval) {
-        boolean uuidFlag;
-        byte[] uuid = uuidConfidenceInterval.getUuid();
-        ConfidenceIntervalDescription confidenceInterval =
-                uuidConfidenceInterval.getConfidenceInterval();
-        StudyDesignManager studyDesignManager = null;
+    public final UuidConfidenceIntervalDescription create(
+            UuidConfidenceIntervalDescription uuidConfidence) {
         ConfidenceIntervalManager confidenceIntervalManager = null;
-        StudyDesign studyDesign = null;
+        byte[] uuid = uuidConfidence.getUuid();
+        /*
+         * Check : empty uuid.
+         */
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
-        if (confidenceInterval == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no ConfidenceInterval Description specified");
-        }
-        try {
-            /*
-             * ----------------------------------------------------
-             * Check for existence of a UUID in Study Design object
-             * ----------------------------------------------------
-             */
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);            
-                studyDesign = studyDesignManager.get(uuid);
-                if(studyDesign != null)                    
-                   uuidFlag = true;
-                else {
-                    throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                        "no study design UUID specified");
-                }
-            studyDesignManager.commit();
-            /*
-             * ---------------------------------------------------- Remove
-             * existing Confidence Interval for this object
-             * ----------------------------------------------------
-             */
-            if (uuidFlag
-                && studyDesign.getConfidenceIntervalDescriptions() != null) {
-                removeFrom(studyDesign);
-            }
-            /*
-             * ---------------------------------------------------- Save new
-             * Confidence Interval object
-             * ----------------------------------------------------
-             */
-            if (uuidFlag) {
-                confidenceIntervalManager = new ConfidenceIntervalManager();
-                confidenceIntervalManager.beginTransaction();
-                confidenceIntervalManager
-                        .saveOrUpdate(confidenceInterval, true);
-                confidenceIntervalManager.commit();
-                /*
-                 * ---------------------------------------------------- Set
-                 * reference of Confidence Interval Object to Study Design
-                 * object ----------------------------------------------------
-                 */
-                studyDesign
-                        .setConfidenceIntervalDescriptions(confidenceInterval);
-                studyDesignManager = new StudyDesignManager();
-                studyDesignManager.beginTransaction();
-                studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
-                        false);
-                studyDesignManager.commit();
-                confidenceInterval = studyDesign
-                        .getConfidenceIntervalDescriptions();
-            }
-        } catch (BaseManagerException bme) {
-            StudyDesignLogger.getInstance().error(
-                    "ConfidenceIntervalResource : " + bme.getMessage());
-            if (confidenceIntervalManager != null) {
-                try {
-                    confidenceIntervalManager.rollback();
-                } catch (BaseManagerException re) {
-                    confidenceInterval = null;
-                }
-            }
-        } catch (StudyDesignException sde) {
-            StudyDesignLogger.getInstance().error(
-                    "StudyDesignResource : " + sde.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException re) {
-                    confidenceInterval = null;
-                }
-            }
-        }
-        return confidenceInterval;
-    }
-
-    /**
-     * Update a Confidence Interval object by the specified UUID.
-     *
-     * @param uuid
-     *            : byte[]
-     * @param confidenceInterval
-     *            : ConfidenceIntervalDescription
-     * @return ConfidenceIntervalDescription
-     */
-    @Put("application/json")
-    public final ConfidenceIntervalDescription update(
-            UuidConfidenceIntervalDescription uuidConfidenceInterval) {
-        boolean uuidFlag = false;
-        byte[] uuid = uuidConfidenceInterval.getUuid();
-        ConfidenceIntervalDescription confidenceInterval =
-            uuidConfidenceInterval.getConfidenceInterval();
-        StudyDesign studyDesign = null;
-        StudyDesignManager studyDesignManager = null;
-        ConfidenceIntervalManager confidenceIntervalManager = null;
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        if (confidenceInterval == null) {
+        /*
+         * Check : empty ConfidenceIntervalDescription.
+         */
+        ConfidenceIntervalDescription newConfidence = uuidConfidence
+                .getConfidenceInterval();
+        if (newConfidence == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no Confidence Interval Description specified");
         }
         try {
             /*
-             * ---------------------------------------------------- Check for
-             * existence of a UUID in Study Design object
-             * ----------------------------------------------------
+             * Save ConfidenceIntervalDescription.
              */
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-                if(studyDesign != null)                    
-                    uuidFlag = true;
-                 else {
-                     throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                         "no study design UUID specified");
-                 }
-            studyDesignManager.commit();
-            /*
-             * ---------------------------------------------------- Remove
-             * existing Confidence Interval for this object
-             * ----------------------------------------------------
-             */
-            /*
-             * if(uuidFlag &&
-             * studyDesign.getConfidenceIntervalDescriptions()!=null)
-             * remove(studyDesign);
-             */
-            /*
-             * ---------------------------------------------------- Save new
-             * Confidence Interval object
-             * ----------------------------------------------------
-             */
-            ConfidenceIntervalDescription interval = studyDesign
-                    .getConfidenceIntervalDescriptions();
-            if (uuidFlag && interval != null) {
-                confidenceInterval.setId(interval.getId());
-                confidenceIntervalManager = new ConfidenceIntervalManager();
-                confidenceIntervalManager.beginTransaction();
-                confidenceIntervalManager.saveOrUpdate(confidenceInterval,
-                        false);
-                confidenceIntervalManager.commit();
-                /*
-                 * ---------------------------------------------------- Set
-                 * reference of Confidence Interval Object to Study Design
-                 * object ----------------------------------------------------
-                 */
-                /*
-                 * studyDesign.setConfidenceIntervalDescriptions(confidenceInterval
-                 * );
-                 *
-                 * studyDesignManager = new StudyDesignManager();
-                 * studyDesignManager.beginTransaction(); studyDesign =
-                 * studyDesignManager.saveOrUpdate(studyDesign, false);
-                 * studyDesignManager.commit();
-                 */
-            } else {
-                create(uuidConfidenceInterval);
-            }
-        } catch (BaseManagerException bme) {
-            StudyDesignLogger.getInstance().error(
-                    "ConfidenceIntervalResource : " + bme.getMessage());
-            if (confidenceIntervalManager != null) {
-                try {
-                    confidenceIntervalManager.rollback();
-                } catch (BaseManagerException re) {
-                    confidenceInterval = null;
-                }
-            }
-        } catch (StudyDesignException sde) {
-            StudyDesignLogger.getInstance().error(
-                    "StudyDesignResource : " + sde.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException re) {
-                    confidenceInterval = null;
-                }
-            }
-        }
-        return confidenceInterval;
-    }
-
-    /*
-     * public ConfidenceIntervalDescription update(byte[]
-     * uuid,ConfidenceIntervalDescription confidenceInterval) { boolean
-     * uuidFlag; if(uuid==null) throw new
-     * ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-     * "no study design UUID specified"); try { studyDesignManager = new
-     * StudyDesignManager(); studyDesignManager.beginTransaction(); uuidFlag =
-     * studyDesignManager.hasUUID(uuid); studyDesignManager.commit();
-     *
-     * if(uuidFlag) { confidenceIntervalManager = new
-     * ConfidenceIntervalManager();
-     * confidenceIntervalManager.beginTransaction();
-     * confidenceIntervalManager.saveOrUpdate(confidenceInterval, false);
-     * confidenceIntervalManager.commit(); } } catch (BaseManagerException bme)
-     * { StudyDesignLogger.getInstance().error("ConfidenceIntervalResource : " +
-     * bme.getMessage()); if(confidenceIntervalManager!=null) { try
-     * {confidenceIntervalManager.rollback();} catch(BaseManagerException re)
-     * {confidenceInterval = null;} } } catch(StudyDesignException sde) {
-     * StudyDesignLogger.getInstance().error("StudyDesignResource : " +
-     * sde.getMessage()); if(studyDesignManager!=null) { try
-     * {studyDesignManager.rollback();} catch(BaseManagerException re)
-     * {confidenceInterval = null;} } } return confidenceInterval; }
-     */
-
-    /**
-     * Delete a Confidence Interval object by the specified UUID.
-     *
-     * @param uuid
-     *            : byte[]
-     * @return ConfidenceIntervalDescription
-     */
-    @Delete("application/json")
-    public final ConfidenceIntervalDescription remove(final byte[] uuid) {
-        boolean uuidFlag = false;
-        ConfidenceIntervalDescription confidenceInterval = null;
-        StudyDesign studyDesign = null;
-        StudyDesignManager studyDesignManager = null;
-        ConfidenceIntervalManager confidenceIntervalManager = null;
-        try {
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();                
-                studyDesign = studyDesignManager.get(uuid);
-                if(studyDesign != null)                    
-                    uuidFlag = true;
-                 else {
-                     throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                         "no study design UUID specified");
-                 }
-            studyDesignManager.commit();
-            if (uuidFlag) {
-                confidenceIntervalManager = new ConfidenceIntervalManager();
-                confidenceIntervalManager.beginTransaction();
-                confidenceInterval = confidenceIntervalManager.delete(uuid,
-                        studyDesign.getConfidenceIntervalDescriptions());
-                confidenceIntervalManager.commit();
-                /*
-                 * ---------------------------------------------------- Set
-                 * reference of Confidence Interval Object to Study Design
-                 * object ----------------------------------------------------
-                 */
-                /*
-                 * studyDesign.setConfidenceIntervalDescriptions(null);
-                 * studyDesignManager = new StudyDesignManager();
-                 * studyDesignManager.beginTransaction(); studyDesign =
-                 * studyDesignManager.saveOrUpdate(studyDesign, false);
-                 * studyDesignManager.commit();
-                 */
-            } else {
-                throw new StudyDesignException(
-                        "No such studyUUID present in tableStudyDesign!!!");
-            }
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(
-                    "Failed to load Study Design information: "
-                            + bme.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            }
-            if (confidenceIntervalManager != null) {
-                try {
-                    confidenceIntervalManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            }
-            confidenceInterval = null;
-        } catch (StudyDesignException sde) {
-            StudyDesignLogger.getInstance().error(
-                    "Failed to load Study Design information: "
-                            + sde.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            }
-            if (confidenceIntervalManager != null) {
-                try {
-                    confidenceIntervalManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            }
-            confidenceInterval = null;
-        }
-        return confidenceInterval;
-    }
-
-    /**
-     * Delete a Confidence Interval object for specified Study Design.
-     * 
-     * @param studyDesign
-     *            the study design
-     * @return ConfidenceIntervalDescription
-     */
-    public final ConfidenceIntervalDescription removeFrom(
-            final StudyDesign studyDesign) {
-        ConfidenceIntervalDescription confidenceInterval = null;
-        StudyDesignManager studyDesignManager = null;
-        ConfidenceIntervalManager confidenceIntervalManager = null;
-        try {
             confidenceIntervalManager = new ConfidenceIntervalManager();
             confidenceIntervalManager.beginTransaction();
-            confidenceInterval = confidenceIntervalManager.delete(
-                    studyDesign.getUuid(),
-                    studyDesign.getConfidenceIntervalDescriptions());
+            uuidConfidence = confidenceIntervalManager.saveOrUpdate(
+                    uuidConfidence, true);
             confidenceIntervalManager.commit();
-            /*
-             * ---------------------------------------------------- 
-             * Set reference of Confidence Interval Object to Study Design object
-             * ----------------------------------------------------
-             */
-            /*
-             * studyDesign.setConfidenceIntervalDescriptions(null);
-             * studyDesignManager = new StudyDesignManager();
-             * studyDesignManager.beginTransaction(); studyDesign =
-             * studyDesignManager.saveOrUpdate(studyDesign, false);
-             * studyDesignManager.commit(); confidenceInterval =
-             * studyDesign.getConfidenceIntervalDescriptions();
-             */
+
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(
-                    "Failed to load Study Design information: "
-                            + bme.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            }
+            StudyDesignLogger.getInstance().error(bme.getMessage());
             if (confidenceIntervalManager != null) {
                 try {
                     confidenceIntervalManager.rollback();
-                } catch (BaseManagerException e) {
+                } catch (BaseManagerException re) {
+                    uuidConfidence = null;
                 }
             }
-            confidenceInterval = null;
+            uuidConfidence = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (confidenceIntervalManager != null) {
+                try {
+                    confidenceIntervalManager.rollback();
+                } catch (BaseManagerException re) {
+                    uuidConfidence = null;
+                }
+            }
+            uuidConfidence = null;
         }
+        return uuidConfidence;
+    }
+
+    /**
+     * Update ConfidenceIntervalDescription.
+     * 
+     * @param uuidConfidence
+     *            the uuid confidence
+     * @return the uuid confidence interval description
+     */
+    @Put("application/json")
+    public final UuidConfidenceIntervalDescription update(
+            final UuidConfidenceIntervalDescription uuidConfidence) {
+        return create(uuidConfidence);
+    }
+
+    /**
+     * Removes the ConfidenceIntervalDescription.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the uuid confidence interval description
+     */
+    @Delete("application/json")
+    public final UuidConfidenceIntervalDescription remove(final byte[] uuid) {
+        ConfidenceIntervalManager confidenceIntervalManager = null;
+        UuidConfidenceIntervalDescription uuidConfidence = null;
         /*
-         * catch (StudyDesignException sde) {
-         * StudyDesignLogger.getInstance().error
-         * ("Failed to load Study Design information: " + sde.getMessage()); if
-         * (studyDesignManager != null) try { studyDesignManager.rollback(); }
-         * catch (BaseManagerException e) {} if (confidenceIntervalManager !=
-         * null) try { confidenceIntervalManager.rollback(); } catch
-         * (BaseManagerException e) {} confidenceInterval = null; }
+         * Check : empty uuid.
          */
-        return confidenceInterval;
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        try {
+            /*
+             * Delete ConfidenceIntervalDescription.
+             */
+            confidenceIntervalManager = new ConfidenceIntervalManager();
+            confidenceIntervalManager.beginTransaction();
+            uuidConfidence = confidenceIntervalManager.delete(uuid);
+            confidenceIntervalManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (confidenceIntervalManager != null) {
+                try {
+                    confidenceIntervalManager.rollback();
+                } catch (BaseManagerException re) {
+                    uuidConfidence = null;
+                }
+            }
+            uuidConfidence = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (confidenceIntervalManager != null) {
+                try {
+                    confidenceIntervalManager.rollback();
+                } catch (BaseManagerException re) {
+                    uuidConfidence = null;
+                }
+            }
+            uuidConfidence = null;
+        }
+        return uuidConfidence;
     }
 
 }

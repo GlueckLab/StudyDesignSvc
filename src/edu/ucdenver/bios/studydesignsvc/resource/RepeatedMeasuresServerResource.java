@@ -22,6 +22,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.List;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -34,266 +36,204 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.RepeatedMeasuresManager;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
+import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNodeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+
 // TODO: Auto-generated Javadoc
 /**
- * Server Resource class for handling requests for the RepeatedMeasuresNode object. 
- * See the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling requests for the RepeatedMeasuresNode
+ * object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-public class RepeatedMeasuresServerResource  extends ServerResource
-implements RepeatedMeasuresResource 
-{
-	
-	/** The repeated measures manager. */
-	RepeatedMeasuresManager repeatedMeasuresManager = null; 
-	
-	/** The study design manager. */
-	StudyDesignManager studyDesignManager = null;
-	
-	/** The uuid flag. */
-	boolean uuidFlag;
-	
-	/**
-	 * Retrieve a RepeatedMeasuresNodeList object for specified UUID.
-	 *
-	 * @param uuid the uuid
-	 * @return RepeatedMeasuresNodeList
-	 */
-	@Get("application/json")
-	public RepeatedMeasuresNodeList retrieve(byte[] uuid) 
-	{
-		RepeatedMeasuresNodeList repeatedMeasuresTree = null;
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					StudyDesign studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						repeatedMeasuresTree = new RepeatedMeasuresNodeList(studyDesign.getRepeatedMeasuresTree());										
-            	}				
-			studyDesignManager.commit();					
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(repeatedMeasuresManager!=null)
-			{
-				try
-				{repeatedMeasuresManager.rollback();}				
-				catch(BaseManagerException re)
-				{repeatedMeasuresTree = null;}				
-			}
-			repeatedMeasuresTree = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {repeatedMeasuresTree = null;}					
-			}
-			repeatedMeasuresTree = null;
-		}								
-		return repeatedMeasuresTree;
-	}
-
-
-	/**
-	 * Create a RepeatedMeasuresNodeList object for specified UUID.
-	 *
-	 * @param uuid the uuid
-	 * @param repeatedMeasuresTree the repeated measures tree
-	 * @return RepeatedMeasuresNodeList
-	 */
-	@Post("application/json")
-	public RepeatedMeasuresNodeList create(RepeatedMeasuresNodeList repeatedMeasuresTree) 
-	{		
-		StudyDesign studyDesign =null;
-		byte[] uuid = repeatedMeasuresTree.getUuid();
-		if(uuid==null)
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-					"no study design UUID specified");		
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();
-			studyDesignManager.beginTransaction();				
-				uuidFlag = studyDesignManager.hasUUID(uuid);				
-				if(uuidFlag)
-            	{
-					studyDesign = studyDesignManager.get(uuid);					
-				}																									            				
-				else
-				{throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-						"no study design UUID specified");}
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing RepeatedMeasuresNode for this object 
-			 * ----------------------------------------------------*/
-			if(uuidFlag && studyDesign.getRepeatedMeasuresTree()!=null)
-				removeFrom(studyDesign);				
-			/* ----------------------------------------------------
-			 * Save new RepeatedMeasuresNode List object 
-			 * ----------------------------------------------------*/
-			if(uuidFlag)
-			{
-				studyDesign.setRepeatedMeasuresTree(repeatedMeasuresTree.getRepeatedMeasuresList());
-				studyDesignManager = new StudyDesignManager();
-				studyDesignManager.beginTransaction();
-					studyDesignManager.saveOrUpdate(studyDesign, false);
-				studyDesignManager.commit();			
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(repeatedMeasuresManager!=null)
-			{
-				try
-				{repeatedMeasuresManager.rollback();}				
-				catch(BaseManagerException re)
-				{repeatedMeasuresTree = null;}				
-			}
-			repeatedMeasuresTree = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {repeatedMeasuresTree = null;}					
-			}
-			repeatedMeasuresTree = null;
-		}								
-		return repeatedMeasuresTree;
-	}
-
-	/**
-	 * Update a RepeatedMeasuresNodeList object for specified UUID.
-	 *
-	 * @param uuid the uuid
-	 * @param repeatedMeasuresTree the repeated measures tree
-	 * @return RepeatedMeasuresNodeList
-	 */
-	@Put("application/json")
-	public RepeatedMeasuresNodeList update(RepeatedMeasuresNodeList repeatedMeasuresTree) 
-	{				
-		return create(repeatedMeasuresTree);			
-	}	
-
-	/**
-	 * Delete a RepeatedMeasuresNodeList object for specified UUID.
-	 *
-	 * @param uuid the uuid
-	 * @return RepeatedMeasuresNodeList
-	 */
-	@Delete("application/json")
-	public RepeatedMeasuresNodeList remove(byte[] uuid) 
-	{
-		RepeatedMeasuresNodeList repeatedMeasuresTree = null;
-		StudyDesign studyDesign = null;
-		try
-		{
-			/* ----------------------------------------------------
-			 * Check for existence of a UUID in Study Design object 
-			 * ----------------------------------------------------*/
-			studyDesignManager = new StudyDesignManager();			
-			studyDesignManager.beginTransaction();								
-				if(uuid==null)
-					throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-							"no study design UUID specified");
-				uuidFlag = studyDesignManager.hasUUID(uuid);
-				if(uuidFlag)
-            	{		
-					studyDesign = studyDesignManager.get(uuid);
-					if(studyDesign!=null)
-						repeatedMeasuresTree = new RepeatedMeasuresNodeList(studyDesign.getRepeatedMeasuresTree());									
-            	}				
-			studyDesignManager.commit();
-			/* ----------------------------------------------------
-			 * Remove existing RepeatedMeasuresNode objects for this object 
-			 * ----------------------------------------------------*/
-			if(studyDesign.getRepeatedMeasuresTree()!=null)
-			{
-				repeatedMeasuresManager = new RepeatedMeasuresManager();
-				repeatedMeasuresManager.beginTransaction();
-					repeatedMeasuresTree = new RepeatedMeasuresNodeList(repeatedMeasuresManager.delete(uuid,repeatedMeasuresTree.getRepeatedMeasuresList()));
-				repeatedMeasuresManager.commit();
-			}
-		}
-		catch (BaseManagerException bme)
-		{
-			System.out.println(bme.getMessage());
-			StudyDesignLogger.getInstance().error(bme.getMessage());
-			if(repeatedMeasuresManager!=null)
-			{
-				try
-				{repeatedMeasuresManager.rollback();}				
-				catch(BaseManagerException re)
-				{repeatedMeasuresTree = null;}				
-			}
-			repeatedMeasuresTree = null;
-		}	
-		catch(StudyDesignException sde)
-		{
-			System.out.println(sde.getMessage());
-			StudyDesignLogger.getInstance().error(sde.getMessage());
-			if(studyDesignManager!=null)
-			{
-				try {studyDesignManager.rollback();}
-				catch(BaseManagerException re) {repeatedMeasuresTree = null;}					
-			}
-			repeatedMeasuresTree = null;
-		}		
-		return repeatedMeasuresTree;
-	}
-
-	/**
-	 * Delete a RepeatedMeasuresNodeList object for specified Study Design.
-	 *
-	 * @param studyDesign the study design
-	 * @return RepeatedMeasuresNodeList
-	 */
-	public RepeatedMeasuresNodeList removeFrom(StudyDesign studyDesign) 
-	{
-		RepeatedMeasuresNodeList repeatedMeasuresTree = null;	
-        try
-        {                    			
-        	repeatedMeasuresManager = new RepeatedMeasuresManager();
-        	repeatedMeasuresManager.beginTransaction();
-        		repeatedMeasuresTree=new RepeatedMeasuresNodeList(repeatedMeasuresManager.delete(studyDesign.getUuid(),studyDesign.getRepeatedMeasuresTree()));
-        	repeatedMeasuresManager.commit();        	       
+public class RepeatedMeasuresServerResource extends ServerResource implements
+        RepeatedMeasuresResource {
+    /**
+     * Retrieve the RepeatedMeasuresNodeList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the repeated measures node list
+     */
+    @Get("application/json")
+    public final RepeatedMeasuresNodeList retrieve(final byte[] uuid) {
+        RepeatedMeasuresManager repeatedMeasuresManager = null;
+        RepeatedMeasuresNodeList repeatedMeasuresNodeList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
         }
-        catch (BaseManagerException bme)
-        {
-        	System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error("Failed to load Study Design information: " + bme.getMessage());
-            if (studyDesignManager != null) try { studyDesignManager.rollback(); } catch (BaseManagerException e) {}
-            if (repeatedMeasuresManager != null) try { repeatedMeasuresManager.rollback(); } catch (BaseManagerException e) {}
-            repeatedMeasuresTree = null;           
-        }
-       return repeatedMeasuresTree;
-	}
+        /*
+         * Check : length of uuid.
+         */
 
+        try {
+            /*
+             * Delete RepeatedMeasuresNode list.
+             */
+            repeatedMeasuresManager = new RepeatedMeasuresManager();
+            repeatedMeasuresManager.beginTransaction();
+            repeatedMeasuresNodeList = repeatedMeasuresManager.retrieve(uuid);
+            repeatedMeasuresManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (repeatedMeasuresManager != null) {
+                try {
+                    repeatedMeasuresManager.rollback();
+                } catch (BaseManagerException re) {
+                    repeatedMeasuresNodeList = null;
+                }
+            }
+            repeatedMeasuresNodeList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (repeatedMeasuresManager != null) {
+                try {
+                    repeatedMeasuresManager.rollback();
+                } catch (BaseManagerException re) {
+                    repeatedMeasuresNodeList = null;
+                }
+            }
+            repeatedMeasuresNodeList = null;
+        }
+        return repeatedMeasuresNodeList;
+    }
+
+    /**
+     * Creates the RepeatedMeasuresNodeList.
+     * 
+     * @param repeatedMeasuresNodeList
+     *            the repeated measures node list
+     * @return the repeated measures node list
+     */
+    @Post("application/json")
+    public final RepeatedMeasuresNodeList create(
+            RepeatedMeasuresNodeList repeatedMeasuresNodeList) {
+        RepeatedMeasuresManager repeatedMeasuresManager = null;
+        byte[] uuid = repeatedMeasuresNodeList.getUuid();
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        /*
+         * Check : empty RepeatedMeasuresNode list.
+         */
+        List<RepeatedMeasuresNode> list = repeatedMeasuresNodeList
+                .getRepeatedMeasuresList();
+        if (list == null || list.isEmpty()) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no Beta Scale specified");
+        }
+        try {
+            /*
+             * Save RepeatedMeasuresNode list.
+             */
+            repeatedMeasuresManager = new RepeatedMeasuresManager();
+            repeatedMeasuresManager.beginTransaction();
+            repeatedMeasuresNodeList = repeatedMeasuresManager.saveOrUpdate(
+                    repeatedMeasuresNodeList, true);
+            repeatedMeasuresManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (repeatedMeasuresManager != null) {
+                try {
+                    repeatedMeasuresManager.rollback();
+                } catch (BaseManagerException re) {
+                    repeatedMeasuresNodeList = null;
+                }
+            }
+            repeatedMeasuresNodeList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (repeatedMeasuresManager != null) {
+                try {
+                    repeatedMeasuresManager.rollback();
+                } catch (BaseManagerException re) {
+                    repeatedMeasuresNodeList = null;
+                }
+            }
+            repeatedMeasuresNodeList = null;
+        }
+        return repeatedMeasuresNodeList;
+    }
+
+    /**
+     * Update the RepeatedMeasuresNodeList.
+     * 
+     * @param repeatedMeasuresNodeList
+     *            the repeated measures node list
+     * @return the repeated measures node list
+     */
+    @Put("application/json")
+    public final RepeatedMeasuresNodeList update(
+            final RepeatedMeasuresNodeList repeatedMeasuresNodeList) {
+        return create(repeatedMeasuresNodeList);
+    }
+
+    /**
+     * Removes the RepeatedMeasuresNodeList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the repeated measures node list
+     */
+    @Delete("application/json")
+    public final RepeatedMeasuresNodeList remove(final byte[] uuid) {
+        RepeatedMeasuresManager repeatedMeasuresManager = null;
+        RepeatedMeasuresNodeList repeatedMeasuresNodeList = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
+        try {
+            /*
+             * Delete RepeatedMeasuresNode list.
+             */
+            repeatedMeasuresManager = new RepeatedMeasuresManager();
+            repeatedMeasuresManager.beginTransaction();
+            repeatedMeasuresNodeList = repeatedMeasuresManager.delete(uuid);
+            repeatedMeasuresManager.commit();
+
+        } catch (BaseManagerException bme) {
+            System.out.println(bme.getMessage());
+            StudyDesignLogger.getInstance().error(bme.getMessage());
+            if (repeatedMeasuresManager != null) {
+                try {
+                    repeatedMeasuresManager.rollback();
+                } catch (BaseManagerException re) {
+                    repeatedMeasuresNodeList = null;
+                }
+            }
+            repeatedMeasuresNodeList = null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            StudyDesignLogger.getInstance().error(e.getMessage());
+            if (repeatedMeasuresManager != null) {
+                try {
+                    repeatedMeasuresManager.rollback();
+                } catch (BaseManagerException re) {
+                    repeatedMeasuresNodeList = null;
+                }
+            }
+            repeatedMeasuresNodeList = null;
+        }
+        return repeatedMeasuresNodeList;
+    }
 }

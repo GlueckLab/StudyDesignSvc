@@ -32,60 +32,53 @@ import org.restlet.resource.Put;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNodeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
+// TODO: Auto-generated Javadoc
 /**
- * Generic Resource class for handling requests for the
- * domain objects of a study design.
- * See the StudyDesignApplication class for URI mappings
- *
+ * Generic Resource class for handling requests for the domain objects of a
+ * study design. See the StudyDesignApplication class for URI mappings
+ * 
  * @author Uttara Sakhadeo
  */
 public interface ClusterNodeResource {
-     /**
-     * Retrieve the object for the specified UUID.
-     * Returns "not found" if no matching Object is available.
-     *
-     * @param uuid the uuid
-     * @return Object for specified UUID
-     */
-     @Get("application/json")
-     ClusterNodeList retrieve(byte[] uuid);
 
     /**
-     * Store the confidence interval to the database.
-     *
-     * @param uuid the uuid
-     * @param clusterNodeList the cluster node list
-     * @return updated Object.
+     * Retrieve the ClusterNodeList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the cluster node list
+     */
+    @Get("application/json")
+    ClusterNodeList retrieve(byte[] uuid);
+
+    /**
+     * Creates the ClusterNodeList.
+     * 
+     * @param clusterNodeList
+     *            the cluster node list
+     * @return the cluster node list
      */
     @Post("application/json")
     ClusterNodeList create(ClusterNodeList clusterNodeList);
 
     /**
-     * Update the specified object. If there is no
-     * object set for specified UUID, then this object
-     * will be treated as new and a UUID assigned.
-     *
-     * @param uuid the uuid
-     * @param clusterNode the cluster node
-     * @return Object
+     * Update the ClusterNodeList.
+     * 
+     * @param clusterNode
+     *            the cluster node
+     * @return the cluster node list
      */
     @Put("application/json")
     ClusterNodeList update(ClusterNodeList clusterNode);
 
     /**
-     * Delete the study with the specified UUID.
-     *
-     * @param uuid of the object to remove
-     * @return the deleted object
+     * Removes the ClusterNodeList.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the cluster node list
      */
     @Delete("application/json")
     ClusterNodeList remove(byte[] uuid);
 
-    /**
-     * Delete the study with the specified studyDesign.
-     *
-     * @param studyDesign from which object is to be removed
-     * @return the deleted object
-     */
-    ClusterNodeList removeFrom(StudyDesign studyDesign);
-    }
+}

@@ -29,64 +29,57 @@ import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.UuidConfidenceIntervalDescription;
+
 // TODO: Auto-generated Javadoc
 /**
- * Resource class for handling requests for the
- * confidence interval object.
- * See the StudyDesignApplication class for URI mappings
- *
+ * Resource class for handling requests for the confidence interval object. See
+ * the StudyDesignApplication class for URI mappings
+ * 
  * @author Uttara Sakhadeo
  */
 public interface ConfidenceIntervalResource {
-    /**
-     * Retrieve the confidence interval for the specified UUID.
-     * Returns "not found" if no matching confidence interval is available.
-     *
-     * @param uuid the uuid
-     * @return confidence interval with specified UUID
-     */
-     @Get("application/json")
-    ConfidenceIntervalDescription retrieve(byte[] uuid);
 
     /**
-     * Store the confidence interval to the database.
-     *
-     * @param uuidConfidenceInterval the uuid confidence interval
-     * @return confidence interval object with updated UUID.
+     * Retrieve ConfidenceIntervalDescription.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the uuid confidence interval description
+     */
+    @Get("application/json")
+    UuidConfidenceIntervalDescription retrieve(byte[] uuid);
+
+    /**
+     * Creates the ConfidenceIntervalDescription.
+     * 
+     * @param uuidConfidenceInterval
+     *            the uuid confidence interval
+     * @return the uuid confidence interval description
      */
     @Post("application/json")
-    ConfidenceIntervalDescription create(
-        UuidConfidenceIntervalDescription uuidConfidenceInterval);
+    UuidConfidenceIntervalDescription create(
+            UuidConfidenceIntervalDescription uuidConfidenceInterval);
 
     /**
-     * Update the specified confidence interval object. If there is no
-     * confidence interval set for specified UUID, then this object
-     * will be treated as new and a UUID assigned.
-     *
-     * @param uuidConfidenceInterval the uuid confidence interval
-     * @return the confidence interval object
+     * Update ConfidenceIntervalDescription.
+     * 
+     * @param uuidConfidenceInterval
+     *            the uuid confidence interval
+     * @return the uuid confidence interval description
      */
     @Put("application/json")
-    ConfidenceIntervalDescription update(
-        UuidConfidenceIntervalDescription uuidConfidenceInterval);
+    UuidConfidenceIntervalDescription update(
+            UuidConfidenceIntervalDescription uuidConfidenceInterval);
 
     /**
-     * Delete the ConfidenceIntervalDescription with the specified UUID.
-     *
-     * @param uuid the uuid of the study to remove
-     * @return the deleted study design object
+     * Removes the ConfidenceIntervalDescription.
+     * 
+     * @param uuid
+     *            the uuid
+     * @return the uuid confidence interval description
      */
     @Delete("application/json")
-    ConfidenceIntervalDescription remove(byte[] uuid);
+    UuidConfidenceIntervalDescription remove(byte[] uuid);
 
-    /**
-     * Delete the Confidence Interval with the specified UUID.
-     *
-     * @param studyDesign from which object is to be removed
-     * @return the deleted study design object
-     */
-    ConfidenceIntervalDescription removeFrom(StudyDesign studyDesign);
 }

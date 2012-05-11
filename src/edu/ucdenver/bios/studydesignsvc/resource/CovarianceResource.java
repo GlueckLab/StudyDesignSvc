@@ -46,12 +46,12 @@ public interface CovarianceResource {
     /**
      * Retrieve Covariance.
      * 
-     * @param uuidName
-     *            the uuid name
+     * @param uuidCovarianceName
+     *            the uuid covariance name
      * @return the covariance
      */
     @Get("application/json")
-    Covariance retrieve(UuidCovarianceName uuidName);
+    Covariance retrieve(UuidCovarianceName uuidCovarianceName);
 
     /**
      * Creates the Covariance.
@@ -74,23 +74,12 @@ public interface CovarianceResource {
     Covariance update(UuidCovariance uuidCovariance);
 
     /**
-     * Removes the Covariance.
+     * Delete the Covariance.
      * 
-     * @param uuidName
-     *            the uuid name
+     * @param uuidCovarianceName
+     *            the uuid covariance name
      * @return the covariance
      */
     @Delete("application/json")
-    Covariance remove(UuidCovarianceName uuidName);
-
-    /**
-     * Removes the from.
-     * 
-     * @param studyDesign
-     *            the study design
-     * @param name
-     *            the name
-     * @return the covariance
-     */
-    Covariance removeFrom(StudyDesign studyDesign, String name);
+    Covariance remove(UuidCovarianceName uuidCovarianceName);
 }

@@ -75,7 +75,7 @@ public class PowerMethodServerResource extends ServerResource implements
 
         try {
             /*
-             * Delete PowerMethod list.
+             * Retrieve PowerMethod list.
              */
             powerMethodManager = new PowerMethodManager();
             powerMethodManager.beginTransaction();

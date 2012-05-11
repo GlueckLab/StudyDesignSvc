@@ -70,7 +70,7 @@ public class SigmaScaleServerResource extends ServerResource implements
 
         try {
             /*
-             * Delete SigmaScale list.
+             * Retrieve SigmaScale list.
              */
             sigmaScaleManager = new SigmaScaleManager();
             sigmaScaleManager.beginTransaction();

@@ -70,7 +70,7 @@ public class StatisticalTestServerResource extends ServerResource implements
 
         try {
             /*
-             * Delete StatisticalTest list.
+             * Retrieve StatisticalTest list.
              */
             statisticalTestManager = new StatisticalTestManager();
             statisticalTestManager.beginTransaction();

@@ -71,7 +71,7 @@ public class TypeIErrorServerResource extends ServerResource implements
 
         try {
             /*
-             * Delete TypeIError list.
+             * Retrieve TypeIError list.
              */
             typeIErrorManager = new TypeIErrorManager();
             typeIErrorManager.beginTransaction();

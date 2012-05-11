@@ -38,15 +38,15 @@ import edu.ucdenver.bios.webservice.common.domain.ResponseList;
 import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+// TODO: Auto-generated Javadoc
 /**
- * Server Resource class for handling requests for the ResponseNode object. 
- * See the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling requests for the ResponseNode object. See
+ * the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-public class ResponsesServerResource  extends ServerResource
-implements ResponsesResource 
-{
+public class ResponsesServerResource extends ServerResource implements
+        ResponsesResource {
     /**
      * Retrieves the ResponseList.
      * 
@@ -68,10 +68,10 @@ implements ResponsesResource
         /*
          * Check : length of uuid.
          */
-        
+
         try {
             /*
-             * Delete ResponseList list.
+             * Retrieve ResponseList list.
              */
             responsesManager = new ResponsesManager();
             responsesManager.beginTransaction();
@@ -107,8 +107,8 @@ implements ResponsesResource
     /**
      * Creates the ResponseList.
      * 
-     * @param responseNodeList
-     *            the response node list
+     * @param responsesList
+     *            the responses list
      * @return the response list
      */
     @Post("application/json")
@@ -131,13 +131,13 @@ implements ResponsesResource
                     "no Beta Scale specified");
         }
         try {
-        /*
-         * Save ResponseList list.
-         */
-        responsesManager = new ResponsesManager();
-        responsesManager.beginTransaction();
+            /*
+             * Save ResponseList list.
+             */
+            responsesManager = new ResponsesManager();
+            responsesManager.beginTransaction();
             responsesList = responsesManager.saveOrUpdate(responsesList, true);
-        responsesManager.commit();
+            responsesManager.commit();
 
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());
@@ -168,8 +168,8 @@ implements ResponsesResource
     /**
      * Updates the ResponseList.
      * 
-     * @param responseNodeList
-     *            the response node list
+     * @param responsesList
+     *            the responses list
      * @return the response list
      */
     @Put("application/json")
