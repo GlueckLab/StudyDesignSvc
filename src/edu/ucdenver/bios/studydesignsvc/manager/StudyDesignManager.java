@@ -22,14 +22,41 @@
  */
 package edu.ucdenver.bios.studydesignsvc.manager;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 import org.hibernate.Query;
 
 import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
+import edu.ucdenver.bios.webservice.common.domain.BetaScale;
+import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
+import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
+import edu.ucdenver.bios.webservice.common.domain.Category;
+import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
+import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
+import edu.ucdenver.bios.webservice.common.domain.Covariance;
+import edu.ucdenver.bios.webservice.common.domain.CovarianceSet;
+import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
+import edu.ucdenver.bios.webservice.common.domain.HypothesisBetweenParticipantMapping;
+import edu.ucdenver.bios.webservice.common.domain.HypothesisRepeatedMeasuresMapping;
+import edu.ucdenver.bios.webservice.common.domain.HypothesisSet;
+import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
+import edu.ucdenver.bios.webservice.common.domain.NominalPower;
+import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
+import edu.ucdenver.bios.webservice.common.domain.PowerMethod;
+import edu.ucdenver.bios.webservice.common.domain.Quantile;
+import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
+import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
+import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNodeList;
+import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
+import edu.ucdenver.bios.webservice.common.domain.SampleSize;
+import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
+import edu.ucdenver.bios.webservice.common.domain.Spacing;
+import edu.ucdenver.bios.webservice.common.domain.StandardDeviation;
+import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.domain.TypeIError;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
@@ -203,9 +230,267 @@ public class StudyDesignManager extends StudyDesignParentManager {
         if (!transactionStarted)
             throw new StudyDesignException("Transaction has not been started.");
         StudyDesign studyDesign = null;
+        byte[] uuid = null;
         try {
             studyDesign = get(uuidBytes);
-            session.delete(studyDesign);
+            uuid = studyDesign.getUuid();
+            if (studyDesign != null) {
+                List<TypeIError> alphaList = studyDesign.getAlphaList();
+
+                List<BetaScale> betaScaleList = studyDesign.getBetaScaleList();
+
+                List<SigmaScale> sigmaScaleList = studyDesign
+                        .getSigmaScaleList();
+
+                List<RelativeGroupSize> relativeGroupSizeList = studyDesign
+                        .getRelativeGroupSizeList();
+
+                List<SampleSize> sampleSizeList = studyDesign
+                        .getSampleSizeList();
+
+                List<StatisticalTest> statisticalTestList = studyDesign
+                        .getStatisticalTestList();
+
+                List<PowerMethod> powerMethodList = studyDesign
+                        .getPowerMethodList();
+
+                List<Quantile> quantileList = studyDesign.getQuantileList();
+
+                List<NominalPower> nominalPowerList = studyDesign
+                        .getNominalPowerList();
+
+                List<ResponseNode> responseList = studyDesign.getResponseList();
+
+                ConfidenceIntervalDescription confidenceIntervalDescriptions = studyDesign
+                        .getConfidenceIntervalDescriptions();
+
+                PowerCurveDescription powerCurveDescriptions = studyDesign
+                        .getPowerCurveDescriptions();
+
+                List<BetweenParticipantFactor> betweenParticipantFactorList = studyDesign
+                        .getBetweenParticipantFactorList();
+
+                List<RepeatedMeasuresNode> repeatedMeasuresTree = studyDesign
+                        .getRepeatedMeasuresTree();
+
+                List<ClusterNode> clusteringTree = studyDesign
+                        .getClusteringTree();
+
+                Set<Hypothesis> hypothesis = studyDesign.getHypothesis();
+
+                Set<Covariance> covariance = studyDesign.getCovariance();
+
+                Set<NamedMatrix> matrixSet = studyDesign.getMatrixSet();
+
+                Iterator itr = null;
+                /*
+                 * Delete child objects
+                 */
+                /*
+                 * PowerCurveDescription
+                 */
+                if (powerCurveDescriptions != null) {
+                    session.delete(powerCurveDescriptions);
+                }
+                /*
+                 * ConfidenceIntervalDescription
+                 */
+                if (confidenceIntervalDescriptions != null) {
+                    session.delete(confidenceIntervalDescriptions);
+                }
+                /*
+                 * Lists
+                 */
+                if (alphaList != null && !alphaList.isEmpty()) {
+                    itr = alphaList.iterator();
+                    while (itr.hasNext()) {
+                        session.delete(itr.next());
+                    }
+                }
+                if (betaScaleList != null && !betaScaleList.isEmpty()) {
+                    itr = betaScaleList.iterator();
+                    while (itr.hasNext()) {
+                        session.delete(itr.next());
+                    }
+                }
+                if (nominalPowerList != null && !nominalPowerList.isEmpty()) {
+                    itr = nominalPowerList.iterator();
+                    while (itr.hasNext()) {
+                        session.delete(itr.next());
+                    }
+                }
+                if (powerMethodList != null && !powerMethodList.isEmpty()) {
+                    itr = powerMethodList.iterator();
+                    while (itr.hasNext()) {
+                        session.delete(itr.next());
+                    }
+                }
+                if (quantileList != null && !quantileList.isEmpty()) {
+                    itr = quantileList.iterator();
+                    while (itr.hasNext()) {
+                        session.delete(itr.next());
+                    }
+                }
+                if (relativeGroupSizeList != null
+                        && !relativeGroupSizeList.isEmpty()) {
+                    itr = relativeGroupSizeList.iterator();
+                    while (itr.hasNext()) {
+                        session.save(itr.next());
+                    }
+                }
+                if (sampleSizeList != null && !sampleSizeList.isEmpty()) {
+                    itr = sampleSizeList.iterator();
+                    while (itr.hasNext()) {
+                        session.delete(itr.next());
+                    }
+                }
+                if (responseList != null && !responseList.isEmpty()) {
+                    itr = responseList.iterator();
+                    while (itr.hasNext()) {
+                        session.delete(itr.next());
+                    }
+                }
+                if (sigmaScaleList != null && !sigmaScaleList.isEmpty()) {
+                    itr = sigmaScaleList.iterator();
+                    while (itr.hasNext()) {
+                        session.save(itr.next());
+                    }
+                }
+                if (statisticalTestList != null
+                        && !statisticalTestList.isEmpty()) {
+                    itr = statisticalTestList.iterator();
+                    while (itr.hasNext()) {
+                        session.delete(itr.next());
+                    }
+                }
+                /*
+                 * Clustering
+                 */
+                if (clusteringTree != null && !clusteringTree.isEmpty()) {
+                    itr = clusteringTree.iterator();
+                    while (itr.hasNext()) {
+                        session.delete(itr.next());
+                    }
+                }
+                /*
+                 * Matrix
+                 */
+                if (matrixSet != null && matrixSet.isEmpty()) {
+                    itr = matrixSet.iterator();
+                    while (itr.hasNext()) {
+                        session.delete(itr.next());
+                    }
+                }
+                /*
+                 * Covariance
+                 */
+                if (covariance != null && !covariance.isEmpty()) {
+                    /*itr = covariance.iterator();
+                    while (itr.hasNext()) {
+                        Covariance cov = (Covariance) itr.next();
+                        
+                         * Save changes to Standard Deviation List
+                         
+                        List<StandardDeviation> std = cov
+                                .getStandardDeviationList();
+                        if (std != null && !std.isEmpty()) {
+                            Iterator itrStd = std.iterator();
+                            while (itrStd.hasNext()) {
+                                session.delete(itrStd.next());
+                            }
+                        }
+                        session.delete(cov);
+                    }*/
+                    CovarianceSetManager covarianceManager = new CovarianceSetManager();
+                    covarianceManager.delete(uuid);
+                }
+                /*
+                 * BetweenParticipantFactors
+                 */
+                if (betweenParticipantFactorList != null
+                        && !betweenParticipantFactorList.isEmpty()) {
+                    /*itr = betweenParticipantFactorList.iterator();
+                    while (itr.hasNext()) {
+                        BetweenParticipantFactor factor = (BetweenParticipantFactor) itr
+                                .next();
+                        
+                         * Save changes to Category List
+                         
+                        List<Category> categoryList = factor.getCategoryList();
+                        if (categoryList != null && !categoryList.isEmpty()) {
+                            Iterator itrCategory = categoryList.iterator();
+                            while (itrCategory.hasNext()) {
+                                session.delete(itrCategory.next());
+                            }
+                        }
+                        session.delete(factor);
+                    }*/
+                    BetweenParticipantFactorManager betManager = new BetweenParticipantFactorManager();
+                    betManager.delete(uuid);
+                }
+                /*
+                 * RepeatedMeasures
+                 */
+                if (repeatedMeasuresTree != null
+                        && !repeatedMeasuresTree.isEmpty()) {
+                    /*itr = repeatedMeasuresTree.iterator();
+                    while (itr.hasNext()) {
+                        RepeatedMeasuresNode node = (RepeatedMeasuresNode) itr
+                                .next();
+                        
+                         * Save changes to Spacing List
+                         
+                        List<Spacing> spacing = node.getSpacingList();
+                        if (spacing != null && !spacing.isEmpty()) {
+                            Iterator itrSpacing = spacing.iterator();
+                            while (itrSpacing.hasNext()) {
+                                session.delete(itrSpacing.next());
+                            }
+                        }
+                        session.delete(node);
+                    }*/
+                    RepeatedMeasuresManager reptManager = new RepeatedMeasuresManager();
+                    reptManager.delete(uuid);
+                }
+                /*
+                 * Hypothesis
+                 */
+                if (hypothesis != null && !hypothesis.isEmpty()) {
+                    HypothesisSetManager hypothesisSetManager = new HypothesisSetManager();
+                    hypothesisSetManager.delete(uuid);
+                    /*itr = hypothesis.iterator();
+                    while(itr.hasNext()) { 
+                        Hypothesis hyp = (Hypothesis)itr.next();
+                        
+                         * Save changes to HypothesisBetweenParticipantMapping List
+                         
+                        List<HypothesisBetweenParticipantMapping> betMap = hyp.getBetweenParticipantFactorMapList();
+                        if(betMap != null && !betMap.isEmpty()) {
+                            Iterator itrBetMap = betMap.iterator();
+                            while(itrBetMap.hasNext()) {
+                                session.delete(itrBetMap.next());
+                            }
+                        }
+                        
+                         * Save changes to HypothesisRepeatedMeasuresMapping List
+                         
+                        List<HypothesisRepeatedMeasuresMapping> reptMap = hyp.getRepeatedMeasuresMapTree();
+                        if(reptMap != null && !reptMap.isEmpty()) {
+                            Iterator itrReptMap = reptMap.iterator();
+                            while(itrReptMap.hasNext()) {
+                                session.delete(itrReptMap.next());
+                            }
+                        }
+                        session.delete(hyp);
+                    }*/
+                }
+                /*
+                 * Delete Study Design.
+                 */
+                session.delete(studyDesign);
+
+            } else
+                throw new StudyDesignException("Error ! No such UUID present");
         } catch (Exception e) {
             // throw new
             // StudyDesignException("Failed to delete study design for UUID '" +
@@ -214,6 +499,26 @@ public class StudyDesignManager extends StudyDesignParentManager {
             throw new StudyDesignException(
                     "Failed to delete study design for UUID '" + uuidBytes
                             + "': " + e.getMessage());
+        }
+        return studyDesign;
+    }
+
+    private StudyDesign delete(StudyDesign studyDesign)
+            throws StudyDesignException {
+        if (!transactionStarted)
+            throw new StudyDesignException("Transaction has not been started.");
+        if (studyDesign == null)
+            throw new StudyDesignException("Error ! No such UUID present");
+        try {
+            delete(studyDesign.getUuid());
+        } catch (Exception e) {
+            // throw new
+            // StudyDesignException("Failed to delete study design for UUID '" +
+            // studyUUID + "': " + e.getMessage());
+            System.out.println(e.getMessage());
+            throw new StudyDesignException(
+                    "Failed to delete study design for UUID '"
+                            + studyDesign.getUuid() + "': " + e.getMessage());
         }
         return studyDesign;
     }
@@ -233,17 +538,263 @@ public class StudyDesignManager extends StudyDesignParentManager {
             throws StudyDesignException {
         if (!transactionStarted)
             throw new StudyDesignException("Transaction has not been started.");
+        byte[] uuid = studyDesign.getUuid();
+        
+        List<TypeIError> alphaList = studyDesign.getAlphaList();
 
+        List<BetaScale> betaScaleList = studyDesign.getBetaScaleList();
+
+        List<SigmaScale> sigmaScaleList = studyDesign.getSigmaScaleList();
+
+        List<RelativeGroupSize> relativeGroupSizeList = studyDesign.getRelativeGroupSizeList();
+
+        List<SampleSize> sampleSizeList = studyDesign.getSampleSizeList();
+
+        List<StatisticalTest> statisticalTestList = studyDesign.getStatisticalTestList();
+
+        List<PowerMethod> powerMethodList = studyDesign.getPowerMethodList();
+
+        List<Quantile> quantileList = studyDesign.getQuantileList();
+
+        List<NominalPower> nominalPowerList = studyDesign.getNominalPowerList();
+
+        List<ResponseNode> responseList = studyDesign.getResponseList();
+
+        ConfidenceIntervalDescription confidenceIntervalDescriptions = studyDesign.getConfidenceIntervalDescriptions();
+
+        PowerCurveDescription powerCurveDescriptions = studyDesign.getPowerCurveDescriptions();
+
+        List<BetweenParticipantFactor> betweenParticipantFactorList = studyDesign.getBetweenParticipantFactorList();
+
+        List<RepeatedMeasuresNode> repeatedMeasuresTree = studyDesign.getRepeatedMeasuresTree();
+
+        List<ClusterNode> clusteringTree = studyDesign.getClusteringTree();
+
+        Set<Hypothesis> hypothesis = studyDesign.getHypothesis();
+
+        Set<Covariance> covariance = studyDesign.getCovariance();
+
+        Set<NamedMatrix> matrixSet = studyDesign.getMatrixSet();
+        
+        Iterator itr = null;
+        
         try {
-            if (isCreation == true)
-                session.save(studyDesign);
-            else
-                session.update(studyDesign);
+            /*
+             * Retrieve Study Design Object
+             */
+            StudyDesign originalStudyDesign = get(uuid);            
+            if (originalStudyDesign != null) {
+                /*
+                 * Delete Existing Study Design Object
+                 */
+                delete(originalStudyDesign);
+            }
+            /*
+             * Save/Update child objects
+             */
+                /*
+                 * PowerCurveDescription
+                 */
+                if(powerCurveDescriptions != null) {                        
+                    session.save(powerCurveDescriptions);
+                }
+                /*
+                 * ConfidenceIntervalDescription
+                 */
+                if(confidenceIntervalDescriptions != null) {
+                    session.save(confidenceIntervalDescriptions);
+                }
+                /*
+                 * Lists
+                 */     
+                    if(alphaList != null && !alphaList.isEmpty()) {
+                        itr = alphaList.iterator();
+                        while(itr.hasNext()) {                                
+                            session.save(itr.next());
+                        }
+                    }
+                    if(betaScaleList != null && !betaScaleList.isEmpty()) {
+                        itr = betaScaleList.iterator();
+                        while(itr.hasNext()) {                                
+                            session.save(itr.next());
+                        }
+                    }
+                    if(nominalPowerList != null && !nominalPowerList.isEmpty()) {
+                        itr = nominalPowerList.iterator();
+                        while(itr.hasNext()) {                                
+                            session.save(itr.next());
+                        }
+                    }
+                    if(powerMethodList != null && !powerMethodList.isEmpty()) {
+                        itr =powerMethodList.iterator();
+                        while(itr.hasNext()) {                                
+                            session.save(itr.next());
+                        }
+                    }
+                    if(quantileList != null && !quantileList.isEmpty()) {
+                        itr = quantileList.iterator();
+                        while(itr.hasNext()) {                                
+                            session.save(itr.next());
+                        }
+                    }
+                    if(relativeGroupSizeList != null && !relativeGroupSizeList.isEmpty()) {
+                        itr = relativeGroupSizeList.iterator();
+                        while(itr.hasNext()) {
+                            session.save(itr.next());
+                        }
+                    }
+                    if(sampleSizeList != null && !sampleSizeList.isEmpty()) {
+                        itr = sampleSizeList.iterator();
+                        while(itr.hasNext()) {                                
+                            session.save(itr.next());
+                        }
+                    }
+                    if(responseList != null && !responseList.isEmpty()) {
+                        itr = responseList.iterator();
+                        while(itr.hasNext()) {                                
+                            session.save(itr.next());
+                        }
+                    }
+                    if(sigmaScaleList != null && !sigmaScaleList.isEmpty()) {
+                        itr = sigmaScaleList.iterator();
+                        while(itr.hasNext()) {
+                            session.save(itr.next());
+                        }
+                    }
+                    if(statisticalTestList != null && !statisticalTestList.isEmpty()) {
+                        itr = statisticalTestList.iterator();
+                        while(itr.hasNext()) {                                
+                            session.save(itr.next());
+                        }
+                    }
+                /*
+                 * Matrix
+                 */
+                    if(matrixSet != null && matrixSet.isEmpty()) {
+                        itr = matrixSet.iterator();
+                        while(itr.hasNext()) {                                
+                            session.save(itr.next());
+                        }
+                    }
+                /*
+                 * Clustering
+                 */
+                    if(clusteringTree != null && !clusteringTree.isEmpty()) {
+                        itr = clusteringTree.iterator();
+                        while(itr.hasNext()) {                            
+                            session.save(itr.next());
+                        }
+                    }
+                 /*
+                  * Covariance
+                  */
+                    if(covariance != null && !covariance.isEmpty()) {
+                        /*itr = covariance.iterator();
+                        while(itr.hasNext()) {
+                            Covariance cov = (Covariance) itr.next();
+                            
+                             * Save changes to Standard Deviation List
+                             
+                            List<StandardDeviation> std= cov.getStandardDeviationList();
+                            if(std != null && !std.isEmpty()) {
+                                Iterator itrStd = std.iterator();
+                                while(itrStd.hasNext()) {
+                                    session.save(itrStd.next());
+                                }
+                            }
+                            session.save(cov);                        
+                        }*/
+                    CovarianceSetManager covarianceManager = new CovarianceSetManager();
+                    covarianceManager.saveOrUpdate(new CovarianceSet(uuid,covariance), true);
+                    }                
+                /*
+                 * BetweenParticipantFactors
+                 */
+                    if(betweenParticipantFactorList != null && !betweenParticipantFactorList.isEmpty()) {
+                        /*itr = betweenParticipantFactorList.iterator();                        
+                        while(itr.hasNext()) {                        
+                            BetweenParticipantFactor factor = (BetweenParticipantFactor)itr.next();
+                            
+                             * Save changes to Category List
+                             
+                            List<Category> categoryList = factor.getCategoryList();
+                            if(categoryList != null && !categoryList.isEmpty()) {
+                                Iterator itrCategory = categoryList.iterator();
+                                while(itrCategory.hasNext()) {                    
+                                    session.save(itrCategory.next());
+                                }
+                            }
+                            session.save(factor);
+                        }*/
+                        BetweenParticipantFactorManager betManager = new BetweenParticipantFactorManager();
+                        betManager.saveOrUpdate(new BetweenParticipantFactorList(uuid, betweenParticipantFactorList), true);
+                    }
+                /*
+                 * RepeatedMeasures
+                 */
+                    if(repeatedMeasuresTree != null && !repeatedMeasuresTree.isEmpty()) {
+                        /*itr = repeatedMeasuresTree.iterator();
+                        while(itr.hasNext()) {    
+                            RepeatedMeasuresNode node = (RepeatedMeasuresNode) itr.next();
+                            
+                             * Save changes to Spacing List
+                             
+                            List<Spacing> spacing = node.getSpacingList(); 
+                            if(spacing != null && !spacing.isEmpty()) {
+                                Iterator itrSpacing = spacing.iterator();
+                                while(itrSpacing.hasNext()) {
+                                    session.save(itrSpacing.next());
+                                }
+                            }
+                            session.save(node);
+                        }*/
+                        RepeatedMeasuresManager reptManager = new RepeatedMeasuresManager();
+                        reptManager.saveOrUpdate(new RepeatedMeasuresNodeList(uuid, repeatedMeasuresTree), true);
+                    }
+                /*
+                 * Hypothesis
+                 */
+                    if(hypothesis != null && !hypothesis.isEmpty()) {
+                        
+                        HypothesisSetManager hypothesisSetManager = new HypothesisSetManager();
+                        hypothesisSetManager.saveOrUpdate(new HypothesisSet(uuid,hypothesis),true);
+                        /*itr = hypothesis.iterator();
+                        while(itr.hasNext()) { 
+                            Hypothesis hyp = (Hypothesis)itr.next();
+                            
+                             * Save changes to HypothesisBetweenParticipantMapping List
+                             
+                            List<HypothesisBetweenParticipantMapping> betMap = hyp.getBetweenParticipantFactorMapList();
+                            if(betMap != null && !betMap.isEmpty()) {
+                                Iterator itrBetMap = betMap.iterator();
+                                while(itrBetMap.hasNext()) {
+                                    session.save(itrBetMap.next());
+                                }
+                            }
+                            
+                             * Save changes to HypothesisRepeatedMeasuresMapping List
+                             
+                            List<HypothesisRepeatedMeasuresMapping> reptMap = hyp.getRepeatedMeasuresMapTree();
+                            if(reptMap != null && !reptMap.isEmpty()) {
+                                Iterator itrReptMap = reptMap.iterator();
+                                while(itrReptMap.hasNext()) {
+                                    session.save(itrReptMap.next());
+                                }
+                            }
+                            session.save(hyp);
+                        }*/
+                    }
+            /*
+             * Save/Update Study Design.
+             */
+            session.save(studyDesign);            
+            
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new StudyDesignException("Failed to save study design : "
                     + e.getMessage() + "\n" + e.getStackTrace());
         }
         return studyDesign;
-    }
+    }    
+
 }
