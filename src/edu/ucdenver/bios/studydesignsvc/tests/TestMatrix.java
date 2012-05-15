@@ -22,8 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import junit.framework.TestCase;
@@ -34,11 +32,9 @@ import org.restlet.resource.ClientResource;
 import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.MatrixResource;
+import edu.ucdenver.bios.studydesignsvc.resource.MatrixRetrieveResource;
 import edu.ucdenver.bios.studydesignsvc.resource.MatrixSetResource;
-import edu.ucdenver.bios.studydesignsvc.resource.MatrixSetServerResource;
-import edu.ucdenver.bios.webservice.common.domain.Blob2DArray;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
-import edu.ucdenver.bios.webservice.common.domain.NamedMatrixSet;
 import edu.ucdenver.bios.webservice.common.domain.UuidMatrix;
 import edu.ucdenver.bios.webservice.common.domain.UuidMatrixName;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -63,6 +59,7 @@ public class TestMatrix extends TestCase {
 
     /** The resource. */
     MatrixResource resource = null;
+    MatrixRetrieveResource retrieveResource = null;
 
     /** The set resource. */
     MatrixSetResource setResource = null;
@@ -83,6 +80,9 @@ public class TestMatrix extends TestCase {
             ClientResource clientResource = new ClientResource(
                     "http://localhost:8080/study/matrix");
             resource = clientResource.wrap(MatrixResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/matrix/retrieve");
+            retrieveResource = clientResource.wrap(MatrixRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -94,7 +94,7 @@ public class TestMatrix extends TestCase {
      * Test to retrieve a NamedMatrix.
      */
     @Test
-    private void testCreateMatrix() {
+    public void testCreateMatrix() {
         NamedMatrix matrix = new NamedMatrix(THETA_MATRIX_NAME);
         rows = 3;
         columns = 3;
@@ -130,7 +130,7 @@ public class TestMatrix extends TestCase {
         NamedMatrix matrix = null;
 
         try {
-            matrix = resource.retrieve(new UuidMatrixName(uuid,
+            matrix = retrieveResource.retrieve(new UuidMatrixName(uuid,
                     THETA_MATRIX_NAME));
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -189,7 +189,7 @@ public class TestMatrix extends TestCase {
      * Test to delete a NamedMatrix.
      */
     @Test
-    public void testDeleteMatrix() {
+    private void testDeleteMatrix() {
         NamedMatrix matrix = null;
 
         try {

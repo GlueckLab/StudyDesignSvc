@@ -33,8 +33,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.resource.StatisticalTestResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StatisticalTestRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.StatisticalTest;
 import edu.ucdenver.bios.webservice.common.domain.StatisticalTestList;
 import edu.ucdenver.bios.webservice.common.enums.StatisticalTestTypeEnum;
@@ -56,7 +56,8 @@ public class TestStatisticalTestList extends TestCase {
     private static String STUDY_NAME = "Junit StatisticalTest Study Design";
 
     /** The resource. */
-    StatisticalTestResource resource = null;
+    private StatisticalTestResource resource = null;
+    private StatisticalTestRetrieveResource retrieveResource = null;
 
     /** The uuid. */
     byte[] uuid = null;
@@ -69,9 +70,12 @@ public class TestStatisticalTestList extends TestCase {
         try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                    "http://localhost:8080/study/"
-                            + StudyDesignConstants.TAG_TEST_LIST);
+                    "http://localhost:8080/study/testList");
             resource = clientResource.wrap(StatisticalTestResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/testList/retrieve");
+            retrieveResource = clientResource
+                    .wrap(StatisticalTestRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -169,7 +173,7 @@ public class TestStatisticalTestList extends TestCase {
         StatisticalTestList testList = null;
 
         try {
-            testList = resource.retrieve(uuid);
+            testList = retrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             testList = null;

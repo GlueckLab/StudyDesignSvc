@@ -33,8 +33,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.resource.ResponsesResource;
+import edu.ucdenver.bios.studydesignsvc.resource.ResponsesRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.ResponseList;
 import edu.ucdenver.bios.webservice.common.domain.ResponseNode;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -55,7 +55,8 @@ public class TestResponseList extends TestCase {
     private static String STUDY_NAME = "Junit Test Study Design";
 
     /** The resource. */
-    ResponsesResource resource = null;
+    private ResponsesResource resource = null;
+    private ResponsesRetrieveResource retrieveResource = null;
 
     /** The uuid. */
     byte[] uuid = null;
@@ -68,9 +69,12 @@ public class TestResponseList extends TestCase {
         try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                    "http://localhost:8080/study/"
-                            + StudyDesignConstants.TAG_RESPONSE_LIST);
+                    "http://localhost:8080/study/responseList");
             resource = clientResource.wrap(ResponsesResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/responseList/retrieve");
+            retrieveResource = clientResource
+                    .wrap(ResponsesRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -166,7 +170,7 @@ public class TestResponseList extends TestCase {
         ResponseList responseList = null;
 
         try {
-            responseList = resource.retrieve(uuid);
+            responseList = retrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             responseList = null;

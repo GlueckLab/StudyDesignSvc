@@ -35,9 +35,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
-import edu.ucdenver.bios.studydesignsvc.resource.BetaScaleResource;
 import edu.ucdenver.bios.studydesignsvc.resource.BetweenParticipantResource;
+import edu.ucdenver.bios.studydesignsvc.resource.BetweenParticipantRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
 import edu.ucdenver.bios.webservice.common.domain.Category;
@@ -45,7 +44,7 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
  * JUnit test cases for 'BetweenParticipantFactor' object - CRUD operations.
- *
+ * 
  * @author Uttara Sakhadeo
  */
 public class TestBetweenParticipantFactor extends TestCase {
@@ -53,27 +52,31 @@ public class TestBetweenParticipantFactor extends TestCase {
     private static UUID STUDY_UUID = UUID
             .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
     /** The resource. */
-    private BetweenParticipantResource resource = null;            
+    private BetweenParticipantResource resource = null;
+
+    private BetweenParticipantRetrieveResource retrieveResource = null;
     /** The uuid. */
     private byte[] uuid = null;
     /** The client resource. */
     ClientResource clientResource = null;
-    
+
     /*
-     * Sets tomcat connection properties
-     * while calling each Test method.
+     * Sets tomcat connection properties while calling each Test method.
      */
     public void setUp() {
-        uuid = UUIDUtils.asByteArray(STUDY_UUID); 
-        try
-        {
+        uuid = UUIDUtils.asByteArray(STUDY_UUID);
+        try {
             System.clearProperty("http.proxyHost");
-            ClientResource clientResource = new ClientResource("http://localhost:8080/study/betweenParticipantFactor");
+            ClientResource clientResource = new ClientResource(
+                    "http://localhost:8080/study/betweenParticipantFactor");
             resource = clientResource.wrap(BetweenParticipantResource.class);
-        }
-        catch (Exception e)
-        {
-            System.err.println("Failed to connect to server: " + e.getMessage());
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/betweenParticipantFactor/retrieve");
+            retrieveResource = clientResource
+                    .wrap(BetweenParticipantRetrieveResource.class);
+        } catch (Exception e) {
+            System.err
+                    .println("Failed to connect to server: " + e.getMessage());
             fail();
         }
     }
@@ -82,10 +85,9 @@ public class TestBetweenParticipantFactor extends TestCase {
      * Test to create a BetweenParticipantFactor List.
      */
     @Test
-    public void testCreate() {        
+    public void testCreate() {
         List<BetweenParticipantFactor> list = new ArrayList<BetweenParticipantFactor>();
-        BetweenParticipantFactor betweenParticipantFactor =
-                new BetweenParticipantFactor();
+        BetweenParticipantFactor betweenParticipantFactor = new BetweenParticipantFactor();
         betweenParticipantFactor.setPredictorName("Medicine");
         List<Category> categoryList = new ArrayList<Category>();
         categoryList.add(new Category("A"));
@@ -99,11 +101,11 @@ public class TestBetweenParticipantFactor extends TestCase {
         categoryList.add(new Category("Grains"));
         betweenParticipantFactor.setCategoryList(categoryList);
         list.add(betweenParticipantFactor);
-        BetweenParticipantFactorList betweenParticipantFactorList =
-                new BetweenParticipantFactorList(uuid,list);        
-        try {           
-            betweenParticipantFactorList = resource.create(
-                    betweenParticipantFactorList);
+        BetweenParticipantFactorList betweenParticipantFactorList = new BetweenParticipantFactorList(
+                uuid, list);
+        try {
+            betweenParticipantFactorList = resource
+                    .create(betweenParticipantFactorList);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             betweenParticipantFactorList = null;
@@ -113,7 +115,8 @@ public class TestBetweenParticipantFactor extends TestCase {
             fail();
         } else {
             System.out.println("testCreate() : ");
-            for (BetweenParticipantFactor betParticipantFactor : betweenParticipantFactorList.getBetweenParticipantFactorList()) {
+            for (BetweenParticipantFactor betParticipantFactor : betweenParticipantFactorList
+                    .getBetweenParticipantFactorList()) {
                 System.out.println(betParticipantFactor);
             }
         }
@@ -125,8 +128,7 @@ public class TestBetweenParticipantFactor extends TestCase {
     @Test
     public final void testUpdate() {
         List<BetweenParticipantFactor> list = new ArrayList<BetweenParticipantFactor>();
-        BetweenParticipantFactor betweenParticipantFactor =
-                new BetweenParticipantFactor();
+        BetweenParticipantFactor betweenParticipantFactor = new BetweenParticipantFactor();
         betweenParticipantFactor.setPredictorName("Medicine");
         List<Category> categoryList = new ArrayList<Category>();
         categoryList.add(new Category("Alpha"));
@@ -140,11 +142,11 @@ public class TestBetweenParticipantFactor extends TestCase {
         categoryList.add(new Category("Grains"));
         betweenParticipantFactor.setCategoryList(categoryList);
         list.add(betweenParticipantFactor);
-        BetweenParticipantFactorList betweenParticipantFactorList =
-                new BetweenParticipantFactorList(uuid,list);
+        BetweenParticipantFactorList betweenParticipantFactorList = new BetweenParticipantFactorList(
+                uuid, list);
         try {
-           betweenParticipantFactorList = resource.update(
-                    betweenParticipantFactorList);
+            betweenParticipantFactorList = resource
+                    .update(betweenParticipantFactorList);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             betweenParticipantFactorList = null;
@@ -154,7 +156,8 @@ public class TestBetweenParticipantFactor extends TestCase {
             fail();
         } else {
             System.out.println("testUpdate() : ");
-            for (BetweenParticipantFactor betParticipantFactor : betweenParticipantFactorList.getBetweenParticipantFactorList())
+            for (BetweenParticipantFactor betParticipantFactor : betweenParticipantFactorList
+                    .getBetweenParticipantFactorList())
                 System.out.println(betParticipantFactor);
         }
     }
@@ -178,7 +181,8 @@ public class TestBetweenParticipantFactor extends TestCase {
             fail();
         } else {
             System.out.println("testDelete() : ");
-            for (BetweenParticipantFactor BetweenParticipantFactor : betweenParticipantFactorList.getBetweenParticipantFactorList())
+            for (BetweenParticipantFactor BetweenParticipantFactor : betweenParticipantFactorList
+                    .getBetweenParticipantFactorList())
                 System.out.println(BetweenParticipantFactor);
             assertTrue(betweenParticipantFactorList != null);
         }
@@ -191,7 +195,7 @@ public class TestBetweenParticipantFactor extends TestCase {
     public final void testRetrieve() {
         BetweenParticipantFactorList betweenParticipantFactorList = null;
         try {
-            betweenParticipantFactorList = resource.retrieve(uuid);
+            betweenParticipantFactorList = retrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             betweenParticipantFactorList = null;

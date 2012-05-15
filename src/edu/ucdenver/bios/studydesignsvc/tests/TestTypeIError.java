@@ -33,8 +33,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.resource.TypeIErrorResource;
+import edu.ucdenver.bios.studydesignsvc.resource.TypeIErrorRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.TypeIError;
 import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -52,7 +52,8 @@ public class TestTypeIError extends TestCase {
             .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 
     /** The resource. */
-    TypeIErrorResource resource = null;
+    private TypeIErrorResource resource = null;
+    private TypeIErrorRetrieveResource retrieveResource = null;
 
     /** The uuid. */
     byte[] uuid = null;
@@ -65,9 +66,12 @@ public class TestTypeIError extends TestCase {
         try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                    "http://localhost:8080/study/"
-                            + StudyDesignConstants.TAG_ALPHA_LIST);
+                    "http://localhost:8080/study/alphaList");
             resource = clientResource.wrap(TypeIErrorResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/alphaList/retrieve");
+            retrieveResource = clientResource
+                    .wrap(TypeIErrorRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -151,7 +155,8 @@ public class TestTypeIError extends TestCase {
         List<TypeIError> typeIErrorList = null;
 
         try {
-            typeIErrorList = resource.retrieve(uuid).getTypeIErrorList();
+            typeIErrorList = retrieveResource.retrieve(uuid)
+                    .getTypeIErrorList();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             typeIErrorList = null;

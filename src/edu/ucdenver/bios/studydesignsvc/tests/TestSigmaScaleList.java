@@ -33,8 +33,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.resource.SigmaScaleResource;
+import edu.ucdenver.bios.studydesignsvc.resource.SigmaScaleRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.SigmaScale;
 import edu.ucdenver.bios.webservice.common.domain.SigmaScaleList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -52,7 +52,8 @@ public class TestSigmaScaleList extends TestCase {
             .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 
     /** The resource. */
-    SigmaScaleResource resource = null;
+    private SigmaScaleResource resource = null;
+    private SigmaScaleRetrieveResource retrievResource = null;
 
     /** The uuid. */
     byte[] uuid = null;
@@ -65,9 +66,12 @@ public class TestSigmaScaleList extends TestCase {
         try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                    "http://localhost:8080/study/"
-                            + StudyDesignConstants.TAG_SIGMA_SCALE_LIST);
+                    "http://localhost:8080/study/sigmaScaleList");
             resource = clientResource.wrap(SigmaScaleResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/sigmaScaleList/retrieve");
+            retrievResource = clientResource
+                    .wrap(SigmaScaleRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -145,7 +149,7 @@ public class TestSigmaScaleList extends TestCase {
         SigmaScaleList sigmaScaleList = null;
 
         try {
-            sigmaScaleList = resource.retrieve(uuid);
+            sigmaScaleList = retrievResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             sigmaScaleList = null;

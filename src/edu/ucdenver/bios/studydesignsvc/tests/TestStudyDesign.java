@@ -22,7 +22,6 @@
  */
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +38,8 @@ import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignUploadRetrieveResource;
 import edu.ucdenver.bios.studydesignsvc.resource.StudyDesignUploadRetrieveServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StudyRetrieveResource;
+import edu.ucdenver.bios.studydesignsvc.resource.StudyRetrieveServerResource;
 import edu.ucdenver.bios.webservice.common.domain.SampleSize;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesignList;
@@ -149,17 +150,17 @@ public class TestStudyDesign extends TestCase
 	 * not found will be thrown.
 	 */
 	@Test
-	public void testCreate()	
+	private void testCreate()	
 	{	
-		/*StudyDesign studyDesign = new StudyDesign();
+		StudyDesign studyDesign = new StudyDesign();
 		studyDesign.setUuid(uuid);
 		studyDesign.setParticipantLabel(PARTICIPANT_LABEL);
 		studyDesign.setName(STUDY_NAME);
 		studyDesign.setViewTypeEnum(StudyDesignViewTypeEnum.GUIDED_MODE);
 		studyDesign.setGaussianCovariate(true);				
-		studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER);*/
+		studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER);
 		
-		StudyDesign studyDesign1 = new StudyDesign();
+		/*StudyDesign studyDesign1 = new StudyDesign();
         studyDesign1.setUuid(uuid_one);
         studyDesign1.setParticipantLabel(PARTICIPANT_LABEL);
         studyDesign1.setName(STUDY_NAME+" 1");
@@ -173,7 +174,7 @@ public class TestStudyDesign extends TestCase
             sampleSize = new SampleSize();      
                 sampleSize.setValue(1);           
             sampleSizeList.add(sampleSize);     
-		studyDesign1.setSampleSizeList(sampleSizeList);
+		studyDesign1.setSampleSizeList(sampleSizeList);*/
 		
         try
 		{
@@ -181,7 +182,7 @@ public class TestStudyDesign extends TestCase
             clientStudyResource = new ClientResource("http://localhost:8080/study/studyUploadRetrieve"); 
             studyDesignUploadResource = clientStudyResource.wrap(StudyDesignUploadRetrieveResource.class);
         	//studyDesign=new StudyDesignUploadRetrieveServerResource().upload(studyDesign);
-            studyDesign1=new StudyDesignUploadRetrieveServerResource().upload(studyDesign1);
+            studyDesign=new StudyDesignUploadRetrieveServerResource().upload(studyDesign);
             //studyDesign = studyDesignUploadResource.upload(studyDesign);
             
             /*studyDesign1 = resourceUpload.upload(studyDesign1);*/
@@ -191,10 +192,10 @@ public class TestStudyDesign extends TestCase
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			studyDesign1=null;
+			studyDesign=null;
 			fail();
 		}
-		if(studyDesign1==null)
+		if(studyDesign==null)
 		{
 			fail();
 		}
@@ -202,9 +203,9 @@ public class TestStudyDesign extends TestCase
 		{
 			System.out.println("testCreate():");
 			 Gson gson = new Gson();
-	            String json = gson.toJson(studyDesign1);  
+	            String json = gson.toJson(studyDesign);  
 	            System.out.println(json);
-	           assertTrue(studyDesign1!=null);
+	           assertTrue(studyDesign!=null);
 		}
 	}
 	
@@ -311,7 +312,7 @@ public class TestStudyDesign extends TestCase
 	 * Test deletion of record from the table.
 	 */
 	@Test
-	private void testDelete()
+	public void testDelete()
 	{
 	    StudyDesign studyDesign = null;                
         
@@ -408,7 +409,7 @@ public class TestStudyDesign extends TestCase
      * not found will be thrown.
      */
     @Test
-    public void testRetrieve()
+    private void testRetrieve()
     {
         StudyDesign studyDesign = null;
         JsonRepresentation representation = null;
@@ -429,9 +430,9 @@ public class TestStudyDesign extends TestCase
             //studyDesign = resourceRetrieve.retrieve(representation);          
             //JSONObject object = resourceRetrieve.retrieve(representation);
             System.clearProperty("http.proxyHost");
-            clientStudyResource = new ClientResource("http://localhost:8080/study/study"); 
-            studyDesignResource = clientStudyResource.wrap(StudyDesignResource.class);
-            studyDesign = studyDesignResource.retrieve(uuid);
+            clientStudyResource = new ClientResource("http://localhost:8080/study/study/retrieve"); 
+            StudyRetrieveResource std = clientStudyResource.wrap(StudyRetrieveResource.class);
+            studyDesign = std.retrieve(uuid);
             
             /*Gson gson = new Gson();           
             String json = object.toString();

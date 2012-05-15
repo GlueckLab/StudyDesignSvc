@@ -35,8 +35,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.resource.QuantileResource;
+import edu.ucdenver.bios.studydesignsvc.resource.QuantileRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.Quantile;
 import edu.ucdenver.bios.webservice.common.domain.QuantileList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
@@ -56,6 +56,7 @@ public class TestQuantileList extends TestCase {
 
     /** The resource. */
     private QuantileResource resource = null;
+    private QuantileRetrieveResource retrieveResource = null;
 
     /** The uuid. */
     private byte[] uuid = null;
@@ -68,9 +69,12 @@ public class TestQuantileList extends TestCase {
         try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                    "http://localhost:8080/study/"
-                            + StudyDesignConstants.TAG_QUANTILE_LIST);
+                    "http://localhost:8080/study/quantileList");
             resource = clientResource.wrap(QuantileResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/quantileList/retrieve");
+            retrieveResource = clientResource
+                    .wrap(QuantileRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -152,7 +156,7 @@ public class TestQuantileList extends TestCase {
         QuantileList quantileList = null;
 
         try {
-            quantileList = resource.retrieve(uuid);
+            quantileList = retrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             quantileList = null;

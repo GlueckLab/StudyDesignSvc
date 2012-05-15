@@ -33,8 +33,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.resource.RepeatedMeasuresResource;
+import edu.ucdenver.bios.studydesignsvc.resource.RepeatedMeasuresRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNodeList;
 import edu.ucdenver.bios.webservice.common.domain.Spacing;
@@ -58,6 +58,7 @@ public class TestRepeatedMeasures extends TestCase {
 
     /** The resource. */
     RepeatedMeasuresResource resource = null;
+    RepeatedMeasuresRetrieveResource retrieveResource = null;
 
     /** The uuid. */
     byte[] uuid = null;
@@ -70,9 +71,12 @@ public class TestRepeatedMeasures extends TestCase {
         try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                    "http://localhost:8080/study/"
-                            + StudyDesignConstants.TAG_REPEATEDMEASURES);
+                    "http://localhost:8080/study/repeatedMeasures");
             resource = clientResource.wrap(RepeatedMeasuresResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/repeatedMeasures/retrieve");
+            retrieveResource = clientResource
+                    .wrap(RepeatedMeasuresRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -232,7 +236,7 @@ public class TestRepeatedMeasures extends TestCase {
         RepeatedMeasuresNodeList repeatedMeasuresTree = null;
 
         try {
-            repeatedMeasuresTree = resource.retrieve(uuid);
+            repeatedMeasuresTree = retrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println("Exception : " + e.getMessage());
             repeatedMeasuresTree = null;

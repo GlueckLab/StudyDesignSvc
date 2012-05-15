@@ -33,8 +33,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.resource.RelativeGroupSizeResource;
+import edu.ucdenver.bios.studydesignsvc.resource.RelativeGroupSizeRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSize;
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
@@ -54,6 +54,7 @@ public class TestRelativeGroupSize extends TestCase {
 
     /** The resource. */
     RelativeGroupSizeResource resource = null;
+    RelativeGroupSizeRetrieveResource retrieveResource = null;
 
     /** The uuid. */
     byte[] uuid = null;
@@ -66,9 +67,12 @@ public class TestRelativeGroupSize extends TestCase {
         try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                    "http://localhost:8080/study/"
-                            + StudyDesignConstants.TAG_RELATIVE_GROUP_SIZE_LIST);
+                    "http://localhost:8080/study/relativeGroupSizeList");
             resource = clientResource.wrap(RelativeGroupSizeResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/relativeGroupSizeList/retrieve");
+            retrieveResource = clientResource
+                    .wrap(RelativeGroupSizeRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -151,7 +155,7 @@ public class TestRelativeGroupSize extends TestCase {
         RelativeGroupSizeList relativeGroupSizeList = null;
 
         try {
-            relativeGroupSizeList = resource.retrieve(uuid);
+            relativeGroupSizeList = retrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             relativeGroupSizeList = null;

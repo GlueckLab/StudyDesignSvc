@@ -33,9 +33,10 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.resource.BetweenParticipantServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.BetweenParticipantRetrieveServerResource;
 import edu.ucdenver.bios.studydesignsvc.resource.HypothesisResource;
-import edu.ucdenver.bios.studydesignsvc.resource.RepeatedMeasuresServerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.HypothesisRetrieveResource;
+import edu.ucdenver.bios.studydesignsvc.resource.RepeatedMeasuresRetrieveServerResource;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
 import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
@@ -71,6 +72,7 @@ public class TestHypothesis extends TestCase {
 
     /** The resource. */
     HypothesisResource resource = null;
+    HypothesisRetrieveResource retrieveResource = null;
 
     /** The uuid. */
     byte[] uuid = null;
@@ -93,6 +95,10 @@ public class TestHypothesis extends TestCase {
             ClientResource clientResource = new ClientResource(
                     "http://localhost:8080/study/hypothesis");
             resource = clientResource.wrap(HypothesisResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/hypothesis/retrieve");
+            retrieveResource = clientResource
+                    .wrap(HypothesisRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -111,7 +117,7 @@ public class TestHypothesis extends TestCase {
         ArrayList<HypothesisBetweenParticipantMapping> betweenParticipantList = new ArrayList<HypothesisBetweenParticipantMapping>();
         HypothesisBetweenParticipantMapping map = null;
 
-        BetweenParticipantServerResource betResource = new BetweenParticipantServerResource();
+        BetweenParticipantRetrieveServerResource betResource = new BetweenParticipantRetrieveServerResource();
         BetweenParticipantFactorList betweenParticipantFactorList = betResource
                 .retrieve(uuid);
 
@@ -165,48 +171,39 @@ public class TestHypothesis extends TestCase {
             assertTrue(hypothesis != null);
         }
     }
-    
+
     /**
      * Test to retrieve a Hypothesis.
      */
     @Test
-    public void testRetrieve()
-    {
-        Hypothesis hypothesis = null;           
-        UuidHypothesisType uuidHypothesisType = new UuidHypothesisType(uuid,TYPE);
-        
-        try
-        {
-            hypothesis = resource.retrieve(uuidHypothesisType);            
-        }       
-        catch(Exception e)
-        {
+    public void testRetrieve() {
+        Hypothesis hypothesis = null;
+        UuidHypothesisType uuidHypothesisType = new UuidHypothesisType(uuid,
+                TYPE);
+
+        try {
+            hypothesis = retrieveResource.retrieve(uuidHypothesisType);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-            hypothesis=null;
+            hypothesis = null;
             fail();
         }
-        if (hypothesis == null)
-        {
+        if (hypothesis == null) {
             System.err.println("No matching Hypothesis found");
             fail();
-        }
-        else
-        {     
+        } else {
             System.out.println("testRetrieve() : ");
-            try
-            {
-             Gson gson = new Gson();
-             String json = gson.toJson(hypothesis);  
-             System.out.println(json);
-            }
-            catch(Exception e)
-            {
+            try {
+                Gson gson = new Gson();
+                String json = gson.toJson(hypothesis);
+                System.out.println(json);
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-            assertTrue(hypothesis!=null);
+            assertTrue(hypothesis != null);
         }
     }
-    
+
     /**
      * Test to create a Hypothesis.
      */
@@ -218,7 +215,7 @@ public class TestHypothesis extends TestCase {
         List<HypothesisBetweenParticipantMapping> betweenParticipantList = new ArrayList<HypothesisBetweenParticipantMapping>();
         HypothesisBetweenParticipantMapping map = null;
 
-        BetweenParticipantServerResource betResource = new BetweenParticipantServerResource();
+        BetweenParticipantRetrieveServerResource betResource = new BetweenParticipantRetrieveServerResource();
         BetweenParticipantFactorList betweenParticipantFactorList = betResource
                 .retrieve(uuid);
 
@@ -232,23 +229,21 @@ public class TestHypothesis extends TestCase {
 
         hypothesis.setBetweenParticipantFactorMapList(betweenParticipantList);
 
-        
-        List<HypothesisRepeatedMeasuresMapping> rPList = new ArrayList<HypothesisRepeatedMeasuresMapping>(); 
+        List<HypothesisRepeatedMeasuresMapping> rPList = new ArrayList<HypothesisRepeatedMeasuresMapping>();
         HypothesisRepeatedMeasuresMapping mapRp = null;
-        
-        RepeatedMeasuresServerResource reptResource = new RepeatedMeasuresServerResource();
+
+        RepeatedMeasuresRetrieveServerResource reptResource = new RepeatedMeasuresRetrieveServerResource();
         RepeatedMeasuresNodeList reptList = reptResource.retrieve(uuid);
-        
-        for(RepeatedMeasuresNode obj : reptList.getRepeatedMeasuresList()) {
+
+        for (RepeatedMeasuresNode obj : reptList.getRepeatedMeasuresList()) {
             mapRp = new HypothesisRepeatedMeasuresMapping();
             mapRp.setRepeatedMeasuresNode(obj);
             mapRp.setType(HypothesisTrendTypeEnum.LINEAR);
             rPList.add(mapRp);
             break;
         }
-             
-            hypothesis.setRepeatedMeasuresMapTree(rPList);
-         
+
+        hypothesis.setRepeatedMeasuresMapTree(rPList);
 
         try {
             hypothesis = resource.create(new UuidHypothesis(uuid, hypothesis));
@@ -271,7 +266,7 @@ public class TestHypothesis extends TestCase {
             assertTrue(hypothesis != null);
         }
     }
-    
+
     /**
      * Test to delete a Hypothesis.
      */
@@ -280,7 +275,7 @@ public class TestHypothesis extends TestCase {
         Hypothesis hypothesis = null;
 
         try {
-            hypothesis = resource.remove(new UuidHypothesisType(uuid,TYPE));
+            hypothesis = resource.remove(new UuidHypothesisType(uuid, TYPE));
         } catch (Exception e) {
             System.out.println(e.getMessage());
             hypothesis = null;
@@ -302,98 +297,52 @@ public class TestHypothesis extends TestCase {
     /**
      * Test to retrieve a Hypothesis.
      */
-    /*@Test
-    public void testRetrieve()
-    {
-        HypothesisSet hypothesisSet = null;           
-        UuidHypothesisType uuidHypothesisType = new UuidHypothesisType(uuid,TYPE);
-        
-        try
-        {
-            hypothesisSet = resource.retrieve(uuidHypothesisType);            
-        }       
-        catch(Exception e)
-        {
-            System.out.println(e.getMessage());
-            hypothesisSet=null;
-            fail();
-        }
-        if (hypothesisSet == null)
-        {
-            System.err.println("No matching Hypothesis found");
-            fail();
-        }
-        else
-        {     
-            System.out.println("testRetrieve() : ");
-            try
-            {
-             Gson gson = new Gson();
-             String json = gson.toJson(hypothesisSet);  
-             System.out.println(json);
-            }
-            catch(Exception e)
-            {
-                System.out.println(e.getMessage());
-            }
-            assertTrue(hypothesisSet!=null);
-        }
-    }*/
+    /*
+     * @Test public void testRetrieve() { HypothesisSet hypothesisSet = null;
+     * UuidHypothesisType uuidHypothesisType = new
+     * UuidHypothesisType(uuid,TYPE);
+     * 
+     * try { hypothesisSet = resource.retrieve(uuidHypothesisType); }
+     * catch(Exception e) { System.out.println(e.getMessage());
+     * hypothesisSet=null; fail(); } if (hypothesisSet == null) {
+     * System.err.println("No matching Hypothesis found"); fail(); } else {
+     * System.out.println("testRetrieve() : "); try { Gson gson = new Gson();
+     * String json = gson.toJson(hypothesisSet); System.out.println(json); }
+     * catch(Exception e) { System.out.println(e.getMessage()); }
+     * assertTrue(hypothesisSet!=null); } }
+     */
 
     /**
      * Test to update a Hypothesis.
      */
-    /*@Test
-    private void testUpdate() {
-        Set<Hypothesis> hypothesisSet = new HashSet<Hypothesis>();
-        Hypothesis hypothesis = new Hypothesis();
-        hypothesis.setType(HypothesisTypeEnum.INTERACTION);
-        hypothesisSet.add(hypothesis);
-        HypothesisSet set = new HypothesisSet(uuid, hypothesisSet);
-
-        try {
-            set = resource.update(set);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            hypothesisSet = null;
-            fail();
-        }
-        if (hypothesisSet == null) {
-            fail();
-        } else {
-            System.out.println("testUpdate() : " + hypothesisSet.size());
-            Gson gson = new Gson();
-            String json = gson.toJson(hypothesisSet);
-            System.out.println(json);
-            assertTrue(hypothesisSet != null);
-        }
-    }*/
+    /*
+     * @Test private void testUpdate() { Set<Hypothesis> hypothesisSet = new
+     * HashSet<Hypothesis>(); Hypothesis hypothesis = new Hypothesis();
+     * hypothesis.setType(HypothesisTypeEnum.INTERACTION);
+     * hypothesisSet.add(hypothesis); HypothesisSet set = new
+     * HypothesisSet(uuid, hypothesisSet);
+     * 
+     * try { set = resource.update(set); } catch (Exception e) {
+     * System.out.println(e.getMessage()); hypothesisSet = null; fail(); } if
+     * (hypothesisSet == null) { fail(); } else {
+     * System.out.println("testUpdate() : " + hypothesisSet.size()); Gson gson =
+     * new Gson(); String json = gson.toJson(hypothesisSet);
+     * System.out.println(json); assertTrue(hypothesisSet != null); } }
+     */
 
     /**
      * Test to delete a Hypothesis.
      */
-    /*@Test
-    private void testDelete() {
-        HypothesisSet hypothesisSet = null;
-
-        try {
-            hypothesisSet = resource.remove(uuid);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            hypothesisSet = null;
-            fail();
-        }
-        if (hypothesisSet == null) {
-            System.err.println("No matching Hypothesis found");
-            fail();
-        } else {
-            System.out.println("testDelete() : ");
-            Gson gson = new Gson();
-            String json = gson.toJson(hypothesisSet);
-            System.out.println(json);
-            assertTrue(hypothesisSet != null);
-            assertTrue(hypothesisSet != null);
-        }
-    }*/
+    /*
+     * @Test private void testDelete() { HypothesisSet hypothesisSet = null;
+     * 
+     * try { hypothesisSet = resource.remove(uuid); } catch (Exception e) {
+     * System.out.println(e.getMessage()); hypothesisSet = null; fail(); } if
+     * (hypothesisSet == null) {
+     * System.err.println("No matching Hypothesis found"); fail(); } else {
+     * System.out.println("testDelete() : "); Gson gson = new Gson(); String
+     * json = gson.toJson(hypothesisSet); System.out.println(json);
+     * assertTrue(hypothesisSet != null); assertTrue(hypothesisSet != null); } }
+     */
 
 }

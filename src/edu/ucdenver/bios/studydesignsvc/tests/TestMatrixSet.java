@@ -34,6 +34,7 @@ import org.restlet.resource.ClientResource;
 import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.MatrixSetResource;
+import edu.ucdenver.bios.studydesignsvc.resource.MatrixSetRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrixSet;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -57,6 +58,7 @@ public class TestMatrixSet extends TestCase {
 
     /** The set resource. */
     MatrixSetResource setResource = null;
+    MatrixSetRetrieveResource setRetrieveResource = null;
 
     /** The client resource. */
     ClientResource clientResource = null;
@@ -77,6 +79,10 @@ public class TestMatrixSet extends TestCase {
             clientResource = new ClientResource(
                     "http://localhost:8080/study/matrixSet");
             setResource = clientResource.wrap(MatrixSetResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/matrixSet/retrieve");
+            setRetrieveResource = clientResource
+                    .wrap(MatrixSetRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -141,7 +147,7 @@ public class TestMatrixSet extends TestCase {
         NamedMatrixSet matrixSet = null;
 
         try {
-            matrixSet = setResource.retrieve(uuid);
+            matrixSet = setRetrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             matrixSet = null;

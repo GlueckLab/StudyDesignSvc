@@ -33,8 +33,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.resource.SampleSizeResource;
+import edu.ucdenver.bios.studydesignsvc.resource.SampleSizeRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.SampleSize;
 import edu.ucdenver.bios.webservice.common.domain.SampleSizeList;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
@@ -53,7 +53,8 @@ public class TestSampleSizeList extends TestCase {
             .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 
     /** The resource. */
-    SampleSizeResource resource = null;
+    private SampleSizeResource resource = null;
+    private SampleSizeRetrieveResource retrieveResource = null;
 
     /** The uuid. */
     byte[] uuid = null;
@@ -66,9 +67,12 @@ public class TestSampleSizeList extends TestCase {
         try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                    "http://localhost:8080/study/"
-                            + StudyDesignConstants.TAG_SAMPLE_SIZE_LIST);
+                    "http://localhost:8080/study/sampleSizeList");
             resource = clientResource.wrap(SampleSizeResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/sampleSizeList/retrieve");
+            retrieveResource = clientResource
+                    .wrap(SampleSizeRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -150,7 +154,7 @@ public class TestSampleSizeList extends TestCase {
         SampleSizeList sampleSizeList = null;
 
         try {
-            sampleSizeList = resource.retrieve(uuid);
+            sampleSizeList = retrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             sampleSizeList = null;

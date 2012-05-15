@@ -32,6 +32,7 @@ import org.restlet.resource.ClientResource;
 import com.google.gson.Gson;
 
 import edu.ucdenver.bios.studydesignsvc.resource.CovarianceResource;
+import edu.ucdenver.bios.studydesignsvc.resource.CovarianceRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.Blob2DArray;
 import edu.ucdenver.bios.webservice.common.domain.Covariance;
 import edu.ucdenver.bios.webservice.common.domain.UuidCovariance;
@@ -62,6 +63,7 @@ public class TestCovariance extends TestCase {
 
     /** The resource. */
     CovarianceResource resource = null;
+    CovarianceRetrieveResource retrieveResource = null;
 
     /** The uuid. */
     byte[] uuid1 = null;
@@ -86,6 +88,10 @@ public class TestCovariance extends TestCase {
             clientResource = new ClientResource(
                     "http://localhost:8080/study/covariance");
             resource = clientResource.wrap(CovarianceResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/covariance/retrieve");
+            retrieveResource = clientResource
+                    .wrap(CovarianceRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -154,7 +160,7 @@ public class TestCovariance extends TestCase {
                 COVARIANCE_NAME_1);
 
         try {
-            covariance = resource.retrieve(uuidCovarianceName);
+            covariance = retrieveResource.retrieve(uuidCovarianceName);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             covariance = null;

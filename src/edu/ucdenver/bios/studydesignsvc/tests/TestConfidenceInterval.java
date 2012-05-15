@@ -29,19 +29,10 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.restlet.resource.ClientResource;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
-import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
-import edu.ucdenver.bios.studydesignsvc.manager.ConfidenceIntervalManager;
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
-import edu.ucdenver.bios.studydesignsvc.resource.BetaScaleResource;
-import edu.ucdenver.bios.studydesignsvc.resource.ClusterNodeResource;
 import edu.ucdenver.bios.studydesignsvc.resource.ConfidenceIntervalResource;
-import edu.ucdenver.bios.studydesignsvc.resource.ConfidenceIntervalServerResource;
-import edu.ucdenver.bios.webservice.common.domain.BetaScale;
+import edu.ucdenver.bios.studydesignsvc.resource.ConfidenceIntervalRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.ConfidenceIntervalDescription;
 import edu.ucdenver.bios.webservice.common.domain.UuidConfidenceIntervalDescription;
-import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 // TODO: Auto-generated Javadoc
@@ -64,6 +55,7 @@ public class TestConfidenceInterval extends TestCase {
 
     /** The resource. */
     ConfidenceIntervalResource resource = null;
+    ConfidenceIntervalRetrieveResource retrieveResource = null;
 
     /*
      * Sets tomcat connection properties while calling each Test method.
@@ -75,6 +67,10 @@ public class TestConfidenceInterval extends TestCase {
             ClientResource clientResource = new ClientResource(
                     "http://localhost:8080/study/confidenceIntervalDescription");
             resource = clientResource.wrap(ConfidenceIntervalResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/confidenceIntervalDescription/retrieve");
+            retrieveResource = clientResource
+                    .wrap(ConfidenceIntervalRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -149,7 +145,7 @@ public class TestConfidenceInterval extends TestCase {
     public void testRetrieve() {
         UuidConfidenceIntervalDescription uuidConfidence = null;
         try {
-            uuidConfidence = resource.retrieve(uuid);
+            uuidConfidence = retrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             uuidConfidence = null;

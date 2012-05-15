@@ -31,8 +31,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.studydesignsvc.resource.PowerCurveResource;
+import edu.ucdenver.bios.studydesignsvc.resource.PowerCurveRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.PowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.domain.UuidPowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.enums.HorizontalAxisLabelEnum;
@@ -56,6 +56,7 @@ public class TestPowerCurveDescription extends TestCase {
     // private static int SAMPLE_SIZE = 100;
     /** The study design manager. */
     PowerCurveResource resource = null;
+    PowerCurveRetrieveResource retrieveResource = null;
 
     /*
      * Sets tomcat connection properties while calling each Test method.
@@ -67,6 +68,9 @@ public class TestPowerCurveDescription extends TestCase {
             ClientResource clientResource = new ClientResource(
                     "http://localhost:8080/study/powerCurveDescription");
             resource = clientResource.wrap(PowerCurveResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/powerCurveDescription/retrieve");
+            retrieveResource = clientResource.wrap(PowerCurveRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -140,7 +144,7 @@ public class TestPowerCurveDescription extends TestCase {
         UuidPowerCurveDescription powerCurveDescription = null;
 
         try {
-            powerCurveDescription = resource.retrieve(uuid);
+            powerCurveDescription = retrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             powerCurveDescription = null;

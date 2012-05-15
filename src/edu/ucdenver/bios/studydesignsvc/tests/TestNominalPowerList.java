@@ -35,8 +35,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
 import edu.ucdenver.bios.studydesignsvc.resource.NominalPowerResource;
+import edu.ucdenver.bios.studydesignsvc.resource.NominalPowerRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.NominalPower;
 import edu.ucdenver.bios.webservice.common.domain.NominalPowerList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -55,6 +55,7 @@ public class TestNominalPowerList extends TestCase {
 
     /** The resource. */
     private NominalPowerResource resource = null;
+    private NominalPowerRetrieveResource retrieveResource = null;
 
     /** The uuid. */
     private byte[] uuid = null;
@@ -67,9 +68,12 @@ public class TestNominalPowerList extends TestCase {
         try {
             System.clearProperty("http.proxyHost");
             ClientResource clientResource = new ClientResource(
-                    "http://localhost:8080/study/"
-                            + StudyDesignConstants.TAG_NOMINAL_POWER_LIST);
+                    "http://localhost:8080/study/nominalPowerList");
             resource = clientResource.wrap(NominalPowerResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/nominalPowerList/retrieve");
+            retrieveResource = clientResource
+                    .wrap(NominalPowerRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -165,7 +169,7 @@ public class TestNominalPowerList extends TestCase {
         NominalPowerList nominalPowerList = null;
 
         try {
-            nominalPowerList = resource.retrieve(uuid);
+            nominalPowerList = retrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             nominalPowerList = null;

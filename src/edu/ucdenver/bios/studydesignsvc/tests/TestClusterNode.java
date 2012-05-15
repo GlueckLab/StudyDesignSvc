@@ -33,8 +33,8 @@ import org.restlet.resource.ClientResource;
 
 import com.google.gson.Gson;
 
-import edu.ucdenver.bios.studydesignsvc.manager.ClusterNodeManager;
 import edu.ucdenver.bios.studydesignsvc.resource.ClusterNodeResource;
+import edu.ucdenver.bios.studydesignsvc.resource.ClusterNodeRetrieveResource;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNode;
 import edu.ucdenver.bios.webservice.common.domain.ClusterNodeList;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
@@ -57,6 +57,8 @@ public class TestClusterNode extends TestCase {
     /** The resource. */
     ClusterNodeResource resource = null;
 
+    ClusterNodeRetrieveResource retrieveResource = null;
+
     /*
      * Sets tomcat connection properties while calling each Test method.
      */
@@ -67,6 +69,10 @@ public class TestClusterNode extends TestCase {
             ClientResource clientResource = new ClientResource(
                     "http://localhost:8080/study/clustering");
             resource = clientResource.wrap(ClusterNodeResource.class);
+            clientResource = new ClientResource(
+                    "http://localhost:8080/study/clustering/retrieve");
+            retrieveResource = clientResource
+                    .wrap(ClusterNodeRetrieveResource.class);
         } catch (Exception e) {
             System.err
                     .println("Failed to connect to server: " + e.getMessage());
@@ -121,7 +127,7 @@ public class TestClusterNode extends TestCase {
         ClusterNodeList clusterNodeList = null;
 
         try {
-            clusterNodeList = resource.retrieve(uuid);
+            clusterNodeList = retrieveResource.retrieve(uuid);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             clusterNodeList = null;
