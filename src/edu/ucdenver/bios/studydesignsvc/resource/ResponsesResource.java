@@ -39,17 +39,7 @@ import edu.ucdenver.bios.webservice.common.domain.ResponseList;
  * @author Uttara Sakhadeo
  */
 public interface ResponsesResource {
-
-    /**
-     * Retrieves the ResponseList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the response list
-     */
-    @Get("application/json")
-    ResponseList retrieve(byte[] uuid);
-
+    
     /**
      * Creates the ResponseList.
      * 

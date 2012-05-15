@@ -45,63 +45,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  * @author Uttara Sakhadeo
  */
 public class SigmaScaleServerResource extends ServerResource implements
-        SigmaScaleResource {
-    /**
-     * Retrieves the SigmaScaleList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the sigma scale list
-     */
-    @Get("application/json")
-    public final SigmaScaleList retrieve(final byte[] uuid) {
-        SigmaScaleManager sigmaScaleManager = null;
-        SigmaScaleList sigmaScaleList = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve SigmaScale list.
-             */
-            sigmaScaleManager = new SigmaScaleManager();
-            sigmaScaleManager.beginTransaction();
-            sigmaScaleList = sigmaScaleManager.retrieve(uuid);
-            sigmaScaleManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (sigmaScaleManager != null) {
-                try {
-                    sigmaScaleManager.rollback();
-                } catch (BaseManagerException re) {
-                    sigmaScaleList = null;
-                }
-            }
-            sigmaScaleList = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (sigmaScaleManager != null) {
-                try {
-                    sigmaScaleManager.rollback();
-                } catch (BaseManagerException re) {
-                    sigmaScaleList = null;
-                }
-            }
-            sigmaScaleList = null;
-        }
-        return sigmaScaleList;
-    }
+        SigmaScaleResource {    
 
     /**
      * Creates the SigmaScaleList.

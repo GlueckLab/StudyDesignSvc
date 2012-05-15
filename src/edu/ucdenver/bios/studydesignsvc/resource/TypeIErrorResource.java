@@ -25,7 +25,6 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
@@ -39,17 +38,7 @@ import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
  * @author Uttara Sakhadeo
  */
 public interface TypeIErrorResource {
-
-    /**
-     * Retrieves the TypeIErrorList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the type i error list
-     */
-    @Get("application/json")
-    TypeIErrorList retrieve(byte[] uuid);
-
+    
     /**
      * Creates the TypeIErrorList.
      * 

@@ -47,8 +47,8 @@ public interface StudyDesignResource {
      *            the uuid
      * @return study designs with specified UUID
      */  
-    @Get("application/json")
-    StudyDesign retrieve(byte[] uuid);
+    /*@Get("application/json")
+    StudyDesign retrieve(byte[] uuid);*/
     
     /**
      * Store the study design to the database. This routine will create a new

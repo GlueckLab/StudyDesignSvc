@@ -25,7 +25,6 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
@@ -40,16 +39,7 @@ import edu.ucdenver.bios.webservice.common.domain.UuidConfidenceIntervalDescript
  */
 public interface ConfidenceIntervalResource {
 
-    /**
-     * Retrieve ConfidenceIntervalDescription.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the uuid confidence interval description
-     */
-    @Get("application/json")
-    UuidConfidenceIntervalDescription retrieve(byte[] uuid);
-
+   
     /**
      * Creates the ConfidenceIntervalDescription.
      * 

@@ -25,7 +25,6 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
@@ -41,16 +40,7 @@ import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
  */
 public interface BetweenParticipantResource {
 
-    /**
-     * Retrieve BetweenParticipantFactorList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the between participant factor list
-     */
-    @Get("application/json")
-    BetweenParticipantFactorList retrieve(byte[] uuid);
-
+    
     /**
      * Creates the BetweenParticipantFactorList.
      * 

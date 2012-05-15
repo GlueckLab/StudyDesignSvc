@@ -47,63 +47,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class ResponsesServerResource extends ServerResource implements
         ResponsesResource {
-    /**
-     * Retrieves the ResponseList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the response list
-     */
-    @Get("application/json")
-    public final ResponseList retrieve(final byte[] uuid) {
-        ResponsesManager responsesManager = null;
-        ResponseList responsesList = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve ResponseList list.
-             */
-            responsesManager = new ResponsesManager();
-            responsesManager.beginTransaction();
-            responsesList = responsesManager.retrieve(uuid);
-            responsesManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (responsesManager != null) {
-                try {
-                    responsesManager.rollback();
-                } catch (BaseManagerException re) {
-                    responsesList = null;
-                }
-            }
-            responsesList = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (responsesManager != null) {
-                try {
-                    responsesManager.rollback();
-                } catch (BaseManagerException re) {
-                    responsesList = null;
-                }
-            }
-            responsesList = null;
-        }
-        return responsesList;
-    }
-
+    
     /**
      * Creates the ResponseList.
      * 

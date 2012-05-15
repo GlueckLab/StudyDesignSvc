@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
@@ -37,59 +36,14 @@ import edu.ucdenver.bios.studydesignsvc.manager.MatrixSetManager;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrixSet;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
-
+/**
+ * Server Resource class for handling requests for the NamedMatrixSet
+ * object. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public class MatrixSetServerResource extends ServerResource implements
-        MatrixSetResource {
-
-    @Get("application/json")
-    public final NamedMatrixSet retrieve(final byte[] uuid) {
-        MatrixSetManager matrixSetManager = null;
-        NamedMatrixSet namedMatrixSet = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve NamedMatrix Set .
-             */
-            matrixSetManager = new MatrixSetManager();
-            matrixSetManager.beginTransaction();
-            namedMatrixSet = matrixSetManager.retrieve(uuid);
-            matrixSetManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (matrixSetManager != null) {
-                try {
-                    matrixSetManager.rollback();
-                } catch (BaseManagerException re) {
-                    namedMatrixSet = null;
-                }
-            }
-            namedMatrixSet = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (matrixSetManager != null) {
-                try {
-                    matrixSetManager.rollback();
-                } catch (BaseManagerException re) {
-                    namedMatrixSet = null;
-                }
-            }
-            namedMatrixSet = null;
-        }
-        return namedMatrixSet;
-    }
+        MatrixSetResource {    
 
     /**
      * Creates the NamedMatrixSet.

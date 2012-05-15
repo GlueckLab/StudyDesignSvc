@@ -22,62 +22,6 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 public class CovarianceSetServerResource extends ServerResource implements
         CovarianceSetResource {
-    /**
-     * Retrieves the CovarianceSet.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the covariance set
-     */
-    @Get("application/json")
-    public final CovarianceSet retrieve(final byte[] uuid) {
-        CovarianceSetManager covarianceSetManager = null;
-        CovarianceSet covarianceSet = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve Covariance Set .
-             */
-            covarianceSetManager = new CovarianceSetManager();
-            covarianceSetManager.beginTransaction();
-            covarianceSet = covarianceSetManager.retrieve(uuid);
-            covarianceSetManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (covarianceSetManager != null) {
-                try {
-                    covarianceSetManager.rollback();
-                } catch (BaseManagerException re) {
-                    covarianceSet = null;
-                }
-            }
-            covarianceSet = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (covarianceSetManager != null) {
-                try {
-                    covarianceSetManager.rollback();
-                } catch (BaseManagerException re) {
-                    covarianceSet = null;
-                }
-            }
-            covarianceSet = null;
-        }
-        return covarianceSet;
-    }
 
     /**
      * Creates the CovarianceSet.
@@ -206,216 +150,151 @@ public class CovarianceSetServerResource extends ServerResource implements
         return covarianceSet;
     }
 
-    /*@Post("application/json")
-    public CovarianceSet create(CovarianceSet covarianceSet) {
-        CovarianceManager covarianceManager = null;
-        StudyDesignManager studyDesignManager = null;
-        boolean uuidFlag;
-
-        StudyDesign studyDesign = null;
-        byte[] uuid = covarianceSet.getUuid();
-        if (uuid == null)
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        try {
-            
-             * ---------------------------------------------------- Check for
-             * existence of a UUID in Study Design object
-             * ----------------------------------------------------
-             
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
-                studyDesign = studyDesignManager.get(uuid);
-            } else {
-                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                        "no study design UUID specified");
-            }
-            studyDesignManager.commit();
-            
-             * ---------------------------------------------------- Remove
-             * existing Covariance for this object
-             * ----------------------------------------------------
-             
-            if (uuidFlag && !studyDesign.getCovariance().isEmpty())
-                removeFrom(studyDesign);
-            if (uuidFlag) {
-                covarianceManager = new CovarianceManager();
-                covarianceManager.beginTransaction();
-                covarianceManager.saveOrUpdate(
-                        covarianceSet.getCovarianceSet(), true);
-                covarianceManager.commit();
-                
-                 * ---------------------------------------------------- Set
-                 * reference of CovarianceSet Object to Study Design object
-                 * ----------------------------------------------------
-                 
-                studyDesign.setCovariance(covarianceSet.getCovarianceSet());
-                studyDesignManager = new StudyDesignManager();
-                studyDesignManager.beginTransaction();
-                studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
-                        false);
-                studyDesignManager.commit();
-            }
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (covarianceManager != null) {
-                try {
-                    covarianceManager.rollback();
-                } catch (BaseManagerException re) {
-                    covarianceSet = null;
-                }
-            }
-            covarianceSet = null;
-        } catch (StudyDesignException sde) {
-            System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error(sde.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException re) {
-                    covarianceSet = null;
-                }
-            }
-            covarianceSet = null;
-        }
-        return covarianceSet;
-    }
-
-    *//**
+    /*
+     * @Post("application/json") public CovarianceSet create(CovarianceSet
+     * covarianceSet) { CovarianceManager covarianceManager = null;
+     * StudyDesignManager studyDesignManager = null; boolean uuidFlag;
+     * 
+     * StudyDesign studyDesign = null; byte[] uuid = covarianceSet.getUuid(); if
+     * (uuid == null) throw new
+     * ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+     * "no study design UUID specified"); try {
+     * 
+     * ---------------------------------------------------- Check for existence
+     * of a UUID in Study Design object
+     * ----------------------------------------------------
+     * 
+     * studyDesignManager = new StudyDesignManager();
+     * studyDesignManager.beginTransaction(); uuidFlag =
+     * studyDesignManager.hasUUID(uuid); if (uuidFlag) { studyDesign =
+     * studyDesignManager.get(uuid); } else { throw new
+     * ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+     * "no study design UUID specified"); } studyDesignManager.commit();
+     * 
+     * ---------------------------------------------------- Remove existing
+     * Covariance for this object
+     * ----------------------------------------------------
+     * 
+     * if (uuidFlag && !studyDesign.getCovariance().isEmpty())
+     * removeFrom(studyDesign); if (uuidFlag) { covarianceManager = new
+     * CovarianceManager(); covarianceManager.beginTransaction();
+     * covarianceManager.saveOrUpdate( covarianceSet.getCovarianceSet(), true);
+     * covarianceManager.commit();
+     * 
+     * ---------------------------------------------------- Set reference of
+     * CovarianceSet Object to Study Design object
+     * ----------------------------------------------------
+     * 
+     * studyDesign.setCovariance(covarianceSet.getCovarianceSet());
+     * studyDesignManager = new StudyDesignManager();
+     * studyDesignManager.beginTransaction(); studyDesign =
+     * studyDesignManager.saveOrUpdate(studyDesign, false);
+     * studyDesignManager.commit(); } } catch (BaseManagerException bme) {
+     * System.out.println(bme.getMessage());
+     * StudyDesignLogger.getInstance().error(bme.getMessage()); if
+     * (covarianceManager != null) { try { covarianceManager.rollback(); } catch
+     * (BaseManagerException re) { covarianceSet = null; } } covarianceSet =
+     * null; } catch (StudyDesignException sde) {
+     * System.out.println(sde.getMessage());
+     * StudyDesignLogger.getInstance().error(sde.getMessage()); if
+     * (studyDesignManager != null) { try { studyDesignManager.rollback(); }
+     * catch (BaseManagerException re) { covarianceSet = null; } } covarianceSet
+     * = null; } return covarianceSet; }
+     *//**
      * Delete a Covariance object for specified UUID.
      * 
      * @param byte[]
      * @return CovarianceSet
-     *//*
-    @Delete("application/json")
-    public CovarianceSet remove(byte[] uuid) {
-        CovarianceManager covarianceManager = null;
-        StudyDesignManager studyDesignManager = null;
-        boolean uuidFlag;
-
-        CovarianceSet covarianceSet = null;
-        StudyDesign studyDesign = null;
-        if (uuid == null)
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        try {
-            
-             * ---------------------------------------------------- Check for
-             * existence of a UUID in Study Design object
-             * ----------------------------------------------------
-             
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
-                studyDesign = studyDesignManager.get(uuid);
-                if (studyDesign != null)
-                    covarianceSet = new CovarianceSet(uuid,
-                            studyDesign.getCovariance());
-            }
-            studyDesignManager.commit();
-            
-             * ---------------------------------------------------- Remove
-             * existing Covariance objects for this object
-             * ----------------------------------------------------
-             
-            if (!covarianceSet.getCovarianceSet().isEmpty()) {
-                covarianceManager = new CovarianceManager();
-                covarianceManager.beginTransaction();
-                covarianceSet = new CovarianceSet(uuid,
-                        covarianceManager.delete(uuid,
-                                covarianceSet.getCovarianceSet()));
-                covarianceManager.commit();
-                
-                 * ---------------------------------------------------- Set
-                 * reference of Covariance Object to Study Design object
-                 * ----------------------------------------------------
-                 
-                
-                 * studyDesign.setBetaScaleList(null); studyDesignManager = new
-                 * StudyDesignManager(); studyDesignManager.beginTransaction();
-                 * studyDesign = studyDesignManager.saveOrUpdate(studyDesign,
-                 * false); studyDesignManager.commit();
-                 * covarianceSet=studyDesign.getCovariance();
-                 
-            }
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (covarianceManager != null) {
-                try {
-                    covarianceManager.rollback();
-                } catch (BaseManagerException re) {
-                    covarianceSet = null;
-                }
-            }
-            covarianceSet = null;
-        } catch (StudyDesignException sde) {
-            System.out.println(sde.getMessage());
-            StudyDesignLogger.getInstance().error(sde.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException re) {
-                    covarianceSet = null;
-                }
-            }
-            covarianceSet = null;
-        }
-        return covarianceSet;
-    }
-
-    *//**
+     */
+    /*
+     * @Delete("application/json") public CovarianceSet remove(byte[] uuid) {
+     * CovarianceManager covarianceManager = null; StudyDesignManager
+     * studyDesignManager = null; boolean uuidFlag;
+     * 
+     * CovarianceSet covarianceSet = null; StudyDesign studyDesign = null; if
+     * (uuid == null) throw new
+     * ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+     * "no study design UUID specified"); try {
+     * 
+     * ---------------------------------------------------- Check for existence
+     * of a UUID in Study Design object
+     * ----------------------------------------------------
+     * 
+     * studyDesignManager = new StudyDesignManager();
+     * studyDesignManager.beginTransaction(); uuidFlag =
+     * studyDesignManager.hasUUID(uuid); if (uuidFlag) { studyDesign =
+     * studyDesignManager.get(uuid); if (studyDesign != null) covarianceSet =
+     * new CovarianceSet(uuid, studyDesign.getCovariance()); }
+     * studyDesignManager.commit();
+     * 
+     * ---------------------------------------------------- Remove existing
+     * Covariance objects for this object
+     * ----------------------------------------------------
+     * 
+     * if (!covarianceSet.getCovarianceSet().isEmpty()) { covarianceManager =
+     * new CovarianceManager(); covarianceManager.beginTransaction();
+     * covarianceSet = new CovarianceSet(uuid, covarianceManager.delete(uuid,
+     * covarianceSet.getCovarianceSet())); covarianceManager.commit();
+     * 
+     * ---------------------------------------------------- Set reference of
+     * Covariance Object to Study Design object
+     * ----------------------------------------------------
+     * 
+     * 
+     * studyDesign.setBetaScaleList(null); studyDesignManager = new
+     * StudyDesignManager(); studyDesignManager.beginTransaction(); studyDesign
+     * = studyDesignManager.saveOrUpdate(studyDesign, false);
+     * studyDesignManager.commit(); covarianceSet=studyDesign.getCovariance();
+     * 
+     * } } catch (BaseManagerException bme) {
+     * System.out.println(bme.getMessage());
+     * StudyDesignLogger.getInstance().error(bme.getMessage()); if
+     * (covarianceManager != null) { try { covarianceManager.rollback(); } catch
+     * (BaseManagerException re) { covarianceSet = null; } } covarianceSet =
+     * null; } catch (StudyDesignException sde) {
+     * System.out.println(sde.getMessage());
+     * StudyDesignLogger.getInstance().error(sde.getMessage()); if
+     * (studyDesignManager != null) { try { studyDesignManager.rollback(); }
+     * catch (BaseManagerException re) { covarianceSet = null; } } covarianceSet
+     * = null; } return covarianceSet; }
+     *//**
      * Delete a Covariance object for specified Study Design.
      * 
      * @param StudyDesign
      * @return CovarianceSet
-     *//*
-    public CovarianceSet removeFrom(StudyDesign studyDesign) {
-        CovarianceManager covarianceManager = null;
-        CovarianceSet covarianceSet = null;
-        try {
-            covarianceManager = new CovarianceManager();
-            covarianceManager.beginTransaction();
-            covarianceSet = new CovarianceSet(covarianceManager.delete(
-                    studyDesign.getUuid(), studyDesign.getCovariance()));
-            covarianceManager.commit();
-            
-             * ---------------------------------------------------- Set
-             * reference of Covariance Object to Study Design object
-             * ----------------------------------------------------
-             
-            
-             * studyDesign.setConfidenceIntervalDescriptions(null);
-             * studyDesignManager = new StudyDesignManager();
-             * studyDesignManager.beginTransaction(); studyDesign =
-             * studyDesignManager.saveOrUpdate(studyDesign, false);
-             * studyDesignManager.commit();
-             
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(
-                    "Failed to load Study Design information: "
-                            + bme.getMessage());
-            if (covarianceManager != null)
-                try {
-                    covarianceManager.rollback();
-                } catch (BaseManagerException e) {
-                }
-            covarianceSet = null;
-        }
-        
-         * catch (StudyDesignException sde) {
-         * StudyDesignLogger.getInstance().error
-         * ("Failed to load Study Design information: " + sde.getMessage()); if
-         * (studyDesignManager != null) try { studyDesignManager.rollback(); }
-         * catch (BaseManagerException e) {} if (covarianceManager != null) try
-         * { covarianceManager.rollback(); } catch (BaseManagerException e) {}
-         * covarianceSet = null; }
-         
-        return covarianceSet;
-    }
-*/}
+     */
+    /*
+     * public CovarianceSet removeFrom(StudyDesign studyDesign) {
+     * CovarianceManager covarianceManager = null; CovarianceSet covarianceSet =
+     * null; try { covarianceManager = new CovarianceManager();
+     * covarianceManager.beginTransaction(); covarianceSet = new
+     * CovarianceSet(covarianceManager.delete( studyDesign.getUuid(),
+     * studyDesign.getCovariance())); covarianceManager.commit();
+     * 
+     * ---------------------------------------------------- Set reference of
+     * Covariance Object to Study Design object
+     * ----------------------------------------------------
+     * 
+     * 
+     * studyDesign.setConfidenceIntervalDescriptions(null); studyDesignManager =
+     * new StudyDesignManager(); studyDesignManager.beginTransaction();
+     * studyDesign = studyDesignManager.saveOrUpdate(studyDesign, false);
+     * studyDesignManager.commit();
+     * 
+     * } catch (BaseManagerException bme) {
+     * System.out.println(bme.getMessage());
+     * StudyDesignLogger.getInstance().error(
+     * "Failed to load Study Design information: " + bme.getMessage()); if
+     * (covarianceManager != null) try { covarianceManager.rollback(); } catch
+     * (BaseManagerException e) { } covarianceSet = null; }
+     * 
+     * catch (StudyDesignException sde) { StudyDesignLogger.getInstance().error
+     * ("Failed to load Study Design information: " + sde.getMessage()); if
+     * (studyDesignManager != null) try { studyDesignManager.rollback(); } catch
+     * (BaseManagerException e) {} if (covarianceManager != null) try {
+     * covarianceManager.rollback(); } catch (BaseManagerException e) {}
+     * covarianceSet = null; }
+     * 
+     * return covarianceSet; }
+     */
+}

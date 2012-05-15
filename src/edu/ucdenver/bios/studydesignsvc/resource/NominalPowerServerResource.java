@@ -46,56 +46,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class NominalPowerServerResource extends ServerResource implements
         NominalPowerResource {
-    @Get("application/json")
-    public final NominalPowerList retrieve(final byte[] uuid) {
-        NominalPowerManager nominalPowerManager = null;
-        NominalPowerList nominalPowerList = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve NominalPower list.
-             */
-            nominalPowerManager = new NominalPowerManager();
-            nominalPowerManager.beginTransaction();
-            nominalPowerList = nominalPowerManager.retrieve(uuid);
-            nominalPowerManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (nominalPowerManager != null) {
-                try {
-                    nominalPowerManager.rollback();
-                } catch (BaseManagerException re) {
-                    nominalPowerList = null;
-                }
-            }
-            nominalPowerList = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (nominalPowerManager != null) {
-                try {
-                    nominalPowerManager.rollback();
-                } catch (BaseManagerException re) {
-                    nominalPowerList = null;
-                }
-            }
-            nominalPowerList = null;
-        }
-        return nominalPowerList;
-    }
-
+    
     /**
      * Creates the Beta Scale List.
      * 

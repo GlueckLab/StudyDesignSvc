@@ -44,16 +44,6 @@ import edu.ucdenver.bios.webservice.common.domain.UuidMatrixName;
 public interface MatrixResource {
 
     /**
-     * Retrieves the NamedMatrix.
-     * 
-     * @param uuidName
-     *            the uuid name
-     * @return the named matrix
-     */
-    @Get("application/json")
-    NamedMatrix retrieve(UuidMatrixName uuidName);
-
-    /**
      * Creates the NamedMatrix.
      * 
      * @param uuidMatrix

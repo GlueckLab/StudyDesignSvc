@@ -25,12 +25,10 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSizeList;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -41,16 +39,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
  */
 public interface RelativeGroupSizeResource {
 
-    /**
-     * Retrieves the RelativeGroupSizeList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the relative group size list
-     */
-    @Get("application/json")
-    RelativeGroupSizeList retrieve(byte[] uuid);
-
+    
     /**
      * Creates the RelativeGroupSizeList.
      * 

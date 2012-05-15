@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
@@ -46,63 +45,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class StatisticalTestServerResource extends ServerResource implements
         StatisticalTestResource {
-    /**
-     * Retrieve the StatisticalTestList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the statistical test list
-     */
-    @Get("application/json")
-    public final StatisticalTestList retrieve(final byte[] uuid) {
-        StatisticalTestManager statisticalTestManager = null;
-        StatisticalTestList statisticalTestList = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve StatisticalTest list.
-             */
-            statisticalTestManager = new StatisticalTestManager();
-            statisticalTestManager.beginTransaction();
-            statisticalTestList = statisticalTestManager.retrieve(uuid);
-            statisticalTestManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (statisticalTestManager != null) {
-                try {
-                    statisticalTestManager.rollback();
-                } catch (BaseManagerException re) {
-                    statisticalTestList = null;
-                }
-            }
-            statisticalTestList = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (statisticalTestManager != null) {
-                try {
-                    statisticalTestManager.rollback();
-                } catch (BaseManagerException re) {
-                    statisticalTestList = null;
-                }
-            }
-            statisticalTestList = null;
-        }
-        return statisticalTestList;
-    }
-
+    
     /**
      * Creates the StatisticalTestList.
      * 

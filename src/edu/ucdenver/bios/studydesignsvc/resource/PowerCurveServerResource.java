@@ -45,64 +45,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class PowerCurveServerResource extends ServerResource implements
         PowerCurveResource {
-
-    /**
-     * Retrieve UuidPowerCurveDescription.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the uuid power curve description
-     */
-    @Get("application/json")
-    public final UuidPowerCurveDescription retrieve(final byte[] uuid) {
-        PowerCurveManager powerCurveManager = null;
-        UuidPowerCurveDescription uuidPowerCurve = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve PowerCurveDescription.
-             */
-            powerCurveManager = new PowerCurveManager();
-            powerCurveManager.beginTransaction();
-            uuidPowerCurve = powerCurveManager.retrieve(uuid);
-            powerCurveManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (powerCurveManager != null) {
-                try {
-                    powerCurveManager.rollback();
-                } catch (BaseManagerException re) {
-                    uuidPowerCurve = null;
-                }
-            }
-            uuidPowerCurve = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (powerCurveManager != null) {
-                try {
-                    powerCurveManager.rollback();
-                } catch (BaseManagerException re) {
-                    uuidPowerCurve = null;
-                }
-            }
-            uuidPowerCurve = null;
-        }
-        return uuidPowerCurve;
-    }
-
+    
     /**
      * Creates the UuidPowerCurveDescription.
      * 

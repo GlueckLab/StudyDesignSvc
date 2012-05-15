@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
@@ -47,63 +46,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class SampleSizeServerResource extends ServerResource implements
         SampleSizeResource {
-    /**
-     * Retrieves the SampleSizeList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the sample size list
-     */
-    @Get("application/json")
-    public final SampleSizeList retrieve(final byte[] uuid) {
-        SampleSizeManager sampleSizeManager = null;
-        SampleSizeList sampleSizeList = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve SampleSize list.
-             */
-            sampleSizeManager = new SampleSizeManager();
-            sampleSizeManager.beginTransaction();
-            sampleSizeList = sampleSizeManager.retrieve(uuid);
-            sampleSizeManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (sampleSizeManager != null) {
-                try {
-                    sampleSizeManager.rollback();
-                } catch (BaseManagerException re) {
-                    sampleSizeList = null;
-                }
-            }
-            sampleSizeList = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (sampleSizeManager != null) {
-                try {
-                    sampleSizeManager.rollback();
-                } catch (BaseManagerException re) {
-                    sampleSizeList = null;
-                }
-            }
-            sampleSizeList = null;
-        }
-        return sampleSizeList;
-    }
-
+    
     /**
      * Creates the SampleSizeList.
      * 

@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
@@ -50,63 +49,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 public class ClusterNodeServerResource extends ServerResource implements
         ClusterNodeResource {
 
-    /**
-     * Retrieve the ClusterNodeList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the cluster node list
-     */
-    @Get("application/json")
-    public final ClusterNodeList retrieve(final byte[] uuid) {
-        ClusterNodeManager clusterNodeManager = null;
-        ClusterNodeList clusterNodeList = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve ClusterNode list.
-             */
-            clusterNodeManager = new ClusterNodeManager();
-            clusterNodeManager.beginTransaction();
-            clusterNodeList = clusterNodeManager.retrieve(uuid);
-            clusterNodeManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (clusterNodeManager != null) {
-                try {
-                    clusterNodeManager.rollback();
-                } catch (BaseManagerException re) {
-                    clusterNodeList = null;
-                }
-            }
-            clusterNodeList = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (clusterNodeManager != null) {
-                try {
-                    clusterNodeManager.rollback();
-                } catch (BaseManagerException re) {
-                    clusterNodeList = null;
-                }
-            }
-            clusterNodeList = null;
-        }
-        return clusterNodeList;
-    }
-
+    
     /**
      * Creates the ClusterNodeList.
      * 

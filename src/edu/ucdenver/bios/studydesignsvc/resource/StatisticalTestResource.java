@@ -25,12 +25,10 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.StatisticalTestList;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 // TODO: Auto-generated Javadoc
 // to-do: Auto-generated Javadoc
@@ -42,17 +40,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
  * @author Uttara Sakhadeo
  */
 public interface StatisticalTestResource {
-
-    /**
-     * Retrieve the StatisticalTestList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the statistical test list
-     */
-    @Get("application/json")
-    StatisticalTestList retrieve(byte[] uuid);
-
+    
     /**
      * Creates the StatisticalTestList.
      * 

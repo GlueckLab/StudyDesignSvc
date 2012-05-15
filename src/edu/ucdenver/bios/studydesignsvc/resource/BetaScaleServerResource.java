@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
@@ -48,64 +47,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  * @author Uttara Sakhadeo
  */
 public class BetaScaleServerResource extends ServerResource implements
-        BetaScaleResource {
-    
-    /**
-     * Retrieves the Beta Scale List.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the beta scale list
-     */
-    @Get("application/json")
-    public final BetaScaleList retrieve(final byte[] uuid) {
-        BetaScaleManager betaScaleManager = null;
-        BetaScaleList betaScaleList = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-        
-        try {
-            /*
-             * Retrieve beta scale list.
-             */
-            betaScaleManager = new BetaScaleManager();
-            betaScaleManager.beginTransaction();
-                betaScaleList = betaScaleManager.retrieve(uuid);
-            betaScaleManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (betaScaleManager != null) {
-                try {
-                    betaScaleManager.rollback();
-                } catch (BaseManagerException re) {
-                    betaScaleList = null;
-                }
-            }
-            betaScaleList = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (betaScaleManager != null) {
-                try {
-                    betaScaleManager.rollback();
-                } catch (BaseManagerException re) {
-                    betaScaleList = null;
-                }
-            }
-            betaScaleList = null;
-        }
-        return betaScaleList;
-    }
+        BetaScaleResource {       
 
     /**
      * Creates the Beta Scale List.

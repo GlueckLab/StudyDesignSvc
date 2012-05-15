@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
@@ -47,63 +46,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 public class TypeIErrorServerResource extends ServerResource implements
         TypeIErrorResource {
 
-    /**
-     * Retrieves the TypeIErrorList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the type i error list
-     */
-    @Get("application/json")
-    public final TypeIErrorList retrieve(final byte[] uuid) {
-        TypeIErrorManager typeIErrorManager = null;
-        TypeIErrorList typeIErrorList = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve TypeIError list.
-             */
-            typeIErrorManager = new TypeIErrorManager();
-            typeIErrorManager.beginTransaction();
-            typeIErrorList = typeIErrorManager.retrieve(uuid);
-            typeIErrorManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (typeIErrorManager != null) {
-                try {
-                    typeIErrorManager.rollback();
-                } catch (BaseManagerException re) {
-                    typeIErrorList = null;
-                }
-            }
-            typeIErrorList = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (typeIErrorManager != null) {
-                try {
-                    typeIErrorManager.rollback();
-                } catch (BaseManagerException re) {
-                    typeIErrorList = null;
-                }
-            }
-            typeIErrorList = null;
-        }
-        return typeIErrorList;
-    }
-
+    
     /**
      * Creates the TypeIErrorList.
      * 

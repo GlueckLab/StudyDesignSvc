@@ -46,63 +46,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class QuantileServerResource extends ServerResource implements
         QuantileResource {
-    /**
-     * Retrieves the QuantileList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the quantile list
-     */
-    @Get("application/json")
-    public final QuantileList retrieve(final byte[] uuid) {
-        QuantileManager quantileManager = null;
-        QuantileList quantileList = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve Quantile list.
-             */
-            quantileManager = new QuantileManager();
-            quantileManager.beginTransaction();
-            quantileList = quantileManager.retrieve(uuid);
-            quantileManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (quantileManager != null) {
-                try {
-                    quantileManager.rollback();
-                } catch (BaseManagerException re) {
-                    quantileList = null;
-                }
-            }
-            quantileList = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (quantileManager != null) {
-                try {
-                    quantileManager.rollback();
-                } catch (BaseManagerException re) {
-                    quantileList = null;
-                }
-            }
-            quantileList = null;
-        }
-        return quantileList;
-    }
-
+    
     /**
      * Creates the QuantileList.
      * 

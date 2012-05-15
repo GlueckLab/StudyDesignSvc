@@ -25,15 +25,12 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.Hypothesis;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.UuidHypothesis;
 import edu.ucdenver.bios.webservice.common.domain.UuidHypothesisType;
-import edu.ucdenver.bios.webservice.common.enums.HypothesisTypeEnum;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -43,16 +40,6 @@ import edu.ucdenver.bios.webservice.common.enums.HypothesisTypeEnum;
  * @author Uttara Sakhadeo
  */
 public interface HypothesisResource {
-
-    /**
-     * Retrieves the Hypothesis.
-     * 
-     * @param uuidType
-     *            the uuid type
-     * @return the hypothesis
-     */
-    @Get("application/json")
-    Hypothesis retrieve(UuidHypothesisType uuidType);
 
     /**
      * Creates the Hypothesis.

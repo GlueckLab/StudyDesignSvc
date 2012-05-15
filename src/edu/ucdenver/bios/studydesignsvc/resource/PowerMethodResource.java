@@ -40,17 +40,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
  * @author Uttara Sakhadeo
  */
 public interface PowerMethodResource {
-
-    /**
-     * Retrieves the PowerMethodList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the power method list
-     */
-    @Get("application/json")
-    PowerMethodList retrieve(byte[] uuid);
-
+    
     /**
      * Creates the PowerMethodList.
      * 

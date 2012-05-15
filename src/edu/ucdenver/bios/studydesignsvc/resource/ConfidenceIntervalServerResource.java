@@ -49,63 +49,6 @@ public class ConfidenceIntervalServerResource extends ServerResource implements
         ConfidenceIntervalResource {
 
     /**
-     * Retrieve ConfidenceIntervalDescription.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the uuid confidence interval description
-     */
-    @Get("application/json")
-    public final UuidConfidenceIntervalDescription retrieve(final byte[] uuid) {
-        ConfidenceIntervalManager confidenceIntervalManager = null;
-        UuidConfidenceIntervalDescription uuidConfidence = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve ConfidenceIntervalDescription.
-             */
-            confidenceIntervalManager = new ConfidenceIntervalManager();
-            confidenceIntervalManager.beginTransaction();
-            uuidConfidence = confidenceIntervalManager.retrieve(uuid);
-            confidenceIntervalManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (confidenceIntervalManager != null) {
-                try {
-                    confidenceIntervalManager.rollback();
-                } catch (BaseManagerException re) {
-                    uuidConfidence = null;
-                }
-            }
-            uuidConfidence = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (confidenceIntervalManager != null) {
-                try {
-                    confidenceIntervalManager.rollback();
-                } catch (BaseManagerException re) {
-                    uuidConfidence = null;
-                }
-            }
-            uuidConfidence = null;
-        }
-        return uuidConfidence;
-    }
-
-    /**
      * Creates the ConfidenceIntervalDescription.
      * 
      * @param uuidConfidence

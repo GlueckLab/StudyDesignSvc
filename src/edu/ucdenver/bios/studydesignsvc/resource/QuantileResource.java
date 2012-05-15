@@ -41,16 +41,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
  * @author Uttara Sakhadeo
  */
 public interface QuantileResource {
-    
-     /**
-      * Retrieves the QuantileList.
-      *
-      * @param uuid the uuid
-      * @return the quantile list
-      */
-     @Get("application/json")
-    QuantileList retrieve(byte[] uuid);
-    
+         
     /**
      * Creates the QuantileList.
      *

@@ -42,16 +42,6 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 public interface SampleSizeResource {
 
     /**
-     * Retrieves the SampleSizeList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the sample size list
-     */
-    @Get("application/json")
-    SampleSizeList retrieve(byte[] uuid);
-
-    /**
      * Creates the SampleSizeList.
      * 
      * @param list

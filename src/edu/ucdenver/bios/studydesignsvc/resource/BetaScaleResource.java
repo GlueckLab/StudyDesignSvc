@@ -39,17 +39,6 @@ import edu.ucdenver.bios.webservice.common.domain.BetaScaleList;
  * @author Uttara Sakhadeo
  */
 public interface BetaScaleResource {
-
-    /**
-     * Retrieves the Beta Scale List.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the beta scale list
-     */
-    @Get("application/json")
-    BetaScaleList retrieve(byte[] uuid);
-
     /**
      * Creates the Beta Scale List.
      * 

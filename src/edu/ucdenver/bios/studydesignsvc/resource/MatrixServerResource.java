@@ -24,7 +24,6 @@ package edu.ucdenver.bios.studydesignsvc.resource;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
@@ -46,64 +45,6 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class MatrixServerResource extends ServerResource implements
         MatrixResource {
-
-    /**
-     * Retrieves the NamedMatrix.
-     * 
-     * @param uuidMatrixName
-     *            the uuid matrix name
-     * @return the named matrix
-     */
-    @Get("application/json")
-    public final NamedMatrix retrieve(final UuidMatrixName uuidMatrixName) {
-        MatrixManager matrixManager = null;
-        NamedMatrix covariance = null;
-        byte[] uuid = uuidMatrixName.getUuid();
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve NamedMatrix.
-             */
-            matrixManager = new MatrixManager();
-            matrixManager.beginTransaction();
-            covariance = matrixManager.retrieve(uuidMatrixName);
-            matrixManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (matrixManager != null) {
-                try {
-                    matrixManager.rollback();
-                } catch (BaseManagerException re) {
-                    covariance = null;
-                }
-            }
-            covariance = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (matrixManager != null) {
-                try {
-                    matrixManager.rollback();
-                } catch (BaseManagerException re) {
-                    covariance = null;
-                }
-            }
-            covariance = null;
-        }
-        return covariance;
-    }
 
     /**
      * Creates the NamedMatrix.

@@ -25,12 +25,10 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrixSet;
-import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -40,17 +38,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
  * @author Uttara Sakhadeo
  */
 public interface MatrixSetResource {
-
-    /**
-     * Retrieves the NamedMatrixSet.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the named matrix set
-     */
-    @Get("application/json")
-    NamedMatrixSet retrieve(byte[] uuid);
-
+    
     /**
      * Creates the NamedMatrixSet.
      * 

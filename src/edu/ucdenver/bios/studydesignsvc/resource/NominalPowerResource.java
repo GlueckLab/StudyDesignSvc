@@ -39,17 +39,7 @@ import edu.ucdenver.bios.webservice.common.domain.NominalPowerList;
  * @author Uttara Sakhadeo
  */
 public interface NominalPowerResource {
-
-    /**
-     * Retrieves the NominalPowerList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the nominal power list
-     */
-    @Get("application/json")
-    NominalPowerList retrieve(byte[] uuid);
-
+    
     /**
      * Creates the NominalPowerList.
      * 

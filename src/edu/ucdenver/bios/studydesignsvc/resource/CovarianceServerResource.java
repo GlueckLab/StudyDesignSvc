@@ -24,7 +24,6 @@ package edu.ucdenver.bios.studydesignsvc.resource;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
@@ -46,64 +45,6 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class CovarianceServerResource extends ServerResource implements
         CovarianceResource {
-
-    /**
-     * Retrieve Covariance.
-     * 
-     * @param uuidCovarianceName
-     *            the uuid covariance name
-     * @return the covariance
-     */
-    @Get("application/json")
-    public final Covariance retrieve(final UuidCovarianceName uuidCovarianceName) {
-        CovarianceManager covarianceManager = null;
-        Covariance covariance = null;
-        byte[] uuid = uuidCovarianceName.getUuid();
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve Covariance.
-             */
-            covarianceManager = new CovarianceManager();
-            covarianceManager.beginTransaction();
-            covariance = covarianceManager.retrieve(uuidCovarianceName);
-            covarianceManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (covarianceManager != null) {
-                try {
-                    covarianceManager.rollback();
-                } catch (BaseManagerException re) {
-                    covariance = null;
-                }
-            }
-            covariance = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (covarianceManager != null) {
-                try {
-                    covarianceManager.rollback();
-                } catch (BaseManagerException re) {
-                    covariance = null;
-                }
-            }
-            covariance = null;
-        }
-        return covariance;
-    }
 
     /**
      * Creates the Covariance.

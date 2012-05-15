@@ -25,7 +25,6 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
@@ -40,17 +39,7 @@ import edu.ucdenver.bios.webservice.common.domain.SigmaScaleList;
  * @author Uttara Sakhadeo
  */
 public interface SigmaScaleResource {
-
-    /**
-     * Retrieves the SigmaScaleList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the sigma scale list
-     */
-    @Get("application/json")
-    SigmaScaleList retrieve(byte[] uuid);
-
+    
     /**
      * Creates the SigmaScaleList.
      * 

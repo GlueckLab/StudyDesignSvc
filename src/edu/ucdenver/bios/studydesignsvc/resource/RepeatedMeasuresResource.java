@@ -41,16 +41,7 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
  */
 public interface RepeatedMeasuresResource {
 
-    /**
-     * Retrieve the RepeatedMeasuresNodeList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the repeated measures node list
-     */
-    @Get("application/json")
-    RepeatedMeasuresNodeList retrieve(byte[] uuid);
-
+    
     /**
      * Creates the RepeatedMeasuresNodeList.
      * 

@@ -40,75 +40,13 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Server Resource class for handling requests for the Hypothesis object. 
- * See the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling requests for the Hypothesis object. See
+ * the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
-/**
- * @author sakhadeu
- * 
- */
 public class HypothesisServerResource extends ServerResource implements
         HypothesisResource {
-
-    /**
-     * Retrieves the Hypothesis.
-     * 
-     * @param uuidHypothesisType
-     *            the uuid hypothesis type
-     * @return the hypothesis
-     */
-    @Get("application/json")
-    public final Hypothesis retrieve(final UuidHypothesisType uuidHypothesisType) {
-        HypothesisManager hypothesisManager = null;
-        Hypothesis hypothesis = null;
-        byte[] uuid = uuidHypothesisType.getUuid();
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve Hypothesis.
-             */
-            hypothesisManager = new HypothesisManager();
-            hypothesisManager.beginTransaction();
-            hypothesis = hypothesisManager.retrieve(uuidHypothesisType);
-            hypothesisManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (hypothesisManager != null) {
-                try {
-                    hypothesisManager.rollback();
-                } catch (BaseManagerException re) {
-                    hypothesis = null;
-                }
-            }
-            hypothesis = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (hypothesisManager != null) {
-                try {
-                    hypothesisManager.rollback();
-                } catch (BaseManagerException re) {
-                    hypothesis = null;
-                }
-            }
-            hypothesis = null;
-        }
-        return hypothesis;
-    }
 
     /**
      * Creates the Hypothesis.

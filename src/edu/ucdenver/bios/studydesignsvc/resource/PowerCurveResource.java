@@ -39,17 +39,7 @@ import edu.ucdenver.bios.webservice.common.domain.UuidPowerCurveDescription;
  * @author Uttara Sakhadeo
  */
 public interface PowerCurveResource {
-
-    /**
-     * Retrieve UuidPowerCurveDescription.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the uuid power curve description
-     */
-    @Get("application/json")
-    UuidPowerCurveDescription retrieve(byte[] uuid);
-
+    
     /**
      * Creates the UuidPowerCurveDescription.
      * 

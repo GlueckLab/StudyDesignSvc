@@ -51,63 +51,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  */
 public class PowerMethodServerResource extends ServerResource implements
         PowerMethodResource {
-    /**
-     * Retrieves the PowerMethodList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the power method list
-     */
-    @Get("application/json")
-    public final PowerMethodList retrieve(final byte[] uuid) {
-        PowerMethodManager powerMethodManager = null;
-        PowerMethodList powerMethodList = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve PowerMethod list.
-             */
-            powerMethodManager = new PowerMethodManager();
-            powerMethodManager.beginTransaction();
-            powerMethodList = powerMethodManager.retrieve(uuid);
-            powerMethodManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (powerMethodManager != null) {
-                try {
-                    powerMethodManager.rollback();
-                } catch (BaseManagerException re) {
-                    powerMethodList = null;
-                }
-            }
-            powerMethodList = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (powerMethodManager != null) {
-                try {
-                    powerMethodManager.rollback();
-                } catch (BaseManagerException re) {
-                    powerMethodList = null;
-                }
-            }
-            powerMethodList = null;
-        }
-        return powerMethodList;
-    }
-
+    
     /**
      * Creates the PowerMethodList.
      * 

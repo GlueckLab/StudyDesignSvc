@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
@@ -46,63 +45,7 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
  * @author Uttara Sakhadeo
  */
 public class RelativeGroupSizeServerResource extends ServerResource implements
-        RelativeGroupSizeResource {
-    /**
-     * Retrieves the RelativeGroupSizeList.
-     * 
-     * @param uuid
-     *            the uuid
-     * @return the relative group size list
-     */
-    @Get("application/json")
-    public final RelativeGroupSizeList retrieve(final byte[] uuid) {
-        RelativeGroupSizeManager relativeGroupSizeManager = null;
-        RelativeGroupSizeList relatuveGPList = null;
-        /*
-         * Check : empty uuid.
-         */
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        /*
-         * Check : length of uuid.
-         */
-
-        try {
-            /*
-             * Retrieve RelativeGroupSize list.
-             */
-            relativeGroupSizeManager = new RelativeGroupSizeManager();
-            relativeGroupSizeManager.beginTransaction();
-            relatuveGPList = relativeGroupSizeManager.retrieve(uuid);
-            relativeGroupSizeManager.commit();
-
-        } catch (BaseManagerException bme) {
-            System.out.println(bme.getMessage());
-            StudyDesignLogger.getInstance().error(bme.getMessage());
-            if (relativeGroupSizeManager != null) {
-                try {
-                    relativeGroupSizeManager.rollback();
-                } catch (BaseManagerException re) {
-                    relatuveGPList = null;
-                }
-            }
-            relatuveGPList = null;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            StudyDesignLogger.getInstance().error(e.getMessage());
-            if (relativeGroupSizeManager != null) {
-                try {
-                    relativeGroupSizeManager.rollback();
-                } catch (BaseManagerException re) {
-                    relatuveGPList = null;
-                }
-            }
-            relatuveGPList = null;
-        }
-        return relatuveGPList;
-    }
+        RelativeGroupSizeResource {    
 
     /**
      * Creates the RelativeGroupSizeList.
