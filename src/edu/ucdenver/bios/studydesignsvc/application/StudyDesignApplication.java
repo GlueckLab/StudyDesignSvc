@@ -121,7 +121,6 @@ public class StudyDesignApplication extends Application {
         // router.attach("/studyRetrieve",
         // StudyDesignRetrieveServerResource.class);
         /* Study Design Upload Retrieve Resource */
-        router.attach("/studyUpload", UploadServerResource.class);
         router.attach("/studyUploadRetrieve",
                 StudyDesignUploadRetrieveServerResource.class);
         /* ConfidenceInterval Resource */
