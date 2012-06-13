@@ -59,9 +59,7 @@ public class TestBetaScaleList extends TestCase {
     ClientResource clientResource = null;
 
     /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#setUp()
+     * Sets tomcat connection properties while calling each Test method.
      */
     public final void setUp() {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);

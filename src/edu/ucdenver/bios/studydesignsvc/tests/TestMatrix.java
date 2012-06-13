@@ -47,14 +47,14 @@ import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
  */
 public class TestMatrix extends TestCase {
 
-    /** The STUD y_ uuid. */
+    /** The STUDY_UUID. */
     private static UUID STUDY_UUID = UUID
             .fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
 
-    /** The THET a_ matri x_ name. */
+    /** The THET a_ matrix_ name. */
     private static String THETA_MATRIX_NAME = "Theta Null Matrix";
 
-    /** The BET a_ matri x_ name. */
+    /** The BET a_ matrix_ name. */
     private static String BETA_MATRIX_NAME = "Beta Matrix";
 
     /** The resource. */

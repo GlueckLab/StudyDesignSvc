@@ -1,16 +1,8 @@
 package edu.ucdenver.bios.studydesignsvc.tests;
 
-import java.io.File;
 import java.util.UUID;
 
 import junit.framework.TestCase;
-
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-
-import edu.ucdenver.bios.studydesignsvc.resource.UploadResource;
-import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
-import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 public class TestStudyUpload extends TestCase {
 
@@ -23,11 +15,14 @@ public class TestStudyUpload extends TestCase {
     private static String FILE_NAME = "study.json";
     
     /** The resource. */
-    UploadResource resource = null;
+    //UploadResource resource = null;
     
+    /**
+     * Connect to the server.
+     */
     public void setUp()
     {       
-        uuidOne = UUIDUtils.asByteArray(STUDY_UUID_ONE);           
+        /*uuidOne = UUIDUtils.asByteArray(STUDY_UUID_ONE);           
         try
         {
             System.clearProperty("http.proxyHost");
@@ -38,7 +33,7 @@ public class TestStudyUpload extends TestCase {
         {
             System.err.println("Failed to connect to server: " + e.getMessage());
             fail();
-        }
+        }*/
     }
     
     private void testUploadFromJson()

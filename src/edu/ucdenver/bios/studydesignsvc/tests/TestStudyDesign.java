@@ -95,6 +95,8 @@ public class TestStudyDesign extends TestCase
 	
 	/** The study design resource. */
 	StudyDesignResource studyDesignResource = null;
+	
+	StudyRetrieveResource std = null;
 		
 	/** The study design upload retrieve resource. */
     StudyDesignUploadRetrieveResource studyDesignUploadResource = null;
@@ -108,13 +110,13 @@ public class TestStudyDesign extends TestCase
     	uuid_one = UUIDUtils.asByteArray(STUDY_UUID_ONE);
         try
         {
-        	/*clientStudyResource = new ClientResource("http://localhost:8080/study/study"); 
+            System.clearProperty("http.proxyHost");
+            clientStudyResource = new ClientResource("http://localhost:8080/study/study/retrieve"); 
+            std = clientStudyResource.wrap(StudyRetrieveResource.class);
+            
+            clientStudyResource = new ClientResource("http://localhost:8080/study/study"); 
             studyDesignResource = clientStudyResource.wrap(StudyDesignResource.class);
             
-            clientStudyResource = new ClientResource("http://localhost:8080/study/studyUploadRetrieve"); 
-            studyDesignUploadResource = clientStudyResource.wrap(StudyDesignUploadRetrieveResource.class);
-            
-            */
         }
         catch (Exception e)
         {
@@ -142,8 +144,7 @@ public class TestStudyDesign extends TestCase
         }
     }
     
-    
-	
+    	
 	/**
 	 * Test retrieving a UUID from the database
 	 * Note, this test must run after testCreate of a
@@ -152,42 +153,11 @@ public class TestStudyDesign extends TestCase
 	@Test
 	private void testCreate()	
 	{	
-		StudyDesign studyDesign = new StudyDesign();
-		studyDesign.setUuid(uuid);
-		studyDesign.setParticipantLabel(PARTICIPANT_LABEL);
-		studyDesign.setName(STUDY_NAME);
-		studyDesign.setViewTypeEnum(StudyDesignViewTypeEnum.GUIDED_MODE);
-		studyDesign.setGaussianCovariate(true);				
-		studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER);
-		
-		/*StudyDesign studyDesign1 = new StudyDesign();
-        studyDesign1.setUuid(uuid_one);
-        studyDesign1.setParticipantLabel(PARTICIPANT_LABEL);
-        studyDesign1.setName(STUDY_NAME+" 1");
-        studyDesign1.setViewTypeEnum(StudyDesignViewTypeEnum.GUIDED_MODE);
-        studyDesign1.setGaussianCovariate(true);             
-        studyDesign1.setSolutionTypeEnum(SolutionTypeEnum.POWER);
-            List<SampleSize> sampleSizeList = new ArrayList<SampleSize>();        
-            SampleSize sampleSize = new SampleSize();     
-                sampleSize.setValue(5); 
-            sampleSizeList.add(sampleSize); 
-            sampleSize = new SampleSize();      
-                sampleSize.setValue(1);           
-            sampleSizeList.add(sampleSize);     
-		studyDesign1.setSampleSizeList(sampleSizeList);*/
-		
+	    StudyDesign studyDesign = null;                
+        
         try
 		{
-            System.clearProperty("http.proxyHost");
-            clientStudyResource = new ClientResource("http://localhost:8080/study/studyUploadRetrieve"); 
-            studyDesignUploadResource = clientStudyResource.wrap(StudyDesignUploadRetrieveResource.class);
-        	//studyDesign=new StudyDesignUploadRetrieveServerResource().upload(studyDesign);
-            studyDesign=new StudyDesignUploadRetrieveServerResource().upload(studyDesign);
-            //studyDesign = studyDesignUploadResource.upload(studyDesign);
-            
-            /*studyDesign1 = resourceUpload.upload(studyDesign1);*/
-        	
-        	/*studyDesign1=resource.create(studyDesign1);*/
+            studyDesign = studyDesignResource.create();
 		}
 		catch(Exception e)
 		{
@@ -210,7 +180,7 @@ public class TestStudyDesign extends TestCase
 	}
 	
 	@Test
-    private void testUpload()   
+    public void testUpload()   
     {   
         StudyDesign studyDesign = new StudyDesign();
         studyDesign.setUuid(uuid);
@@ -312,16 +282,16 @@ public class TestStudyDesign extends TestCase
 	 * Test deletion of record from the table.
 	 */
 	@Test
-	public void testDelete()
+	private void testDelete()
 	{
 	    StudyDesign studyDesign = null;                
         
         try
         {
             /*studyDesign=resource.remove(uuid_one);*/
-            System.clearProperty("http.proxyHost");
+            /*System.clearProperty("http.proxyHost");
             clientStudyResource = new ClientResource("http://localhost:8080/study/study"); 
-            studyDesignResource = clientStudyResource.wrap(StudyDesignResource.class);
+            studyDesignResource = clientStudyResource.wrap(StudyDesignResource.class);*/
             studyDesign=studyDesignResource.remove(uuid);
         }
         catch(Exception e)
@@ -412,7 +382,7 @@ public class TestStudyDesign extends TestCase
     private void testRetrieve()
     {
         StudyDesign studyDesign = null;
-        JsonRepresentation representation = null;
+        //JsonRepresentation representation = null;
         try
         {
             /*Gson gson = new Gson();
@@ -429,9 +399,10 @@ public class TestStudyDesign extends TestCase
             
             //studyDesign = resourceRetrieve.retrieve(representation);          
             //JSONObject object = resourceRetrieve.retrieve(representation);
-            System.clearProperty("http.proxyHost");
+            
+            /*System.clearProperty("http.proxyHost");
             clientStudyResource = new ClientResource("http://localhost:8080/study/study/retrieve"); 
-            StudyRetrieveResource std = clientStudyResource.wrap(StudyRetrieveResource.class);
+            StudyRetrieveResource std = clientStudyResource.wrap(StudyRetrieveResource.class);*/
             studyDesign = std.retrieve(uuid);
             
             /*Gson gson = new Gson();           

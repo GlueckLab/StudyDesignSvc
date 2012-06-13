@@ -73,6 +73,9 @@ public class TestCovarianceSet extends TestCase {
     /** The client resource. */
     ClientResource clientResource = null;
 
+    /*
+     * Sets tomcat connection properties while calling each Test method.
+     */
     public void setUp() {
         uuid = UUIDUtils.asByteArray(STUDY_UUID);
         try {

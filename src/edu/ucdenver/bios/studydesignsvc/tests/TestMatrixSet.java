@@ -94,7 +94,7 @@ public class TestMatrixSet extends TestCase {
      * Test to create a Set<NamedMatrix>.
      */
     @Test
-    private void testCreateMatrixSet() {
+    public void testCreateMatrixSet() {
         Set<NamedMatrix> matrixSet = new HashSet<NamedMatrix>();
         NamedMatrix matrix = new NamedMatrix(THETA_MATRIX_NAME);
         rows = 2;
@@ -169,7 +169,7 @@ public class TestMatrixSet extends TestCase {
      * Test to update a Set<NamedMatrix>.
      */
     @Test
-    public void testUpdateMatrixSet() {
+    private void testUpdateMatrixSet() {
         Set<NamedMatrix> matrixSet = new HashSet<NamedMatrix>();
         NamedMatrix matrix = new NamedMatrix(THETA_MATRIX_NAME);
         rows = 10;
