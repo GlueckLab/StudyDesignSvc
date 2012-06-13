@@ -476,9 +476,13 @@ public class HypothesisManager extends StudyDesignParentManager {
                             newHypothesis);
                 }
                 if (isCreation) {
-                    session.save(newHypothesis);
+                    if (newHypothesis != null) {
+                        session.save(newHypothesis);
+                    }
                 } else {
-                    session.update(newHypothesis);
+                    if (newHypothesis != null) {
+                        session.update(newHypothesis);
+                    }
                 }
                 /*
                  * Update Study Design Object

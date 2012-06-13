@@ -157,7 +157,9 @@ public class CovarianceSetManager extends StudyDesignParentManager {
         try {
             if (covarianceSet != null && !covarianceSet.isEmpty()) {
                 for (Covariance covariance : covarianceSet) {
-                    session.delete(covariance);
+                    if (covariance != null) {
+                        session.delete(covariance);
+                    }
                 }
             }
             deletedSet = new CovarianceSet(uuid, covarianceSet);
@@ -206,11 +208,15 @@ public class CovarianceSetManager extends StudyDesignParentManager {
                 }
                 if (isCreation) {
                     for (Covariance covariance : newSet) {
-                        session.save(covariance);
+                        if (covariance != null) {
+                            session.save(covariance);
+                        }
                     }
                 } else {
                     for (Covariance covariance : newSet) {
-                        session.update(covariance);
+                        if (covariance != null) {
+                            session.update(covariance);
+                        }
                     }
                 }
                 /*
