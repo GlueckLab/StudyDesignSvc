@@ -41,7 +41,11 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class BetweenParticipantServerResource.
+ * Generic Resource Class for handling (PUT, POST, DELETE) requests for the
+ * BetweenParticipantFactor domain List object. See the StudyDesignApplication
+ * class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
  */
 public class BetweenParticipantServerResource extends ServerResource implements
         BetweenParticipantResource {

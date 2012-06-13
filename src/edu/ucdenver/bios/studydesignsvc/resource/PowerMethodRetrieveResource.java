@@ -29,7 +29,7 @@ import org.restlet.resource.Post;
 import edu.ucdenver.bios.webservice.common.domain.PowerMethodList;
 
 /**
- * Generic Resource class for handling retrieve requests for the domain List
+ * Generic Resource Interface for handling retrieve requests for the domain List
  * object of a Power Method. See the StudyDesignApplication class for URI
  * mappings
  * 

@@ -28,6 +28,12 @@ import org.restlet.resource.Post;
 
 import edu.ucdenver.bios.webservice.common.domain.SigmaScaleList;
 
+/**
+ * Generic Resource Interface for handling retrieve requests for the SigmaScale
+ * domain object. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public interface SigmaScaleRetrieveResource {
     /**
      * Retrieves the SigmaScaleList.

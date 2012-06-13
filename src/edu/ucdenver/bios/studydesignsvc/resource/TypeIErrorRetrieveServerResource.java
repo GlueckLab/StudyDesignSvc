@@ -34,8 +34,15 @@ import edu.ucdenver.bios.studydesignsvc.manager.TypeIErrorManager;
 import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+/**
+ * Generic Resource class for handling (PUT, POST, DELETE) requests for the
+ * domain list object of a TypeIError. See the StudyDesignApplication class for
+ * URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public class TypeIErrorRetrieveServerResource extends ServerResource implements
-TypeIErrorRetrieveResource{
+        TypeIErrorRetrieveResource {
     /**
      * Retrieves the TypeIErrorList.
      * 

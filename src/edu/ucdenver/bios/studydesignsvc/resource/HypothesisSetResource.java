@@ -34,10 +34,14 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Interface HypothesisSetResource.
+ * Generic Resource Interface for handling retrieve requests for the
+ * HypothesisSet domain object. See the StudyDesignApplication class for URI
+ * mappings
+ * 
+ * @author Uttara Sakhadeo
  */
 public interface HypothesisSetResource {
-    
+
     /**
      * Creates the HypothesisSet.
      * 

@@ -35,8 +35,8 @@ import edu.ucdenver.bios.webservice.common.domain.CovarianceSet;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
- * Generic Resource class for handling retrieve requests for the domain Set
- * object of a Covariance. See the StudyDesignApplication class for URI mappings
+ * Generic Resource class for handling retrieve request for the CovarianceSet
+ * domain object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */

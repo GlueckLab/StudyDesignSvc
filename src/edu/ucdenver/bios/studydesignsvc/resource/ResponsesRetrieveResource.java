@@ -28,6 +28,13 @@ import org.restlet.resource.Post;
 
 import edu.ucdenver.bios.webservice.common.domain.ResponseList;
 
+/**
+ * Generic Resource Interface for handling retrieve request for the domain List
+ * object of a ResponseNode. See the StudyDesignApplication class for URI
+ * mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public interface ResponsesRetrieveResource {
     /**
      * Retrieves the ResponseList.

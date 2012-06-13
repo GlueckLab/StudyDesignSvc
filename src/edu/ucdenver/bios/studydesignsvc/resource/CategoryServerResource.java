@@ -22,7 +22,10 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class CategoryServerResource.
+ * Generic Resource Class for handling retrieve requests for the Category domain
+ * List object. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
  */
 public class CategoryServerResource extends ServerResource implements
         CategoryResource {
@@ -36,7 +39,6 @@ public class CategoryServerResource extends ServerResource implements
     /** The uuid flag. */
     private boolean uuidFlag;
 
-    
     @Get("application/json")
     public CategoryList retrieve(final byte[] uuid) {
         CategoryList categoryList = null;
@@ -135,7 +137,8 @@ public class CategoryServerResource extends ServerResource implements
             if (uuidFlag) {
                 categoryManager = new CategoryManager();
                 categoryManager.beginTransaction();
-                categoryList = new CategoryList(categoryManager.saveOrUpdate(categoryList.getCategoryList(), true));
+                categoryList = new CategoryList(categoryManager.saveOrUpdate(
+                        categoryList.getCategoryList(), true));
                 categoryManager.commit();
                 /*
                  * ---------------------------------------------------- Set
@@ -231,7 +234,8 @@ public class CategoryServerResource extends ServerResource implements
             if (!categoryList.getCategoryList().isEmpty()) {
                 categoryManager = new CategoryManager();
                 categoryManager.beginTransaction();
-                categoryList = new CategoryList(categoryManager.delete(uuid, categoryList.getCategoryList()));
+                categoryList = new CategoryList(categoryManager.delete(uuid,
+                        categoryList.getCategoryList()));
                 categoryManager.commit();
                 /*
                  * ---------------------------------------------------- Set
@@ -294,8 +298,8 @@ public class CategoryServerResource extends ServerResource implements
             studyDesign.setConfidenceIntervalDescriptions(null);
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
-                studyDesign = studyDesignManager.saveOrUpdate(studyDesign, false);
-                
+            studyDesign = studyDesignManager.saveOrUpdate(studyDesign, false);
+
             studyDesignManager.commit();
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());

@@ -33,38 +33,40 @@ import edu.ucdenver.bios.webservice.common.domain.CategoryList;
 
 // TODO: Auto-generated Javadoc
 /**
- * Generic Resource class for handling requests for the
- * domain List object of a Category.
- * See the StudyDesignApplication class for URI mappings
- *
+ * Generic Resource Interface for handling (PUT, POST, DELETE) requests for the
+ * Category domain List object. See the StudyDesignApplication class for URI
+ * mappings
+ * 
  * @author Uttara Sakhadeo
  */
 public interface CategoryResource {
     /**
-     * Retrieve the object for the specified UUID.
-     * Returns "not found" if no matching Object is available.
-     *
-     * @param uuid the uuid
+     * Retrieve the object for the specified UUID. Returns "not found" if no
+     * matching Object is available.
+     * 
+     * @param uuid
+     *            the uuid
      * @return Object for specified UUID
      */
-     @Get("application/json")
+    @Get("application/json")
     CategoryList retrieve(byte[] uuid);
 
     /**
      * Store Category object to the database.
-     *
-     * @param category the category
+     * 
+     * @param category
+     *            the category
      * @return updated Object.
      */
     @Post("application/json")
     CategoryList create(CategoryList category);
 
     /**
-     * Update the specified object. If there is no
-     * object set for specified UUID, then this object
-     * will be treated as new and a UUID assigned.
-     *
-     * @param category the category
+     * Update the specified object. If there is no object set for specified
+     * UUID, then this object will be treated as new and a UUID assigned.
+     * 
+     * @param category
+     *            the category
      * @return Object
      */
     @Put("application/json")
@@ -72,8 +74,9 @@ public interface CategoryResource {
 
     /**
      * Delete the Category object with the specified UUID.
-     *
-     * @param uuid of the object to remove
+     * 
+     * @param uuid
+     *            of the object to remove
      * @return the deleted object
      */
     @Delete("application/json")

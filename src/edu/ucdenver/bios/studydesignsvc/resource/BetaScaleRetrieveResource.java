@@ -30,8 +30,8 @@ import edu.ucdenver.bios.webservice.common.domain.BetaScaleList;
 
 // TODO: Auto-generated Javadoc
 /**
- * Generic Resource class for retrieve request of the domain list
- * object of a Beta Scale. See the StudyDesignApplication class for URI mappings
+ * Generic Resource Interface for retrieve request of the BetaScale domain list
+ * object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */

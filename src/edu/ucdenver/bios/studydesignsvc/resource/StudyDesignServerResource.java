@@ -40,8 +40,9 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
- * Server Resource class for handling requests for the complete study design
- * object. See the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling (PUT, POST, DELETE) requests for the
+ * complete study design object. See the StudyDesignApplication class for URI
+ * mappings
  * 
  * @author Uttara Sakhadeo
  */
@@ -49,9 +50,17 @@ public class StudyDesignServerResource extends ServerResource implements
         StudyDesignResource {
     static Logger logger = StudyDesignLogger.getInstance();
 
+    /**
+     * Update the specified study design object. If the UUID of the study design
+     * is not set , the design will be treated as new and a UUID assigned.
+     * 
+     * @param studyDesign
+     *            study design object
+     * @return the study design object
+     */
     @Put("application/json")
     public StudyDesign update(StudyDesign studyDesign) {
-        StudyDesignManager studyDesignManager = null;                      
+        StudyDesignManager studyDesignManager = null;
         /*
          * Check : empty uuid.
          */
@@ -59,67 +68,10 @@ public class StudyDesignServerResource extends ServerResource implements
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
-        try
-        {
+        try {
             /*
              * Update Study Design.
              */
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-                studyDesign = studyDesignManager.saveOrUpdate(studyDesign,true);
-            studyDesignManager.commit();
-        } catch (BaseManagerException bme) {
-            StudyDesignLogger.getInstance().error(
-                    "StudyDesignResource : " + bme.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException re) {
-                    studyDesign = null;
-                }
-            }
-        } catch (StudyDesignException sde) {
-            StudyDesignLogger.getInstance().error(
-                    "StudyDesignResource : " + sde.getMessage());
-            if (studyDesignManager != null) {
-                try {
-                    studyDesignManager.rollback();
-                } catch (BaseManagerException re) {
-                    studyDesign = null;
-                }
-            }
-        }
-        return studyDesign;
-    }
-    /*public StudyDesign update(StudyDesign studyDesign) {
-        StudyDesignManager studyDesignManager = null;
-        boolean uuidFlag = false;
-        byte[] uuid = studyDesign.getUuid();
-        if (uuid == null) {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                    "no study design UUID specified");
-        }
-        try {
-            
-             * ---------------------------------------------------- Check for
-             * existence of a UUID in Study Design object
-             * ----------------------------------------------------
-             
-            studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            
-             * if (uuidFlag) { studyDesign = studyDesignManager.get(uuid); }
-             
-            studyDesignManager.commit();
-            
-             * ---------------------------------------------------- Remove
-             * existing Study Design for this object
-             * ----------------------------------------------------
-             
-            if (uuidFlag) {
-                studyDesign = remove(uuid);
-            }
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
             studyDesign = studyDesignManager.saveOrUpdate(studyDesign, true);
@@ -146,291 +98,34 @@ public class StudyDesignServerResource extends ServerResource implements
             }
         }
         return studyDesign;
-    }*/
+    }
 
-    /*@Delete("application/json")*/
-    /*public StudyDesign remove(byte[] uuid) {
+    /**
+     * Delete the study with the specified UUID.
+     * 
+     * @param uuid
+     *            the uuid of the study to remove
+     * @return the deleted study design object
+     */
+    @Delete("application/json")
+    public StudyDesign remove(byte[] uuid) {
         StudyDesignManager studyDesignManager = null;
-        
-         * Study Design
-         
         StudyDesign studyDesign = null;
-        
-         * Lists
-         
-        *//** The alpha list. *//*
-        List<TypeIError> alphaList = null;
-
-        *//** The beta scale list. *//*
-        List<BetaScale> betaScaleList = null;
-
-        *//** The sigma scale list. *//*
-        List<SigmaScale> sigmaScaleList = null;
-
-        *//** The relative group size list. *//*
-        List<RelativeGroupSize> relativeGroupSizeList = null;
-
-        *//** The sample size list. *//*
-        List<SampleSize> sampleSizeList = null;
-
-        *//** The statistical test list. *//*
-        List<StatisticalTest> statisticalTestList = null;
-
-        *//** The power method list. *//*
-        List<PowerMethod> powerMethodList = null;
-
-        *//** The quantile list. *//*
-        List<Quantile> quantileList = null;
-
-        *//** The nominal power list. *//*
-        List<NominalPower> nominalPowerList = null;
-
-        *//** The response list. *//*
-        List<ResponseNode> responseList = null;
-
-        *//** The confidence interval descriptions. *//*
-        ConfidenceIntervalDescription confidenceIntervalDescriptions = null;
-
-        *//** The power curve descriptions. *//*
-        PowerCurveDescription powerCurveDescriptions = null;
-
-        *//** The between participant factor list. *//*
-        List<BetweenParticipantFactor> betweenParticipantFactorList = null;
-
-        // Set<StudyDesignNamedMatrix> matrixSet = null;
-        *//** The repeated measures tree. *//*
-        List<RepeatedMeasuresNode> repeatedMeasuresTree = null;
-
-        *//** The clustering tree. *//*
-        List<ClusterNode> clusteringTree = null;
-
-        *//** The hypothesis. *//*
-        Set<Hypothesis> hypothesis = new HashSet<Hypothesis>();
-
-        *//** The covariance. *//*
-        Set<Covariance> covariance = null;
-
-        *//** The matrix set. *//*
-        Set<NamedMatrix> matrixSet = null;
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        }
         try {
-            if (uuid == null)
-                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                        "no study design UUID specified");
+            /*
+             * Delete Study Design.
+             */
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
-            studyDesign = studyDesignManager.get(uuid);
+            studyDesign = studyDesignManager.delete(uuid);
             studyDesignManager.commit();
-            if (studyDesign != null) {
-                
-                 * Lists
-                 
-                
-                 * BetaScaleManager betaScaleManager = new BetaScaleManager();
-                 * if(studyDesign.getBetaScaleList()!=null){
-                 * betaScaleManager.beginTransaction(); betaScaleList =
-                 * betaScaleManager.delete(uuid); betaScaleManager.commit(); }
-                 
-
-                
-                 * SigmaScaleManager sigmaScaleManager = new
-                 * SigmaScaleManager();
-                 * if(studyDesign.getSigmaScaleList()!=null){
-                 * sigmaScaleManager.beginTransaction(); sigmaScaleList =
-                 * sigmaScaleManager
-                 * .delete(uuid,studyDesign.getSigmaScaleList());
-                 * sigmaScaleManager.commit(); }
-                 * 
-                 * SampleSizeManager sampleSizeManager = new
-                 * SampleSizeManager();
-                 * if(studyDesign.getSampleSizeList()!=null){
-                 * sampleSizeManager.beginTransaction(); sampleSizeList =
-                 * sampleSizeManager
-                 * .delete(uuid,studyDesign.getSampleSizeList());
-                 * sampleSizeManager.commit(); }
-                 * 
-                 * TypeIErrorManager typeIErrorManager = new
-                 * TypeIErrorManager(); if(studyDesign.getAlphaList()!=null){
-                 * typeIErrorManager.beginTransaction(); alphaList =
-                 * typeIErrorManager.delete(uuid,studyDesign.getAlphaList());
-                 * typeIErrorManager.commit(); }
-                 * 
-                 * StatisticalTestManager statisticalTestManager = new
-                 * StatisticalTestManager();
-                 * if(studyDesign.getStatisticalTestList()!=null){
-                 * statisticalTestManager.beginTransaction();
-                 * statisticalTestList
-                 * =statisticalTestManager.delete(uuid,studyDesign
-                 * .getStatisticalTestList()); statisticalTestManager.commit();
-                 * }
-                 * 
-                 * RelativeGroupSizeManager relativeGroupSizeManager = new
-                 * RelativeGroupSizeManager();
-                 * if(studyDesign.getRelativeGroupSizeList()!=null){
-                 * relativeGroupSizeManager.beginTransaction();
-                 * relativeGroupSizeList
-                 * =relativeGroupSizeManager.delete(uuid,studyDesign
-                 * .getRelativeGroupSizeList());
-                 * relativeGroupSizeManager.commit(); }
-                 * 
-                 * QuantileManager quantileManager = new QuantileManager();
-                 * if(studyDesign.getQuantileList()!=null){
-                 * quantileManager.beginTransaction();
-                 * quantileList=quantileManager
-                 * .delete(uuid,studyDesign.getQuantileList());
-                 * quantileManager.commit(); }
-                 * 
-                 * ResponsesManager responsesManager = new ResponsesManager();
-                 * if(studyDesign.getResponseList()!=null){
-                 * responsesManager.beginTransaction();
-                 * responseList=responsesManager
-                 * .delete(uuid,studyDesign.getResponseList());
-                 * responsesManager.commit(); }
-                 * 
-                 * NominalPowerManager nominalPowerManager = new
-                 * NominalPowerManager();
-                 * if(studyDesign.getNominalPowerList()!=null){
-                 * nominalPowerManager.beginTransaction();
-                 * nominalPowerList=nominalPowerManager
-                 * .delete(uuid,studyDesign.getNominalPowerList());
-                 * nominalPowerManager.commit(); }
-                 * 
-                 * PowerMethodManager powerMethodManager = new
-                 * PowerMethodManager();
-                 * if(studyDesign.getPowerMethodList()!=null){
-                 * powerMethodManager.beginTransaction();
-                 * powerMethodList=powerMethodManager
-                 * .delete(uuid,studyDesign.getPowerMethodList());
-                 * powerMethodManager.commit(); }
-                 
-                
-                 * Matrix
-                 
-                
-                 * MatrixManager matrixManager = new MatrixManager();
-                 * if(studyDesign.getMatrixSet()!=null){
-                 * matrixManager.beginTransaction();
-                 * matrixSet=matrixManager.delete
-                 * (uuid,studyDesign.getMatrixSet()); matrixManager.commit(); }
-                 
-                
-                 * Confidence Interval Description
-                 
-                
-                 * ConfidenceIntervalManager confidenceIntervalManager = new
-                 * ConfidenceIntervalManager();
-                 * if(studyDesign.getConfidenceIntervalDescriptions()!=null){
-                 * confidenceIntervalManager.beginTransaction();
-                 * confidenceIntervalDescriptions
-                 * =confidenceIntervalManager.delete
-                 * (uuid,studyDesign.getConfidenceIntervalDescriptions());
-                 * confidenceIntervalManager.commit(); }
-                 
-                
-                 * Power Curve Description
-                 
-                
-                 * PowerCurveManager powerCurveManager = new
-                 * PowerCurveManager();
-                 * if(studyDesign.getPowerCurveDescriptions()!=null){
-                 * powerCurveManager.beginTransaction();
-                 * powerCurveDescriptions=powerCurveManager
-                 * .delete(uuid,studyDesign.getPowerCurveDescriptions());
-                 * powerCurveManager.commit(); }
-                 
-                
-                 * Clustering
-                 
-                
-                 * ClusterNodeManager clusterNodeManager = new
-                 * ClusterNodeManager();
-                 * if(studyDesign.getClusteringTree()!=null){
-                 * clusterNodeManager.beginTransaction();
-                 * clusteringTree=clusterNodeManager
-                 * .delete(uuid,studyDesign.getClusteringTree());
-                 * clusterNodeManager.commit(); }
-                 
-                
-                 * Covariance
-                 
-                
-                 * CovarianceManager covarianceManager = new
-                 * CovarianceManager(); if(studyDesign.getCovariance()!=null){
-                 * covarianceManager.beginTransaction();
-                 * covariance=covarianceManager
-                 * .delete(uuid,studyDesign.getCovariance());
-                 * covarianceManager.commit(); }
-                 
-                
-                 * Repeated Measures
-                 
-                
-                 * RepeatedMeasuresManager repeatedMeasuresManager = new
-                 * RepeatedMeasuresManager();
-                 * if(studyDesign.getRepeatedMeasuresTree()!=null){
-                 * repeatedMeasuresManager.beginTransaction();
-                 * repeatedMeasuresTree
-                 * =repeatedMeasuresManager.delete(uuid,studyDesign
-                 * .getRepeatedMeasuresTree());
-                 * repeatedMeasuresManager.commit(); }
-                 
-                
-                 * Between Participant Factor
-                 
-                
-                 * BetweenParticipantFactorManager
-                 * betweenParticipantFactorManager = new
-                 * BetweenParticipantFactorManager();
-                 * if(studyDesign.getBetweenParticipantFactorList()!=null){
-                 * betweenParticipantFactorManager.beginTransaction();
-                 * betweenParticipantFactorList
-                 * =betweenParticipantFactorManager.delete
-                 * (uuid,studyDesign.getBetweenParticipantFactorList());
-                 * betweenParticipantFactorManager.commit(); }
-                 
-                
-                 * Hypothesis
-                 
-                
-                 * HypothesisManager hypothesisManager = new
-                 * HypothesisManager(); if(studyDesign.getHypothesis()!=null){
-                 * hypothesisManager.beginTransaction();
-                 * hypothesis=hypothesisManager
-                 * .delete(uuid,studyDesign.getHypothesis());
-                 * hypothesisManager.commit(); }
-                 
-                
-                 * Study Design
-                 
-                studyDesignManager = new StudyDesignManager();
-                studyDesignManager.beginTransaction();
-                studyDesign = studyDesignManager.delete(uuid);
-                studyDesignManager.commit();
-
-                
-                 * Set Lists to the study Design
-                 
-                studyDesign.setBetaScaleList(betaScaleList);
-                studyDesign.setSampleSizeList(sampleSizeList);
-                studyDesign.setSigmaScaleList(sigmaScaleList);
-                studyDesign.setAlphaList(alphaList);
-                studyDesign.setNominalPowerList(nominalPowerList);
-                studyDesign.setPowerMethodList(powerMethodList);
-                studyDesign.setRelativeGroupSizeList(relativeGroupSizeList);
-                studyDesign.setResponseList(responseList);
-                studyDesign.setQuantileList(quantileList);
-                studyDesign.setStatisticalTestList(statisticalTestList);
-
-                studyDesign
-                        .setBetweenParticipantFactorList(betweenParticipantFactorList);
-                studyDesign.setClusteringTree(clusteringTree);
-                studyDesign
-                        .setConfidenceIntervalDescriptions(confidenceIntervalDescriptions);
-                studyDesign.setPowerCurveDescriptions(powerCurveDescriptions);
-                studyDesign.setHypothesis(hypothesis);
-                studyDesign.setCovariance(covariance);
-                studyDesign.setMatrixSet(matrixSet);
-                studyDesign.setRepeatedMeasuresTree(repeatedMeasuresTree);
-            }
         } catch (BaseManagerException bme) {
             StudyDesignLogger.getInstance().error(
                     "StudyDesignResource : " + bme.getMessage());
@@ -453,52 +148,14 @@ public class StudyDesignServerResource extends ServerResource implements
             }
         }
         return studyDesign;
-    }*/
-    
-    @Delete("application/json")
-    public StudyDesign remove(byte[] uuid) {       
-       StudyDesignManager studyDesignManager = null;                      
-       StudyDesign studyDesign = null;
-       /*
-        * Check : empty uuid.
-        */
-       if (uuid == null) {
-           throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                   "no study design UUID specified");
-       }
-       try
-       {
-           /*
-            * Delete Study Design.
-            */
-           studyDesignManager = new StudyDesignManager();
-           studyDesignManager.beginTransaction();
-               studyDesign = studyDesignManager.delete(uuid);
-           studyDesignManager.commit();
-       } catch (BaseManagerException bme) {
-           StudyDesignLogger.getInstance().error(
-                   "StudyDesignResource : " + bme.getMessage());
-           if (studyDesignManager != null) {
-               try {
-                   studyDesignManager.rollback();
-               } catch (BaseManagerException re) {
-                   studyDesign = null;
-               }
-           }
-       } catch (StudyDesignException sde) {
-           StudyDesignLogger.getInstance().error(
-                   "StudyDesignResource : " + sde.getMessage());
-           if (studyDesignManager != null) {
-               try {
-                   studyDesignManager.rollback();
-               } catch (BaseManagerException re) {
-                   studyDesign = null;
-               }
-           }
-       }
-       return studyDesign;
     }
 
+    /**
+     * Store the study design to the database. This routine will create a new
+     * UUID for the study design. And will return back an empty StudyDesign
+     * 
+     * @return study design object with updated UUID.
+     */
     @Post("application/json")
     public StudyDesign create() {
         StudyDesignManager studyDesignManager = null;
@@ -507,9 +164,7 @@ public class StudyDesignServerResource extends ServerResource implements
         try {
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
-            byte[] uuidBytes = UUIDUtils.asByteArray(UUID.randomUUID());
-            studyDesign = new StudyDesign(uuidBytes);
-            studyDesign = studyDesignManager.saveOrUpdate(studyDesign, true);
+            studyDesign = studyDesignManager.create();
             studyDesignManager.commit();
         } catch (BaseManagerException bme) {
             StudyDesignLogger.getInstance().error(

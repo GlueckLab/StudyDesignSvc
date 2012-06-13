@@ -34,8 +34,14 @@ import edu.ucdenver.bios.studydesignsvc.manager.SigmaScaleManager;
 import edu.ucdenver.bios.webservice.common.domain.SigmaScaleList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+/**
+ * Generic Resource Class for handling retrieve request for the SigmaScale
+ * domain object. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public class SigmaScaleRetrieveServerResource extends ServerResource implements
-SigmaScaleRetrieveResource{
+        SigmaScaleRetrieveResource {
     /**
      * Retrieves the SigmaScaleList.
      * 

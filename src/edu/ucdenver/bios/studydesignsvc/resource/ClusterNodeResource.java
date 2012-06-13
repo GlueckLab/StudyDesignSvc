@@ -32,13 +32,14 @@ import edu.ucdenver.bios.webservice.common.domain.ClusterNodeList;
 
 // TODO: Auto-generated Javadoc
 /**
- * Generic Resource class for handling requests for the domain objects of a
- * study design. See the StudyDesignApplication class for URI mappings
+ * Generic Resource Interface for handling (PUT, POST, DELETE) requests for the
+ * ClusterNode domain objects. See the StudyDesignApplication class for URI
+ * mappings
  * 
  * @author Uttara Sakhadeo
  */
 public interface ClusterNodeResource {
-    
+
     /**
      * Creates the ClusterNodeList.
      * 

@@ -33,14 +33,14 @@ import edu.ucdenver.bios.webservice.common.domain.StatisticalTestList;
 // TODO: Auto-generated Javadoc
 // to-do: Auto-generated Javadoc
 /**
- * Generic Resource class for handling requests for the domain
- * statisticalTestList object of a StatisticalTest. See the
- * StudyDesignApplication class for URI mappings
+ * Generic Resource Interface for handling (PUT, POST, DELETE) requests for the
+ * domain statisticalTestList object. See the StudyDesignApplication class for
+ * URI mappings
  * 
  * @author Uttara Sakhadeo
  */
 public interface StatisticalTestResource {
-    
+
     /**
      * Creates the StatisticalTestList.
      * 

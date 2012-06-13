@@ -34,9 +34,15 @@ import edu.ucdenver.bios.studydesignsvc.manager.StatisticalTestManager;
 import edu.ucdenver.bios.webservice.common.domain.StatisticalTestList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
-public class StatisticalTestRetrieveServerResource extends ServerResource implements
-StatisticalTestRetrieveResource{
-    
+/**
+ * Generic Resource Class for handling retrieve request for the StatisticalTest
+ * domain object. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
+public class StatisticalTestRetrieveServerResource extends ServerResource
+        implements StatisticalTestRetrieveResource {
+
     /**
      * Retrieve the StatisticalTestList.
      * 

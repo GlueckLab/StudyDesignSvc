@@ -28,6 +28,13 @@ import org.restlet.resource.Post;
 
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNodeList;
 
+/**
+ * Generic Resource Interface for handling retrieve request for the domain List
+ * object of a RepeatedMeasuresNode. See the StudyDesignApplication class for
+ * URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public interface RepeatedMeasuresRetrieveResource {
     /**
      * Retrieve the RepeatedMeasuresNodeList.

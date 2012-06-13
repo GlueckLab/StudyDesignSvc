@@ -27,9 +27,10 @@ package edu.ucdenver.bios.studydesignsvc.resource;
 import org.restlet.resource.Post;
 
 import edu.ucdenver.bios.webservice.common.domain.ClusterNodeList;
+
 /**
- * Generic Resource class for handling retrieve request for the domain objects of a
- * study design. See the StudyDesignApplication class for URI mappings
+ * Generic Resource Interface for handling retrieve request for the ClusterNode domain
+ * objects. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */

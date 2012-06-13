@@ -31,29 +31,18 @@ import org.restlet.resource.Put;
 
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
-
 /**
- * Resource class for handling requests for the complete study design object.
- * See the StudyDesignApplication class for URI mappings
- *
+ * Resource Interface for handling (PUT, POST, DELETE) requests for the complete
+ * study design object. See the StudyDesignApplication class for URI mappings
+ * 
  * @author Uttara Sakhadeo
  */
 public interface StudyDesignResource {
-    /**
-     * Retrieve the study design matching the specified UUID. Returns
-     * "not found" if no matching designs are available
-     *
-     * @param uuid
-     *            the uuid
-     * @return study designs with specified UUID
-     */  
-    /*@Get("application/json")
-    StudyDesign retrieve(byte[] uuid);*/
-    
+
     /**
      * Store the study design to the database. This routine will create a new
      * UUID for the study design. And will return back an empty StudyDesign
-     *
+     * 
      * @return study design object with updated UUID.
      */
     @Post("application/json")
@@ -62,7 +51,7 @@ public interface StudyDesignResource {
     /**
      * Update the specified study design object. If the UUID of the study design
      * is not set , the design will be treated as new and a UUID assigned.
-     *
+     * 
      * @param studyDesign
      *            study design object
      * @return the study design object
@@ -72,12 +61,12 @@ public interface StudyDesignResource {
 
     /**
      * Delete the study with the specified UUID.
-     *
+     * 
      * @param uuid
      *            the uuid of the study to remove
      * @return the deleted study design object
      */
     @Delete("application/json")
     StudyDesign remove(byte[] uuid);
-        
+
 }

@@ -29,8 +29,8 @@ import org.restlet.resource.Post;
 import edu.ucdenver.bios.webservice.common.domain.NominalPowerList;
 
 /**
- * Generic Resource class for handling retrieve requests for the domain List
- * object of a NominalPower. See the StudyDesignApplication class for URI
+ * Generic Resource Interface for handling retrieve requests for the
+ * NominalPower domain object. See the StudyDesignApplication class for URI
  * mappings
  * 
  * @author Uttara Sakhadeo

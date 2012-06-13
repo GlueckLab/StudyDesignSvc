@@ -39,13 +39,13 @@ import edu.ucdenver.bios.webservice.common.domain.SigmaScaleList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
- * Server Resource class for handling requests for the Sigma Scale object. See
- * the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling (PUT, POST, DELETE) requests for the Sigma
+ * Scale object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
 public class SigmaScaleServerResource extends ServerResource implements
-        SigmaScaleResource {    
+        SigmaScaleResource {
 
     /**
      * Creates the SigmaScaleList.

@@ -41,13 +41,13 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Server Resource class for handling requests for the Beta Scale object. See
- * the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling (PUT, POST, DELETE) requests for the Beta
+ * Scale object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
 public class BetaScaleServerResource extends ServerResource implements
-        BetaScaleResource {       
+        BetaScaleResource {
 
     /**
      * Creates the Beta Scale List.
@@ -76,13 +76,13 @@ public class BetaScaleServerResource extends ServerResource implements
                     "no Beta Scale specified");
         }
         try {
-        /*
-         * Save beta scale list.
-         */
-        betaScaleManager = new BetaScaleManager();
-        betaScaleManager.beginTransaction();
+            /*
+             * Save beta scale list.
+             */
+            betaScaleManager = new BetaScaleManager();
+            betaScaleManager.beginTransaction();
             betaScaleList = betaScaleManager.saveOrUpdate(betaScaleList, true);
-        betaScaleManager.commit();
+            betaScaleManager.commit();
 
         } catch (BaseManagerException bme) {
             System.out.println(bme.getMessage());

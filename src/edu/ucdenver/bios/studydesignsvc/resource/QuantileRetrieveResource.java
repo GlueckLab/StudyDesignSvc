@@ -29,7 +29,7 @@ import org.restlet.resource.Post;
 import edu.ucdenver.bios.webservice.common.domain.QuantileList;
 
 /**
- * Generic Resource class for handling retrieve requests for the domain List
+ * Generic Resource Interface for handling retrieve requests for the domain List
  * object of a Quantile. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo

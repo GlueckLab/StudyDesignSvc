@@ -29,7 +29,7 @@ import org.restlet.resource.Get;
 import edu.ucdenver.bios.webservice.common.domain.UuidPowerCurveDescription;
 
 /**
- * Resource class for handling retrieve requests for the power curve object. See
+ * Resource Interface for handling retrieve requests for the power curve object. See
  * the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo

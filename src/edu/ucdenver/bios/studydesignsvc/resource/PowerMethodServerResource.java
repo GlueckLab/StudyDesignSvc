@@ -44,14 +44,14 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
- * Server Resource class for handling requests for the PowerMethod object. See
- * the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling (PUT, POST, DELETE) requests for the
+ * PowerMethod object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
 public class PowerMethodServerResource extends ServerResource implements
         PowerMethodResource {
-    
+
     /**
      * Creates the PowerMethodList.
      * 

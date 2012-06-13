@@ -30,7 +30,7 @@ import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
 import edu.ucdenver.bios.webservice.common.domain.UuidMatrixName;
 
 /**
- * Generic Resource class for handling retrieve requests for the domain list
+ * Generic Resource Interface for handling retrieve requests for the domain list
  * object of a NamedMatrix. See the StudyDesignApplication class for URI
  * mappings
  * 

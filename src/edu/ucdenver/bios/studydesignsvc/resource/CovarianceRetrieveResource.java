@@ -30,7 +30,7 @@ import edu.ucdenver.bios.webservice.common.domain.Covariance;
 import edu.ucdenver.bios.webservice.common.domain.UuidCovarianceName;
 
 /**
- * Generic Resource class for handling retrieve request for Covariance domain
+ * Generic Resource Interface for handling retrieve request for Covariance domain
  * object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo

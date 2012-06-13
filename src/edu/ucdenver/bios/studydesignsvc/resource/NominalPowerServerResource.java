@@ -39,14 +39,14 @@ import edu.ucdenver.bios.webservice.common.domain.NominalPowerList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
- * Server Resource class for handling requests for the Nominal Power object. See
- * the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling (PUT, POST, DELETE) requests for the
+ * Nominal Power object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
 public class NominalPowerServerResource extends ServerResource implements
         NominalPowerResource {
-    
+
     /**
      * Creates the Beta Scale List.
      * 

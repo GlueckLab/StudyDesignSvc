@@ -29,8 +29,8 @@ import org.restlet.resource.Post;
 import edu.ucdenver.bios.webservice.common.domain.HypothesisSet;
 
 /**
- * Generic Resource class for handling retrieve requests for the domain
- * hypothesisSet object of a Hypothesis. See the StudyDesignApplication class
+ * Generic Resource Interface for handling retrieve requests for the HypothesisSet domain
+ * object. See the StudyDesignApplication class
  * for URI mappings
  * 
  * @author Uttara Sakhadeo

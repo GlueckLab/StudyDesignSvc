@@ -32,14 +32,14 @@ import edu.ucdenver.bios.webservice.common.domain.UuidConfidenceIntervalDescript
 
 // TODO: Auto-generated Javadoc
 /**
- * Resource class for handling requests for the confidence interval object. See
- * the StudyDesignApplication class for URI mappings
+ * Generic Resource Interface for handling (PUT, POST, DELETE) requests for the
+ * confidence interval object. See the StudyDesignApplication class for URI
+ * mappings
  * 
  * @author Uttara Sakhadeo
  */
 public interface ConfidenceIntervalResource {
 
-   
     /**
      * Creates the ConfidenceIntervalDescription.
      * 

@@ -34,8 +34,15 @@ import edu.ucdenver.bios.studydesignsvc.manager.ResponsesManager;
 import edu.ucdenver.bios.webservice.common.domain.ResponseList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+/**
+ * Generic Resource Interface for handling (PUT, POST, DELETE) requests for the
+ * ResponseNode domain object. See the StudyDesignApplication class for URI
+ * mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public class ResponsesRetrieveServerResource extends ServerResource implements
-ResponsesRetrieveResource{
+        ResponsesRetrieveResource {
     /**
      * Retrieves the ResponseList.
      * 

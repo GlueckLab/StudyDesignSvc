@@ -28,6 +28,12 @@ import org.restlet.resource.Post;
 
 import edu.ucdenver.bios.webservice.common.domain.SampleSizeList;
 
+/**
+ * Generic Resource Interface for handling retrieve request for the SampleSize
+ * domain object. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public interface SampleSizeRetrieveResource {
 
     /**

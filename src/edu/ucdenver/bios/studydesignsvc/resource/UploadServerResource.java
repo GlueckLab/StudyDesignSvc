@@ -24,10 +24,17 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+/**
+ * Generic Resource class for handling requests for the domain object of a
+ * StudyDesign. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
@@ -41,23 +48,28 @@ import com.google.gson.Gson;
 
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 
+/**
+ * Generic Resource Class for handling upload request for the StudyDesign domain
+ * object. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public class UploadServerResource extends ServerResource implements
         UploadResource {
 
     private static final String FORM_TAG_FILE = "file";
 
     /**
-     * Allow post requests to this resource
+     * Handles request for uploading a StudyDesign.
+     * 
+     * @param entity
+     *            the entity
      */
-
-    @Post("application/json")
+    @Post
     public void upload(Representation entity) {
-        if (entity != null) 
-        {
+        if (entity != null) {
             if (MediaType.MULTIPART_FORM_DATA.equals(entity.getMediaType(),
-                    true)) 
-            {
-
+                    true)) {
                 // The Apache FileUpload project parses HTTP requests which
                 // conform to RFC 1867, "Form-based File Upload in HTML". That
                 // is, if an HTTP request is submitted using the POST method,
@@ -74,69 +86,63 @@ public class UploadServerResource extends ServerResource implements
                 // generates FileItems.
                 RestletFileUpload upload = new RestletFileUpload(factory);
                 List<FileItem> items;
-                try 
-                {
+                try {
                     // 3. Request is parsed by the handler which generates a
                     // list of FileItems
                     items = upload.parseRequest(getRequest());
-
                     // Process only the uploaded item called "fileToUpload" and
                     // save it on disk
                     boolean found = false;
                     FileItem fi = null;
-                    for (final Iterator<FileItem> it = items.iterator(); it.hasNext() && !found;) 
-                    {
+                    for (final Iterator<FileItem> it = items.iterator(); it
+                            .hasNext() && !found;) {
                         fi = (FileItem) it.next();
-                        if (fi.getFieldName().equals(FORM_TAG_FILE)) 
-                        {
+                        if (fi.getFieldName().equals(FORM_TAG_FILE)) {
                             found = true;
                             break;
                         }
-                    }                                               
+                    }
                     // Once handled, the content of the uploaded file is sent
                     // back to the client.
                     Representation rep = null;
-                    if (found) 
-                    {
+                    if (found) {
                         // Create a new representation based on disk file.
                         // The content is arbitrarily sent as plain text.
                         rep = new StringRepresentation(fi.getString(),
                                 MediaType.TEXT_HTML);
                         getResponse().setEntity(rep);
-                        getResponse().setStatus(Status.SUCCESS_OK); 
-                        /*
-                         * To-Do :
-                         * Call upload method of study Design
+                        getResponse().setStatus(Status.SUCCESS_OK);
+
+                        /**
+                         * To-Do : Call upload method of study Design
                          */
                         String jsonEncoded = rep.getText();
-                        Gson gson = new Gson();                        
-                        StudyDesign studyDesign = gson.fromJson(jsonEncoded, StudyDesign.class);
-                        StudyDesignUploadRetrieveServerResource studyUploadResource = new StudyDesignUploadRetrieveServerResource();
-                        studyDesign = studyUploadResource.upload(studyDesign);
+                        Gson gson = new Gson();
+                        StudyDesign studyDesign = gson.fromJson(jsonEncoded,
+                                StudyDesign.class);
+                        StudyDesignServerResource studyUploadResource = new StudyDesignServerResource();
+                        studyDesign = studyUploadResource.update(studyDesign);
                         System.out.println(studyDesign);
-                    } 
-                    else 
-                    {
+                    } else {
                         rep = new StringRepresentation("No file data found",
                                 MediaType.TEXT_HTML);
                         getResponse().setEntity(rep);
-                        getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                        getResponse()
+                                .setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                     }
-                } 
-                catch (Exception e) 
-                {
-                    System.out.println(e.getMessage());
+                } catch (FileUploadException uploadE) {
+                    System.out.println(uploadE.getMessage());
+                } catch (Exception e) {
+                    System.out.println("Exception : " + e.getMessage());
                     // The message of all thrown exception is sent back to
                     // client as simple plain text
                     getResponse().setEntity(
-                            new StringRepresentation("Upload failed: " + e.getMessage(),
-                                    MediaType.TEXT_HTML));
+                            new StringRepresentation("Upload failed: "
+                                    + e.getMessage(), MediaType.TEXT_HTML));
                     getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                 }
             }
-        } 
-        else 
-        {
+        } else {
             // POST request with no entity.
             getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
         }

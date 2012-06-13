@@ -36,8 +36,8 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Generic Resource class for handling retrieve requests for the domain list
- * object of a Beta Scale. See the StudyDesignApplication class for URI mappings
+ * Generic Resource class for handling retrieve requests for the BetaScale
+ * domain list object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */

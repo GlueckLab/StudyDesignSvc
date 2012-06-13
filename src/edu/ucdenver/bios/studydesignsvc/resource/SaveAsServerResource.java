@@ -38,38 +38,56 @@ import org.restlet.resource.ServerResource;
 import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.exceptions.ErrorXMLRepresentation;
 
-public class SaveAsServerResource extends ServerResource
-implements SaveAsResource{
+// TODO: Auto-generated Javadoc
+/**
+ * Generic Resource Class for handling download/ saveas request for the domain
+ * object of a StudyDesign. See the StudyDesignApplication class for URI
+ * mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
+public class SaveAsServerResource extends ServerResource implements
+        SaveAsResource {
 
-    @Post("application/json")
+    /**
+     * Handles request for downloading current StudyDesign.
+     * 
+     * @param entity
+     *            the entity
+     * @return the representation
+     */
+    @Post
     public Representation saveAs(Representation entity) {
-        try
-        {
+        try {
             // build the response xml
             Form form = new Form(entity);
             String filename = form.getFirstValue("filename");
-            if (filename == null || filename.isEmpty()) filename = "out.xml";
+            if (filename == null || filename.isEmpty())
+                filename = "out.xml";
             String format = form.getFirstValue("format");
             String data = form.getFirstValue("data");
-            if (data == null)
-            {
-                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, "No data specified");
+            if (data == null) {
+                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                        "No data specified");
             }
             // TODO: format to pdf, word, ppt?
             Disposition disposition = new Disposition();
             disposition.setType(Disposition.TYPE_ATTACHMENT);
             disposition.setFilename(filename);
-            StringRepresentation dataRepresentation = new StringRepresentation(data);
+            StringRepresentation dataRepresentation = new StringRepresentation(
+                    data);
             dataRepresentation.setDisposition(disposition);
             return dataRepresentation;
-        }
-        catch (IllegalArgumentException iae)
-        {
+        } catch (IllegalArgumentException iae) {
             StudyDesignLogger.getInstance().error(iae.getMessage());
-            try { getResponse().setEntity(new ErrorXMLRepresentation(iae.getMessage())); }
-            catch (IOException e) {}
+            try {
+                getResponse().setEntity(
+                        new ErrorXMLRepresentation(iae.getMessage()));
+            } catch (IOException e) {
+            }
             getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, iae.getMessage());
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    iae.getMessage());
         }
     }
 

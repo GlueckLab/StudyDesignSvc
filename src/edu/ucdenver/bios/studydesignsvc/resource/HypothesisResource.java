@@ -34,8 +34,9 @@ import edu.ucdenver.bios.webservice.common.domain.UuidHypothesisType;
 
 // TODO: Auto-generated Javadoc
 /**
- * Generic Resource class for handling requests for the domain hypothesisList
- * object of a Hypothesis. See the StudyDesignApplication class for URI mappings
+ * Generic Resource Interface for handling (PUT, POST, DELETE) requests for the
+ * HypothesisList domain object. See the StudyDesignApplication class for URI
+ * mappings
  * 
  * @author Uttara Sakhadeo
  */

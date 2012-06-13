@@ -34,9 +34,15 @@ import edu.ucdenver.bios.studydesignsvc.manager.NominalPowerManager;
 import edu.ucdenver.bios.webservice.common.domain.NominalPowerList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
-public class NominalPowerRetrieveServerResource extends ServerResource implements
-NominalPowerRetrieveResource{
-    
+/**
+ * Generic Resource Class for handling retrieve requests for the NominalPower
+ * domain object. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
+public class NominalPowerRetrieveServerResource extends ServerResource
+        implements NominalPowerRetrieveResource {
+
     /**
      * Retrieves the NominalPowerList.
      * 

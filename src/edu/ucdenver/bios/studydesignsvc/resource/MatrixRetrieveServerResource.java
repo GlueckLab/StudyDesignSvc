@@ -36,7 +36,7 @@ import edu.ucdenver.bios.webservice.common.domain.UuidMatrixName;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
- * Server Resource class for handling retrieve requests for the NamedMatrix
+ * Server Resource class for handling retrieve request for the NamedMatrix
  * object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo

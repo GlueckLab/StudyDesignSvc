@@ -35,48 +35,56 @@ import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+/**
+ * Generic Resource Class for handling retrieve request for the StudyDesign
+ * domain object. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public class StudyRetrieveServerResource extends ServerResource implements
         StudyRetrieveResource {
     /**
-     * Retrieve the study design matching the specified UUID.
-     * Returns "not found" if no matching designs are available
+     * Retrieve the study design matching the specified UUID. Returns
+     * "not found" if no matching designs are available
+     * 
      * @return study designs with specified UUID
      */
     @Post("application/json")
-    public StudyDesign retrieve(byte[] uuid)
-    {
-        //byte[] uuid = studyUuid.getUuid();
+    public StudyDesign retrieve(byte[] uuid) {
+        // byte[] uuid = studyUuid.getUuid();
         StudyDesignManager studyDesignManager = null;
-        StudyDesign studyDesign = null; 
-        
-        try
-        {
-            if (uuid == null) throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-                    "no study design UUID specified");
-    
+        StudyDesign studyDesign = null;
+
+        try {
+            if (uuid == null)
+                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                        "no study design UUID specified");
+
             studyDesignManager = new StudyDesignManager();
-            studyDesignManager.beginTransaction();      
-                studyDesign = studyDesignManager.get(uuid);
+            studyDesignManager.beginTransaction();
+            studyDesign = studyDesignManager.get(uuid);
             studyDesignManager.commit();
+        } catch (BaseManagerException bme) {
+            StudyDesignLogger.getInstance().error(
+                    "StudyDesignResource : " + bme.getMessage());
+            if (studyDesignManager != null) {
+                try {
+                    studyDesignManager.rollback();
+                } catch (BaseManagerException re) {
+                    studyDesign = null;
+                }
+            }
+        } catch (StudyDesignException sde) {
+            StudyDesignLogger.getInstance().error(
+                    "StudyDesignResource : " + sde.getMessage());
+            if (studyDesignManager != null) {
+                try {
+                    studyDesignManager.rollback();
+                } catch (BaseManagerException re) {
+                    studyDesign = null;
+                }
+            }
         }
-        catch(BaseManagerException bme)
-        {
-            StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
-            if(studyDesignManager!=null)
-            {
-                try {studyDesignManager.rollback();}
-                catch(BaseManagerException re) {studyDesign = null;}                    
-            }
-        }   
-        catch(StudyDesignException sde)
-        {
-            StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
-            if(studyDesignManager!=null)
-            {
-                try {studyDesignManager.rollback();}
-                catch(BaseManagerException re) {studyDesign = null;}                    
-            }
-        }                       
-        return studyDesign;         
+        return studyDesign;
     }
 }

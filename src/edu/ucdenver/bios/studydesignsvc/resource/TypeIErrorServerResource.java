@@ -38,15 +38,14 @@ import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
- * Server Resource class for handling requests for the Type I Error object. See
- * the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling (PUT, POST, DELETE) requests for the Type
+ * I Error object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
 public class TypeIErrorServerResource extends ServerResource implements
         TypeIErrorResource {
 
-    
     /**
      * Creates the TypeIErrorList.
      * 

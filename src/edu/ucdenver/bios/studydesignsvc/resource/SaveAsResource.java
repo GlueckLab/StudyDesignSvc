@@ -25,7 +25,23 @@ package edu.ucdenver.bios.studydesignsvc.resource;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Post;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Generic Resource Interface for handling download/ saveas request for the
+ * domain object of a StudyDesign. See the StudyDesignApplication class for URI
+ * mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public interface SaveAsResource {
-    @Post("application/json")
+
+    /**
+     * Handles request for downloading current StudyDesign.
+     * 
+     * @param entity
+     *            the entity
+     * @return the representation
+     */
+    @Post
     Representation saveAs(Representation entity);
 }

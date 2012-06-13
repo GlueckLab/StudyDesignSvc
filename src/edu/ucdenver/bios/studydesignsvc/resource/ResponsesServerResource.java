@@ -40,14 +40,14 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Server Resource class for handling requests for the ResponseNode object. See
- * the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling (PUT, POST, DELETE) requests for the
+ * ResponseNode object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
 public class ResponsesServerResource extends ServerResource implements
         ResponsesResource {
-    
+
     /**
      * Creates the ResponseList.
      * 

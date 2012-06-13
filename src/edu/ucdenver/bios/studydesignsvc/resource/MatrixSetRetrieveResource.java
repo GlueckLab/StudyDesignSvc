@@ -29,7 +29,7 @@ import org.restlet.resource.Get;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrixSet;
 
 /**
- * Generic Resource class for handling retrieve requests for the domain list
+ * Generic Resource Interface for handling retrieve requests for the domain list
  * object of a NamedMatrix. See the StudyDesignApplication class for URI
  * mappings
  * 

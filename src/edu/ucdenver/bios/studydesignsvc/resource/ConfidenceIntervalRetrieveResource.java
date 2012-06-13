@@ -28,7 +28,7 @@ import org.restlet.resource.Post;
 
 import edu.ucdenver.bios.webservice.common.domain.UuidConfidenceIntervalDescription;
 /**
- * Resource class for handling retrieve request for the confidence interval object. See
+ * Resource Interface for handling retrieve request for the confidence interval object. See
  * the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo

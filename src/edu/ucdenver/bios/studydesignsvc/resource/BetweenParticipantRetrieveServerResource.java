@@ -35,15 +35,15 @@ import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 // TODO: Auto-generated Javadoc
 //TODO: Auto-generated Javadoc
+
 /**
-* Generic Resource class for retrieve request for the domain List object of a
-* BetweenParticipantFactor. See the StudyDesignApplication class for URI
-* mappings
-* 
-* @author Uttara Sakhadeo
-*/
-public class BetweenParticipantRetrieveServerResource extends ServerResource implements
-        BetweenParticipantRetrieveResource {
+ * Generic Resource class for retrieve request for the BetweenParticipantFactor
+ * domain List object See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
+public class BetweenParticipantRetrieveServerResource extends ServerResource
+        implements BetweenParticipantRetrieveResource {
     /**
      * Retrieve BetweenParticipantFactorList.
      * 

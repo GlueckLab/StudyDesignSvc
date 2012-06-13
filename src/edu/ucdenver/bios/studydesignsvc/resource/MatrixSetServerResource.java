@@ -36,14 +36,15 @@ import edu.ucdenver.bios.studydesignsvc.manager.MatrixSetManager;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrix;
 import edu.ucdenver.bios.webservice.common.domain.NamedMatrixSet;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+
 /**
- * Server Resource class for handling requests for the NamedMatrixSet
- * object. See the StudyDesignApplication class for URI mappings
+ * Server Resource class for handling (PUT, POST, DELETE) requests for the
+ * NamedMatrixSet object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
 public class MatrixSetServerResource extends ServerResource implements
-        MatrixSetResource {    
+        MatrixSetResource {
 
     /**
      * Creates the NamedMatrixSet.

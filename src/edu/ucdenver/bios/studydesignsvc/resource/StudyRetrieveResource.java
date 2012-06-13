@@ -28,7 +28,12 @@ import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
-
+/**
+ * Generic Resource Interface for handling requests for the domain object of a
+ * StudyDesign. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public interface StudyRetrieveResource {
     /**
      * Retrieve the study design matching the specified UUID. Returns

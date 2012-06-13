@@ -20,6 +20,13 @@ import edu.ucdenver.bios.webservice.common.domain.CovarianceSet;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+/**
+ * Generic Resource class for handling (PUT, POST, DELETE) requests for the
+ * CovarianceSet domain object. See the StudyDesignApplication class for URI
+ * mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public class CovarianceSetServerResource extends ServerResource implements
         CovarianceSetResource {
 

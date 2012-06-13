@@ -34,8 +34,15 @@ import edu.ucdenver.bios.studydesignsvc.manager.SampleSizeManager;
 import edu.ucdenver.bios.webservice.common.domain.SampleSizeList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
+/**
+ * Generic Resource Class for handling retrieve request for the domain list
+ * object of a Sample Size. See the StudyDesignApplication class for URI
+ * mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public class SampleSizeRetrieveServerResource extends ServerResource implements
-SampleSizeRetrieveResource{
+        SampleSizeRetrieveResource {
     /**
      * Retrieves the SampleSizeList.
      * 

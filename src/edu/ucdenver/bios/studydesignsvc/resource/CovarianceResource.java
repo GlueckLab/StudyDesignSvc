@@ -34,8 +34,9 @@ import edu.ucdenver.bios.webservice.common.domain.UuidCovarianceName;
 
 // TODO: Auto-generated Javadoc
 /**
- * Generic Resource class for handling requests for Covariance domain object.
- * See the StudyDesignApplication class for URI mappings
+ * Generic Resource Interface for handling (PUT, POST, DELETE) requests for
+ * Covariance domain object. See the StudyDesignApplication class for URI
+ * mappings
  * 
  * @author Uttara Sakhadeo
  */

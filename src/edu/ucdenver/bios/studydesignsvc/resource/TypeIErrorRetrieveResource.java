@@ -28,6 +28,12 @@ import org.restlet.resource.Post;
 
 import edu.ucdenver.bios.webservice.common.domain.TypeIErrorList;
 
+/**
+ * Generic Resource Interface for handling retrieve request for the domain list
+ * object of a TypeIError. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
 public interface TypeIErrorRetrieveResource {
     /**
      * Retrieves the TypeIErrorList.

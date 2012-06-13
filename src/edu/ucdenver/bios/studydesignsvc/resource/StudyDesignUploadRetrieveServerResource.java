@@ -38,108 +38,93 @@ import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesignList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
-public class StudyDesignUploadRetrieveServerResource extends ServerResource 
-implements StudyDesignUploadRetrieveResource{
-    
-    static Logger logger = StudyDesignLogger.getInstance(); 
+/**
+ * Generic Resource Class for handling retrieve request for the StudyDesign
+ * domain object. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
+public class StudyDesignUploadRetrieveServerResource extends ServerResource
+        implements StudyDesignUploadRetrieveResource {
+
+    static Logger logger = StudyDesignLogger.getInstance();
     StudyDesignManager studyDesignManager = null;
-           
+
     /*
      * Called while uploading a Study Design.
      */
     @Post("application/json")
-    public StudyDesign upload(StudyDesign studyDesign)
-    {
+    public StudyDesign upload(StudyDesign studyDesign) {
         StudyDesignManager studyDesignManager = null;
         boolean uuidFlag = false;
-        byte[] uuid = studyDesign.getUuid(); 
+        byte[] uuid = studyDesign.getUuid();
         if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
-        }       
-        try
-        {       
-            /*
-             * ----------------------------------------------------
-             * Check for existence of a UUID in Study Design object
-             * ----------------------------------------------------
-             */
+        }
+        try {
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
-            uuidFlag = studyDesignManager.hasUUID(uuid);
-            if (uuidFlag) {
-                studyDesign = studyDesignManager.get(uuid);           
-            }
+            studyDesign = studyDesignManager.saveOrUpdate(studyDesign, true);
             studyDesignManager.commit();
-            /*
-             * ---------------------------------------------------- 
-             * Remove existing Study Design for this object
-             * ----------------------------------------------------
-             */            
-            /*if (uuidFlag) {
-                new StudyDesignServerResource().remove(uuid);
-            }*/
-            
-                studyDesignManager = new StudyDesignManager();
-                studyDesignManager.beginTransaction();      
-                    studyDesign = studyDesignManager.saveOrUpdate(studyDesign,true);
-                studyDesignManager.commit();
-            
+
+        } catch (BaseManagerException bme) {
+            StudyDesignLogger.getInstance().error(
+                    "StudyDesignResource : " + bme.getMessage());
+            if (studyDesignManager != null) {
+                try {
+                    studyDesignManager.rollback();
+                } catch (BaseManagerException re) {
+                    studyDesign = null;
+                }
+            }
+        } catch (StudyDesignException sde) {
+            StudyDesignLogger.getInstance().error(
+                    "StudyDesignResource : " + sde.getMessage());
+            if (studyDesignManager != null) {
+                try {
+                    studyDesignManager.rollback();
+                } catch (BaseManagerException re) {
+                    studyDesign = null;
+                }
+            }
         }
-        catch(BaseManagerException bme)
-        {
-            StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
-            if(studyDesignManager!=null)
-            {
-                try {studyDesignManager.rollback();}
-                catch(BaseManagerException re) {studyDesign = null;}                    
-            }
-        }   
-        catch(StudyDesignException sde)
-        {
-            StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
-            if(studyDesignManager!=null)
-            {
-                try {studyDesignManager.rollback();}
-                catch(BaseManagerException re) {studyDesign = null;}                    
-            }
-        }                       
         return studyDesign;
     }
-    
+
     @Put("application/json")
-    public StudyDesignList retrieve()
-    {
+    public StudyDesignList retrieve() {
         studyDesignManager = null;
-        StudyDesignList studyDesignList = null; 
-        
-        try
-        {           
+        StudyDesignList studyDesignList = null;
+
+        try {
             studyDesignManager = new StudyDesignManager();
-                studyDesignManager.beginTransaction();      
-            studyDesignList = new StudyDesignList(studyDesignManager.getStudyDesigns());            
-            
+            studyDesignManager.beginTransaction();
+            studyDesignList = new StudyDesignList(
+                    studyDesignManager.getStudyDesigns());
             studyDesignManager.commit();
+        } catch (BaseManagerException bme) {
+            StudyDesignLogger.getInstance().error(
+                    "StudyDesignResource : " + bme.getMessage());
+            if (studyDesignManager != null) {
+                try {
+                    studyDesignManager.rollback();
+                } catch (BaseManagerException re) {
+                    studyDesignList = null;
+                }
+            }
+        } catch (StudyDesignException sde) {
+            StudyDesignLogger.getInstance().error(
+                    "StudyDesignResource : " + sde.getMessage());
+            if (studyDesignManager != null) {
+                try {
+                    studyDesignManager.rollback();
+                } catch (BaseManagerException re) {
+                    studyDesignList = null;
+                }
+            }
         }
-        catch(BaseManagerException bme)
-        {
-            StudyDesignLogger.getInstance().error("StudyDesignResource : " + bme.getMessage());
-            if(studyDesignManager!=null)
-            {
-                try {studyDesignManager.rollback();}
-                catch(BaseManagerException re) {studyDesignList = null;}                    
-            }
-        }   
-        catch(StudyDesignException sde)
-        {
-            StudyDesignLogger.getInstance().error("StudyDesignResource : " + sde.getMessage());
-            if(studyDesignManager!=null)
-            {
-                try {studyDesignManager.rollback();}
-                catch(BaseManagerException re) {studyDesignList = null;}                    
-            }
-        }                       
-        return studyDesignList;         
+        return studyDesignList;
 
     }
 }

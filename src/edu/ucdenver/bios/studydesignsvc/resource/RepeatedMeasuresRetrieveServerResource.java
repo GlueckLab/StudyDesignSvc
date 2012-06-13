@@ -34,8 +34,15 @@ import edu.ucdenver.bios.studydesignsvc.manager.RepeatedMeasuresManager;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNodeList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
-public class RepeatedMeasuresRetrieveServerResource extends ServerResource implements
-RepeatedMeasuresRetrieveResource{
+/**
+ * Generic Resource Class for handling retrieve request for the domain List
+ * object of a RepeatedMeasuresNode. See the StudyDesignApplication class for
+ * URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
+public class RepeatedMeasuresRetrieveServerResource extends ServerResource
+        implements RepeatedMeasuresRetrieveResource {
     /**
      * Retrieve the RepeatedMeasuresNodeList.
      * 

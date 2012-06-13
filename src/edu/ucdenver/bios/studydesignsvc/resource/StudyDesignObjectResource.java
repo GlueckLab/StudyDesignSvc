@@ -49,8 +49,8 @@ import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 // TODO: Auto-generated Javadoc
 /**
- * Resource class for handling requests for the complete study design object.
- * See the StudyDesignApplication class for URI mappings
+ * Resource Interface for handling (PUT, POST, DELETE) requests for the complete
+ * study design object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */

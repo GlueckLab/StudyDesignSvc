@@ -39,14 +39,14 @@ import edu.ucdenver.bios.webservice.common.domain.QuantileList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
 /**
- * Server Resource class for handling requests for the Quantile object. See the
- * StudyDesignApplication class for URI mappings
+ * Server Resource class for handling (PUT, POST, DELETE) requests for the
+ * Quantile object. See the StudyDesignApplication class for URI mappings
  * 
  * @author Uttara Sakhadeo
  */
 public class QuantileServerResource extends ServerResource implements
         QuantileResource {
-    
+
     /**
      * Creates the QuantileList.
      * 

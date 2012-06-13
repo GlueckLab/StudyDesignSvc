@@ -34,8 +34,14 @@ import edu.ucdenver.bios.studydesignsvc.manager.RelativeGroupSizeManager;
 import edu.ucdenver.bios.webservice.common.domain.RelativeGroupSizeList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
 
-public class RelativeGroupSizeRetrieveServerResource extends ServerResource implements
-RelativeGroupSizeRetrieveResource{
+/**
+ * Generic Resource Class for handling retrieve requests for the Relative Group
+ * Size domain object. See the StudyDesignApplication class for URI mappings
+ * 
+ * @author Uttara Sakhadeo
+ */
+public class RelativeGroupSizeRetrieveServerResource extends ServerResource
+        implements RelativeGroupSizeRetrieveResource {
     /**
      * Retrieves the RelativeGroupSizeList.
      * 
