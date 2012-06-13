@@ -158,7 +158,9 @@ public class BetaScaleManager extends StudyDesignParentManager {
         try {
             if (betaScaleList != null && !betaScaleList.isEmpty()) {
                 for (BetaScale betaScale : betaScaleList) {
-                    session.delete(betaScale);
+                    if(betaScale != null) {
+                        session.delete(betaScale);
+                    }
                 }
             }
             deletedList = new BetaScaleList(uuid, betaScaleList);
@@ -207,11 +209,15 @@ public class BetaScaleManager extends StudyDesignParentManager {
                 }
                 if (isCreation) {
                     for (BetaScale betaScale : newList) {
-                        session.save(betaScale);
+                        if(betaScale != null) {
+                            session.save(betaScale);
+                        }
                     }
                 } else {
                     for (BetaScale betaScale : newList) {
-                        session.update(betaScale);
+                        if(betaScale != null) {
+                            session.update(betaScale);
+                        }
                     }
                 }
                 /*
