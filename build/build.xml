@@ -3,7 +3,7 @@
  * This service stores study design definitions for users of the GLIMMSE interface.
  * Service contain all information related to a power or sample size calculation.  
  * The Study Design Service simplifies communication between different screens in the user interface.
- * 
+ *
  * Copyright (C) 2010 Regents of the University of Colorado.  
  *
  * This program is free software; you can redistribute it and/or
@@ -21,230 +21,254 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *-->
 <project name="study" default="test">
-	<!-- set global properties for this build -->
-	<property environment="env" />
-	<property name="catalina.home" value="${env.CATALINA_HOME}" />
-	<property name="svcname" value="study" />
-	<property name="module.version" value="2.0.0" />
-	<property name="module.name" value="edu.ucdenver.bios.studydesignsvc" />
-	<property name="wardir" value="${basedir}/war" />
-	<property name="sourcedir" value="${basedir}/../src" />
-	<property name="bindir" value="${basedir}/bin" />
-	<property name="wcdir" value="${basedir}/../WebContent" />
-	<property name="javastatsdir" value="${basedir}/../../JavaStatistics/build/bin" />
-	<property name="thirdpartydir" value="${basedir}/../../thirdparty" />	
-	<property name="javadoc.dir" value="${basedir}/javadoc/${module.name}-${module.version}-javadoc" />
-	<property name="webservicecommonlibsdir" value="${basedir}/../../WebServiceCommon/build/bin" />
+    <!-- set global properties for this build -->
+    <property environment="env" />
+    <property name="catalina.home" value="${env.CATALINA_HOME}" />
+    <property name="svcname" value="study" />
+    <property name="module.version" value="2.0.0" />
+    <property name="module.name" value="edu.ucdenver.bios.studydesignsvc" />
+    <property name="wardir" value="${basedir}/war" />
+    <property name="sourcedir" value="${basedir}/../src" />
+    <property name="bindir" value="${basedir}/bin" />
+    <property name="wcdir" value="${basedir}/../WebContent" />
+    <property name="javastatsdir" value="${basedir}/../../JavaStatistics/build/bin" />
+    <property name="thirdpartydir" value="${basedir}/../../thirdparty" />
+    <property name="javadoc.dir" value="${basedir}/javadoc/${module.name}-${module.version}-javadoc" />
+    <property name="webservicecommonlibsdir" value="${basedir}/../../WebServiceCommon/build/bin" />
 
-	<fileset id="thirdpartylibs" dir="${thirdpartydir}">
-		<include name="ApacheCommonsMath/2.1/lib/commons-math-2.1.jar" />
-		<!-- Begin : Save or Upload -->
-			<include name="ApacheCommonsFileUpload/1.2/lib/commons-fileupload-1.2.1.jar" />
-			<include name="ServletAPI/2.5/lib/servlet-api.jar"/>
-		<!-- Begin : Save or Upload -->
-		<!-- Begin : Hibernate jars -->
-			<include name="hibernate/4.0.0/lib/required/antlr-2.7.7.jar" />
-			<include name="hibernate/4.0.0/lib/optional/c3p0/c3p0-0.9.1.jar" />
-			<include name="hibernate/4.0.0/lib/required/classmate-0.5.4.jar" />
-			<include name="hibernate/4.0.0/lib/required/commons-collections-3.2.1.jar" />
-			<include name="hibernate/4.0.0/lib/optional/c3p0/hibernate-c3p0-4.0.0.Final.jar" />
-			<include name="hibernate/4.0.0/lib/required/hibernate-commons-annotations-4.0.1.Final.jar" />
-			<include name="hibernate/4.0.0/lib/required/hibernate-core-4.0.0.Final.jar" />
-			<include name="hibernate/4.0.0/lib/required/hibernate-jpa-2.0-api-1.0.1.Final.jar" />
-			<include name="hibernate/4.0.0/lib/required/dom4j-1.6.1.jar" />
-			<include name="hibernate/4.0.0/lib/required/jandex-1.0.3.Final.jar" />
-			<include name="hibernate/4.0.0/lib/required/javassist-3.12.1.GA.jar" />
-			<include name="hibernate/4.0.0/lib/required/jboss-logging-3.1.0.CR2.jar" />
-			<include name="hibernate/4.0.0/lib/required/jboss-transaction-api_1.1_spec-1.0.0.Final.jar" />
-		<!-- End : Hibernate jars -->
-		<!-- Begin : MySQL Connector jars -->
-			<include name="mysql-connector-java/5.1.18/lib/mysql-connector-java-5.1.18-bin.jar" />
-		<!-- End : MySQL Connector jars -->
-		<!-- Begin : JSON jars -->
-			<include name="jackson/1.9.4/lib/jackson-all-1.9.4.jar" />
-			<include name="gson/2.1/lib/gson-2.1.jar" />
-			<include name="json/2.9/lib/json-20090211.jar" />
-		<!-- End : JSON jars -->
-		<!-- Begin : JUNIT jars -->
-			<include name="junit/4.7/lib/junit-4.7.jar" />
-		<!-- End : JUNIT jars -->
-		<!-- Begin : log4j jars -->
-			<include name="log4j/1.2.15/lib/log4j-1.2.15.jar" />
-		<!-- End : log4j jars -->
-		<!-- Begin : jsc jars -->
-			<include name="jsc/1.0/lib/jsc.jar" />
-		<!-- End : jsc jars -->
-		<!-- Begin : Resltet jars -->
-			<include name="restlet/2.0.10/lib/org.restlet.jar" />
-			<include name="restlet/2.0.10/lib/org.restlet.ext.gwt.jar" />
-			<include name="restlet/2.0.10/lib/org.restlet.ext.xml.jar" />
-			<include name="restlet/2.0.10/lib/org.restlet.ext.servlet.jar" />
-			<include name="restlet/2.0.10/lib/org.restlet.ext.json.jar" />
-			<include name="restlet/2.0.10/lib/org.restlet.ext.jackson.jar" />
-			<include name="restlet/2.0.10/lib/org.restlet.ext.fileupload.jar" />
-		<!-- End : Resltet jars -->
-		<!-- <include name="Jasypt/1.9.0/lib/jasypt-1.9.0.jar"/>
-		<include name="Jasypt/1.9.0/lib/jasypt-hibernate4-1.9.0.jar"/>
-		<include name="Jasypt/1.9.0/lib/icu4j-3.4.4.jar"/> -->
-	</fileset>
+    <fileset id="thirdpartylibs" dir="${thirdpartydir}">
+        <include name="ApacheCommonsMath/2.1/lib/commons-math-2.1.jar" />
+        <!-- Begin : Save or Upload -->
+        <include name="ApacheCommonsFileUpload/1.2/lib/commons-fileupload-1.2.1.jar" />
+        <!-- End : Save or Upload -->
+        <!-- Begin : Hibernate jars -->
+        <include name="hibernate/4.0.0/lib/required/antlr-2.7.7.jar" />
+        <include name="hibernate/4.0.0/lib/optional/c3p0/c3p0-0.9.1.jar" />
+        <include name="hibernate/4.0.0/lib/required/classmate-0.5.4.jar" />
+        <include name="hibernate/4.0.0/lib/required/commons-collections-3.2.1.jar" />
+        <include name="hibernate/4.0.0/lib/optional/c3p0/hibernate-c3p0-4.0.0.Final.jar" />
+        <include name="hibernate/4.0.0/lib/required/hibernate-commons-annotations-4.0.1.Final.jar" />
+        <include name="hibernate/4.0.0/lib/required/hibernate-core-4.0.0.Final.jar" />
+        <include name="hibernate/4.0.0/lib/required/hibernate-jpa-2.0-api-1.0.1.Final.jar" />
+        <include name="hibernate/4.0.0/lib/required/dom4j-1.6.1.jar" />
+        <include name="hibernate/4.0.0/lib/required/jandex-1.0.3.Final.jar" />
+        <include name="hibernate/4.0.0/lib/required/javassist-3.12.1.GA.jar" />
+        <include name="hibernate/4.0.0/lib/required/jboss-logging-3.1.0.CR2.jar" />
+        <include name="hibernate/4.0.0/lib/required/jboss-transaction-api_1.1_spec-1.0.0.Final.jar" />
+        <!-- End : Hibernate jars -->
+        <!-- Begin : MySQL Connector jars -->
+        <include name="mysql-connector-java/5.1.18/lib/mysql-connector-java-5.1.18-bin.jar" />
+        <!-- End : MySQL Connector jars -->
+        <!-- Begin : JSON jars -->
+        <include name="jackson/1.9.4/lib/jackson-all-1.9.4.jar" />
+        <include name="gson/2.1/lib/gson-2.1.jar" />
+        <include name="json/2.9/lib/json-20090211.jar" />
+        <!-- End : JSON jars -->
+        <!-- Begin : JUNIT jars -->
+        <include name="junit/4.7/lib/junit-4.7.jar" />
+        <!-- End : JUNIT jars -->
+        <!-- Begin : log4j jars -->
+        <include name="log4j/1.2.15/lib/log4j-1.2.15.jar" />
+        <!-- End : log4j jars -->
+        <!-- Begin : jsc jars -->
+        <include name="jsc/1.0/lib/jsc.jar" />
+        <!-- End : jsc jars -->
+        <!-- Begin : Resltet jars -->
+        <include name="restlet/2.0.10/lib/org.restlet.jar" />
+        <include name="restlet/2.0.10/lib/org.restlet.ext.gwt.jar" />
+        <include name="restlet/2.0.10/lib/org.restlet.ext.xml.jar" />
+        <include name="restlet/2.0.10/lib/org.restlet.ext.servlet.jar" />
+        <include name="restlet/2.0.10/lib/org.restlet.ext.json.jar" />
+        <include name="restlet/2.0.10/lib/org.restlet.ext.jackson.jar" />
+        <include name="restlet/2.0.10/lib/org.restlet.ext.fileupload.jar" />
+        <!-- End : Resltet jars -->
+        
+        <include name="ApacheCommonsIO/1.4/lib/commons-io-1.4.jar" />
+        <!-- <include name="Jasypt/1.9.0/lib/jasypt-1.9.0.jar"/>
+        <include name="Jasypt/1.9.0/lib/jasypt-hibernate4-1.9.0.jar"/>
+        <include name="Jasypt/1.9.0/lib/icu4j-3.4.4.jar"/> -->
+    </fileset>
 
-	<path id="libraries">
-		<fileset refid="thirdpartylibs" />
-		<fileset dir="${javastatsdir}">
-			<include name="JavaStatistics.jar" />
-		</fileset>
-		<fileset dir="${webservicecommonlibsdir}">
-			<include name="edu.ucdenver.bios.webservice.common-1.0.0.jar" />
-		</fileset>
-	</path>
-
-	<!-- Delete the directorie trees. -->
-	<target name="clean">		
-		<!--<delete dir="${target.dir}" />-->
-		<delete dir="${wardir}" />
-		<delete dir="${bindir}" />
-		<delete dir="${javadoc.dir}" />
-		<delete>
-			<fileset dir="." includes="TEST-*" />
-		</delete>
-		<!--<mkdir dir="${wardir}" />
-		<mkdir dir="${bindir}" />-->
-	</target>
-	
-	<!-- Recreate directory trees. -->
-	<target name="setup" depends="clean">		
-        <mkdir dir="${wardir}" />
-		<mkdir dir="${bindir}" />
-        <mkdir dir="${javadoc.dir}"/>
+    <path id="libraries">
+        <fileset refid="thirdpartylibs" />
+        <fileset dir="${javastatsdir}">
+            <include name="JavaStatistics.jar" />
+        </fileset>
+        <fileset dir="${thirdpartydir}">
+            <include name="ServletAPI/2.5/lib/servlet-api.jar" />
+        </fileset>
+        <fileset dir="${webservicecommonlibsdir}">
+            <include name="edu.ucdenver.bios.webservice.common-1.0.0.jar" />
+        </fileset>
+    </path>
+        
+    <!-- Delete the directorie trees. -->
+    <target name="clean">
+        <!--<delete dir="${target.dir}" />-->
+        <delete dir="${wardir}" />
+        <delete dir="${bindir}" />
+        <delete dir="${javadoc.dir}" />
+        <delete>
+            <fileset dir="." includes="TEST-*" />
+        </delete>
+        <!--<mkdir dir="${wardir}" />
+        <mkdir dir="${bindir}" />-->
     </target>
 
-	<!-- compile the library file. -->
-	<target name="compile" depends="clean, copy-resources">		
-		<javac debug="true" deprecation="on" listfiles="true" debuglevel="lines,vars,source" srcdir="${sourcedir}" destdir="${wardir}/WEB-INF/classes" classpathref="libraries" />
-	</target>
+    <!-- Recreate directory trees. -->
+    <target name="setup" depends="clean">
+        <mkdir dir="${wardir}" />
+        <mkdir dir="${bindir}" />
+        <mkdir dir="${javadoc.dir}" />
+    </target>
 
-	<target name="copy-resources">
-		<copy todir="${wardir}/WEB-INF/classes">
-			<fileset dir="${sourcedir}">
-				<exclude name="**/*.java" />
-			</fileset>
-		</copy>
-		<copy todir="${wardir}">
-			<fileset dir="${wcdir}">
-				<exclude name="**/.svn/**/*" />
-				<exclude name="test/*" />
-			</fileset>
-		</copy>
-		<copy todir="${wardir}/WEB-INF/lib" flatten="true">
-			<fileset refid="thirdpartylibs" />
-			<fileset dir="${webservicecommonlibsdir}">
-				<include name="edu.ucdenver.bios.webservice.common-1.0.0.jar" />
-			</fileset>
-		</copy>
-	</target>
+    <!-- compile the library file. -->
+    <target name="compile" depends="clean, copy-resources">
+        <javac debug="true" deprecation="on" listfiles="true" debuglevel="lines,vars,source" srcdir="${sourcedir}" destdir="${wardir}/WEB-INF/classes" classpathref="libraries" />
+    </target>
 
-	<!-- Build the project's web application.  -->
-	<target name="compress" depends="compile,javadoc">
-		<echo>webapps DIR IS ${bindir}</echo>
-		<war destfile="${bindir}/${svcname}.war" webxml="${wardir}/WEB-INF/web.xml">
-			<webinf dir="${wardir}/WEB-INF" excludes="**/web.xml" />
-			<classes dir="${wardir}/WEB-INF/classes" />
-			<classes dir="../config">
-				<include name="log4j.properties" />
-			</classes>
-			<lib dir="${wardir}/WEB-INF/lib" includes="**/*.jar" />
-		</war>
-	</target>
+    <target name="copy-resources">
+        <copy todir="${wardir}/WEB-INF/classes">
+            <fileset dir="${sourcedir}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+        <copy todir="${wardir}">
+            <fileset dir="${wcdir}">
+                <exclude name="**/.svn/**/*" />
+                <exclude name="test/*" />
+            </fileset>
+        </copy>
+        <copy todir="${wardir}/WEB-INF/lib" flatten="true">
+            <fileset refid="thirdpartylibs" />
+            <fileset dir="${webservicecommonlibsdir}">
+                <include name="edu.ucdenver.bios.webservice.common-1.0.0.jar" />
+            </fileset>
+        </copy>
+    </target>
 
-	<!-- Build Javadoc for the web service.  -->
-	<target name="javadoc" depends="compile" description="Generates the API specification (javadoc)">
-		<javadoc packagenames="edu.ucdenver.bios.*" access="public" classpath="${basedir}/../classes" destdir="${javadoc.dir}}" use="true" author="true" version="true" windowtitle="UC Denver Biostatistics - Study Design Service Java API Specification" doctitle="UC Denver Biostatistics - Study Design Service Java API Specification">
-			<fileset dir="${sourcedir}" defaultexcludes="no">
-				<include name="**/*.java" />
-			</fileset>
-			<classpath refid="libraries" />
-			<header>
-				<![CDATA[<p>
-				<b>study design service</b>
-			</p>]]></header>
-			<bottom>
-			<![CDATA[<font size=1>CU Denver Biostatistic Department</font>]]></bottom>
-			<link href="http://java.sun.com/javase/6/docs/api" />
-		</javadoc>
-	</target>
+    <!-- Build the project's web application.  -->
+    <!-- To-DO : Comment out following line during final clean up -->
+    <!--<target name="compress" depends="compile,javadoc">-->
+    <target name="compress" depends="compile">
+        <echo>webapps DIR IS ${bindir}</echo>
+        <!-- original -->
+        <!--<war destfile="${bindir}/${svcname}.war" webxml="${wardir}/WEB-INF/web.xml">
+            <webinf dir="${wardir}/WEB-INF" excludes="**/web.xml" />
+            <classes dir="${wardir}/WEB-INF/classes" />
+            <classes dir="../config">
+                <include name="log4j.properties" />
+            </classes>
+            <lib dir="${wardir}/WEB-INF/lib" includes="**/*.jar" />
+        </war>-->
+        <copy todir="${bindir}">
+            <fileset dir="${wardir}"/>
+        </copy>
+        <replace file="${bindir}/WEB-INF/classes/hibernate.properties" token="givenuser" value="${user}"/>
+        <replace file="${bindir}/WEB-INF/classes/hibernate.properties" token="givenpassword" value="${password}"/>
+        <war destfile="${bindir}/${svcname}.war" webxml="${bindir}/WEB-INF/web.xml">
+            <webinf dir="${bindir}/WEB-INF" excludes="**/web.xml" />
+            <classes dir="${bindir}/WEB-INF/classes" />
+            <classes dir="../config">
+                <include name="log4j.properties" />
+            </classes>
+            <lib dir="${wardir}/WEB-INF/lib" includes="**/*.jar" />
+        </war>
+        <delete dir="${bindir}/WEB-INF"/>
+        <delete dir="${bindir}/META-INF"/>        
+    </target>
 
-	<!-- Executes Junit tests for web service.  -->
-	<target name="test" depends="compress">
-	<junit printsummary="yes" haltonfailure="yes" showoutput="true" fork="true">
-		<classpath>
-			<path refid="libraries" />
-			<pathelement location="${wardir}/WEB-INF/classes" />
-		</classpath>
-		<formatter type="plain" />
-		<!-- <test name="edu.ucdenver.bios.studydesignsvc.tests.TestBetaScaleList" haltonfailure="no">
-	  		    </test>
-	        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestBetweenParticipantFactorList" haltonfailure="no">
-	        	  		  </test>
-	        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestClusterNode" haltonfailure="no">
-	        	  		  </test>
-	        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestConfidenceInterval" haltonfailure="no">
-	        	  		  </test>
-	        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestCovariance" haltonfailure="no">
-	        	  		  </test>
-	        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestMatrix" haltonfailure="no">
-	        	  		  </test>
-	        	<test name="edu.ucdenver.bios.studydesignsvc.tests.TestStudyDesign" haltonfailure="no">
-	  		    		  </test> -->
-	</junit>
-	</target>
-	
-	<!-- Deploy web service at required location.  -->
-	<target name="deploy" description="This target moves the ${svcname}.war 
-			to the user's catalina.home\webapps directory.">
-	<copy todir="${catalina.home}\webapps">
-		<fileset dir="${bindir}">
-			<include name="${svcname}.war" />
-		</fileset>
-	</copy>
-	<echo>Deployed the ${svcname}.war to ${catalina.home}\webapps</echo>
-	</target>
+    <!-- Build Javadoc for the web service.  -->
+    <!-- To-DO : Comment out following line during final clean up -->
+    <!--<target name="javadoc" depends="compile" description="Generates the API specification (javadoc)">-->
+    <target name="javadoc" description="Generates the API specification (javadoc)">
+        <javadoc packagenames="edu.ucdenver.bios.*" access="public" classpath="${basedir}/../classes" destdir="${javadoc.dir}}" use="true" author="true" version="true" windowtitle="UC Denver Biostatistics - Study Design Service Java API Specification" doctitle="UC Denver Biostatistics - Study Design Service Java API Specification">
+            <fileset dir="${sourcedir}" defaultexcludes="no">
+                <include name="**/*.java" />
+            </fileset>
+            <classpath refid="libraries" />
+            <header>
+                <![CDATA[<p>
+                <b>study design service</b>
+            </p>]]></header>
+        <bottom>
+            <![CDATA[<font size=1>CU Denver Biostatistic Department</font>]]></bottom>
+    <link href="http://java.sun.com/javase/6/docs/api" />
+</javadoc>
+</target>
 
-	<target name="buildDeploy" depends="test, deploy" />
-	
-	<!-- Create the javadoc distribution  -->
-	<target name="javadoc-distribution" depends="javadoc">
-	<jar destfile="${bindir}/${svcname}-javadoc.jar" basedir="${javadoc.dir}}/..">
-		<manifest>
-			<attribute name="Author" value="Uttara Sakhadeo" />
-			<section name="Shared">
-				<attribute name="Title" value="${svcname} Javadoc" />
-				<attribute name="Vendor" value="CU Denver Biostatistics Department" />
-			</section>
-			<section name="Copyright">
-				<attribute name="Copy" value="(C) CU Denver Biostatistics Department" />
-			</section>
-		</manifest>
-	</jar>
-	</target>
+<!-- Executes Junit tests for web service.  -->
+<target name="test" depends="compress">    
+<junit printsummary="yes" haltonfailure="yes" showoutput="true" fork="true">
+    <classpath>
+        <path refid="libraries" />
+        <pathelement location="${wardir}/WEB-INF/classes" />
+    </classpath>
+    <formatter type="plain" />
+    <!-- <test name="edu.ucdenver.bios.studydesignsvc.tests.TestBetaScaleList" haltonfailure="no">
+                  </test>
+                <test name="edu.ucdenver.bios.studydesignsvc.tests.TestBetweenParticipantFactorList" haltonfailure="no">
+                            </test>
+                <test name="edu.ucdenver.bios.studydesignsvc.tests.TestClusterNode" haltonfailure="no">
+                            </test>
+                <test name="edu.ucdenver.bios.studydesignsvc.tests.TestConfidenceInterval" haltonfailure="no">
+                            </test>
+                <test name="edu.ucdenver.bios.studydesignsvc.tests.TestCovariance" haltonfailure="no">
+                            </test>
+                <test name="edu.ucdenver.bios.studydesignsvc.tests.TestMatrix" haltonfailure="no">
+                            </test>
+                <test name="edu.ucdenver.bios.studydesignsvc.tests.TestStudyDesign" haltonfailure="no">
+                            </test> -->
+</junit>
+</target>
 
-	<!-- Create the source distribution -->
-	<target name="source-distribution">
-	<jar destfile="${bindir}/${svcname}-source.jar" basedir="${basedir}/../.." includes="StudyDesignSvc/*,
-					StudyDesignSvc/build/build.xml,
-					StudyDesignSvc/config/**,
-					StudyDesignSvc/src/**,
-					StudyDesignSvc/text/**,
-					StudyDesignSvc/WebContent/**">
-		<manifest>
-			<attribute name="Author" value="Uttara Sakhadeo" />
-			<section name="Shared">
-				<attribute name="Title" value="${svcname} Source Code" />
-				<attribute name="Vendor" value="CU Denver Biostatistics Department" />
-			</section>
-			<section name="Copyright">
-				<attribute name="Copy" value="(C) CU Denver Biostatistics Department" />
-			</section>
-		</manifest>
-	</jar>
-	</target>
+<!-- Deploy web service at required location.  -->
+<target name="deploy" description="This target moves the ${svcname}.war
+            to the user's catalina.home\webapps directory.">
+<copy todir="${catalina.home}\webapps">
+    <fileset dir="${bindir}">
+        <include name="${svcname}.war" />
+    </fileset>
+</copy>
+<echo>Deployed the ${svcname}.war to ${catalina.home}\webapps</echo>
+</target>
+
+<target name="buildDeploy" depends="test, deploy" />
+
+<!-- Create the javadoc distribution  -->
+<target name="javadoc-distribution" depends="javadoc">
+<jar destfile="${bindir}/${svcname}-javadoc.jar" basedir="${javadoc.dir}}/..">
+    <manifest>
+        <attribute name="Author" value="Uttara Sakhadeo" />
+        <section name="Shared">
+            <attribute name="Title" value="${svcname} Javadoc" />
+            <attribute name="Vendor" value="CU Denver Biostatistics Department" />
+        </section>
+        <section name="Copyright">
+            <attribute name="Copy" value="(C) CU Denver Biostatistics Department" />
+        </section>
+    </manifest>
+</jar>
+</target>
+
+<!-- Create the source distribution -->
+<target name="source-distribution">
+<jar destfile="${bindir}/${svcname}-source.jar" basedir="${basedir}/../.." includes="StudyDesignSvc/*,
+                    StudyDesignSvc/build/build.xml,
+                    StudyDesignSvc/config/**,
+                    StudyDesignSvc/src/**,
+                    StudyDesignSvc/text/**,
+                    StudyDesignSvc/WebContent/**">
+    <manifest>
+        <attribute name="Author" value="Uttara Sakhadeo" />
+        <section name="Shared">
+            <attribute name="Title" value="${svcname} Source Code" />
+            <attribute name="Vendor" value="CU Denver Biostatistics Department" />
+        </section>
+        <section name="Copyright">
+            <attribute name="Copy" value="(C) CU Denver Biostatistics Department" />
+        </section>
+    </manifest>
+</jar>
+</target>
 </project>
