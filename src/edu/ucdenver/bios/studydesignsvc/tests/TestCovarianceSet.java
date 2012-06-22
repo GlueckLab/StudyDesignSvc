@@ -98,7 +98,7 @@ public class TestCovarianceSet extends TestCase {
      * Test to create a CovarianceSet.
      */
     @Test
-    private void testCreate() {
+    public void testCreate() {
         Set<Covariance> covarianceSet = new HashSet<Covariance>();
         Covariance covariance = new Covariance();
         covariance.setName(COVARIANCE_NAME_1);
@@ -173,7 +173,7 @@ public class TestCovarianceSet extends TestCase {
      * Test to retrieve CovarianceSet.
      */
     @Test
-    public void testRetrieve() {
+    private void testRetrieve() {
         CovarianceSet covarianceSet = null;
 
         try {

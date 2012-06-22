@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.fileupload.RequestContext;
 import org.junit.Test;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.ClientResource;
@@ -58,13 +59,16 @@ public class TestStudyDesign extends TestCase
 	
     
 	/** The STUDY_UUID. */
-	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");
+	private static UUID STUDY_UUID = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51a");    
+	// validating uuid : http://stackoverflow.com/questions/7905929/how-to-test-valid-uuid-guid
+	// 0 is a valid uuid
+    //private static UUID STUDY_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 	
 	/** The STUDY_UUID_ONE. */
     private static UUID STUDY_UUID_ONE = UUID.fromString("66ccfd20-4478-11e1-9641-0002a5d5c51b");
 	
 	/** The STUD y_ name. */
-	private static String STUDY_NAME = "Junit Test Study Design";
+	private static String STUDY_NAME = "Junit Test Study Design11";
 	
 	/** The PARTICIPAN t_ label. */
 	private static String PARTICIPANT_LABEL = "subjects";
@@ -96,7 +100,7 @@ public class TestStudyDesign extends TestCase
 	/** The study design resource. */
 	StudyDesignResource studyDesignResource = null;
 	
-	StudyRetrieveResource std = null;
+	StudyRetrieveResource studyDesignRetrieveResource = null;
 		
 	/** The study design upload retrieve resource. */
     StudyDesignUploadRetrieveResource studyDesignUploadResource = null;
@@ -112,7 +116,7 @@ public class TestStudyDesign extends TestCase
         {
             System.clearProperty("http.proxyHost");
             clientStudyResource = new ClientResource("http://localhost:8080/study/study/retrieve"); 
-            std = clientStudyResource.wrap(StudyRetrieveResource.class);
+            studyDesignRetrieveResource = clientStudyResource.wrap(StudyRetrieveResource.class);
             
             clientStudyResource = new ClientResource("http://localhost:8080/study/study"); 
             studyDesignResource = clientStudyResource.wrap(StudyDesignResource.class);
@@ -180,7 +184,7 @@ public class TestStudyDesign extends TestCase
 	}
 	
 	@Test
-    public void testUpload()   
+    private void testUpload()   
     {   
         StudyDesign studyDesign = new StudyDesign();
         studyDesign.setUuid(uuid);
@@ -245,7 +249,7 @@ public class TestStudyDesign extends TestCase
 	 * Test retrieve list.
 	 */
 	@Test
-	private void testRetrieveList()
+	public void testRetrieveList()
 	{
 	    StudyDesignList studyDesignList = null;
         try
@@ -323,7 +327,8 @@ public class TestStudyDesign extends TestCase
         studyDesign.setName(STUDY_NAME);
         studyDesign.setViewTypeEnum(StudyDesignViewTypeEnum.GUIDED_MODE);
         studyDesign.setGaussianCovariate(true);             
-        studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER);
+        studyDesign.setSolutionTypeEnum(SolutionTypeEnum.POWER); 
+        
         
         /*StudyDesign studyDesign1 = new StudyDesign();
         studyDesign1.setUuid(uuid_one);
@@ -344,8 +349,9 @@ public class TestStudyDesign extends TestCase
         try
         {
             System.clearProperty("http.proxyHost");
-            clientStudyResource = new ClientResource("http://localhost:8080/study/study"); 
-            studyDesignResource = clientStudyResource.wrap(StudyDesignResource.class);
+            clientStudyResource = new ClientResource("http://localhost:8080/study/study");
+            
+            studyDesignResource = clientStudyResource.wrap(StudyDesignResource.class);    
             /*studyDesign=resource.create(studyDesign);*/
             studyDesign = studyDesignResource.update(studyDesign);
             
@@ -403,7 +409,7 @@ public class TestStudyDesign extends TestCase
             /*System.clearProperty("http.proxyHost");
             clientStudyResource = new ClientResource("http://localhost:8080/study/study/retrieve"); 
             StudyRetrieveResource std = clientStudyResource.wrap(StudyRetrieveResource.class);*/
-            studyDesign = std.retrieve(uuid);
+            studyDesign = studyDesignRetrieveResource.retrieve(uuid);
             
             /*Gson gson = new Gson();           
             String json = object.toString();

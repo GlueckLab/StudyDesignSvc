@@ -103,7 +103,7 @@ public class TestCovariance extends TestCase {
      * Test to create a Covariance.
      */
     @Test
-    private void testCreate() {
+    public void testCreate() {
         Covariance newCovariance = null;
         /*
          * Create a covariance object
@@ -182,7 +182,7 @@ public class TestCovariance extends TestCase {
      * Test to update a Covariance.
      */
     @Test
-    public void testUpdate() {
+    private void testUpdate() {
         Covariance newCovariance = null;
         /*
          * Create a covariance object
