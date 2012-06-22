@@ -23,6 +23,7 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.restlet.data.Status;
@@ -61,13 +62,30 @@ public class StudyDesignServerResource extends ServerResource implements
     @Put("application/json")
     public StudyDesign update(StudyDesign studyDesign) {
         StudyDesignManager studyDesignManager = null;
+        byte[] uuid = studyDesign.getUuid();
         /*
          * Check : empty uuid.
          */
-        if (studyDesign.getUuid() == null) {
+        if (uuid == null) {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
+        /*
+         * Validate Uuid.
+         */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        
         try {
             /*
              * Update Study Design.
@@ -118,6 +136,22 @@ public class StudyDesignServerResource extends ServerResource implements
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
+        /*
+         * Validate Uuid.
+         */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        
         try {
             /*
              * Delete Study Design.

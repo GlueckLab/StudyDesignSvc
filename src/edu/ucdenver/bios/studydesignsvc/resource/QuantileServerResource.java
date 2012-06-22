@@ -23,6 +23,7 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -37,6 +38,7 @@ import edu.ucdenver.bios.studydesignsvc.manager.QuantileManager;
 import edu.ucdenver.bios.webservice.common.domain.Quantile;
 import edu.ucdenver.bios.webservice.common.domain.QuantileList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
  * Server Resource class for handling (PUT, POST, DELETE) requests for the
@@ -73,6 +75,22 @@ public class QuantileServerResource extends ServerResource implements
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no Beta Scale specified");
         }
+        /*
+         * Validate Uuid.
+         */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        
         try {
             /*
              * Save Quantile list.
@@ -138,6 +156,22 @@ public class QuantileServerResource extends ServerResource implements
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
+        /*
+         * Validate Uuid.
+         */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        
         try {
             /*
              * Delete Quantile list.

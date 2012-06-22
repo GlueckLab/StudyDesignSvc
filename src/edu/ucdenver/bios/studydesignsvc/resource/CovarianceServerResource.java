@@ -22,6 +22,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.regex.Pattern;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Post;
@@ -35,6 +37,7 @@ import edu.ucdenver.bios.webservice.common.domain.Covariance;
 import edu.ucdenver.bios.webservice.common.domain.UuidCovariance;
 import edu.ucdenver.bios.webservice.common.domain.UuidCovarianceName;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -64,6 +67,22 @@ public class CovarianceServerResource extends ServerResource implements
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
+        /*
+         * Validate Uuid.
+         */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        
         /*
          * Check : empty Covariance.
          */
@@ -146,6 +165,22 @@ public class CovarianceServerResource extends ServerResource implements
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "not valid Covariance Name specified");
         }
+        /*
+         * Validate Uuid.
+         */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        
 
         try {
             /*

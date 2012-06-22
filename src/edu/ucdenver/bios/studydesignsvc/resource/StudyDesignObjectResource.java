@@ -163,8 +163,8 @@ public class StudyDesignObjectResource extends ServerResource {
      * @param entity
      *            HTTP entity body for the request
      */
-    @Put
-    public StudyDesign update(StudyDesign studyDesign) throws ResourceException {
+    //@Put
+    /*public StudyDesign update(StudyDesign studyDesign) throws ResourceException {
         StudyDesignManager manager = null;
         try {
             manager = new StudyDesignManager();
@@ -195,7 +195,7 @@ public class StudyDesignObjectResource extends ServerResource {
             }
         }
         return studyDesign;
-    }
+    }*/
 
     /**
      * Process a POST request to store a List in data base. Please see REST API

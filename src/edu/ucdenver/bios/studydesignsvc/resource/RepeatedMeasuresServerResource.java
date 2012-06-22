@@ -23,6 +23,7 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -36,6 +37,7 @@ import edu.ucdenver.bios.studydesignsvc.manager.RepeatedMeasuresManager;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNode;
 import edu.ucdenver.bios.webservice.common.domain.RepeatedMeasuresNodeList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -76,6 +78,22 @@ public class RepeatedMeasuresServerResource extends ServerResource implements
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no Beta Scale specified");
         }
+        /*
+         * Validate Uuid.
+         */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        
         try {
             /*
              * Save RepeatedMeasuresNode list.
@@ -143,6 +161,22 @@ public class RepeatedMeasuresServerResource extends ServerResource implements
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
+        /*
+         * Validate Uuid.
+         */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        
         try {
             /*
              * Delete RepeatedMeasuresNode list.

@@ -25,6 +25,7 @@
 package edu.ucdenver.bios.studydesignsvc.resource;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -38,6 +39,7 @@ import edu.ucdenver.bios.studydesignsvc.manager.BetweenParticipantFactorManager;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactor;
 import edu.ucdenver.bios.webservice.common.domain.BetweenParticipantFactorList;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -70,8 +72,21 @@ public class BetweenParticipantServerResource extends ServerResource implements
                     "no study design UUID specified");
         }
         /*
-         * Check : empty BetweenParticipantFactor list.
+         * Check : empty uuid.
          */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+
         List<BetweenParticipantFactor> list = betweenParticipantFactorList
                 .getBetweenParticipantFactorList();
         if (list == null || list.isEmpty()) {
@@ -145,6 +160,22 @@ public class BetweenParticipantServerResource extends ServerResource implements
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                     "no study design UUID specified");
         }
+        /*
+         * Validate Uuid.
+         */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+
         try {
             /*
              * Delete BetweenParticipantFactor list.

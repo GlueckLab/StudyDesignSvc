@@ -24,6 +24,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.regex.Pattern;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
@@ -34,6 +36,7 @@ import edu.ucdenver.bios.studydesignsvc.manager.CovarianceManager;
 import edu.ucdenver.bios.webservice.common.domain.Covariance;
 import edu.ucdenver.bios.webservice.common.domain.UuidCovarianceName;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
  * Generic Resource class for handling retrieve request for the domain list
@@ -63,8 +66,20 @@ public class CovarianceRetrieveServerResource extends ServerResource implements
                     "no study design UUID specified");
         }
         /*
-         * Check : length of uuid.
+         * Validate Uuid.
          */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }        
 
         try {
             /*

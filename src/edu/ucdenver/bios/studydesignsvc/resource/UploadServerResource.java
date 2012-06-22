@@ -32,6 +32,7 @@ package edu.ucdenver.bios.studydesignsvc.resource;
  */
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -42,11 +43,13 @@ import org.restlet.ext.fileupload.RestletFileUpload;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Post;
+import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.google.gson.Gson;
 
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
  * Generic Resource Class for handling upload request for the StudyDesign domain
@@ -120,9 +123,39 @@ public class UploadServerResource extends ServerResource implements
                         Gson gson = new Gson();
                         StudyDesign studyDesign = gson.fromJson(jsonEncoded,
                                 StudyDesign.class);
-                        StudyDesignServerResource studyUploadResource = new StudyDesignServerResource();
-                        studyDesign = studyUploadResource.update(studyDesign);
-                        System.out.println(studyDesign);
+                        if (studyDesign != null) {
+                            byte[] uuid = studyDesign.getUuid();
+                            /*
+                             * Check : empty uuid
+                             */
+                            if (uuid == null) {
+                                throw new ResourceException(
+                                        Status.CLIENT_ERROR_BAD_REQUEST,
+                                        "no study design UUID specified");
+                            }
+                            /*
+                             * Validate Uuid.
+                             */
+                            boolean uuidFlag = false;
+                            try {
+                                uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                                        UUIDUtils.bytesToHex(uuid));
+                            } catch (Exception e) {
+                                throw new ResourceException(
+                                        Status.CLIENT_ERROR_BAD_REQUEST,
+                                        "Invalid UUID specified");
+                            }
+                            if (!uuidFlag) {
+                                throw new ResourceException(
+                                        Status.CLIENT_ERROR_BAD_REQUEST,
+                                        "Invalid UUID specified");
+                            }
+                            StudyDesignServerResource studyUploadResource = new StudyDesignServerResource();
+                            studyDesign = studyUploadResource
+                                    .update(studyDesign);
+                            // for debuging
+                            System.out.println(studyDesign);
+                        }
                     } else {
                         rep = new StringRepresentation("No file data found",
                                 MediaType.TEXT_HTML);

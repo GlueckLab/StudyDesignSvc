@@ -24,6 +24,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.regex.Pattern;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
@@ -34,6 +36,7 @@ import edu.ucdenver.bios.studydesignsvc.exceptions.StudyDesignException;
 import edu.ucdenver.bios.studydesignsvc.manager.StudyDesignManager;
 import edu.ucdenver.bios.webservice.common.domain.StudyDesign;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
  * Generic Resource Class for handling retrieve request for the StudyDesign
@@ -54,12 +57,29 @@ public class StudyRetrieveServerResource extends ServerResource implements
         // byte[] uuid = studyUuid.getUuid();
         StudyDesignManager studyDesignManager = null;
         StudyDesign studyDesign = null;
-
+        /*
+         * Check : empty uuid.
+         */
+        if (uuid == null)
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "no study design UUID specified");
+        /*
+         * Validate Uuid.
+         */
+        boolean uuidFlag = false;
         try {
-            if (uuid == null)
-                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-                        "no study design UUID specified");
-
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        
+        try {            
             studyDesignManager = new StudyDesignManager();
             studyDesignManager.beginTransaction();
             studyDesign = studyDesignManager.get(uuid);

@@ -24,6 +24,8 @@
  */
 package edu.ucdenver.bios.studydesignsvc.resource;
 
+import java.util.regex.Pattern;
+
 import org.restlet.data.Status;
 import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
@@ -33,6 +35,7 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignLogger;
 import edu.ucdenver.bios.studydesignsvc.manager.PowerCurveManager;
 import edu.ucdenver.bios.webservice.common.domain.UuidPowerCurveDescription;
 import edu.ucdenver.bios.webservice.common.hibernate.BaseManagerException;
+import edu.ucdenver.bios.webservice.common.uuid.UUIDUtils;
 
 /**
  * Concrete class which implements methods of Power Curve Resource interface.
@@ -62,8 +65,21 @@ public class PowerCurveRetrieveServerResource extends ServerResource implements
                     "no study design UUID specified");
         }
         /*
-         * Check : length of uuid.
+         * Validate Uuid.
          */
+        boolean uuidFlag = false;
+        try {
+            uuidFlag = Pattern.matches("[0-9a-fA-F]{32}",
+                    UUIDUtils.bytesToHex(uuid));
+        } catch (Exception e) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        if (!uuidFlag) {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
+                    "invalid UUID specified");
+        }
+        
 
         try {
             /*
