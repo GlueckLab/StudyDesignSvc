@@ -6,25 +6,25 @@
 <hibernate-configuration>
 	<session-factory>
 		<!-- Begin : Jasypt Password Encryprion Setting -->
-			<property name="connection.provider_class">
+			<!-- <property name="hibernate.connection.provider_class">
 	      		org.jasypt.hibernate4.connectionprovider.EncryptedPasswordC3P0ConnectionProvider
 	    	</property>
-		    <property name="connection.encryptor_registered_name">configurationHibernateEncryptor</property>
+		    <property name="hibernate.connection.encryptor_registered_name">configurationHibernateEncryptor</property> -->
 		<!-- End : Jasypt Password Encryprion Setting -->
 		
 		<!-- Begin : Database connection settings -->
-			<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-			<property name="connection.username">root</property>
+			<!-- <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+			<property name="hibernate.connection.username">root</property> -->
 			<!-- <property name="hibernate.connection.password">
 				ENC(*81F5E21E35407D884A6CD4A731AEBFB6AF209E1B)
 			</property> -->
-			<!-- <property name="connection.password">
+			<!-- <property name="hibernate.connection.password">
 				ENC(7OFMFkKoaRWPnKedOX3iZg==)
 			</property> -->
-			<property name="connection.password">
+			<!-- <property name="hibernate.connection.password">
 				root
-			</property>
-			<property name="connection.url">jdbc:mysql://localhost:3306/studydesigndb</property>
+			</property> -->
+			<!-- <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/studydesigndb</property> -->
 		<!-- End : Database connection settings -->
 		
 		<!-- <property name="hibernate.connection.isolation">2</property> -->
@@ -43,10 +43,10 @@
 		</property> -->
 
 		<!-- Enable Hibernate's automatic session context management -->
-		<property name="current_session_context_class">thread</property>
+		<property name="hibernate.current_session_context_class">thread</property>
 
 		<!-- Disable the second-level cache  -->
-		<property name="cache.provider_class">
+		<property name="hibernate.cache.provider_class">
 			org.hibernate.cache.NoCacheProvider
 		</property>
 
