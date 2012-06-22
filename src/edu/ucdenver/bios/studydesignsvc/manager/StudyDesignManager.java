@@ -392,7 +392,7 @@ public class StudyDesignManager extends StudyDesignParentManager {
                     while (itr.hasNext()) {
                         StatisticalTest statisticalTest = (StatisticalTest) itr.next();
                         if(statisticalTest != null) {
-                            session.delete(itr.next());
+                            session.delete(statisticalTest);
                         }
                     }
                 }
@@ -404,7 +404,7 @@ public class StudyDesignManager extends StudyDesignParentManager {
                     while (itr.hasNext()) {
                         ClusterNode clusterNode = (ClusterNode) itr.next();
                         if(clusterNode != null) {
-                            session.delete(itr.next());
+                            session.delete(clusterNode);
                         }
                     }
                 }
@@ -416,7 +416,7 @@ public class StudyDesignManager extends StudyDesignParentManager {
                     while (itr.hasNext()) {
                         NamedMatrix matrix = (NamedMatrix) itr.next();
                         if(matrix != null) {
-                            session.delete(itr.next());
+                            session.delete(matrix);
                         }
                     }
                 }
@@ -607,7 +607,8 @@ public class StudyDesignManager extends StudyDesignParentManager {
                 /*
                  * Persist the created StudyDesign
                  */     
-                studyDesign = saveOrUpdate(studyDesign, true);
+                //studyDesign = saveOrUpdate(studyDesign, true);
+                session.save(studyDesign);                
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 throw new StudyDesignException("Failed to save study design : "
