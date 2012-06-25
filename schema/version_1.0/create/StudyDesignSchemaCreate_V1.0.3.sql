@@ -631,7 +631,7 @@ ENGINE = InnoDB;
 drop table if exists HYPOTHESIS;
 CREATE  TABLE IF NOT EXISTS `sample_studydesigndb`.`HYPOTHESIS` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `trendType` ENUM( 'Main Effect','Interaction','Trend') , 
+  `trendType` ENUM( 'Grand Mean','Main Effect','Interaction','Trend') , 
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
