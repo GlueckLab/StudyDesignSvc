@@ -305,6 +305,7 @@ drop table if exists COVARIANCE;
 CREATE  TABLE IF NOT EXISTS `sample_studydesigndb`.`COVARIANCE` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) ,
+  `type` ENUM('LEAR Correlation','Unstructured Correlation','Unstructured Covariance'),
   `rho` DOUBLE,
   `delta` DOUBLE,
   `rows` INT,
