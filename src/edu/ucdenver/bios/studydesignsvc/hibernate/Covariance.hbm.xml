@@ -25,13 +25,21 @@
 <!DOCTYPE hibernate-mapping PUBLIC
     "-//Hibernate/Hibernate Mapping DTD//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping>		
+<hibernate-mapping>
+    <typedef name="type" class="edu.ucdenver.bios.studydesignsvc.application.GenericEnumUserType">
+		<param name="enumClass">edu.ucdenver.bios.webservice.common.enums.CovarianceTypeEnum</param>
+	</typedef>		
 	<class name="edu.ucdenver.bios.webservice.common.domain.StandardDeviation" table="STANDARD_DEVIATION" lazy="false">				
 		<id name="id" column="id"><generator class="native"/></id>				
 		<property name="value" column="standard_deviation"/>									 				
 	</class>
 	<class name="edu.ucdenver.bios.webservice.common.domain.Covariance" table="COVARIANCE" lazy="false">
 		<id name="id" column="id"><generator class="native"/></id>
+		<property name="type" 
+			column="type" 
+			type="type"
+			not-null="false"
+			update="false"/>
 		<property name="name" column="name" type="java.lang.String"/>
 		<list name="standardDeviationList" table="COVARIANCE_SD_MAP" lazy="false" cascade="all" inverse="false" mutable="true" optimistic-lock="true" embed-xml="true">
 		  <key column="cid" unique="true"/> 
