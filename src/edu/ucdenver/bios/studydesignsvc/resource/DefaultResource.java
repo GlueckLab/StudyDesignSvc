@@ -27,8 +27,6 @@ package edu.ucdenver.bios.studydesignsvc.resource;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
-import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
-
 /**
  * Default request resource.  Called from the URI /power
  * Simply returns a self-identifying message for the server
@@ -36,11 +34,14 @@ import edu.ucdenver.bios.studydesignsvc.application.StudyDesignConstants;
  * @author Uttara Sakhadeo
  */
 public class DefaultResource extends ServerResource {
-/**
- * Returns a full representation for a given variant.
- */
-@Get
-public String represent() {
-    return "Study Design REST Service, version " + StudyDesignConstants.VERSION;
+    /**
+     * Returns a full representation for a given variant.
+     */
+    @Get
+    public String represent() {
+        String version = 
+                getApplication().getContext().getParameters().getFirstValue(
+                        "edu.ucdenver.bios.studydesignsvc.application.version");
+        return ("Study Design REST Service, version " + version);
     }
 }
