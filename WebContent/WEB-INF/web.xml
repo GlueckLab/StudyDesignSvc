@@ -8,6 +8,12 @@
         <param-value>edu.ucdenver.bios.studydesignsvc.application.StudyDesignApplication</param-value>
     </context-param>
     
+       	<!-- Application version - auto populated during build -->
+    <context-param>
+        <param-name>edu.ucdenver.bios.studydesignsvc.application.version</param-name>
+        <param-value>UNKNOWN</param-value>
+    </context-param>
+    
     <!-- Restlet adapter -->
     <servlet>
         <servlet-name>RestletServlet</servlet-name>

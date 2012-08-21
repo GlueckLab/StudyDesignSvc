@@ -28,7 +28,12 @@
 	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/optional/c3p0/c3p0-0.9.1.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/hibernate/4.0.0/lib/optional/c3p0/hibernate-c3p0-4.0.0.Final.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/ApacheCommonsMath/2.1/lib/commons-math-2.1.jar"/>
-	<classpathentry kind="lib" path="/WebServiceCommon/build/bin/WebServiceCommon-1.0.0.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/restlet/2.0.10/lib/org.restlet.ext.json.jar"/>
-	<classpathentry kind="output" path="build/classes"/>
+	<classpathentry kind="lib" path="/WebServiceCommon/build/artifacts/edu.ucdenver.bios.webservice.common-dev.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/ApacheCommonsFileUpload/1.2/lib/commons-fileupload-1.2.1.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/restlet/2.0.10/lib/org.restlet.ext.fileupload.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/gson/2.1/lib/gson-2.1.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/jackson/1.9.4/lib/jackson-all-1.9.4.jar"/>
+	<classpathentry kind="lib" path="/thirdparty/ServletAPI/2.5/lib/servlet-api.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
